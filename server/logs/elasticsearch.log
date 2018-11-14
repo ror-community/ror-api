@@ -1,0 +1,84 @@
+[2018-11-13T08:47:48,704][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-13T08:47:48,827][INFO ][o.e.e.NodeEnvironment    ] [sudr_D5] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [825.9gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-13T08:47:48,828][INFO ][o.e.e.NodeEnvironment    ] [sudr_D5] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-13T08:47:48,917][INFO ][o.e.n.Node               ] node name [sudr_D5] derived from node ID [sudr_D5yT_yPMuW9Ehz-pw]; set [node.name] to override
+[2018-11-13T08:47:48,918][INFO ][o.e.n.Node               ] version[5.3.2], pid[16882], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-13T08:47:49,878][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [aggs-matrix-stats]
+[2018-11-13T08:47:49,878][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [ingest-common]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-expression]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-groovy]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-mustache]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-painless]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [percolator]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [reindex]
+[2018-11-13T08:47:49,879][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [transport-netty3]
+[2018-11-13T08:47:49,880][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [transport-netty4]
+[2018-11-13T08:47:49,880][INFO ][o.e.p.PluginsService     ] [sudr_D5] no plugins loaded
+[2018-11-13T08:47:52,249][INFO ][o.e.n.Node               ] initialized
+[2018-11-13T08:47:52,250][INFO ][o.e.n.Node               ] [sudr_D5] starting ...
+[2018-11-13T08:47:52,453][INFO ][o.e.t.TransportService   ] [sudr_D5] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-13T08:47:55,524][INFO ][o.e.c.s.ClusterService   ] [sudr_D5] new_master {sudr_D5}{sudr_D5yT_yPMuW9Ehz-pw}{167PJHpERdOGnDkdPj8yEg}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-13T08:47:55,549][INFO ][o.e.h.n.Netty4HttpServerTransport] [sudr_D5] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-13T08:47:55,552][INFO ][o.e.n.Node               ] [sudr_D5] started
+[2018-11-13T08:47:55,806][INFO ][o.e.g.GatewayService     ] [sudr_D5] recovered [5] indices into cluster_state
+[2018-11-13T08:47:57,298][INFO ][o.e.c.r.a.AllocationService] [sudr_D5] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[org-id-grid][2]] ...]).
+[2018-11-13T09:11:32,769][INFO ][o.e.n.Node               ] [sudr_D5] stopping ...
+[2018-11-13T09:11:32,871][INFO ][o.e.n.Node               ] [sudr_D5] stopped
+[2018-11-13T09:11:32,871][INFO ][o.e.n.Node               ] [sudr_D5] closing ...
+[2018-11-13T09:11:32,884][INFO ][o.e.n.Node               ] [sudr_D5] closed
+[2018-11-13T09:12:02,627][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-13T09:12:02,702][INFO ][o.e.e.NodeEnvironment    ] [sudr_D5] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [825.9gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-13T09:12:02,702][INFO ][o.e.e.NodeEnvironment    ] [sudr_D5] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-13T09:12:02,776][INFO ][o.e.n.Node               ] node name [sudr_D5] derived from node ID [sudr_D5yT_yPMuW9Ehz-pw]; set [node.name] to override
+[2018-11-13T09:12:02,776][INFO ][o.e.n.Node               ] version[5.3.2], pid[17176], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-13T09:12:03,486][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [aggs-matrix-stats]
+[2018-11-13T09:12:03,486][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [ingest-common]
+[2018-11-13T09:12:03,486][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-expression]
+[2018-11-13T09:12:03,486][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-groovy]
+[2018-11-13T09:12:03,486][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-mustache]
+[2018-11-13T09:12:03,487][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-painless]
+[2018-11-13T09:12:03,487][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [percolator]
+[2018-11-13T09:12:03,487][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [reindex]
+[2018-11-13T09:12:03,487][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [transport-netty3]
+[2018-11-13T09:12:03,487][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [transport-netty4]
+[2018-11-13T09:12:03,488][INFO ][o.e.p.PluginsService     ] [sudr_D5] no plugins loaded
+[2018-11-13T09:12:05,296][INFO ][o.e.n.Node               ] initialized
+[2018-11-13T09:12:05,296][INFO ][o.e.n.Node               ] [sudr_D5] starting ...
+[2018-11-13T09:12:05,460][INFO ][o.e.t.TransportService   ] [sudr_D5] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-13T09:12:08,516][INFO ][o.e.c.s.ClusterService   ] [sudr_D5] new_master {sudr_D5}{sudr_D5yT_yPMuW9Ehz-pw}{KAEP5NUQRfeEKU_XQ5INjg}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-13T09:12:08,543][INFO ][o.e.h.n.Netty4HttpServerTransport] [sudr_D5] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-13T09:12:08,549][INFO ][o.e.n.Node               ] [sudr_D5] started
+[2018-11-13T09:12:08,829][INFO ][o.e.g.GatewayService     ] [sudr_D5] recovered [5] indices into cluster_state
+[2018-11-13T09:12:10,008][INFO ][o.e.c.r.a.AllocationService] [sudr_D5] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[org-id-grid][1]] ...]).
+[2018-11-13T09:33:47,683][INFO ][o.e.n.Node               ] [sudr_D5] stopping ...
+[2018-11-13T09:33:47,780][INFO ][o.e.n.Node               ] [sudr_D5] stopped
+[2018-11-13T09:33:47,780][INFO ][o.e.n.Node               ] [sudr_D5] closing ...
+[2018-11-13T09:33:47,801][INFO ][o.e.n.Node               ] [sudr_D5] closed
+[2018-11-13T15:09:57,309][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-13T15:09:57,560][INFO ][o.e.e.NodeEnvironment    ] [sudr_D5] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [839.7gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-13T15:09:57,561][INFO ][o.e.e.NodeEnvironment    ] [sudr_D5] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-13T15:09:57,697][INFO ][o.e.n.Node               ] node name [sudr_D5] derived from node ID [sudr_D5yT_yPMuW9Ehz-pw]; set [node.name] to override
+[2018-11-13T15:09:57,698][INFO ][o.e.n.Node               ] version[5.3.2], pid[20005], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-13T15:09:58,974][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [aggs-matrix-stats]
+[2018-11-13T15:09:58,974][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [ingest-common]
+[2018-11-13T15:09:58,975][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-expression]
+[2018-11-13T15:09:58,975][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-groovy]
+[2018-11-13T15:09:58,975][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-mustache]
+[2018-11-13T15:09:58,975][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [lang-painless]
+[2018-11-13T15:09:58,975][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [percolator]
+[2018-11-13T15:09:58,975][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [reindex]
+[2018-11-13T15:09:58,976][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [transport-netty3]
+[2018-11-13T15:09:58,976][INFO ][o.e.p.PluginsService     ] [sudr_D5] loaded module [transport-netty4]
+[2018-11-13T15:09:58,976][INFO ][o.e.p.PluginsService     ] [sudr_D5] no plugins loaded
+[2018-11-13T15:10:01,733][INFO ][o.e.n.Node               ] initialized
+[2018-11-13T15:10:01,733][INFO ][o.e.n.Node               ] [sudr_D5] starting ...
+[2018-11-13T15:10:01,953][INFO ][o.e.t.TransportService   ] [sudr_D5] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-13T15:10:05,013][INFO ][o.e.c.s.ClusterService   ] [sudr_D5] new_master {sudr_D5}{sudr_D5yT_yPMuW9Ehz-pw}{jNZzkpnISW-ru6oYaKDr1w}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-13T15:10:05,041][INFO ][o.e.h.n.Netty4HttpServerTransport] [sudr_D5] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-13T15:10:05,048][INFO ][o.e.n.Node               ] [sudr_D5] started
+[2018-11-13T15:10:05,361][INFO ][o.e.g.GatewayService     ] [sudr_D5] recovered [5] indices into cluster_state
+[2018-11-13T15:10:07,244][INFO ][o.e.c.r.a.AllocationService] [sudr_D5] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[org-id-grid][2]] ...]).
+[2018-11-13T15:19:57,976][INFO ][o.e.n.Node               ] [sudr_D5] stopping ...
+[2018-11-13T15:19:58,042][INFO ][o.e.n.Node               ] [sudr_D5] stopped
+[2018-11-13T15:19:58,043][INFO ][o.e.n.Node               ] [sudr_D5] closing ...
+[2018-11-13T15:19:58,054][INFO ][o.e.n.Node               ] [sudr_D5] closed
