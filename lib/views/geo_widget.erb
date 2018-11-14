@@ -1,0 +1,72 @@
+<% content_for :scripts do %>
+    <script src="/geo-widget.js"></script>
+<% end %>
+
+<div class="container">
+  <div class="jumbotron">
+    <div class="col">
+      <h1>Location based institution lookup</h1>
+      <p>This is a variation of the <a href="/widget">simpler</a> institution lookup that allows the search for an
+        institution name to be qualified by country. The default value for the country selector is automatically
+        selected based on your current location.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <form>
+        <h2>Institution Name</h2>
+        <p>
+          Please specify the country in which your institution is located and then enter its name.
+        </p>
+        <fieldset class="form-group">
+          <select class="custom-select" type="text" id="org-country" class="col-10">
+            <% ISO3166::Country.all.sort.each do |country| %>
+              <option value="<%= country.alpha2 %>"
+                <%= @location['country'] == country.alpha2 ? "selected='selected'" : '' %>"><%= country.name %></option>
+            <% end %>
+          </select>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <input type="text" id="org-name" class="col-10" placeholder="Institution name">
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>Dataset</legend>
+
+          <% @datasets.each_with_index do |(key, config), index| %>
+              <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio"
+                       class="form-check-input"
+                       name="datasets"
+                       id="dataset-#{key}"
+                       value="org-id-<%=key%>"
+                       <%= index == 0 ? 'checked' : '' %>>
+                <%= config["name"] %>
+              </label>
+          </div>
+
+          <% end %>
+
+        </fieldset>
+
+        <hr>
+
+        <div>
+          <p>
+            Location from IP: <code><%= @location.inspect %></code>
+          </p>
+          <p>
+            Location from Coordinates: <code><span id="coords-debug"></span></code>
+          </p>
+          <p id="debug">
+          </p>
+        </div>
+
+
+      </form>
+    </div>
+  </div>
+</div>

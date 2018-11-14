@@ -1,0 +1,44 @@
+<% content_for :scripts do %>
+    <script src="/compare.js"></script>
+<% end %>
+
+<div class="container">
+  <div class="jumbotron">
+    <div class="col">
+      <h1>Compare Affiliation Matching</h1>
+      <p>Manually add an affiliation, or select random affiliation from CrossRef then compare results
+      across all datasets</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <form>
+        <h2>Affiliation</h2>
+        <p>
+        </p>
+        <fieldset class="form-group">
+          <input type="text" id="affn" class="col-10">
+        </fieldset>
+        <button class="button" id="select-affn">Select Random Crossref Affiliation</button>
+        <button class="button" id="compare">Compare</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row" id="compare-datasets">
+    <% @datasets.keys.each_slice(2) do |row| %>
+      <div class="col">
+        <% row.each do |key| %>
+            <h3><%= @datasets[key]["name"] %></h3>
+            <div id="dataset-<%= key %>">
+              <ul>
+                <li>...</li>
+              </ul>
+            </div>
+        <% end %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

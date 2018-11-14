@@ -1,0 +1,24 @@
+version: '3'
+
+networks:
+  orgid:
+    external:
+      name: orgid
+
+services:
+  elasticsearch:
+    image: 'elasticsearch:5'
+    ports:
+      - "9000:9200"
+      - "9100:9300"
+    networks:
+      - orgid
+  web:
+    image: eshadatta/org_id:initial
+    networks:
+      - orgid
+    command: "bundle exec rackup --host 0.0.0.0 -p 3000"
+    ports:
+      - "9292:3000"
+    environment:
+      - ELASTIC_SEARCH=http://elasticsearch:9200

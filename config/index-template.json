@@ -1,0 +1,29 @@
+{
+    "template": "org-id-*",
+    "mappings": {
+      "org": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "country": {
+            "type": "nested",
+            "properties": {
+              "country-code": {
+                "type": "string"
+              },
+              "country-name": {
+                "type": "string"
+              }
+            }
+          },
+          "types": {
+            "type": "string"
+          }
+        }
+      }
+    }
+}

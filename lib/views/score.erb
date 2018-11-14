@@ -1,0 +1,72 @@
+<% content_for :scripts do %>
+    <script src="/score.js"></script>
+
+<% end %>
+
+<div class="container">
+  <div class="jumbotron">
+    <div class="col">
+      <h1>Compare and Score Datasets</h1>
+      <p>Manually add an affiliation, or select random affiliation from CrossRef then compare and score results
+      across all of the datasets</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h2>Current Scores</h2>
+
+      <p>
+        In the form below, enter an affiliation or lookup a random affiliation from CrossRef. Then choose the correct
+        match from the five options presented. Or select "none of the above" if you think none are correct.
+      </p>
+      <p>
+        Manually testing a number of affiliations can help you develop an understanding of how well the datasets support
+        looking up affiliations by institution name.
+      </p>
+
+      <form>
+        <h2>Affiliation</h2>
+        <fieldset class="form-group">
+          <input type="text" id="affn" class="col-10">
+          <button class="button" id="compare">Compare</button>
+        </fieldset>
+        <button class="button" id="select-affn">Select Random Affiliation</button>
+      </form>
+
+      <form id="scores">
+        <table class="table" id="score-table">
+          <thead>
+            <th>Dataset</th>
+            <th>Matches</th>
+            <th>Score</th>
+          </thead>
+          <tbody>
+            <% @datasets.keys.each do |key| %>
+              <tr>
+                <td><%= @datasets[key]["name"] %></td>
+                <td>
+                  <div class="custom-controls-stacked" id="dataset-<%= key %>">
+                  </div>
+                </td>
+                <td id="dataset-score-<%= key %>">0</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <button class="button" id="score" disabled="disabled">Update Scores</button>
+
+      </form>
+
+      <p>Number of affiliations tested: <strong><span id="count">0</span></strong></p>
+
+      <p>
+        Datasets will score 10 points if the correct result was first, through to 2 points if the 5th result was correct.
+        Zero points are awarded for "None of the above".
+      </p>
+
+
+    </div>
+  </div>
+
+</div>
