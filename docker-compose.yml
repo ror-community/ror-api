@@ -14,7 +14,7 @@ services:
     networks:
       - orgid
   web:
-    image: eshadatta/org_id:initial
+    image: eshadatta/org_id:test
     networks:
       - orgid
     command: "bundle exec rackup --host 0.0.0.0 -p 3000"
