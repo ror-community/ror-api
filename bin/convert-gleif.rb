@@ -13,13 +13,15 @@ orgs = []
 doc.xpath('/lei:LEIData/lei:LEIRecords/lei:LEIRecord').each do |record|
   begin
     headquarters = record.xpath("lei:Entity/lei:HeadquartersAddress")
+    hq_country = headquarters.xpath("lei:Country").text
+    country = hq_country == "XK" ? "Kosovo" : ISO3166::Country( headquarters.xpath("lei:Country").text ).name
     orgs << {
         id: record.xpath("lei:LEI").text,
         name: record.xpath("lei:Entity/lei:LegalName").text,
         types: [ record.xpath("lei:Entity/lei:LegalForm").text ],
         country: {
             country_code: headquarters.xpath("lei:Country").text,
-            country_name: ISO3166::Country( headquarters.xpath("lei:Country").text ).name
+            country_name: country
         }
     }
   rescue => e
