@@ -20,7 +20,8 @@ end
 
 #run a search, add columns to results
 def search(dataset, data, query, results)
-  client = Elasticsearch::Client.new
+  host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+  client = Elasticsearch::Client.new url: host
   index_name = "#{INDEX_PREFIX}-#{dataset}"
   resp = client.search index: index_name, body: query
   if resp["hits"]["total"] > 0
@@ -136,4 +137,3 @@ CSV.open("data/#{summary_filename}", "w") do |summary|
     end
   end
 end
-

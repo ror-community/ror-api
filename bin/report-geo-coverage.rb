@@ -7,7 +7,8 @@ INDEX_PREFIX="org-id"
 
 datasets = JSON.parse( File.read(ARGV[0]) )
 
-client = Elasticsearch::Client.new
+host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+client = Elasticsearch::Client.new url: host
 
 CSV.open( "data/report-geo-coverage.csv", "w" ) do |csv|
   csv << ["Country Name", "Country Code"] + datasets.keys.sort

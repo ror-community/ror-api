@@ -8,17 +8,18 @@ networks:
 services:
   elasticsearch:
     image: 'elasticsearch:5'
-    ports:
-      - "9000:9200"
-      - "9100:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    volumes:
+      - /tmp/es_data/server/data:/usr/share/elasticsearch/data
     networks:
       - orgid
   web:
-    image: eshadatta/org_id:test
+    image: rorcommunity/org-id:initial_demo
     networks:
       - orgid
     command: "bundle exec rackup --host 0.0.0.0 -p 3000"
     ports:
       - "9292:3000"
     environment:
-      - ELASTIC_SEARCH=http://elasticsearch:9200
+      - ELASTIC_SEARCH=http://demo-ror_elasticsearch:9200

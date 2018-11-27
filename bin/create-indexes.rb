@@ -4,7 +4,8 @@ Bundler.require :default
 
 INDEX_PREFIX="org-id"
 
-client = Elasticsearch::Client.new
+host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+client = Elasticsearch::Client.new url: host
 
 #Create index template, new templates will follow this pattern
 template = JSON.parse( File.read( ARGV[1] ) )

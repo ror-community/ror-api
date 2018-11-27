@@ -5,6 +5,12 @@
     "download": "https://ndownloader.figshare.com/files/8500607",
     "script": "bin/convert-grid.rb"
   },
+  "gleif": {
+    "name": "GLEIF",
+    "version": "2017-05-04",
+    "download": "https://www.gleif.org/lei-files/20170504/GLEIF/20170504-GLEIF-concatenated-file.zip",
+    "script": "bin/convert-gleif.rb"
+  },
   "isni": {
     "name": "Open ISNI",
     "version": "2017-07-04-09",
