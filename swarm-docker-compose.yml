@@ -1,21 +1,26 @@
 version: '3'
 
+networks:
+  orgid:
+    external:
+      name: orgid
+
 services:
   elasticsearch:
     image: 'elasticsearch:5'
     environment:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
-    ports:
-      - "9200:9200"
-      - "9300:9300"
     volumes:
-      - [data dir on local machine]:/usr/share/elasticsearch/data
-
+      - [mount data dir]:/usr/share/elasticsearch/data
+    networks:
+      - orgid
   web:
     image: rorcommunity/org-id:initial_demo2
+    networks:
+      - orgid
     command: "bundle exec rackup --host 0.0.0.0 -p 3000"
     ports:
       - "9292:3000"
     environment:
-      - ELASTIC_SEARCH=http://elasticsearch:9200
-      - RACK_ENV=dev
+      - ELASTIC_SEARCH=http://demo-ror_elasticsearch:9200
+      - RACK_ENV=production

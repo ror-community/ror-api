@@ -815,3 +815,193 @@ java.nio.file.NoSuchFileException: /Users/eshadatta/org-id-matching/server/data/
 [2018-11-27T11:42:21,920][INFO ][o.e.g.GatewayService     ] [lDB2Hcx] recovered [0] indices into cluster_state
 [2018-11-27T11:42:39,118][INFO ][o.e.c.m.MetaDataCreateIndexService] [lDB2Hcx] [org-id-gleif] creating index, cause [auto(bulk api)], templates [], shards [5]/[1], mappings []
 [2018-11-27T11:42:39,682][INFO ][o.e.c.m.MetaDataMappingService] [lDB2Hcx] [org-id-gleif/vS6WsYXLTKOIOzktA5nlhQ] create_mapping [org]
+[2018-11-27T20:42:56,144][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T20:42:56,236][INFO ][o.e.e.NodeEnvironment    ] [GxLDlKB] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.8gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T20:42:56,237][INFO ][o.e.e.NodeEnvironment    ] [GxLDlKB] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T20:42:56,306][INFO ][o.e.n.Node               ] node name [GxLDlKB] derived from node ID [GxLDlKBKSZuwrQ0QrCFHrQ]; set [node.name] to override
+[2018-11-27T20:42:56,306][INFO ][o.e.n.Node               ] version[5.3.2], pid[38258], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T20:42:56,982][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [aggs-matrix-stats]
+[2018-11-27T20:42:56,982][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [ingest-common]
+[2018-11-27T20:42:56,982][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [lang-expression]
+[2018-11-27T20:42:56,982][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [lang-groovy]
+[2018-11-27T20:42:56,983][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [lang-mustache]
+[2018-11-27T20:42:56,983][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [lang-painless]
+[2018-11-27T20:42:56,983][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [percolator]
+[2018-11-27T20:42:56,983][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [reindex]
+[2018-11-27T20:42:56,983][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [transport-netty3]
+[2018-11-27T20:42:56,983][INFO ][o.e.p.PluginsService     ] [GxLDlKB] loaded module [transport-netty4]
+[2018-11-27T20:42:56,984][INFO ][o.e.p.PluginsService     ] [GxLDlKB] no plugins loaded
+[2018-11-27T20:42:59,112][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T20:42:59,112][INFO ][o.e.n.Node               ] [GxLDlKB] starting ...
+[2018-11-27T20:42:59,299][INFO ][o.e.t.TransportService   ] [GxLDlKB] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-27T20:43:02,354][INFO ][o.e.c.s.ClusterService   ] [GxLDlKB] new_master {GxLDlKB}{GxLDlKBKSZuwrQ0QrCFHrQ}{69WxOIRzTMquCL_6w3FDHg}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T20:43:02,407][INFO ][o.e.h.n.Netty4HttpServerTransport] [GxLDlKB] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-27T20:43:02,410][INFO ][o.e.n.Node               ] [GxLDlKB] started
+[2018-11-27T20:43:02,656][INFO ][o.e.g.GatewayService     ] [GxLDlKB] recovered [4] indices into cluster_state
+[2018-11-27T20:43:03,707][INFO ][o.e.c.r.a.AllocationService] [GxLDlKB] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[org-id-grid][2], [org-id-grid][0]] ...]).
+[2018-11-27T20:51:26,954][INFO ][o.e.n.Node               ] [GxLDlKB] stopping ...
+[2018-11-27T20:51:27,030][INFO ][o.e.n.Node               ] [GxLDlKB] stopped
+[2018-11-27T20:51:27,031][INFO ][o.e.n.Node               ] [GxLDlKB] closing ...
+[2018-11-27T20:51:27,041][INFO ][o.e.n.Node               ] [GxLDlKB] closed
+[2018-11-27T21:14:06,822][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T21:14:06,928][INFO ][o.e.e.NodeEnvironment    ] [ndOVX0X] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.6gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T21:14:06,930][INFO ][o.e.e.NodeEnvironment    ] [ndOVX0X] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T21:14:06,931][INFO ][o.e.n.Node               ] node name [ndOVX0X] derived from node ID [ndOVX0X_Qqirxv8TnpbuHA]; set [node.name] to override
+[2018-11-27T21:14:06,932][INFO ][o.e.n.Node               ] version[5.3.2], pid[40146], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T21:14:07,837][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [aggs-matrix-stats]
+[2018-11-27T21:14:07,837][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [ingest-common]
+[2018-11-27T21:14:07,837][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-expression]
+[2018-11-27T21:14:07,838][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-groovy]
+[2018-11-27T21:14:07,838][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-mustache]
+[2018-11-27T21:14:07,838][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-painless]
+[2018-11-27T21:14:07,838][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [percolator]
+[2018-11-27T21:14:07,838][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [reindex]
+[2018-11-27T21:14:07,838][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [transport-netty3]
+[2018-11-27T21:14:07,839][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [transport-netty4]
+[2018-11-27T21:14:07,839][INFO ][o.e.p.PluginsService     ] [ndOVX0X] no plugins loaded
+[2018-11-27T21:14:09,910][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T21:14:09,910][INFO ][o.e.n.Node               ] [ndOVX0X] starting ...
+[2018-11-27T21:14:10,103][INFO ][o.e.t.TransportService   ] [ndOVX0X] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9301}, {127.0.0.1:9300}
+[2018-11-27T21:14:13,177][INFO ][o.e.c.s.ClusterService   ] [ndOVX0X] new_master {ndOVX0X}{ndOVX0X_Qqirxv8TnpbuHA}{DGx213l0S52mJjJX3222qg}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T21:14:13,200][INFO ][o.e.h.n.Netty4HttpServerTransport] [ndOVX0X] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9201}, {127.0.0.1:9200}
+[2018-11-27T21:14:13,204][INFO ][o.e.n.Node               ] [ndOVX0X] started
+[2018-11-27T21:14:13,220][INFO ][o.e.g.GatewayService     ] [ndOVX0X] recovered [0] indices into cluster_state
+[2018-11-27T21:15:54,669][INFO ][o.e.n.Node               ] [ndOVX0X] stopping ...
+[2018-11-27T21:15:54,709][INFO ][o.e.n.Node               ] [ndOVX0X] stopped
+[2018-11-27T21:15:54,710][INFO ][o.e.n.Node               ] [ndOVX0X] closing ...
+[2018-11-27T21:15:54,726][INFO ][o.e.n.Node               ] [ndOVX0X] closed
+[2018-11-27T21:16:01,003][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T21:16:01,098][INFO ][o.e.e.NodeEnvironment    ] [ndOVX0X] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.6gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T21:16:01,099][INFO ][o.e.e.NodeEnvironment    ] [ndOVX0X] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T21:16:01,102][INFO ][o.e.n.Node               ] node name [ndOVX0X] derived from node ID [ndOVX0X_Qqirxv8TnpbuHA]; set [node.name] to override
+[2018-11-27T21:16:01,102][INFO ][o.e.n.Node               ] version[5.3.2], pid[40176], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T21:16:01,771][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [aggs-matrix-stats]
+[2018-11-27T21:16:01,771][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [ingest-common]
+[2018-11-27T21:16:01,771][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-expression]
+[2018-11-27T21:16:01,772][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-groovy]
+[2018-11-27T21:16:01,772][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-mustache]
+[2018-11-27T21:16:01,772][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-painless]
+[2018-11-27T21:16:01,772][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [percolator]
+[2018-11-27T21:16:01,772][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [reindex]
+[2018-11-27T21:16:01,773][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [transport-netty3]
+[2018-11-27T21:16:01,773][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [transport-netty4]
+[2018-11-27T21:16:01,773][INFO ][o.e.p.PluginsService     ] [ndOVX0X] no plugins loaded
+[2018-11-27T21:16:03,613][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T21:16:03,613][INFO ][o.e.n.Node               ] [ndOVX0X] starting ...
+[2018-11-27T21:16:03,800][INFO ][o.e.t.TransportService   ] [ndOVX0X] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9301}, {127.0.0.1:9300}
+[2018-11-27T21:16:06,860][INFO ][o.e.c.s.ClusterService   ] [ndOVX0X] new_master {ndOVX0X}{ndOVX0X_Qqirxv8TnpbuHA}{RLxshrPqROCv1Xq0diRbHw}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T21:16:06,914][INFO ][o.e.h.n.Netty4HttpServerTransport] [ndOVX0X] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9201}, {127.0.0.1:9200}
+[2018-11-27T21:16:06,920][INFO ][o.e.n.Node               ] [ndOVX0X] started
+[2018-11-27T21:16:06,923][INFO ][o.e.g.GatewayService     ] [ndOVX0X] recovered [0] indices into cluster_state
+[2018-11-27T21:16:15,505][INFO ][o.e.n.Node               ] [ndOVX0X] stopping ...
+[2018-11-27T21:16:15,529][INFO ][o.e.n.Node               ] [ndOVX0X] stopped
+[2018-11-27T21:16:15,530][INFO ][o.e.n.Node               ] [ndOVX0X] closing ...
+[2018-11-27T21:16:15,540][INFO ][o.e.n.Node               ] [ndOVX0X] closed
+[2018-11-27T21:16:36,467][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T21:16:36,585][INFO ][o.e.e.NodeEnvironment    ] [ndOVX0X] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.6gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T21:16:36,586][INFO ][o.e.e.NodeEnvironment    ] [ndOVX0X] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T21:16:36,589][INFO ][o.e.n.Node               ] node name [ndOVX0X] derived from node ID [ndOVX0X_Qqirxv8TnpbuHA]; set [node.name] to override
+[2018-11-27T21:16:36,589][INFO ][o.e.n.Node               ] version[5.3.2], pid[40205], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T21:16:37,370][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [aggs-matrix-stats]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [ingest-common]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-expression]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-groovy]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-mustache]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [lang-painless]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [percolator]
+[2018-11-27T21:16:37,371][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [reindex]
+[2018-11-27T21:16:37,372][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [transport-netty3]
+[2018-11-27T21:16:37,372][INFO ][o.e.p.PluginsService     ] [ndOVX0X] loaded module [transport-netty4]
+[2018-11-27T21:16:37,372][INFO ][o.e.p.PluginsService     ] [ndOVX0X] no plugins loaded
+[2018-11-27T21:16:39,200][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T21:16:39,200][INFO ][o.e.n.Node               ] [ndOVX0X] starting ...
+[2018-11-27T21:16:39,397][INFO ][o.e.t.TransportService   ] [ndOVX0X] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-27T21:16:42,457][INFO ][o.e.c.s.ClusterService   ] [ndOVX0X] new_master {ndOVX0X}{ndOVX0X_Qqirxv8TnpbuHA}{qqeZKhVMRAavkh33HH7m0w}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T21:16:42,501][INFO ][o.e.h.n.Netty4HttpServerTransport] [ndOVX0X] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-27T21:16:42,507][INFO ][o.e.n.Node               ] [ndOVX0X] started
+[2018-11-27T21:16:42,512][INFO ][o.e.g.GatewayService     ] [ndOVX0X] recovered [0] indices into cluster_state
+[2018-11-27T21:16:52,091][INFO ][o.e.n.Node               ] [ndOVX0X] stopping ...
+[2018-11-27T21:16:52,114][INFO ][o.e.n.Node               ] [ndOVX0X] stopped
+[2018-11-27T21:16:52,114][INFO ][o.e.n.Node               ] [ndOVX0X] closing ...
+[2018-11-27T21:16:52,132][INFO ][o.e.n.Node               ] [ndOVX0X] closed
+[2018-11-27T21:17:27,312][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T21:17:27,409][INFO ][o.e.e.NodeEnvironment    ] [sfhY_A8] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.6gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T21:17:27,410][INFO ][o.e.e.NodeEnvironment    ] [sfhY_A8] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T21:17:27,412][INFO ][o.e.n.Node               ] node name [sfhY_A8] derived from node ID [sfhY_A8RTwK0B5Ahb05R5A]; set [node.name] to override
+[2018-11-27T21:17:27,412][INFO ][o.e.n.Node               ] version[5.3.2], pid[40254], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T21:17:28,152][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [aggs-matrix-stats]
+[2018-11-27T21:17:28,153][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [ingest-common]
+[2018-11-27T21:17:28,153][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-expression]
+[2018-11-27T21:17:28,153][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-groovy]
+[2018-11-27T21:17:28,153][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-mustache]
+[2018-11-27T21:17:28,153][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-painless]
+[2018-11-27T21:17:28,153][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [percolator]
+[2018-11-27T21:17:28,154][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [reindex]
+[2018-11-27T21:17:28,154][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [transport-netty3]
+[2018-11-27T21:17:28,154][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [transport-netty4]
+[2018-11-27T21:17:28,154][INFO ][o.e.p.PluginsService     ] [sfhY_A8] no plugins loaded
+[2018-11-27T21:17:29,955][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T21:17:29,955][INFO ][o.e.n.Node               ] [sfhY_A8] starting ...
+[2018-11-27T21:17:30,160][INFO ][o.e.t.TransportService   ] [sfhY_A8] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-27T21:17:33,216][INFO ][o.e.c.s.ClusterService   ] [sfhY_A8] new_master {sfhY_A8}{sfhY_A8RTwK0B5Ahb05R5A}{QqrQvPiPSsmZBRuktlxowA}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T21:17:33,247][INFO ][o.e.h.n.Netty4HttpServerTransport] [sfhY_A8] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-27T21:17:33,253][INFO ][o.e.n.Node               ] [sfhY_A8] started
+[2018-11-27T21:17:33,260][INFO ][o.e.g.GatewayService     ] [sfhY_A8] recovered [0] indices into cluster_state
+[2018-11-27T21:17:54,158][INFO ][o.e.c.m.MetaDataCreateIndexService] [sfhY_A8] [org-id-grid] creating index, cause [auto(bulk api)], templates [], shards [5]/[1], mappings []
+[2018-11-27T21:17:54,610][INFO ][o.e.c.m.MetaDataMappingService] [sfhY_A8] [org-id-grid/QIoBrYrFRBibCJkQbNKTag] create_mapping [org]
+[2018-11-27T21:20:53,203][INFO ][o.e.n.Node               ] [sfhY_A8] stopping ...
+[2018-11-27T21:20:53,440][INFO ][o.e.n.Node               ] [sfhY_A8] stopped
+[2018-11-27T21:20:53,441][INFO ][o.e.n.Node               ] [sfhY_A8] closing ...
+[2018-11-27T21:20:53,447][INFO ][o.e.n.Node               ] [sfhY_A8] closed
+[2018-11-27T21:21:02,816][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T21:21:02,896][INFO ][o.e.e.NodeEnvironment    ] [sfhY_A8] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.6gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T21:21:02,896][INFO ][o.e.e.NodeEnvironment    ] [sfhY_A8] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T21:21:02,928][INFO ][o.e.n.Node               ] node name [sfhY_A8] derived from node ID [sfhY_A8RTwK0B5Ahb05R5A]; set [node.name] to override
+[2018-11-27T21:21:02,929][INFO ][o.e.n.Node               ] version[5.3.2], pid[41497], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T21:21:03,674][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [aggs-matrix-stats]
+[2018-11-27T21:21:03,674][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [ingest-common]
+[2018-11-27T21:21:03,674][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-expression]
+[2018-11-27T21:21:03,675][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-groovy]
+[2018-11-27T21:21:03,675][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-mustache]
+[2018-11-27T21:21:03,676][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-painless]
+[2018-11-27T21:21:03,676][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [percolator]
+[2018-11-27T21:21:03,676][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [reindex]
+[2018-11-27T21:21:03,676][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [transport-netty3]
+[2018-11-27T21:21:03,676][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [transport-netty4]
+[2018-11-27T21:21:03,677][INFO ][o.e.p.PluginsService     ] [sfhY_A8] no plugins loaded
+[2018-11-27T21:21:05,676][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T21:21:05,677][INFO ][o.e.n.Node               ] [sfhY_A8] starting ...
+[2018-11-27T21:21:05,888][INFO ][o.e.t.TransportService   ] [sfhY_A8] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-27T21:21:08,970][INFO ][o.e.c.s.ClusterService   ] [sfhY_A8] new_master {sfhY_A8}{sfhY_A8RTwK0B5Ahb05R5A}{gy9rwF6-SZ2kvQfryT4aXA}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T21:21:09,009][INFO ][o.e.h.n.Netty4HttpServerTransport] [sfhY_A8] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-27T21:21:09,012][INFO ][o.e.n.Node               ] [sfhY_A8] started
+[2018-11-27T21:21:09,179][INFO ][o.e.g.GatewayService     ] [sfhY_A8] recovered [1] indices into cluster_state
+[2018-11-27T21:21:09,539][INFO ][o.e.c.r.a.AllocationService] [sfhY_A8] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[org-id-grid][1]] ...]).
+[2018-11-27T21:21:49,544][INFO ][o.e.n.Node               ] [sfhY_A8] stopping ...
+[2018-11-27T21:21:49,596][INFO ][o.e.n.Node               ] [sfhY_A8] stopped
+[2018-11-27T21:21:49,597][INFO ][o.e.n.Node               ] [sfhY_A8] closing ...
+[2018-11-27T21:21:49,605][INFO ][o.e.n.Node               ] [sfhY_A8] closed
+[2018-11-27T21:37:02,540][INFO ][o.e.n.Node               ] [] initializing ...
+[2018-11-27T21:37:02,631][INFO ][o.e.e.NodeEnvironment    ] [sfhY_A8] using [1] data paths, mounts [[/ (/dev/disk1s1)]], net usable_space [823.6gb], net total_space [931.5gb], spins? [unknown], types [apfs]
+[2018-11-27T21:37:02,631][INFO ][o.e.e.NodeEnvironment    ] [sfhY_A8] heap size [1.9gb], compressed ordinary object pointers [true]
+[2018-11-27T21:37:02,650][INFO ][o.e.n.Node               ] node name [sfhY_A8] derived from node ID [sfhY_A8RTwK0B5Ahb05R5A]; set [node.name] to override
+[2018-11-27T21:37:02,652][INFO ][o.e.n.Node               ] version[5.3.2], pid[41936], build[3068195/2017-04-24T16:15:59.481Z], OS[Mac OS X/10.13.6/x86_64], JVM["Oracle Corporation"/Java HotSpot(TM) 64-Bit Server VM/10.0.1/10.0.1+10]
+[2018-11-27T21:37:03,431][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [aggs-matrix-stats]
+[2018-11-27T21:37:03,432][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [ingest-common]
+[2018-11-27T21:37:03,432][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-expression]
+[2018-11-27T21:37:03,432][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-groovy]
+[2018-11-27T21:37:03,433][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-mustache]
+[2018-11-27T21:37:03,433][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [lang-painless]
+[2018-11-27T21:37:03,433][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [percolator]
+[2018-11-27T21:37:03,433][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [reindex]
+[2018-11-27T21:37:03,433][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [transport-netty3]
+[2018-11-27T21:37:03,434][INFO ][o.e.p.PluginsService     ] [sfhY_A8] loaded module [transport-netty4]
+[2018-11-27T21:37:03,434][INFO ][o.e.p.PluginsService     ] [sfhY_A8] no plugins loaded
+[2018-11-27T21:37:05,129][INFO ][o.e.n.Node               ] initialized
+[2018-11-27T21:37:05,130][INFO ][o.e.n.Node               ] [sfhY_A8] starting ...
+[2018-11-27T21:37:05,307][INFO ][o.e.t.TransportService   ] [sfhY_A8] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2018-11-27T21:37:08,378][INFO ][o.e.c.s.ClusterService   ] [sfhY_A8] new_master {sfhY_A8}{sfhY_A8RTwK0B5Ahb05R5A}{dXEGKkTZQ0Sh1AWz2b6BIw}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-elected-as-master ([0] nodes joined)
+[2018-11-27T21:37:08,410][INFO ][o.e.h.n.Netty4HttpServerTransport] [sfhY_A8] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2018-11-27T21:37:08,415][INFO ][o.e.n.Node               ] [sfhY_A8] started
+[2018-11-27T21:37:08,572][INFO ][o.e.g.GatewayService     ] [sfhY_A8] recovered [1] indices into cluster_state
+[2018-11-27T21:37:08,939][INFO ][o.e.c.r.a.AllocationService] [sfhY_A8] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[org-id-grid][1]] ...]).
