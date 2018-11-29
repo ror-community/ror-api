@@ -4,22 +4,5 @@
     "version": "2017-05-22",
     "download": "https://ndownloader.figshare.com/files/8500607",
     "script": "bin/convert-grid.rb"
-  },
-  "gleif": {
-    "name": "GLEIF",
-    "version": "2017-05-04",
-    "download": "https://www.gleif.org/lei-files/20170504/GLEIF/20170504-GLEIF-concatenated-file.zip",
-    "script": "bin/convert-gleif.rb"
-  },
-  "isni": {
-    "name": "Open ISNI",
-    "version": "2017-07-04-09",
-    "download": "http://isni.ringgold.com/wp-content/exports/ringgold_isni_json.zip",
-    "script": "bin/convert-isni.rb"
-  },
-  "wikidata": {
-    "name": "Wikidata",
-    "version": "2017-06-07",
-    "script": "bin/convert-wikidata.rb"
   }
 }
