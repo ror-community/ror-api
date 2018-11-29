@@ -8,14 +8,11 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    volumes:
-      - [data dir on local machine]:/usr/share/elasticsearch/data
 
   web:
-    image: rorcommunity/org-id:initial_demo2
-    command: "bundle exec rackup --host 0.0.0.0 -p 3000"
+    #image: rorcommunity/org-id:latest
+    image: test:latest
     ports:
-      - "9292:3000"
+      - "9292:80"
     environment:
       - ELASTIC_SEARCH=http://elasticsearch:9200
-      - RACK_ENV=dev
