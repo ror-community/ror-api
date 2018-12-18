@@ -10,7 +10,7 @@ services:
       - "9300:9300"
 
   web:
-    image: rorcommunity/org-id:latest
+    image: rorcommunity/org-id:api
     ports:
       - "9292:80"
     environment:
