@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/datacite/base32-url.git
+  revision: ff013f43fa1e889d55d679e7a8d4fc43592e1f16
+  specs:
+    base32-url (0.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -35,6 +41,9 @@ GEM
     i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
+    jbuilder (2.8.0)
+      activesupport (>= 4.2.0)
+      multi_json (>= 1.2)
     json (2.1.0)
     mechanize (2.7.6)
       domain_name (~> 0.5, >= 0.5.1)
@@ -111,9 +120,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  base32-url!
   countries
   dotenv
   elasticsearch
+  jbuilder (~> 2.7)
   json
   mechanize
   nokogiri (>= 1.8.4)
@@ -126,7 +137,7 @@ DEPENDENCIES
   sinatra-static-assets
 
 RUBY VERSION
-   ruby 2.4.1p111
+   ruby 2.4.4p296
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
