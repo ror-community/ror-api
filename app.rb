@@ -1,3 +1,4 @@
+ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 require 'sinatra'
 require 'json'
 require 'elasticsearch'
@@ -11,7 +12,7 @@ end
 set :protection, :except => :json_csrf
 
 
-set :host, ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+set :host, ENV["ELASTIC_SEARCH"]
 
 set :client, Elasticsearch::Client.new, url: settings.host
 
