@@ -1,2 +1,7 @@
-server/data/**
-server/logs/**
+.env
+.env.*
+!.env.example
+!.env.travis
+docker-compose.override.yml
+.ruby-version
+/vendor/bundle/*

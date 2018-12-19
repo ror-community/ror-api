@@ -6,7 +6,7 @@ INDEX_PREFIX="org-id"
 
 datasets = JSON.parse( File.read(ARGV[0]) )
 
-host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 
 client = Elasticsearch::Client.new url: host
 

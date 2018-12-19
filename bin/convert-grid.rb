@@ -4,7 +4,7 @@ require 'pry'
 Bundler.require :default
 require_relative 'generate-id.rb'
 data = JSON.load( File.new("data/grid/grid.json") )
-host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 
 client = Elasticsearch::Client.new url: host
 

@@ -2,16 +2,33 @@ version: '3'
 
 services:
   elasticsearch:
-    image: 'elasticsearch:5'
-    environment:
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.7
     ports:
       - "9200:9200"
       - "9300:9300"
-
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xmx256m -Xms256m
+      ELASTIC_PASSWORD: changeme
+      xpack.security.enabled: "false"
+      http.cors.enabled: "true"
+      http.cors.allow-origin: "*"
+    healthcheck:
+      test: curl -f http://elastic:changeme@elasticsearch:9200
+      interval: 10s
+      timeout: 1s
   web:
+    env_file: .env
+    environment:
+      - ELASTIC_PASSWORD=changeme
+      - ELASTIC_SEARCH=http://elasticsearch:9200
     image: rorcommunity/org-id:api
     ports:
       - "9292:80"
-    environment:
-      - ELASTIC_SEARCH=http://elasticsearch:9200
+    volumes:
+      - ./config:/home/app/webapp/config
+      - ./lib:/home/app/webapp/lib
+      - ./data:/home/app/webapp/data
+      - ./app.rb:/home/app/webapp/app.rb
+    depends_on:
+      - elasticsearch
