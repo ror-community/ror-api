@@ -1,3 +1,7 @@
 .env
+.env.*
+.bundle
 .git
-server/*
+log/*
+tmp/*
+vendor/bundle/*
