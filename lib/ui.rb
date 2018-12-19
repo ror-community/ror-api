@@ -10,8 +10,8 @@ module OrgId
       set :bind, '0.0.0.0'
       set :views, settings.root + '/views'
       set :public_folder, settings.root + '/static'
-      set :elastic_search, ENV["ELASTIC_SEARCH"] || "http://localhost:9200"
-      set  :dataset_config, ENV["DATASET_CONFIG"] || "config/datasets.json"
+      set :elastic_search, ENV["ELASTIC_SEARCH"] || "http://elasticsearch:9200"
+      set :dataset_config, ENV["DATASET_CONFIG"] || "config/datasets.json"
     end
 
     before do

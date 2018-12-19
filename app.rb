@@ -1,32 +1,44 @@
-ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
+# # load ENV variables from .env file if it exists
+env_file =  File.expand_path("../.env", __FILE__)
+if File.exist?(env_file)
+  require 'dotenv'
+  Dotenv.load! env_file
+end
+
+# load ENV variables from container environment if json file exists
+# see https://github.com/phusion/baseimage-docker#envvar_dumps
+env_json_file = "/etc/container_environment.json"
+if File.exist?(env_json_file)
+  env_vars = JSON.parse(File.read(env_json_file))
+  env_vars.each { |k, v| ENV[k] = v }
+end
+
+# required ENV variables, can be set in .env file
+ENV['ES_HOST'] ||= "elasticsearch:9200"
+
+require 'active_support/all'
 require 'sinatra'
 require 'json'
 require 'elasticsearch'
 require 'jbuilder'
 
+Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |f| require f }
+
 after do
   response.headers['Access-Control-Allow-Origin'] = '*'
 end
 
+set :client, Elasticsearch::Client.new(host: ENV['ES_HOST'], user: "elastic", password: ENV['ELASTIC_PASSWORD'])
+
 # Work around rack protection referrer bug
 set :protection, :except => :json_csrf
-
-
-set :host, ENV["ELASTIC_SEARCH"]
-
-set :client, Elasticsearch::Client.new, url: settings.host
-
 set :default_size, 20
-
 set :accepted_params, %w(query page filter query.name query.names)
-
 set :filter_types, %w(location type)
-
 set :accepted_filter_param_values, %w(country.country_code types country.country_name)
-
 set :json_builder, Jbuilder.new
-
 set :id_prefix, "ror.org"
+
 def search_all(start = 0, size = settings.default_size)
   settings.client.search from: start, size: size
 end
