@@ -4,7 +4,7 @@ Bundler.require :default
 
 INDEX_PREFIX="org-id"
 
-host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 client = Elasticsearch::Client.new url: host
 
 datasets = JSON.parse( File.read(ARGV[0]) )

@@ -20,7 +20,7 @@ end
 
 #run a search, add columns to results
 def search(dataset, data, query, results)
-  host = ENV["ELASTIC_SEARCH"].nil? ? "http://localhost:9200" : ENV["ELASTIC_SEARCH"]
+    host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
   client = Elasticsearch::Client.new url: host
   index_name = "#{INDEX_PREFIX}-#{dataset}"
   resp = client.search index: index_name, body: query
