@@ -27,7 +27,7 @@ script:
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-  - REPO=ror-community/ror-api;
+  - REPO=rorcommunity/ror-api;
   - AUTO_DEPLOY=false;
   - if [ "${TRAVIS_TAG?}" ]; then
       docker build -f Dockerfile -t $REPO:$TRAVIS_TAG .;
