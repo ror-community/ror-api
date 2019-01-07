@@ -6,6 +6,16 @@ sudo: required
 services:
   - docker
 
+addons:
+  apt:
+    packages:
+      - oracle-java8-set-default
+
+before_install:
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.2.deb
+  - sudo dpkg -i --force-confnew elasticsearch-6.3.2.deb
+  - sudo service elasticsearch start
+
 install:
   - travis_retry bundle install
 
