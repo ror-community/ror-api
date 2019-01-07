@@ -16,6 +16,7 @@ end
 # required ENV variables, can be set in .env file
 ENV['RACK_ENV'] ||= "development"
 ENV['ES_HOST'] ||= "elasticsearch:9200"
+ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 
 require 'active_support/all'
 require 'sinatra'
