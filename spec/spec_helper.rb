@@ -37,15 +37,6 @@ RSpec.configure do |config|
   config.order = :random
 end
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, {
-    timeout: 60,
-    inspector: true,
-    debug: false,
-    window_size: [1024, 768]
-  })
-end
-
 WebMock.disable_net_connect!(
   allow: ['codeclimate.com:443'],
   allow_localhost: true
