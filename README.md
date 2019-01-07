@@ -1,4 +1,6 @@
-# Org Id Matching Comparison
+[![Build Status](https://travis-ci.com/ror-community/ror-api.svg?branch=master)](https://travis-ci.com/ror-community/ror-api)
+
+# Research Organization Registry (ROR) API
 
 Between 2016 and 2018, a group of 17 organizations with a shared purpose invested their time and energy into an "Org ID" initiative, with the goal of defining requirements for an open, community-led organization identifier registry. Part of this investigation involved evaluating existing datasets that might provide seed data for a community-led system. To do this, we created a testing framework that would allow us to test two broad use-cases for using organization identifiers in the context of collecting affiliation data:
 
