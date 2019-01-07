@@ -16,3 +16,22 @@ gem 'sinatra-static-assets', require: false
 gem 'sinatra-contrib', require: false
 gem 'shotgun'
 gem 'maremma', '>= 4.1'
+
+group :development do
+  gem "better_errors"
+  gem "binding_of_caller"
+end
+
+group :test do
+  gem 'rack-test'
+  gem 'rspec'
+  gem 'factory_bot'
+  gem 'webmock', '~> 3.1'
+  gem 'vcr', '~> 3.0.3'
+  gem 'codeclimate-test-reporter', '~> 1.0', '>= 1.0.8'
+  gem 'simplecov'
+end
+
+group :test, :development do
+  gem 'rubocop', '~> 0.49.1', require: false
+end
