@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'json'
-gem 'elasticsearch', '~> 5.0', '>= 5.0.4'
+gem 'elasticsearch', '~> 6.0'
 gem 'jbuilder', '~> 2.7'
 gem 'mechanize'
 gem "nokogiri", ">= 1.8.4"
