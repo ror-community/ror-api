@@ -38,7 +38,8 @@ RUN mkdir -p /home/app/webapp/vendor/bundle && \
 
 # Install Ruby gems
 WORKDIR /home/app/webapp
-RUN gem install bundler && \
+RUN gem update --system && \
+    gem install bundler && \
     /sbin/setuser app bundle install --path vendor/bundle
 
 # Expose web

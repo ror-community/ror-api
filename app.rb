@@ -14,6 +14,7 @@ if File.exist?(env_json_file)
 end
 
 # required ENV variables, can be set in .env file
+ENV['RACK_ENV'] ||= "development"
 ENV['ES_HOST'] ||= "elasticsearch:9200"
 
 require 'active_support/all'
@@ -221,4 +222,10 @@ get '/organizations/*' do
     msg = {:error => "Expect id with the prefix ror.org or local identifier"}
   end
   JSON.pretty_generate msg
+end
+
+get '/heartbeat' do
+  content_type 'text/html'
+
+  'OK'
 end

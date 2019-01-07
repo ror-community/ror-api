@@ -29,6 +29,7 @@ services:
       - ./config:/home/app/webapp/config
       - ./lib:/home/app/webapp/lib
       - ./data:/home/app/webapp/data
+      - ./spec:/home/app/webapp/spec
       - ./app.rb:/home/app/webapp/app.rb
     depends_on:
       - elasticsearch
