@@ -23,7 +23,6 @@ To a lesser extent the project may also have a role in surfacing general issues 
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
 - [Dataset Configuration](#dataset-configuration)
 - [Adding New Public Datasets](#adding-new-public-datasets)
 - [Adding "Private" Datasets](#adding-private-datasets)
