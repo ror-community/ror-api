@@ -83,7 +83,6 @@ def gen_filter_query(query,filter)
   new_query[:query][:bool].merge!(filter_hsh)
 
   new_query
-
 end
 
 # meta program so that one can build query strings depending on parameter
@@ -106,9 +105,6 @@ def generate_query(options = {})
         end
       end
 end
-
-
-
 
 def process (options = {})
   msg = nil
