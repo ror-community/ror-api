@@ -53,22 +53,12 @@ after_success:
       export GIT_TAG=$(git describe --tags $(git rev-list --tags --max-count=1));
       git clone "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git";
       ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api.auto.tfvars;
-      
-      if [ "${TRAVIS_TAG?}" ]; then
-        ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api.auto.tfvars;
-      fi
 
       cd deployment;
       git remote;
       git config user.email ${DOCKER_EMAIL};
       git config user.name ${DOCKER_USERNAME};
-      
-      if [ "${TRAVIS_TAG?}" ]; then
-        git add ror/services/api/_ror-api.auto.tfvars
-      else
-        git add ror/services/api/_ror-api.auto.tfvars
-      fi
-
+      git add ror/services/api/_ror-api.auto.tfvars
       git commit -m "Adding ror-api git variables for latest commit";
       git push "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git" master;
     fi
