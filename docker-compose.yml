@@ -32,5 +32,6 @@ services:
       - ./data:/home/app/webapp/data
       - ./spec:/home/app/webapp/spec
       - ./app.rb:/home/app/webapp/app.rb
+      - ./vendor:/home/app/vendor
     depends_on:
       - elasticsearch
