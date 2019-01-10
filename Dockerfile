@@ -1,4 +1,4 @@
-FROM phusion/passenger-full:rel-1.0.1
+FROM phusion/passenger-full:0.9.30
 MAINTAINER Martin Fenner "mfenner@datacite.org"
 
 # Set correct environment variables

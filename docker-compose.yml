@@ -22,6 +22,7 @@ services:
     environment:
       - ELASTIC_PASSWORD=changeme
       - ELASTIC_SEARCH=http://elasticsearch:9200
+    build: .
     image: rorcommunity/ror-api
     ports:
       - "9292:80"
