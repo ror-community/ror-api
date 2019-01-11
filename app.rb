@@ -15,8 +15,6 @@ end
 
 # required ENV variables, can be set in .env file
 ENV['RACK_ENV'] ||= "development"
-ENV['ES_HOST'] ||= "elasticsearch:9200"
-ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 
 require 'active_support/all'
 require 'sinatra'
@@ -25,6 +23,7 @@ require 'semantic_logger'
 require 'json'
 require 'elasticsearch'
 require 'jbuilder'
+require_relative 'config/es.rb'
 
 Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |f| require f }
 
@@ -46,7 +45,7 @@ configure do
   use Rack::CommonLogger, logger
 end
 
-set :client, Elasticsearch::Client.new(host: ENV['ES_HOST'], user: "elastic", password: ENV['ELASTIC_PASSWORD'])
+set :client, ROR_ES.client
 
 # Work around rack protection referrer bug
 set :protection, :except => :json_csrf

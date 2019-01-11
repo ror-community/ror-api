@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler'
 require 'csv'
+require_relative '../config/es.rb'
 Bundler.require :default
 
 INDEX_PREFIX="org-id"
@@ -20,8 +21,7 @@ end
 
 #run a search, add columns to results
 def search(dataset, data, query, results)
-    host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
-  client = Elasticsearch::Client.new url: host
+  client = ROR_ES.client
   index_name = "#{INDEX_PREFIX}-#{dataset}"
   resp = client.search index: index_name, body: query
   if resp["hits"]["total"] > 0
