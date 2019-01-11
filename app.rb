@@ -35,10 +35,11 @@ set :client, Elasticsearch::Client.new(host: ENV['ES_HOST'], user: "elastic", pa
 # Work around rack protection referrer bug
 set :protection, :except => :json_csrf
 set :default_size, 20
-set :accepted_params, %w(query page filter query.name query.names)
+set :accepted_params, %w(query page filter query.name query.names query.local)
 set :filter_types, %w(location type)
 set :accepted_filter_param_values, %w(country.country_code types country.country_name)
 set :json_builder, Jbuilder.new
+set :id_uri_prefix, "https://"
 set :id_prefix, "ror.org"
 
 def search_all(start = 0, size = settings.default_size)
@@ -96,6 +97,8 @@ def generate_query(options = {})
         settings.json_builder.query do
           if options.key?("query")
             simple_query(options["query"])
+          elsif options.key?("query.local")
+            match_field("local",options["query.local"])
           elsif options.key?("query.name")
             match_field("name",options["query.name"])
           elsif options.key?("query.names")
@@ -162,14 +165,16 @@ def check_params
   bad_param_msg
 end
 
-def process_id
-  uri_pattern = /(.*?)\/(.*$)/
-  id = params["splat"][0]
-  uri_check = uri_pattern.match(id)
+def process_id(id)
   valid_id = nil
-  if (! uri_check.nil?) && (uri_check[1] == settings.id_prefix)
-    valid_id = id
-  end
+  check_id = id.split("/")
+  id_components = []
+  check_id.each { |i|
+    id_components << i if i == settings.id_prefix || i =~ /\w{8}/
+  }
+
+  valid_id = "#{settings.id_uri_prefix}#{id_components.join("/")}" if id_components.count == 2
+
   valid_id
 end
 
@@ -209,14 +214,14 @@ get '/organizations' do
   end
 end
 
-get '/organizations/*' do
-  valid_id = process_id
+get %r{/organizations/(.*?ror.*)} do |id|
+  valid_id = process_id(id)
   msg = {}
   content_type "application/json"
   if valid_id
     msg = search_by_id(valid_id)
   else
-    msg = {:error => "Expect id with the prefix ror.org or local identifier"}
+    msg = {:error => "Expect id with the prefix ror.org"}
   end
   JSON.pretty_generate msg
 end
