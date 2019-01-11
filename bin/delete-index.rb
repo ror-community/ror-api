@@ -1,11 +1,10 @@
 require 'rubygems'
 require 'bundler'
+require_relative '../config/es.rb'
 Bundler.require :default
 
 INDEX_PREFIX="org-id"
-
-host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
-client = Elasticsearch::Client.new url: host
+client = ROR_ES.client
 
 index_name = "#{INDEX_PREFIX}-#{ARGV[0]}"
 
