@@ -32,7 +32,8 @@ COPY vendor/docker/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
 COPY vendor/docker/ntp.conf /etc/ntp.conf
 
 # enable SSH
-RUN rm -f /etc/service/sshd/down
+RUN rm -f /etc/service/sshd/down && \
+    /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
