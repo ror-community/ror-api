@@ -58,7 +58,7 @@ after_success:
       git remote;
       git config user.email ${DOCKER_EMAIL};
       git config user.name ${DOCKER_USERNAME};
-      git add ror/services/api/_ror-api.auto.tfvars
+      git add ror/services/api/_ror-api.auto.tfvars;
       git commit -m "Adding ror-api git variables for latest commit";
       git push "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git" master;
     fi
