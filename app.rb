@@ -31,7 +31,7 @@ Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |f| require f }
 configure do
   register Sinatra::CustomLogger
   SemanticLogger.default_level = :info
-  SemanticLogger.add_appender(io: $stdout)
+  SemanticLogger.add_appender(appender: :syslog)
   logger = SemanticLogger['Logger']
 
   # Send write calls to #info
