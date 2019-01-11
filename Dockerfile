@@ -33,7 +33,8 @@ COPY vendor/docker/ntp.conf /etc/ntp.conf
 
 # enable SSH
 RUN rm -f /etc/service/sshd/down && \
-    /etc/my_init.d/00_regen_ssh_host_keys.sh
+    sed -i 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/ig' /etc/ssh/sshd_config && \
+    sed -i 's/#RSAAuthentication.*/RSAAuthentication yes/ig' /etc/ssh/sshd_config
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
