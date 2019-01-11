@@ -32,7 +32,7 @@ configure do
   register Sinatra::CustomLogger
   SemanticLogger.default_level = :info
   SemanticLogger.add_appender(io: $stdout)
-  logger = SemanticLogger['TestLogger']
+  logger = SemanticLogger['Logger']
 
   # Send write calls to #info
   logger.instance_eval do
