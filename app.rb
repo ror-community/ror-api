@@ -20,14 +20,30 @@ ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 
 require 'active_support/all'
 require 'sinatra'
+require 'sinatra/custom_logger'
+require 'semantic_logger'
 require 'json'
 require 'elasticsearch'
 require 'jbuilder'
 
 Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |f| require f }
 
-after do
-  response.headers['Access-Control-Allow-Origin'] = '*'
+configure do
+  register Sinatra::CustomLogger
+  SemanticLogger.default_level = :info
+  SemanticLogger.add_appender(io: $stdout)
+  logger = SemanticLogger['TestLogger']
+
+  # Send write calls to #info
+  logger.instance_eval do
+    def write(str)
+      info(str)
+    end
+  end
+
+  set :raise_errors, true
+  set :logger, logger
+  use Rack::CommonLogger, logger
 end
 
 set :client, Elasticsearch::Client.new(host: ENV['ES_HOST'], user: "elastic", password: ENV['ELASTIC_PASSWORD'])
@@ -195,6 +211,10 @@ def process_results
     }
   end
   [results,errors]
+end
+
+after do
+  response.headers['Access-Control-Allow-Origin'] = '*'
 end
 
 get '/organizations' do
