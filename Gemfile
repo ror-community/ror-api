@@ -14,6 +14,7 @@ gem 'base32-url', '~> 0.3'
 gem "sinatra", ">= 2.0.2", require: false
 gem 'sinatra-static-assets', require: false
 gem 'sinatra-contrib', require: false
+gem 'syslog_protocol', '~> 0.9.2'
 gem 'semantic_logger', '~> 4.3', '>= 4.3.1'
 gem 'shotgun'
 gem 'maremma', '>= 4.1'
