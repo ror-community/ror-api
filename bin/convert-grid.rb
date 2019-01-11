@@ -12,7 +12,7 @@ orgs = []
 
 data["institutes"].each do |org|
   if org["status"] == "active"
-      id = GenerateId.new.construct_id
+      id = RorID.construct
     orgs << {
         id: id,
         local: org["id"],
