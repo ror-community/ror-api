@@ -38,14 +38,6 @@ namespace :setup do
 
 end
 
-namespace :server do
-  desc "Start elastic search"
-  task :start do
-    sh %{./server/bin/elasticsearch}
-  end
-end
-
-
 namespace :prepare do
 
   datasets = JSON.parse( File.read("config/datasets.json") )
