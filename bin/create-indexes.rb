@@ -1,12 +1,11 @@
 require 'rubygems'
 require 'bundler'
+require_relative '../config/es.rb'
 Bundler.require :default
 
 INDEX_PREFIX="org-id"
 
-host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
-client = Elasticsearch::Client.new url: host
-
+client = ROR_ES.client
 #Create index template, new templates will follow this pattern
 template = JSON.parse( File.read( ARGV[1] ) )
 

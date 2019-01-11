@@ -1,12 +1,11 @@
 require 'rubygems'
 require 'bundler'
-require 'pry'
+require_relative '../config/es.rb'
 Bundler.require :default
 require_relative 'generate-id.rb'
 data = JSON.load( File.new("data/grid/grid.json") )
-host = ENV["ELASTIC_SEARCH"] ||= "http://elasticsearch:9200"
 
-client = Elasticsearch::Client.new url: host
+client = ROR_ES.client
 
 orgs = []
 
