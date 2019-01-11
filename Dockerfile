@@ -34,7 +34,7 @@ COPY vendor/docker/ntp.conf /etc/ntp.conf
 # enable SSH
 RUN rm -f /etc/service/sshd/down && \
     sed -i 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/ig' /etc/ssh/sshd_config && \
-    sed -i 's/#RSAAuthentication.*/RSAAuthentication yes/ig' /etc/ssh/sshd_config
+    sed -i 's/#RSAAuthentication.*/RSAAuthentication yes/ig' /etc/ssh/sshd_config 
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
@@ -44,7 +44,9 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 COPY . /home/app/webapp/
 RUN mkdir -p /home/app/webapp/vendor/bundle && \
     chown -R app:app /home/app/webapp && \
-    chmod -R 755 /home/app/webapp
+    chmod -R 755 /home/app/webapp && \
+    mkdir /home/app/.ssh && \
+    chmod -R 700 /home/app/.ssh
 
 # Install Ruby gems
 WORKDIR /home/app/webapp
