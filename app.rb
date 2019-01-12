@@ -159,7 +159,6 @@ def paginate (page, query = nil)
 end
 
 def check_params
-  content_type "application/json"
   bad_param_msg = {}
   bad_param_msg[:illegal_parameter] = []
   bad_param_msg[:illegal_parameter_values] = []
@@ -212,12 +211,15 @@ def process_results
   [results,errors]
 end
 
+before do
+  content_type "application/json", charset: "utf-8"
+end
+
 after do
   response.headers['Access-Control-Allow-Origin'] = '*'
 end
 
 get '/organizations' do
-  content_type "application/json"
   bad_params = {}
   bad_params = check_params
   msg = nil
@@ -236,7 +238,6 @@ end
 get %r{/organizations/(.*?ror.*)} do |id|
   valid_id = process_id(id)
   msg = {}
-  content_type "application/json"
   if valid_id
     msg = search_by_id(valid_id)
   else
@@ -246,7 +247,7 @@ get %r{/organizations/(.*?ror.*)} do |id|
 end
 
 get '/heartbeat' do
-  content_type 'text/html'
+  content_type 'text/plain', charset: 'utf-8'
 
   'OK'
 end
