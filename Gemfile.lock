@@ -9,6 +9,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     ast (2.4.0)
+    aws-sigv4 (1.0.3)
     backports (3.11.4)
     base32-url (0.5)
     better_errors (2.5.0)
@@ -53,6 +54,9 @@ GEM
       faraday
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
+    faraday_middleware-aws-sigv4 (0.2.4)
+      aws-sigv4 (~> 1.0)
+      faraday (>= 0.9)
     hashdiff (0.3.8)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -201,6 +205,7 @@ DEPENDENCIES
   dotenv
   elasticsearch (~> 6.0)
   factory_bot
+  faraday_middleware-aws-sigv4 (~> 0.2.4)
   jbuilder (~> 2.7)
   json
   maremma (>= 4.1)
