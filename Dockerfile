@@ -31,22 +31,18 @@ COPY vendor/docker/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
 # Use Amazon NTP servers
 COPY vendor/docker/ntp.conf /etc/ntp.conf
 
-# enable SSH
-RUN rm -f /etc/service/sshd/down && \
-    sed -i 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/ig' /etc/ssh/sshd_config && \
-    sed -i 's/#RSAAuthentication.*/RSAAuthentication yes/ig' /etc/ssh/sshd_config 
-
-# Install dockerize
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
-    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-
 # Copy webapp folder
 COPY . /home/app/webapp/
 RUN mkdir -p /home/app/webapp/vendor/bundle && \
     chown -R app:app /home/app/webapp && \
-    chmod -R 755 /home/app/webapp && \
-    mkdir /home/app/.ssh && \
-    chmod -R 700 /home/app/.ssh
+    chmod -R 755 /home/app/webapp
+
+# enable SSH for app user
+RUN rm -f /etc/service/sshd/down && \
+    sed -i 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/ig' /etc/ssh/sshd_config && \
+    sed -i 's/#RSAAuthentication.*/RSAAuthentication yes/ig' /etc/ssh/sshd_config && \
+    mkdir -p /home/app/.ssh && \
+    chmod -R 700 /home/app/.ssh 
 
 # Install Ruby gems
 WORKDIR /home/app/webapp
