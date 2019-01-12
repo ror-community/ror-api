@@ -266,3 +266,18 @@ get '/heartbeat' do
 
   'OK'
 end
+
+error 400 do
+  { "error" => "Bad request" }.to_json
+  halt 400
+end
+
+error 404 do
+  { "error" => "Not found" }.to_json
+  halt 404
+end
+
+error 500 do
+  { "error" => "Internal server error" }.to_json
+  halt 500
+end
