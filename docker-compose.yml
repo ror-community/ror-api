@@ -26,12 +26,13 @@ services:
     image: rorcommunity/ror-api
     ports:
       - "9292:80"
+      - "2222:22"
     volumes:
       - ./config:/home/app/webapp/config
       - ./lib:/home/app/webapp/lib
       - ./data:/home/app/webapp/data
       - ./spec:/home/app/webapp/spec
       - ./app.rb:/home/app/webapp/app.rb
-      - ./vendor:/home/app/vendor
+      - ./vendor:/home/app/webapp/vendor
     depends_on:
       - elasticsearch
