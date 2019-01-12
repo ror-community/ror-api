@@ -18,7 +18,7 @@ gem 'syslog_protocol', '~> 0.9.2'
 gem 'semantic_logger', '~> 4.3', '>= 4.3.1'
 gem 'shotgun'
 gem 'maremma', '>= 4.1'
-gem 'aws-sdk', '~> 3'
+gem 'aws-sdk-elasticsearchservice', '~> 1.15'
 gem 'faraday_middleware-aws-sigv4', '~> 0.2.4'
 
 group :development do
