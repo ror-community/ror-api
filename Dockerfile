@@ -37,12 +37,9 @@ RUN mkdir -p /home/app/webapp/vendor/bundle && \
     chown -R app:app /home/app/webapp && \
     chmod -R 755 /home/app/webapp
 
-# enable SSH for app user
+# enable SSH
 RUN rm -f /etc/service/sshd/down && \
-    sed -i 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/ig' /etc/ssh/sshd_config && \
-    sed -i 's/#RSAAuthentication.*/RSAAuthentication yes/ig' /etc/ssh/sshd_config && \
-    mkdir -p /home/app/.ssh && \
-    chmod -R 700 /home/app/.ssh 
+    /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 # Install Ruby gems
 WORKDIR /home/app/webapp
