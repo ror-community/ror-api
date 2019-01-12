@@ -197,6 +197,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sigv4 (~> 1.0, >= 1.0.3)
   base32-url (~> 0.3)
   better_errors
   binding_of_caller

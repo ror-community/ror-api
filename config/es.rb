@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.require :default
 
+require 'aws-sigv4'
 require 'faraday_middleware'
 require 'faraday_middleware/aws_sigv4'
 
