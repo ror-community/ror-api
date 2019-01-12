@@ -3,7 +3,6 @@ MAINTAINER Martin Fenner "mfenner@datacite.org"
 
 # Set correct environment variables
 ENV HOME /home/app
-ENV DOCKERIZE_VERSION v0.6.0
 
 # Allow app user to read /etc/container_environment
 RUN usermod -a -G docker_env app
