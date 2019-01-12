@@ -57,6 +57,21 @@ set :json_builder, Jbuilder.new
 set :id_uri_prefix, "https://"
 set :id_prefix, "ror.org"
 
+# optionally use Bugsnag for error tracking
+if ENV['BUGSNAG_KEY']
+  require 'bugsnag'
+  Bugsnag.configure do |config|
+    config.api_key = ENV['BUGSNAG_KEY']
+    config.project_root = settings.root
+    config.app_version = App::VERSION
+    config.release_stage = ENV['RACK_ENV']
+    config.notify_release_stages = %w(production stage)
+  end
+
+  use Bugsnag::Rack
+  enable :raise_errors
+end
+
 def search_all(start = 0, size = settings.default_size)
   settings.client.search from: start, size: size
 end
