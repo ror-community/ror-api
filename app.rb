@@ -49,6 +49,7 @@ set :client, ROR_ES.client
 
 # Work around rack protection referrer bug
 set :protection, :except => :json_csrf
+set :show_exceptions, :after_handler
 set :default_size, 20
 set :accepted_params, %w(query page filter query.name query.names query.local)
 set :filter_types, %w(location type)
@@ -80,7 +81,6 @@ def simple_query(term)
   settings.json_builder.query_string do
     settings.json_builder.query term
   end
-
 end
 
 def match_field(field, term)
@@ -100,17 +100,16 @@ def multi_field_match(fields, term)
   end
 end
 
-
 def gen_filter_query(query,filter)
   filter = filter.split(",")
   new_query = {}
   new_query[:query] = {:bool => {:must => query["query"]}}
   filter_hsh = {}
   filter_hsh[:filter] = []
-  filter.each { |f|
+  filter.each do |f|
     field,term = f.split(":")
     filter_hsh[:filter] << {:match => {"#{field}" => term}}
-  }
+  end
   new_query[:query][:bool].merge!(filter_hsh)
 
   new_query
@@ -177,19 +176,19 @@ def check_params
   bad_param_msg = {}
   bad_param_msg[:illegal_parameter] = []
   bad_param_msg[:illegal_parameter_values] = []
-  params.keys.each { |k|
+  params.keys.each do |k|
     unless settings.accepted_params.include?(k)
       bad_param_msg[:illegal_parameter] << k
     end
-  }
+  end
   if params["filter"]
     filter = params["filter"].split(",")
     get_param_values = filter.map { |f| f.split(":")[0]}
-    get_param_values.map { |p|
+    get_param_values.map do |p|
       unless settings.accepted_filter_param_values.include?(p)
         bad_param_msg[:illegal_parameter_values] << p
       end
-    }
+    end
   end
   bad_param_msg
 end
@@ -198,9 +197,9 @@ def process_id(id)
   valid_id = nil
   check_id = id.split("/")
   id_components = []
-  check_id.each { |i|
+  check_id.each do |i|
     id_components << i if i == settings.id_prefix || i =~ /\w{8}/
-  }
+  end
 
   valid_id = "#{settings.id_uri_prefix}#{id_components.join("/")}" if id_components.count == 2
 
@@ -219,9 +218,9 @@ def process_results
     results["hits"] = []
     results["number of results"] = msg["hits"]["total"]
     results["time taken"] = msg["took"]
-    msg["hits"]["hits"].each { |result|
+    msg["hits"]["hits"].each do |result|
       results ["hits"] << result["_source"]
-    }
+    end
   end
   [results,errors]
 end
@@ -269,15 +268,12 @@ end
 
 error 400 do
   { "error" => "Bad request" }.to_json
-  halt 400
 end
 
 error 404 do
   { "error" => "Not found" }.to_json
-  halt 404
 end
 
 error 500 do
   { "error" => "Internal server error" }.to_json
-  halt 500
 end
