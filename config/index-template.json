@@ -3,25 +3,37 @@
     "mappings": {
       "org": {
         "properties": {
-          "name": {
-            "type": "string"
-          },
           "id": {
-            "type": "string"
+            "type": "keyword"
+          },
+          "suffix": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text"
+          },
+          "links": {
+            "type": "text"
+          },
+          "aliases": {
+            "type": "keyword"
+          },
+          "acronyms": {
+            "type": "keyword"
           },
           "country": {
             "type": "nested",
             "properties": {
-              "country-code": {
-                "type": "string"
+              "country_code": {
+                "type": "keyword"
               },
-              "country-name": {
-                "type": "string"
+              "country_name": {
+                "type": "keyword"
               }
             }
           },
           "types": {
-            "type": "string"
+            "type": "text"
           }
         }
       }
