@@ -6,9 +6,6 @@
           "id": {
             "type": "keyword"
           },
-          "suffix": {
-            "type": "keyword"
-          },
           "name": {
             "type": "text"
           },

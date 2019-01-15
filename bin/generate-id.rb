@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler'
 require 'securerandom'
 require 'base32/url'
+require 'pry'
 Bundler.require :default
 
 class RorID
@@ -13,7 +14,7 @@ class RorID
   end
 
   def self.construct
-    "/0" + encode_number
+    prefix + "/" + encode_number
   end
 
   def self.gen_number
