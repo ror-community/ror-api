@@ -74,7 +74,7 @@ if ENV['BUGSNAG_KEY']
 end
 
 def search_all(start = 0, size = settings.default_size)
-  settings.client.search from: start, size: size
+  settings.client.search from: start, size: size, q: '*'
 end
 
 def simple_query(term)
@@ -213,13 +213,13 @@ def process_results
   if msg.has_key? (:error)
     errors << msg
   else
-    results["number of results"] = nil
-    results["time taken"] = nil
-    results["hits"] = []
-    results["number of results"] = msg["hits"]["total"]
-    results["time taken"] = msg["took"]
+    results["number_of_results"] = nil
+    results["time_taken"] = nil
+    results["items"] = []
+    results["number_of_results"] = msg["hits"]["total"]
+    results["time_taken"] = msg["took"]
     msg["hits"]["hits"].each do |result|
-      results ["hits"] << result["_source"]
+      results ["items"] << result["_source"]
     end
   end
   [results,errors]
