@@ -12,9 +12,11 @@ orgs = []
 
 data["institutes"].each do |org|
   if org["status"] == "active"
-      id = RorID.construct
+      suffix = RorID.construct
+      id = RorID.prefix + suffix
     orgs << {
         id: id,
+        suffix: suffix,
         local: org["id"],
         name: org["name"],
         types: org["types"],
