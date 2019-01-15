@@ -51,7 +51,7 @@ set :client, ROR_ES.client
 set :protection, :except => :json_csrf
 set :show_exceptions, :after_handler
 set :default_size, 20
-set :accepted_params, %w(query page filter query.name query.names query.local)
+set :accepted_params, %w(query page filter query.name query.names)
 set :filter_types, %w(location type)
 set :accepted_filter_param_values, %w(country.country_code types country.country_name)
 set :json_builder, Jbuilder.new
@@ -126,8 +126,6 @@ def generate_query(options = {})
         settings.json_builder.query do
           if options.key?("query")
             simple_query(options["query"])
-          elsif options.key?("query.local")
-            match_field("local",options["query.local"])
           elsif options.key?("query.name")
             match_field("name",options["query.name"])
           elsif options.key?("query.names")
