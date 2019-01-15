@@ -13,7 +13,7 @@ class RorID
   end
 
   def self.construct
-    prefix + "/0" + encode_number
+    "/0" + encode_number
   end
 
   def self.gen_number
