@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+require 'pry'
 require_relative '../config/es.rb'
 Bundler.require :default
 require_relative 'generate-id.rb'
@@ -25,7 +26,8 @@ data["institutes"].each do |org|
         country: {
             country_code: org["addresses"][0]["country_code"],
             country_name: org["addresses"][0]["country"]
-        }
+        },
+        external_ids: org["external_ids"]
     }
   end
 end
