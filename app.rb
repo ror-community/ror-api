@@ -75,6 +75,7 @@ end
 
 def search_all(start = 0, size = settings.default_size)
   settings.client.search from: start, size: size, q: '*'
+
 end
 
 def simple_query(term)
@@ -138,7 +139,7 @@ end
 
 def process (options = {})
   msg = nil
-  query = generate_query(options)
+  query = options.empty? ? nil : generate_query(options)
   if options["page"]
     pg = options["page"].to_i
     if (pg.is_a? Integer and pg > 0)
