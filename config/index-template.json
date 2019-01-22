@@ -19,7 +19,6 @@
             "type": "keyword"
           },
           "country": {
-            "type": "nested",
             "properties": {
               "country_code": {
                 "type": "keyword"
@@ -30,18 +29,51 @@
             }
           },
           "types": {
-            "type": "text"
+            "type": "keyword"
           },
           "external_ids": {
-            "type": "nested",
-            "key": {
-              "index": "not_analyzed",
-              "type": "string"
-            },
-            "value": {
-              "index": "not_analyzed",
-              "type": "string"
-            },
+            "properties": {
+              "GRID": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "ISNI": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "Fundref": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "Wikidata": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            } 
           }
         }
       }
