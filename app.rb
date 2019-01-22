@@ -264,6 +264,8 @@ def get_ror_id(str)
 end
 
 def facet_by_type(arr)
+  return arr unless arr.present?
+  
   arr.map do |hsh|
     { "id" => hsh["key"].downcase,
       "title" => hsh["key"],
@@ -272,6 +274,8 @@ def facet_by_type(arr)
 end
 
 def facet_by_country(arr)
+  return arr unless arr.present?
+
   arr.map do |hsh|
     { "id" => hsh["key"].downcase,
       "title" => ISO3166::Country.new(hsh["key"]),
