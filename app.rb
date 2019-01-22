@@ -133,9 +133,9 @@ def generate_query(options = {})
           if options.key?("query") && id = get_ror_id(options["query"])
             match_field("id", id)
           elsif options.key?("query")
-            fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
-            multi_field_match(fields, options["query"])
-            # simple_query(options["query"])
+            # fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
+            # multi_field_match(fields, options["query"])
+            simple_query(options["query"])
           elsif options.key?("query.name")
             match_field("name",options["query.name"])
           elsif options.key?("query.names")
