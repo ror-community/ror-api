@@ -23,6 +23,7 @@ require 'semantic_logger'
 require 'json'
 require 'elasticsearch'
 require 'jbuilder'
+require 'countries'
 require_relative 'config/es.rb'
 
 Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |f| require f }
@@ -249,7 +250,10 @@ def process_results
     msg["hits"]["hits"].each do |result|
       results ["items"] << result["_source"]
     end
-    results["meta"] = {}
+    results["meta"] = {
+      "types" => facet_by_type(msg.dig("aggregations", "types", "buckets")),
+      "countries" => facet_by_country(msg.dig("aggregations", "countries", "buckets"))
+    }
   end
   [results,errors]
 end
@@ -257,6 +261,22 @@ end
 def get_ror_id(str)
   id = Array(/\A(?:(http|https):\/\/)?(?:ror\.org\/)?(0\w{6}\d{2})\z/.match(str)).last
   ror_id = "https://ror.org/" + id if id.present?
+end
+
+def facet_by_type(arr)
+  arr.map do |hsh|
+    { "id" => hsh["key"].downcase,
+      "title" => hsh["key"],
+      "count" => hsh["doc_count"] }
+  end
+end
+
+def facet_by_country(arr)
+  arr.map do |hsh|
+    { "id" => hsh["key"].downcase,
+      "title" => ISO3166::Country.new(hsh["key"]),
+      "count" => hsh["doc_count"] }
+  end
 end
 
 before do
