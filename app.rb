@@ -97,6 +97,7 @@ def multi_field_match(fields, term)
     settings.json_builder.query term
     settings.json_builder.operator "and"
     settings.json_builder.fields fields
+    settings.json_builder.type "phrase_prefix"
   end
 end
 
@@ -125,7 +126,9 @@ def generate_query(options = {})
   q = settings.json_builder.search do
         settings.json_builder.query do
           if options.key?("query")
-            simple_query(options["query"])
+            fields = ['external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
+            multi_field_match(fields, options["query"])
+            # simple_query(options["query"])
           elsif options.key?("query.local")
             match_field("local",options["query.local"])
           elsif options.key?("query.name")
