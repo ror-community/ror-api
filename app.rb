@@ -51,8 +51,9 @@ set :client, ROR_ES.client
 set :protection, :except => :json_csrf
 set :show_exceptions, :after_handler
 set :default_size, 20
-set :accepted_params, %w(query page filter query.name query.names query.local)
-set :filter_types, %w(location type)
+set :accepted_params, %w(query page filter query.name query.names)
+set :external_id_query, "query.id"
+set :external_id_types, %w(isni wikidata grid fundref orgref)
 set :accepted_filter_param_values, %w(country.country_code types country.country_name)
 set :json_builder, Jbuilder.new
 set :id_uri_prefix, "https://"
@@ -75,6 +76,7 @@ end
 
 def search_all(start = 0, size = settings.default_size)
   settings.client.search from: start, size: size, q: '*'
+
 end
 
 def simple_query(term)
@@ -116,6 +118,9 @@ def gen_filter_query(query,filter)
   new_query
 end
 
+def nested_query(fields,term)
+
+end
 # meta program so that one can build query strings depending on parameter
 def generate_query(options = {})
   filter = nil
@@ -125,12 +130,12 @@ def generate_query(options = {})
   end
   q = settings.json_builder.search do
         settings.json_builder.query do
-          if options.key?("query")
-            fields = ['external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
+          if options.key?("query") && /\A(?:(http|https):\/(\/)?ror\.org\/)?(\w{9})\z/.match(options["query"])
+            settings.client.get_source id: options["query"]
+          elsif options.key?("query")
+            fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
             multi_field_match(fields, options["query"])
             # simple_query(options["query"])
-          elsif options.key?("query.local")
-            match_field("local",options["query.local"])
           elsif options.key?("query.name")
             match_field("name",options["query.name"])
           elsif options.key?("query.names")
@@ -143,17 +148,21 @@ end
 
 def process (options = {})
   msg = nil
-  query = generate_query(options)
-  if options["page"]
-    pg = options["page"].to_i
-    if (pg.is_a? Integer and pg > 0)
-      msg = paginate(pg,query)
-    else
-      msg = {:error => "page parameter: #{options['page']} must be an Integer."}
-    end
+  if options.keys.count == 1 and options.keys[0] =~ /query\.id/
+    msg = search_external_id
   else
-    query = gen_filter_query(query,options["filter"]) if options["filter"]
-    msg = find(query)
+    query = options.empty? ? nil : generate_query(options)
+    if options["page"]
+      pg = options["page"].to_i
+      if (pg.is_a? Integer and pg > 0)
+        msg = paginate(pg,query)
+      else
+        msg = {:error => "page parameter: #{options['page']} must be an Integer."}
+      end
+    else
+      query = gen_filter_query(query,options["filter"]) if options["filter"]
+      msg = find(query)
+    end
   end
   msg
 end
@@ -166,6 +175,12 @@ def find (query = nil, start = 0, size = settings.default_size)
   end
 end
 
+def search_external_id
+  field = params.keys[0]
+  query = "#{field.sub(/query\.id/,"external_ids")}=#{params[field]}"
+  settings.client.search q: query
+end
+
 def search_by_id (id)
   settings.client.get_source index: 'org-id-grid', id: id
 end
@@ -175,15 +190,22 @@ def paginate (page, query = nil)
   find(query, start)
 end
 
+def valid_external_id_queries
+  settings.external_id_types.map { |id| "#{settings.external_id_query}.#{id}"}
+end
+
 def check_params
   bad_param_msg = {}
   bad_param_msg[:illegal_parameter] = []
   bad_param_msg[:illegal_parameter_values] = []
+  valid_queries = settings.accepted_params + valid_external_id_queries
   params.keys.each do |k|
-    unless settings.accepted_params.include?(k)
+    unless valid_queries.include?(k)
       bad_param_msg[:illegal_parameter] << k
     end
   end
+  id_query = params.select { |k,v| k =~ /query\.id/ }.keys
+  bad_param_msg[:illegal_parameter] << "Only one of these: #{id_query} is permitted" if id_query.count > 1
   if params["filter"]
     filter = params["filter"].split(",")
     get_param_values = filter.map { |f| f.split(":")[0]}
@@ -201,7 +223,7 @@ def process_id(id)
   check_id = id.split("/")
   id_components = []
   check_id.each do |i|
-    id_components << i if i == settings.id_prefix || i =~ /\w{8}/
+    id_components << i if i == settings.id_prefix || i =~ /\w{9}/
   end
 
   valid_id = "#{settings.id_uri_prefix}#{id_components.join("/")}" if id_components.count == 2
