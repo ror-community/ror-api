@@ -250,10 +250,10 @@ def process_results
     msg["hits"]["hits"].each do |result|
       results ["items"] << result["_source"]
     end
-    results["meta"] = {
-      "types" => facet_by_type(msg.dig("aggregations", "types", "buckets")),
-      "countries" => facet_by_country(msg.dig("aggregations", "countries", "buckets"))
-    }
+    # results["meta"] = {
+    #   "types" => facet_by_type(msg.dig("aggregations", "types", "buckets")),
+    #   "countries" => facet_by_country(msg.dig("aggregations", "countries", "buckets"))
+    # }
   end
   [results,errors]
 end
@@ -264,8 +264,8 @@ def get_ror_id(str)
 end
 
 def facet_by_type(arr)
-  return arr unless arr.present?
-  
+  return nil unless arr.present?
+
   arr.map do |hsh|
     { "id" => hsh["key"].downcase,
       "title" => hsh["key"],
@@ -274,7 +274,7 @@ def facet_by_type(arr)
 end
 
 def facet_by_country(arr)
-  return arr unless arr.present?
+  return nil unless arr.present?
 
   arr.map do |hsh|
     { "id" => hsh["key"].downcase,
