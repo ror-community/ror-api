@@ -76,7 +76,6 @@ end
 
 def search_all(start = 0, size = settings.default_size)
   settings.client.search from: start, size: size, q: '*'
-
 end
 
 def simple_query(term)
@@ -171,7 +170,11 @@ def find (query = nil, start = 0, size = settings.default_size)
   if query.nil?
     search_all
   else
-    settings.client.search body: query, from: start, size: size
+    body = query.merge(aggregations: {
+      types: { terms: { field: 'types', size: 10, min_doc_count: 1 } },
+      countries: { terms: { field: 'country.country_code', size: 10, min_doc_count: 1 } }
+    })
+    settings.client.search body: body, from: start, size: size
   end
 end
 
@@ -246,6 +249,7 @@ def process_results
     msg["hits"]["hits"].each do |result|
       results ["items"] << result["_source"]
     end
+    results["meta"] = {}
   end
   [results,errors]
 end
