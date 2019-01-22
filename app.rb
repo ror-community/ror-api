@@ -130,8 +130,8 @@ def generate_query(options = {})
   end
   q = settings.json_builder.search do
         settings.json_builder.query do
-          if options.key?("query") && /\A(?:(http|https):\/(\/)?ror\.org\/)?(\w{9})\z/.match(options["query"])
-            settings.client.get_source id: options["query"]
+          if options.key?("query") && id = get_ror_id(options["query"])
+            match_field("id", id)
           elsif options.key?("query")
             fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
             multi_field_match(fields, options["query"])
@@ -248,6 +248,11 @@ def process_results
     end
   end
   [results,errors]
+end
+
+def get_ror_id(str)
+  id = Array(/\A(?:(http|https):\/\/)?(?:ror\.org\/)?(0\w{6}\d{2})\z/.match(str)).last
+  ror_id = "https://ror.org/" + id if id.present?
 end
 
 before do
