@@ -50,9 +50,10 @@ set :client, ROR_ES.client
 
 # Work around rack protection referrer bug
 set :protection, :except => :json_csrf
+
 set :show_exceptions, :after_handler
 set :default_size, 20
-set :accepted_params, %w(query page filter query.name query.names)
+set :accepted_params, %w(query page filter query.form query.name query.names)
 set :external_id_query, "query.id"
 set :external_id_types, %w(isni wikidata grid fundref orgref)
 set :accepted_filter_param_values, %w(country.country_code types country.country_name)
@@ -76,7 +77,13 @@ if ENV['BUGSNAG_KEY']
 end
 
 def search_all(start = 0, size = settings.default_size)
-  settings.client.search from: start, size: size, q: '*'
+  body = { 
+    aggregations: {
+      types: { terms: { field: 'types', size: 10, min_doc_count: 1 } },
+      countries: { terms: { field: 'country.country_code', size: 10, min_doc_count: 1 } }
+    }
+  }
+  settings.client.search body: body, from: start, size: size, q: '*'
 end
 
 def simple_query(term)
@@ -100,6 +107,8 @@ def multi_field_match(fields, term)
     settings.json_builder.operator "and"
     settings.json_builder.fields fields
     settings.json_builder.type "phrase_prefix"
+    settings.json_builder.slop 3
+    settings.json_builder.max_expansions 10
   end
 end
 
@@ -132,9 +141,10 @@ def generate_query(options = {})
         settings.json_builder.query do
           if options.key?("query") && id = get_ror_id(options["query"])
             match_field("id", id)
+          elsif options.key?("query.form")
+            fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
+            multi_field_match(fields, options["query.form"])
           elsif options.key?("query")
-            # fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
-            # multi_field_match(fields, options["query"])
             simple_query(options["query"])
           elsif options.key?("query.name")
             match_field("name",options["query.name"])
@@ -250,10 +260,10 @@ def process_results
     msg["hits"]["hits"].each do |result|
       results ["items"] << result["_source"]
     end
-    # results["meta"] = {
-    #   "types" => facet_by_type(msg.dig("aggregations", "types", "buckets")),
-    #   "countries" => facet_by_country(msg.dig("aggregations", "countries", "buckets"))
-    # }
+    results["meta"] = {
+      "types" => facet_by_type(msg.dig("aggregations", "types", "buckets")),
+      "countries" => facet_by_country(msg.dig("aggregations", "countries", "buckets"))
+    }
   end
   [results,errors]
 end
