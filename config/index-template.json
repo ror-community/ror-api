@@ -1,5 +1,18 @@
 {
     "template": "org-id-*",
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "string_lowercase": { "tokenizer": "keyword", "filter": ["lowercase", "ascii_folding"] }
+        },
+        "normalizer": {
+          "keyword_lowercase": { "type": "custom", "filter": ["lowercase"] }
+        },
+        "filter": { 
+          "ascii_folding": { "type": "asciifolding", "preserve_original": true } 
+        }
+      }
+    },
     "mappings": {
       "org": {
         "properties": {
@@ -7,16 +20,46 @@
             "type": "keyword"
           },
           "name": {
-            "type": "text"
+            "type": "text",
+            "fields": { 
+              "keyword": { 
+                "type": "keyword" 
+              }, 
+              "raw": { 
+                "type": "text", 
+                "analyzer": "string_lowercase", 
+                "fielddata": true 
+              }
+            }
           },
           "links": {
             "type": "text"
           },
           "aliases": {
-            "type": "keyword"
+            "type": "text",
+            "fields": { 
+              "keyword": { 
+                "type": "keyword" 
+              }, 
+              "raw": { 
+                "type": "text", 
+                "analyzer": "string_lowercase", 
+                "fielddata": true 
+              }
+            }
           },
           "acronyms": {
-            "type": "keyword"
+            "type": "text",
+            "fields": { 
+              "keyword": { 
+                "type": "keyword" 
+              }, 
+              "raw": { 
+                "type": "text", 
+                "analyzer": "string_lowercase", 
+                "fielddata": true 
+              }
+            }
           },
           "country": {
             "properties": {
