@@ -53,7 +53,7 @@ set :protection, :except => :json_csrf
 
 set :show_exceptions, :after_handler
 set :default_size, 20
-set :accepted_params, %w(query page filter query.form query.name query.names)
+set :accepted_params, %w(query page filter qp query.name query.names)
 set :external_id_query, "query.id"
 set :external_id_types, %w(isni wikidata grid fundref orgref)
 set :accepted_filter_param_values, %w(country.country_code types country.country_name)
@@ -141,9 +141,9 @@ def generate_query(options = {})
         settings.json_builder.query do
           if options.key?("query") && id = get_ror_id(options["query"])
             match_field("id", id)
-          elsif options.key?("query.form")
+          elsif options.key?("query") && options["qp"] == "multiMatch"
             fields = ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10', 'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all']
-            multi_field_match(fields, options["query.form"])
+            multi_field_match(fields, options["query"])
           elsif options.key?("query")
             simple_query(options["query"])
           elsif options.key?("query.name")
