@@ -15,6 +15,7 @@ end
 
 # required ENV variables, can be set in .env file
 ENV['RACK_ENV'] ||= "development"
+ENV['RELEASE_STAGE'] ||= "development"
 
 require 'active_support/all'
 require 'sinatra'
@@ -68,8 +69,8 @@ if ENV['BUGSNAG_KEY']
     config.api_key = ENV['BUGSNAG_KEY']
     config.project_root = settings.root
     config.app_version = App::VERSION
-    config.release_stage = ENV['RACK_ENV']
-    config.notify_release_stages = %w(production stage)
+    config.release_stage = ENV['RELEASE_STAGE']
+    config.notify_release_stages = %w(production dev)
   end
 
   use Bugsnag::Rack
