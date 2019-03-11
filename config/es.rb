@@ -34,8 +34,12 @@ class ROR_ES
     end
   end
 
-  def self.lookup_index
-    "local-ror-id"
+  def self.index_name
+    "org-id-grid"
+  end
+
+  def self.bkup_index_name
+    "backup-org-id-grid"
   end
 
   private_class_method :user, :host, :password
