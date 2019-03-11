@@ -21,7 +21,7 @@ class ROR_ES
 
   def self.client
     Elasticsearch::Client.new(host: host) do |f|
-      if ENV['ELASTIC_SEARCH'] == "http://localhost:9200"
+      if ENV['ELASTIC_SEARCH'] == "http://elasticsearch:9200"
         f.basic_auth(user, password)
       else
         f.request :aws_sigv4,
