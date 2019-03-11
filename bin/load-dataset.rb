@@ -30,11 +30,18 @@ orgs["orgs"].each_slice(20) do |batch|
   body = []
 
   batch.each do |org|
-    body << { index: { _index: bkup_index_name, _type: "org", _id: org["id"] } }
+    body << { index: { _index: index_name, _type: "org", _id: org["id"] } }
     body << org
   end
-  client.bulk body: body
-  #need to check to see if bulk update ran correctly
-  # reindex from backup to main index
-  client.indices.delete index: bkup_index_name if client.indices.exists? index: bkup_index_name
+
+  begin
+    client.bulk body: body
+  rescue StandardError => e
+    puts "ERROR: #{e}"
+    client.reindex body: { source: { index: bkup_index_name}, dest: { index: index_name}}
+  else
+    client.indices.delete index: bkup_index_name if client.indices.exists? index: bkup_index_name
+  end
+
+
 end
