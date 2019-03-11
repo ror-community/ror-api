@@ -13,6 +13,8 @@ index_name = ROR_ES.index_name
 bkup_index_name = ROR_ES.bkup_index_name
 
 filename = "data/org-id-#{ARGV[1]}.json"
+template = JSON.parse(File.read("config/index-template.json"))
+client.indices.put_template name: INDEX_PREFIX, body: template unless client.indices.exists_template? name: INDEX_PREFIX
 
 if client.indices.exists? index: index_name
   client.reindex body: { source: { index: index_name}, dest: { index: bkup_index_name}}
