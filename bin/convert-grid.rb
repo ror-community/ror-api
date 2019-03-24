@@ -6,13 +6,27 @@ Bundler.require :default
 require_relative 'generate-id.rb'
 data = JSON.load( File.new("data/grid/grid.json") )
 
-client = ROR_ES.client
 
 orgs = []
 
+def get_record_id (id)
+  client = ROR_ES.client
+  index_name = ROR_ES.index_name
+  record_id = RorID.construct
+  if client.indices.exists? index: index_name
+    id_query = "external_ids.grid=\"#{id}\""
+    result = client.search(index: index_name, q: id_query)
+    if result["hits"]["total"] == 1
+      record_id = result["hits"]["hits"][0]["_source"]["id"]
+    end
+  end
+  record_id
+end
+
+
 data["institutes"].each do |org|
   if org["status"] == "active"
-      id = RorID.construct
+      id = get_record_id(org["id"])
       grid_id_hsh = {"GRID" => {"preferred" => org["id"], "all" => org["id"]}}
       external_ids = org.key?("external_ids") ? org["external_ids"].merge(grid_id_hsh) : grid_id_hsh
     orgs << {
