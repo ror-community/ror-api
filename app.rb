@@ -30,6 +30,8 @@ require_relative 'config/es.rb'
 Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each { |f| require f }
 
 configure do
+  set :root, File.dirname(__FILE__)
+
   register Sinatra::CustomLogger
   SemanticLogger.default_level = :info
   SemanticLogger.add_appender(appender: :syslog)
@@ -45,6 +47,28 @@ configure do
   set :raise_errors, true
   set :logger, logger
   use Rack::CommonLogger, logger
+
+  # fetch version and revision from git
+  g = Git.open(Sinatra::Application.root)
+  begin
+    set :version, g.tags.map { |t| Gem::Version.new(t.name) }.sort.last.to_s
+  rescue ArgumentError
+    set :version, "1.0"
+  end
+  set :revision, g.object('HEAD').sha
+
+  # use Sentry for error tracking
+  if ENV['SENTRY_DSN']
+    require 'raven'
+
+    Raven.configure do |config|
+      config.dsn = ENV['SENTRY_DSN']
+      config.release = "doi-metadata-search:" + Sinatra::Application.version
+    end
+
+    use Raven::Rack
+    enable :raise_errors
+  end
 end
 
 set :client, ROR_ES.client
@@ -61,21 +85,6 @@ set :accepted_filter_param_values, %w(country.country_code types country.country
 set :json_builder, Jbuilder.new
 set :id_uri_prefix, "https://"
 set :id_prefix, "ror.org"
-
-# optionally use Bugsnag for error tracking
-if ENV['BUGSNAG_KEY']
-  require 'bugsnag'
-  Bugsnag.configure do |config|
-    config.api_key = ENV['BUGSNAG_KEY']
-    config.project_root = settings.root
-    config.app_version = App::VERSION
-    config.release_stage = ENV['RELEASE_STAGE']
-    config.notify_release_stages = %w(production dev)
-  end
-
-  use Bugsnag::Rack
-  enable :raise_errors
-end
 
 def search_all(start = 0, size = settings.default_size)
   body = { 

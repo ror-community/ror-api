@@ -20,7 +20,8 @@ gem 'shotgun'
 gem 'maremma', '>= 4.1'
 gem 'aws-sdk-elasticsearchservice', '~> 1.15'
 gem 'faraday_middleware-aws-sigv4', '~> 0.2.4'
-gem 'bugsnag', '~> 6.10'
+gem 'sentry-raven', '~> 2.9'
+gem 'git', '~> 1.5'
 
 group :development do
   gem "better_errors"
