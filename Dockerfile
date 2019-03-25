@@ -42,8 +42,7 @@ RUN rm -f /etc/service/sshd/down && \
 
 # Install Ruby gems
 WORKDIR /home/app/webapp
-RUN gem update --system && \
-    gem install bundler && \
+RUN gem install bundler && \
     /sbin/setuser app bundle install --path vendor/bundle
 
 # install custom ssh key during startup
