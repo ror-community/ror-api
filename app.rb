@@ -64,7 +64,7 @@ configure do
 
     Raven.configure do |config|
       config.dsn = ENV['SENTRY_DSN']
-      config.release = "doi-metadata-search:" + Sinatra::Application.version
+      config.release = "ror-api:" + Sinatra::Application.version
     end
 
     use Raven::Rack
