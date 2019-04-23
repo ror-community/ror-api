@@ -1,0 +1,70 @@
+{
+    "took": 7,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 1,
+        "max_score": 9.676415,
+        "hits": [
+            {
+                    "id": "https://ror.org/006rfg424",
+                    "name": "Nuclear Physics",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://science.energy.gov/np/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "NP"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [],
+                    "country": {
+                        "country_code": "US",
+                        "country_name": "United States"
+                    },
+                    "external_ids": {
+                        "FundRef": {
+                            "preferred": null,
+                            "all": [
+                                "100006209"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.453025.5",
+                            "all": "grid.453025.5"
+                        }
+                    }
+            }
+        ]
+    },
+    "aggregations": {
+        "types": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "Facility",
+                    "doc_count": 1
+                }
+            ]
+        },
+        "countries": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "US",
+                    "doc_count": 1
+		}
+            ]
+        }
+    }
+}
