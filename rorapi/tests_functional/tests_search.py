@@ -12,29 +12,27 @@ R5_MIN = 0.911979
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost:8000')
 
 
-def search(query, url, query_name='query'):
-    results = requests.get('{}/organizations'.format(url),
-                           {query_name: query}).json()
-    if 'items' not in results:
-        return []
-    return results['items']
+class SearchTestCase(SimpleTestCase):
 
+    def search(self, query):
+        results = requests.get('{}/organizations'.format(API_URL),
+                               {'query': query}).json()
+        if 'items' not in results:
+            return []
+        return results['items']
 
-def get_rank(affiliation, grid_id, items):
-    for i, item in enumerate(items):
-        if grid_id == item['external_ids']['GRID']['preferred']:
-            return i+1
-    return 21
-
-
-class APIListTestCase(SimpleTestCase):
+    def get_rank(self, grid_id, items):
+        for i, item in enumerate(items):
+            if grid_id == item['external_ids']['GRID']['preferred']:
+                return i+1
+        return 21
 
     def setUp(self):
         with open(os.path.join(os.path.dirname(__file__),
                                'data/dataset_names.json')) as names_file:
             data = json.load(names_file)
-        data = [(d, search(d['affiliation'], url=API_URL)) for d in data]
-        self.ranks = [get_rank(case['affiliation'], case['grid'], items)
+        data = [(d, self.search(d['affiliation'])) for d in data]
+        self.ranks = [self.get_rank(case['grid'], items)
                       for case, items in data]
 
     def test_rank(self):

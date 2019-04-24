@@ -11,7 +11,7 @@ from .utils import IterableAttrDict
 factory = APIRequestFactory()
 
 
-class APIListTestCase(SimpleTestCase):
+class ViewListTestCase(SimpleTestCase):
 
     def setUp(self):
         with open(os.path.join(os.path.dirname(__file__),
@@ -69,7 +69,7 @@ class APIListTestCase(SimpleTestCase):
         self.assertEquals(len(organizations['errors']), 6)
 
 
-class APIRetrievalTestCase(SimpleTestCase):
+class ViewRetrievalTestCase(SimpleTestCase):
 
     def setUp(self):
         with open(os.path.join(os.path.dirname(__file__),
@@ -123,7 +123,7 @@ class MetricsPageCountTestCase(SimpleTestCase):
             self.test_data = json.load(f)
 
     def current_home_page_count(self):
-        """ extract home page count from /metrics route """
+        """Extract home page count from /metrics route"""
 
         KEY = 'django_http_requests_latency_seconds_by_view_method_count' + \
               '{method="GET",view="organization-list"}'
