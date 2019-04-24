@@ -12,7 +12,7 @@ BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost:8000'))
 
 
-class RORAPITestCase(SimpleTestCase):
+class APITestCase(SimpleTestCase):
 
     def get_total(self, output):
         return output['number_of_results']
