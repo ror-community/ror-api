@@ -64,7 +64,7 @@ docker-compose exec rorapi python manage.py test rorapi.tests_integration
 docker-compose exec rorapi python manage.py test rorapi.tests_functional
 ```
 
-Visit <http://localhost/organizations>. For full API documentation, see <api_documentation.md>.
+Visit <http://localhost/organizations>. For full API documentation, see [api\_documentation.md](api_documentation.md).
 
 ## Dataset Configuration
 
