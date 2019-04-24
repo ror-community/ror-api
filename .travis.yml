@@ -10,18 +10,16 @@ services:
 env:
   - DOCKER_COMPOSE_VERSION=1.23.2
 
-before_install:
+install:
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
-  - docker-compose up -d
-  - sleep 120
-
-install:
-  - docker-compose exec rorapi python manage.py setup
 
 before_script:
+  - docker-compose up -d
+  - sleep 120
+  - docker-compose exec rorapi python manage.py setup
   - cp .env.travis .env
 
 script:
