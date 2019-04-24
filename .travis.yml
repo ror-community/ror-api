@@ -26,6 +26,8 @@ before_script:
 
 script:
   - docker-compose exec rorapi python manage.py test rorapi.tests
+  - docker-compose exec rorapi python manage.py test rorapi.tests_integration
+  - docker-compose exec rorapi python manage.py test rorapi.tests_functional
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
