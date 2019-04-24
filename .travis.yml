@@ -1,29 +1,31 @@
-language: ruby
-rvm:
-- 2.4.4
+language: python
+python:
+  - "3.6"
+
 sudo: required
 
 services:
   - docker
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-set-default
+env:
+  - DOCKER_COMPOSE_VERSION=1.4.2
 
 before_install:
-  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.2.deb
-  - sudo dpkg -i --force-confnew elasticsearch-6.3.2.deb
-  - sudo service elasticsearch start
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose up -d
+  - sleep 120
 
 install:
-  - travis_retry bundle install
+  - docker-compose exec rorapi python manage.py setup
 
 before_script:
   - cp .env.travis .env
 
 script:
-  - bundle exec rspec
+  - docker-compose exec rorapi python manage.py test rorapi.tests
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
