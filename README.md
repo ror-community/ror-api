@@ -44,22 +44,27 @@ To a lesser extent the project may also have a role in surfacing general issues 
 
 ## Quick Start
 
-The code is built against Ruby 2.4.0 and Java 1.8. You'll also need Bundler installed.
+In the project directory, run docker-compose to start all services:
 
-- Checkout the project.
-- Run `bundle install`
-- In one terminal window, launch [Elastic Search](https://www.elastic.co/): `rake server:start`
-- Download and unpack the datasets and create the default indexes: `rake setup:all`
-- Convert the datasets into standard JSON format and load into Elastic Search: `rake prepare:all` (may take a while)
-- Run matching against the provided test data: `rake report:match["config/crossref-sample.csv"]`
-- Take a look at the CSV files in the `data` directory.
+```
+docker-compose up -d
+```
 
-Run `rake -T` to get a list of the tasks.
+Download and index the data:
 
-There's support for converting individual files, reindexing, etc.
+```
+docker-compose exec rorapi python manage.py setup
+```
 
-It's also worth installing the [Sense Chrome Extension](https://chrome.google.com/webstore/detail/sense-beta/lhjgkmllcaadmopgmanpapmpjgmfcfig?hl=en) to allow
-manually exploring the Elastic Search indexes.
+Optionally, run the tests:
+
+```
+docker-compose exec rorapi python manage.py test rorapi.tests
+docker-compose exec rorapi python manage.py test rorapi.tests_integration
+docker-compose exec rorapi python manage.py test rorapi.tests_functional
+```
+
+Visit <http://localhost/organizations>. For full API documentation, see <api_documentation.md>.
 
 ## Dataset Configuration
 
