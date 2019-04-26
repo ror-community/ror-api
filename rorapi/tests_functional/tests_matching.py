@@ -9,7 +9,7 @@ ACCURACY_MIN = 0.337127
 PRECISION_MIN = 0.375375
 RECALL_MIN = 0.415973
 
-API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost:8000')
+API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 class AffiliationMatchingTestCase(SimpleTestCase):
