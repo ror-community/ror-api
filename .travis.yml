@@ -20,12 +20,12 @@ before_script:
   - cp .env.travis .env
   - docker-compose up -d
   - sleep 120
-  - docker-compose exec rorapi python manage.py setup
+  - docker-compose exec web python3 manage.py setup
 
 script:
-  - docker-compose exec rorapi python manage.py test rorapi.tests
-  - docker-compose exec rorapi python manage.py test rorapi.tests_integration
-  - docker-compose exec rorapi python manage.py test rorapi.tests_functional
+  - docker-compose exec web python3 manage.py test rorapi.tests
+  - docker-compose exec web python3 manage.py test rorapi.tests_integration
+  - docker-compose exec web python3 manage.py test rorapi.tests_functional
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
