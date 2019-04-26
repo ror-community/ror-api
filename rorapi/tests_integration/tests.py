@@ -9,7 +9,7 @@ from ..settings import ROR_API
 
 
 BASE_URL = '{}/organizations'.format(
-    os.environ.get('ROR_BASE_URL', 'http://localhost:8000'))
+    os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
 class APITestCase(SimpleTestCase):

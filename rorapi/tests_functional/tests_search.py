@@ -9,7 +9,7 @@ RANK_MAX = 2.404506
 R1_MIN = 0.752242
 R5_MIN = 0.911979
 
-API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost:8000')
+API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 class SearchTestCase(SimpleTestCase):
