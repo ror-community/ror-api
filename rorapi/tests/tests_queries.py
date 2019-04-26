@@ -67,7 +67,7 @@ class QueryBuilderTestCase(SimpleTestCase):
     def test_add_filters(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
-        qb.add_filters({'key1': 'val1', 'k2': 'value2'})
+        qb.add_filters([('key1', 'val1'), ('k2', 'value2')])
 
         self.assertEqual(qb.get_query().to_dict(),
                          {'query': {'bool': {'filter':

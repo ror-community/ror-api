@@ -27,7 +27,7 @@ class ViewListTestCase(SimpleTestCase):
         request = factory.get('/organizations')
         response = view(request)
         response.render()
-        organizations = json.loads(response.content)
+        organizations = json.loads(response.content.decode('utf-8'))
 
         search_mock.assert_called_once()
         self.assertEquals(organizations['number_of_results'],
@@ -63,7 +63,7 @@ class ViewListTestCase(SimpleTestCase):
                               'page=third')
         response = view(request)
         response.render()
-        organizations = json.loads(response.content)
+        organizations = json.loads(response.content.decode('utf-8'))
 
         self.assertEquals(list(organizations.keys()), ['errors'])
         self.assertEquals(len(organizations['errors']), 6)
@@ -88,7 +88,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         request = factory.get('/organizations/https://ror.org/052gg0110')
         response = view(request, pk='https://ror.org/052gg0110')
         response.render()
-        organization = json.loads(response.content)
+        organization = json.loads(response.content.decode('utf-8'))
 
         self.assertEquals(organization,  self.test_data['hits']['hits'][0])
 
@@ -102,7 +102,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         request = factory.get('/organizations/https://ror.org/052gg0110')
         response = view(request, pk='https://ror.org/052gg0110')
         response.render()
-        organization = json.loads(response.content)
+        organization = json.loads(response.content.decode('utf-8'))
 
         self.assertEquals(list(organization.keys()), ['errors'])
         self.assertEquals(len(organization['errors']), 1)

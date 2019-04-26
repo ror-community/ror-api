@@ -35,7 +35,7 @@ class ESQueryBuilder():
                                                        'operator': 'and'})
 
     def add_filters(self, filters):
-        for f, v in filters.items():
+        for f, v in filters:
             self.search = self.search.filter('term', **{f: v})
 
     def add_aggregations(self, names):
@@ -123,7 +123,7 @@ def build_search_query(params):
     if 'filter' in params:
         filters = [f.split(':')
                    for f in params.get('filter', '').split(',') if f]
-        filters = {f[0]: f[1] for f in filters}
+        filters = [(f[0], f[1]) for f in filters]
         qb.add_filters(filters)
 
     qb.add_aggregations([('types', 'types'),
