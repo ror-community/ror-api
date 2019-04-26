@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+uwsgi --chdir=/home/app/webapp/ \
+  --module=rorapi.wsgi:application \
+  --env DJANGO_SETTINGS_MODULE=rorapi.settings \
+  --master --pidfile=/var/run/rorapi_wsgi.pid \
+  --socket=/tmp/rorapi_wsgi.sock \
+  --max-requests=5000 --processes=5 --vacuum \
+  --daemonize=/var/log/rorapi_wsgi.log \
+  --uid app --gid app
+exit 0

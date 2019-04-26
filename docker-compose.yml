@@ -17,18 +17,20 @@ services:
       test: curl -f http://elastic:changeme@elasticsearch:9200
       interval: 10s
       timeout: 1s
-  rorapi:
-    build: .
-    image: rorcommunity/ror-api
+  web:
+    env_file: .env
     environment:
-      - ELASTIC_PASSWORD=changeme
       - ELASTIC_HOST=elasticsearch
       - ELASTIC_PORT=9200
-    volumes:
-      - .:/code
+      - ROR_BASE_URL=http://localhost
+    build: .
+    image: rorcommunity/ror-api
     ports:
-      - "80:8000"
-    working_dir: /code
+      - "80:80"
+      - "2222:22"
+    volumes:
+      - ./config:/home/app/webapp/config
+      - ./lib:/home/app/webapp/lib
+      - ./spec:/home/app/webapp/spec
     depends_on:
       - elasticsearch
-    command: "python manage.py runserver 0.0.0.0:8000"
