@@ -41,13 +41,18 @@ RUN rm -f /etc/service/sshd/down && \
 RUN mkdir -p /etc/my_init.d
 COPY vendor/docker/10_ssh.sh /etc/my_init.d/10_ssh.sh
 
-# install Python packages
+# workdir
 WORKDIR /home/app/webapp
+
+# point /usr/bin/python to Python3
+RUN ln -s -f /usr/bin/python3.5 /usr/bin/python
+
+# install Python packages
 RUN pip3 install --no-cache-dir --upgrade pip
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # collect static files for Django
-RUN python3 manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput
 
 # Expose web
 EXPOSE 80
