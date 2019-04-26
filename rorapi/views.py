@@ -11,7 +11,10 @@ class OrganizationViewSet(viewsets.ViewSet):
     lookup_value_regex = r'https:\/\/ror\.org\/0\w{6}\d{2}'
 
     def list(self, request):
-        errors, organizations = search_organizations(request.GET)
+        params = request.GET.dict()
+        if 'format' in params:
+            del params['format']
+        errors, organizations = search_organizations(params)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         serializer = ListResultSerializer(organizations)
