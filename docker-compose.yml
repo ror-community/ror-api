@@ -17,7 +17,7 @@ services:
       test: curl -f http://elastic:changeme@elasticsearch:9200
       interval: 10s
       timeout: 1s
-  web:
+  rorapi:
     env_file: .env
     environment:
       - ELASTIC_HOST=elasticsearch
