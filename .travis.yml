@@ -41,6 +41,15 @@ after_success:
       docker push $REPO:$TRAVIS_BRANCH;
       echo "Pushed to" $REPO:$TRAVIS_BRANCH;
       AUTO_DEPLOY=true;
+    elif [ "$TRAVIS_BRANCH" == "python_rewrite" ]; then
+      docker build -f Dockerfile -t $REPO:$TRAVIS_BRANCH .;
+      docker push $REPO:$TRAVIS_BRANCH;
+      echo "Pushed to" $REPO:$TRAVIS_BRANCH;
+      AUTO_DEPLOY=true;
+    else
+      docker build -f Dockerfile -t $REPO:$TRAVIS_BRANCH .;
+      docker push $REPO:$TRAVIS_BRANCH;
+      echo "Pushed to" $REPO:$TRAVIS_BRANCH;
     fi
 
   - if [ "$AUTO_DEPLOY" == "true" ]; then
@@ -55,6 +64,8 @@ after_success:
         ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api.auto.tfvars;
       elif [ "$TRAVIS_BRANCH" == "dev" ]; then
         ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api-dev.auto.tfvars;
+      elif [ "$TRAVIS_BRANCH" == "python_rewrite" ]; then
+        ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api-dev.auto.tfvars;
       fi
       
       cd deployment;
@@ -65,7 +76,9 @@ after_success:
       if [ "$TRAVIS_BRANCH" == "master" ]; then
         git add ror/services/api/_ror-api.auto.tfvars;
       elif [ "$TRAVIS_BRANCH" == "dev" ]; then
-        git add ror/services/api/_ror-api-dv.auto.tfvars;
+        git add ror/services/api/_ror-api-dev.auto.tfvars;
+      elif [ "$TRAVIS_BRANCH" == "python_rewrite" ]; then
+        git add ror/services/api/_ror-api-dev.auto.tfvars;
       fi
 
       git commit -m "Adding ror-api git variables for latest commit on branch $TRAVIS_BRANCH";
