@@ -117,8 +117,12 @@ ES = {
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
-    'AWS_AUTH': None if os.environ.get('ELASTIC_HOST', '') == 'elasticsearch' else AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', ''), os.environ.get('AWS_SECRET_ACCESS_KEY', ''), os.environ.get('AWS_REGION', ''), 'es')
+    'AWS_AUTH': None
 }
+
+# use AWS4Auth if AWS Elasticsearch
+if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
+    {**ES, **{'AWS_AUTH': AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')}}
 
 connections.create_connection(
     hosts=['{}:{}'.format(h['host'], h['port']) for h in ES['HOSTS']],
