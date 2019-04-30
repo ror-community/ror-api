@@ -27,7 +27,7 @@ SECRET_KEY = '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'api.dev.ror.org', 'api.ror.org']
 
 
 # Application definition
