@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'api.dev.ror.org', 'api.ror.org']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
