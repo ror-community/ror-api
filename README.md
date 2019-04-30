@@ -53,15 +53,15 @@ docker-compose up -d
 Download and index the data:
 
 ```
-docker-compose exec rorapi python manage.py setup
+docker-compose exec web python manage.py setup
 ```
 
 Optionally, run the tests:
 
 ```
-docker-compose exec rorapi python manage.py test rorapi.tests
-docker-compose exec rorapi python manage.py test rorapi.tests_integration
-docker-compose exec rorapi python manage.py test rorapi.tests_functional
+docker-compose exec web python manage.py test rorapi.tests
+docker-compose exec web python manage.py test rorapi.tests_integration
+docker-compose exec web python manage.py test rorapi.tests_functional
 ```
 
 Visit <http://localhost/organizations>. For full API documentation, see [api\_documentation.md](api_documentation.md).
