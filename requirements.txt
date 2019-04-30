@@ -2,6 +2,7 @@ Django==2.2
 elasticsearch_dsl==6.1.0
 pycountry==18.12.8
 requests==2.18.4
+requests-aws4auth==0.9
 mock==2.0.0
 base32_crockford==0.3.0
 elasticsearch==6.3.1

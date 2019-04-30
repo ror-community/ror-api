@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 from elasticsearch_dsl import connections
+from requests_aws4auth import AWS4Auth
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -115,12 +116,15 @@ ES = {
     'TIMEOUT': 60,
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
-    'BATCH_SIZE': 20
+    'BATCH_SIZE': 20,
+    'AWS_AUTH': None if os.environ.get('ELASTIC_HOST', '') == 'elasticsearch' else AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', ''), os.environ.get('AWS_SECRET_ACCESS_KEY', ''), os.environ.get('AWS_REGION', ''), 'es')
 }
 
 connections.create_connection(
     hosts=['{}:{}'.format(h['host'], h['port']) for h in ES['HOSTS']],
-    timeout=ES['TIMEOUT'])
+    timeout=ES['TIMEOUT'],
+    http_auth=ES['AWS_AUTH']
+)
 
 GRID = {
     'VERSION': '2019-02-17',
