@@ -29,8 +29,6 @@ services:
       - "80:80"
       - "2222:22"
     volumes:
-      - ./config:/home/app/webapp/config
-      - ./lib:/home/app/webapp/lib
-      - ./spec:/home/app/webapp/spec
+      - ./rorapi:/home/app/webapp/rorapi
     depends_on:
       - elasticsearch
