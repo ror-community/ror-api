@@ -1,6 +1,2 @@
 .env
 .env.*
-.bundle
-log/*
-tmp/*
-vendor/bundle/*
