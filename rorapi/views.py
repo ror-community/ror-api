@@ -1,5 +1,7 @@
 from rest_framework import viewsets, routers
 from rest_framework.response import Response
+from django.http import HttpResponse
+from django.views import View
 
 from .models import OrganizationSerializer, ListResultSerializer, \
     ErrorsSerializer
@@ -31,3 +33,9 @@ class OrganizationViewSet(viewsets.ViewSet):
 organizations_router = routers.DefaultRouter(trailing_slash=False)
 organizations_router.register(r'organizations', OrganizationViewSet,
                               basename='organization')
+
+
+class HeartbeatView(View):
+
+    def get(self, request):
+        return HttpResponse('Ok')
