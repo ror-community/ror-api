@@ -3,8 +3,6 @@
 !.env.example
 !.env.travis
 docker-compose.override.yml
-.ruby-version
-/vendor/bundle/*
 __pycache__/
 *.pyc
 rorapi/data
