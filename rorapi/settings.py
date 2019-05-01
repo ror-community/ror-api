@@ -117,11 +117,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
+ELASTIC_HOST = os.environ.get('ELASTIC_HOST', 'elasticsearch')
+ELASTIC_PASSWORD = os.environ.get('ELASTIC_PASSWORD', 'changeme')
+
 # use AWS4Auth for AWS Elasticsearch unless running locally via docker
-if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
-    auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')
+if ELASTIC_HOST != 'elasticsearch':
+    http_auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')
 else:
-    auth = None
+    http_auth = ('elastic', ELASTIC_PASSWORD)
 
 ES = {
     'HOSTS': [{'host': os.environ.get('ELASTIC_HOST', 'localhost'),
@@ -130,13 +133,13 @@ ES = {
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
-    'AWS_AUTH': auth
+    'HTTP_AUTH': http_auth
 }
 
 connections.create_connection(
     hosts=['{}:{}'.format(h['host'], h['port']) for h in ES['HOSTS']],
     timeout=ES['TIMEOUT'],
-    http_auth=ES['AWS_AUTH']
+    http_auth=ES['HTTP_AUTH']
 )
 
 GRID = {
