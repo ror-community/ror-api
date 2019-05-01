@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -110,6 +110,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
+# use AWS4Auth for AWS Elasticsearch unless running locally via docker
+if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
+    auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')
+else:
+    auth = None
+
 ES = {
     'HOSTS': [{'host': os.environ.get('ELASTIC_HOST', 'localhost'),
                'port': os.environ.get('ELASTIC_PORT', '9200')}],
@@ -117,12 +123,8 @@ ES = {
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
-    'AWS_AUTH': None
+    'AWS_AUTH': auth
 }
-
-# use AWS4Auth if AWS Elasticsearch
-if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
-    {**ES, **{'AWS_AUTH': AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')}}
 
 connections.create_connection(
     hosts=['{}:{}'.format(h['host'], h['port']) for h in ES['HOSTS']],
