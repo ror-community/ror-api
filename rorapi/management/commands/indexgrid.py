@@ -1,37 +1,39 @@
 import json
+import rorapi.settings
 
 from django.core.management.base import BaseCommand
-from elasticsearch import Elasticsearch, TransportError
-from rorapi.settings import ES, GRID
+from elasticsearch import TransportError
+from elasticsearch_dsl import connections
 
 
 class Command(BaseCommand):
     help = 'Indexes ROR dataset'
 
     def handle(self, *args, **options):
-        with open(GRID['ROR_PATH'], 'r') as it:
+        with open(rorapi.settings.GRID['ROR_PATH'], 'r') as it:
             dataset = json.load(it)
 
-        es = Elasticsearch(ES['HOSTS'])
+        es = connections.get_connection()
 
         self.stdout.write('Indexing ROR dataset')
 
-        backup_index = '{}-tmp'.format(ES['INDEX'])
-        es.reindex(body={'source': {'index': ES['INDEX']},
+        index = rorapi.settings.ES['INDEX']
+        backup_index = '{}-tmp'.format(index)
+        es.reindex(body={'source': {'index': index},
                          'dest': {'index': backup_index}})
 
         try:
-            for i in range(0, len(dataset), ES['BATCH_SIZE']):
+            for i in range(0, len(dataset), rorapi.settings.ES['BATCH_SIZE']):
                 body = []
-                for org in dataset[i:i+ES['BATCH_SIZE']]:
-                    body.append({'index': {'_index': ES['INDEX'],
+                for org in dataset[i:i+rorapi.settings.ES['BATCH_SIZE']]:
+                    body.append({'index': {'_index': index,
                                            '_type': 'org',
                                            '_id': org['id']}})
                     body.append(org)
                 es.bulk(body)
         except TransportError:
             es.reindex(body={'source': {'index': backup_index},
-                             'dest': {'index': ES['INDEX']}})
+                             'dest': {'index': index}})
 
         if es.indices.exists(backup_index):
             es.indices.delete(backup_index)
