@@ -1,10 +1,10 @@
 import base32_crockford
 import json
 import random
+import rorapi.settings
 
 from django.core.management.base import BaseCommand
-from elasticsearch import Elasticsearch
-from rorapi.settings import ES, GRID, ROR_API
+from elasticsearch_dsl import connections
 
 
 def generate_ror_id():
@@ -18,7 +18,8 @@ def generate_ror_id():
     n = random.randint(0, 200000000)
     n_encoded = base32_crockford.encode(n).lower().zfill(6)
     checksum = str(98 - ((n * 100) % 97)).zfill(2)
-    return '{}0{}{}'.format(ROR_API['ID_PREFIX'], n_encoded, checksum)
+    return '{}0{}{}'.format(rorapi.settings.ROR_API['ID_PREFIX'],
+                            n_encoded, checksum)
 
 
 def get_ror_id(grid_id, es):
@@ -28,7 +29,7 @@ def get_ror_id(grid_id, es):
     from the index. Otherwise, new ROR ID is generated.
     """
 
-    s = es.search(ES['INDEX'],
+    s = es.search(rorapi.settings.ES['INDEX'],
                   body={'query': {'term': {'external_ids.GRID.all': grid_id}}})
     if s['hits']['total'] == 1:
         return s['hits']['hits'][0]['_id']
@@ -59,15 +60,15 @@ class Command(BaseCommand):
     help = 'Converts GRID dataset to ROR schema'
 
     def handle(self, *args, **options):
-        with open(GRID['JSON_PATH'], 'r') as it:
+        with open(rorapi.settings.GRID['JSON_PATH'], 'r') as it:
             grid_data = json.load(it)
 
-        es = Elasticsearch(ES['HOSTS'])
+        es = connections.get_connection()
 
         self.stdout.write('Converting GRID dataset to ROR schema')
         ror_data = [convert_organization(org, es)
                     for org in grid_data['institutes']
                     if org['status'] == 'active']
-        with open(GRID['ROR_PATH'], 'w') as outfile:
+        with open(rorapi.settings.GRID['ROR_PATH'], 'w') as outfile:
             json.dump(ror_data, outfile, indent=4)
         self.stdout.write('GRID dataset converted')
