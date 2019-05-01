@@ -29,8 +29,7 @@ COPY vendor/docker/ntp.conf /etc/ntp.conf
 
 # Copy webapp folder
 COPY . /home/app/webapp/
-RUN mkdir -p /home/app/webapp/vendor/bundle && \
-    chown -R app:app /home/app/webapp && \
+RUN chown -R app:app /home/app/webapp && \
     chmod -R 755 /home/app/webapp
 
 # enable SSH
