@@ -24,7 +24,6 @@ services:
       ELASTIC_PORT: 9200
       ELASTIC_PASSWORD: changeme
       ROR_BASE_URL: http://localhost
-      SECRET_KEY: 0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g
     build: .
     image: rorcommunity/ror-api
     ports:
