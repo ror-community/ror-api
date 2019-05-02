@@ -30,7 +30,8 @@ COPY vendor/docker/ntp.conf /etc/ntp.conf
 # Copy webapp folder
 COPY . /home/app/webapp/
 RUN chown -R app:app /home/app/webapp && \
-    chmod -R 755 /home/app/webapp
+    chmod -R 755 /home/app/webapp && \
+    chmod 755 /etc/container_environment
 
 # enable SSH
 RUN rm -f /etc/service/sshd/down && \
