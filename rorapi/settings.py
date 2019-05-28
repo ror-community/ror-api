@@ -18,6 +18,7 @@ import sentry_sdk
 from dotenv import load_dotenv
 from django.urls import path
 from elasticsearch_dsl import connections
+from elasticsearch import RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
 from rorapi.utils import import_envvars, listdir
@@ -159,7 +160,8 @@ ES = {
 connections.create_connection(
     hosts=['{}:{}'.format(h['host'], h['port']) for h in ES['HOSTS']],
     timeout=ES['TIMEOUT'],
-    http_auth=ES['HTTP_AUTH']
+    http_auth=ES['HTTP_AUTH'],
+    connection_class=RequestsHttpConnection
 )
 
 GRID = {
