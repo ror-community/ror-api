@@ -1,0 +1,848 @@
+{
+    "took": 7,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 137,
+        "max_score": 9.676415,
+        "hits": [
+            {
+                    "id": "https://ror.org/05b5x8s91",
+                    "name": "National Nuclear Energy Commission",
+                    "types": [
+                        "Government"
+                    ],
+                    "links": [
+                        "http://www.cnen.gov.br/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "CNEN"
+                    ],
+                    "wikipedia_url": "http://en.wikipedia.org/wiki/National_Nuclear_Energy_Commission",
+                    "labels": [
+                        {
+                            "label": "Comiss\u00e3o Nacional de Energia Nuclear",
+                            "iso639": "pt"
+                        },
+                        {
+                            "label": "National Nuclear Energy Commission",
+                            "iso639": "en"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "BR",
+                        "country_name": "Brazil"
+                    },
+                    "external_ids": {
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q2328722"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.418852.2",
+                            "all": "grid.418852.2"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/036ctr542",
+                    "name": "Association Vin\u00e7otte Nuclear",
+                    "types": [
+                        "Other"
+                    ],
+                    "links": [
+                        "http://www.avn.be/avn/doc.php?nd=o2&tid=2&lg=1&docid=29&site=1"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "AVN"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "Nuclear Safety Institute",
+                            "iso639": "en"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "BE",
+                        "country_name": "Belgium"
+                    },
+                    "external_ids": {
+                        "GRID": {
+                            "preferred": "grid.423673.7",
+                            "all": "grid.423673.7"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/01dyrvf09",
+                    "name": "Instituto de Pesquisas Energ\u00e9ticas e Nucleares",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "https://www.ipen.br/portal_por/portal/default.php"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "IPEN"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "Nuclear Energy Research Institute",
+                            "iso639": "en"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "BR",
+                        "country_name": "Brazil"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 2104 465X"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.466806.a",
+                            "all": "grid.466806.a"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/02hj7xs81",
+                    "name": "Comisi\u00f3n Chilena de Energ\u00eda Nuclear",
+                    "types": [
+                        "Government"
+                    ],
+                    "links": [
+                        "http://www.cchen.cl/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "CCHEN"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "Chilean Nuclear Energy Commission",
+                            "iso639": "en"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "CL",
+                        "country_name": "Chile"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 0560 5664"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.472538.f",
+                            "all": "grid.472538.f"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/006rfg424",
+                    "name": "Nuclear Physics",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://science.energy.gov/np/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "NP"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [],
+                    "country": {
+                        "country_code": "US",
+                        "country_name": "United States"
+                    },
+                    "external_ids": {
+                        "FundRef": {
+                            "preferred": null,
+                            "all": [
+                                "100006209"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.453025.5",
+                            "all": "grid.453025.5"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/01qfxpj38",
+                    "name": "Nuclear Engineering Institute",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://www.ien.gov.br/ingles/index.php"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "IEN"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "Instituto de Engenharia Nuclear",
+                            "iso639": "pt"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "BR",
+                        "country_name": "Brazil"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 0287 6514"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.457037.2",
+                            "all": "grid.457037.2"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/0471p4j25",
+                    "name": "Nuclear Safety Council",
+                    "types": [
+                        "Government"
+                    ],
+                    "links": [
+                        "https://www.csn.es/home"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "CSN"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "Consejo de Seguaridad Nuclear",
+                            "iso639": "es"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "ES",
+                        "country_name": "Spain"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 2162 8874"
+                            ]
+                        },
+                        "FundRef": {
+                            "preferred": null,
+                            "all": [
+                                "501100006055"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.423604.7",
+                            "all": "grid.423604.7"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/02j1d4g18",
+                    "name": "Nuclear Dynamics",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://umr3664.curie.fr/en/UMR3664"
+                    ],
+                    "aliases": [],
+                    "acronyms": [],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "Dynamique du noyau",
+                            "iso639": "fr"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "FR",
+                        "country_name": "France"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0004 0382 2624"
+                            ]
+                        },
+                        "CNRS": {
+                            "preferred": null,
+                            "all": [
+                                "UMR3664"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.462325.4",
+                            "all": "grid.462325.4"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/01xjjc948",
+                    "name": "Institut de Radioprotection et de S\u00fbret\u00e9 Nucl\u00e9aire",
+                    "types": [
+                        "Government"
+                    ],
+                    "links": [
+                        "http://www.irsn.fr/EN/Pages/home.aspx"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "IRSN"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Institut_de_radioprotection_et_de_s%C3%BBret%C3%A9_nucl%C3%A9aire",
+                    "labels": [
+                        {
+                            "label": "Radioprotection and Nuclear Safety Institute",
+                            "iso639": "en"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "FR",
+                        "country_name": "France"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 1414 6236"
+                            ]
+                        },
+                        "FundRef": {
+                            "preferred": null,
+                            "all": [
+                                "501100004598"
+                            ]
+                        },
+                        "OrgRef": {
+                            "preferred": null,
+                            "all": [
+                                "4890844"
+                            ]
+                        },
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q1502878"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.418735.c",
+                            "all": "grid.418735.c"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/04x79md53",
+                    "name": "American Nuclear Society",
+                    "types": [
+                        "Nonprofit"
+                    ],
+                    "links": [
+                        "http://www.ans.org/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "ANS"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/American_Nuclear_Society",
+                    "labels": [],
+                    "country": {
+                        "country_code": "US",
+                        "country_name": "United States"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0004 0512 562X"
+                            ]
+                        },
+                        "FundRef": {
+                            "preferred": null,
+                            "all": [
+                                "100005414"
+                            ]
+                        },
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q465883"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.431171.1",
+                            "all": "grid.431171.1"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/01v8s5079",
+                    "name": "Nuclear Safety Institute",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://en.ibrae.ac.ru/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "IBRAE RAN"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [
+                        {
+                            "label": "\u0418\u043d\u0441\u0442\u0438\u0442\u0443\u0442 \u044f\u0434\u0435\u0440\u043d\u043e\u0439 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438",
+                            "iso639": "ru"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "RU",
+                        "country_name": "Russia"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0004 0397 1021"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.465416.4",
+                            "all": "grid.465416.4"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/03zj8d217",
+                    "name": "Nuclear Threat Initiative",
+                    "types": [
+                        "Nonprofit"
+                    ],
+                    "links": [
+                        "http://www.nti.org/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "NTI"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Threat_Initiative",
+                    "labels": [],
+                    "country": {
+                        "country_code": "US",
+                        "country_name": "United States"
+                    },
+                    "external_ids": {
+                        "GRID": {
+                            "preferred": "grid.423126.0",
+                            "all": "grid.423126.0"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/046th0e77",
+                    "name": "Malaysian Nuclear Agency",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://www.nuclearmalaysia.gov.my/"
+                    ],
+                    "aliases": [
+                        "Malaysian Institute for Nuclear Technology Research"
+                    ],
+                    "acronyms": [
+                        "MINT"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Malaysian_Nuclear_Agency",
+                    "labels": [
+                        {
+                            "label": "Agensi Nuklear Malaysia",
+                            "iso639": "ms"
+                        }
+                    ],
+                    "country": {
+                        "country_code": "MY",
+                        "country_name": "Malaysia"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 2207 4025"
+                            ]
+                        },
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q6741978"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.466891.4",
+                            "all": "grid.466891.4"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/01bvpwg11",
+                    "name": "Nuclear Energy Agency",
+                    "types": [
+                        "Government"
+                    ],
+                    "links": [
+                        "https://www.oecd-nea.org/"
+                    ],
+                    "aliases": [
+                        "European Nuclear Energy Agency"
+                    ],
+                    "acronyms": [
+                        "ENEA",
+                        "NEA"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Energy_Agency",
+                    "labels": [],
+                    "country": {
+                        "country_code": "FR",
+                        "country_name": "France"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0004 0623 5046"
+                            ]
+                        },
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q369760"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.473395.f",
+                            "all": "grid.473395.f"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/05hvctp72",
+                    "name": "The Nuclear Institute",
+                    "types": [
+                        "Other"
+                    ],
+                    "links": [
+                        "https://www.nuclearinst.com/Homepage"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "NI"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Institute",
+                    "labels": [],
+                    "country": {
+                        "country_code": "GB",
+                        "country_name": "United Kingdom"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0001 0656 6732"
+                            ]
+                        },
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q7067964"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.499781.a",
+                            "all": "grid.499781.a"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/003r3px13",
+                    "name": "Starmet Corporation (United States)",
+                    "types": [
+                        "Company"
+                    ],
+                    "links": [
+                        "http://www.nmisite.org/nmisite/"
+                    ],
+                    "aliases": [
+                        "Nuclear Metals Inc"
+                    ],
+                    "acronyms": [
+                        "NMI"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [],
+                    "country": {
+                        "country_code": "US",
+                        "country_name": "United States"
+                    },
+                    "external_ids": {
+                        "GRID": {
+                            "preferred": "grid.465214.0",
+                            "all": "grid.465214.0"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/04q0bk564",
+                    "name": "Institute for Nuclear Research and Nuclear Energy",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://www.inrne.bas.bg/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "INRNE"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Institute_for_Nuclear_Research_and_Nuclear_Energy",
+                    "labels": [],
+                    "country": {
+                        "country_code": "BG",
+                        "country_name": "Bulgaria"
+                    },
+                    "external_ids": {
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q15995178"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.425050.6",
+                            "all": "grid.425050.6"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/016d46z60",
+                    "name": "Canadian Nuclear Laboratories",
+                    "types": [
+                        "Other"
+                    ],
+                    "links": [
+                        "http://www.cnl.ca/en/home/default.aspx"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "CNL"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [],
+                    "country": {
+                        "country_code": "CA",
+                        "country_name": "Canada"
+                    },
+                    "external_ids": {
+                        "GRID": {
+                            "preferred": "grid.459406.a",
+                            "all": "grid.459406.a"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/05p2fea13",
+                    "name": "Nuclear Physics Institute",
+                    "types": [
+                        "Facility"
+                    ],
+                    "links": [
+                        "http://www.ujf.cas.cz/index.php?lang=en"
+                    ],
+                    "aliases": [
+                        "\u00dastav Jadern\u00e9 Fyziky AV \u010cR"
+                    ],
+                    "acronyms": [
+                        "UJF",
+                        "NPI"
+                    ],
+                    "wikipedia_url": "",
+                    "labels": [],
+                    "country": {
+                        "country_code": "CZ",
+                        "country_name": "Czechia"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0000 8965 6073"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.425110.3",
+                            "all": "grid.425110.3"
+                        }
+                    }
+            },
+            {
+                    "id": "https://ror.org/0396eyc41",
+                    "name": "Nuclear Decommissioning Authority",
+                    "types": [
+                        "Government"
+                    ],
+                    "links": [
+                        "http://www.nda.gov.uk/"
+                    ],
+                    "aliases": [],
+                    "acronyms": [
+                        "NDA"
+                    ],
+                    "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Decommissioning_Authority",
+                    "labels": [],
+                    "country": {
+                        "country_code": "GB",
+                        "country_name": "United Kingdom"
+                    },
+                    "external_ids": {
+                        "ISNI": {
+                            "preferred": null,
+                            "all": [
+                                "0000 0004 0381 3859"
+                            ]
+                        },
+                        "FundRef": {
+                            "preferred": null,
+                            "all": [
+                                "100009477"
+                            ]
+                        },
+                        "Wikidata": {
+                            "preferred": null,
+                            "all": [
+                                "Q282281"
+                            ]
+                        },
+                        "GRID": {
+                            "preferred": "grid.422942.b",
+                            "all": "grid.422942.b"
+                        }
+                    }
+            }
+        ]
+    },
+    "aggregations": {
+        "types": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "Facility",
+                    "doc_count": 59
+                },
+                {
+                    "key": "Government",
+                    "doc_count": 31
+                },
+                {
+                    "key": "Nonprofit",
+                    "doc_count": 15
+                },
+                {
+                    "key": "Other",
+                    "doc_count": 13
+                },
+                {
+                    "key": "Company",
+                    "doc_count": 10
+                },
+                {
+                    "key": "Education",
+                    "doc_count": 5
+                },
+                {
+                    "key": "Healthcare",
+                    "doc_count": 3
+                }
+            ]
+        },
+        "countries": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 57,
+            "buckets": [
+                {
+                    "key": "US",
+                    "doc_count": 19
+                },
+                {
+                    "key": "CN",
+                    "doc_count": 10
+                },
+                {
+                    "key": "FR",
+                    "doc_count": 10
+                },
+                {
+                    "key": "RU",
+                    "doc_count": 8
+                },
+                {
+                    "key": "KR",
+                    "doc_count": 7
+                },
+                {
+                    "key": "BR",
+                    "doc_count": 6
+                },
+                {
+                    "key": "GB",
+                    "doc_count": 6
+                },
+                {
+                    "key": "PK",
+                    "doc_count": 5
+                },
+                {
+                    "key": "RO",
+                    "doc_count": 5
+                },
+                {
+                    "key": "BE",
+                    "doc_count": 4
+                }
+            ]
+        }
+    }
+}
