@@ -41,7 +41,7 @@ if os.path.isfile(env_file):
 try:
     with open('/etc/container_environment.json') as f:
         env_vars = json.load(f)
-        for k, v in env_vars:
+        for k, v in env_vars.items():
             os.environ[k] = v
 except Exception as e:
 	print(e)
