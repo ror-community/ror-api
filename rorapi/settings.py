@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import sys
+import json
 import sentry_sdk
 
 from dotenv import load_dotenv
+from django.urls import path
 from elasticsearch_dsl import connections
 from requests_aws4auth import AWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -24,15 +27,24 @@ sentry_sdk.init(
     integrations=[DjangoIntegration()]
 )
 
-# load ENV variables from .env file and container environment
-# see https://github.com/phusion/baseimage-docker#envvar_dumps
-# nginx doesn't pass through most env variables
-load_dotenv()
-import_envvars()
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# nginx doesn't pass through most env variables
+# load ENV variables from .env file if it exists
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.isfile(env_file): 
+    load_dotenv()
+
+# load ENV variables from container environment if json file exists
+# see https://github.com/phusion/baseimage-docker#envvar_dumps
+try:
+    with open('/etc/container_environment.json') as f:
+        env_vars = json.load(f)
+        for k, v in env_vars:
+            os.environ[k] = v
+except Exception as e:
+	print(e)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
