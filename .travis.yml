@@ -1,31 +1,31 @@
-language: ruby
-rvm:
-- 2.4.4
+language: python
+python:
+  - "3.6"
+
 sudo: required
 
 services:
   - docker
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-set-default
-
-before_install:
-  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.2.deb
-  - sudo dpkg -i --force-confnew elasticsearch-6.3.2.deb
-  - sudo service elasticsearch start
+env:
+  - DOCKER_COMPOSE_VERSION=1.23.2
 
 install:
-  - travis_retry bundle install
-  - curl -sL https://sentry.io/get-cli/ | bash
-  - sentry-cli --version
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
 
 before_script:
   - cp .env.travis .env
+  - docker-compose up -d
+  - sleep 120
+  - docker-compose exec web python manage.py setup
 
 script:
-  - bundle exec rspec
+  - docker-compose exec web python manage.py test rorapi.tests
+  - docker-compose exec web python manage.py test rorapi.tests_integration
+  - docker-compose exec web python manage.py test rorapi.tests_functional
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
@@ -41,6 +41,10 @@ after_success:
       docker push $REPO:$TRAVIS_BRANCH;
       echo "Pushed to" $REPO:$TRAVIS_BRANCH;
       AUTO_DEPLOY=true;
+    else
+      docker build -f Dockerfile -t $REPO:$TRAVIS_BRANCH .;
+      docker push $REPO:$TRAVIS_BRANCH;
+      echo "Pushed to" $REPO:$TRAVIS_BRANCH;
     fi
 
   - if [ "$AUTO_DEPLOY" == "true" ]; then
@@ -71,7 +75,9 @@ after_success:
       if [ "$TRAVIS_BRANCH" == "master" ]; then
         git add ror/services/api/_ror-api.auto.tfvars;
       elif [ "$TRAVIS_BRANCH" == "dev" ]; then
-        git add ror/services/api/_ror-api-dv.auto.tfvars;
+        git add ror/services/api/_ror-api-dev.auto.tfvars;
+      elif [ "$TRAVIS_BRANCH" == "python_rewrite" ]; then
+        git add ror/services/api/_ror-api-dev.auto.tfvars;
       fi
 
       git commit -m "Adding ror-api git variables for latest commit on branch $TRAVIS_BRANCH";

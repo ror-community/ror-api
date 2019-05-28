@@ -1,0 +1,143 @@
+{
+    "template": "org-id-*",
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
+        },
+        "normalizer": {
+          "keyword_lowercase": { "type": "custom", "filter": ["lowercase"] }
+        },
+        "filter": { 
+          "ascii_folding": { "type": "asciifolding", "preserve_original": true } 
+        }
+      }
+    },
+    "mappings": {
+      "org": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text",
+            "fields": { 
+              "keyword": { 
+                "type": "keyword" 
+              }, 
+              "norm": {
+                "type": "text", 
+                "analyzer": "string_lowercase", 
+                "fielddata": true 
+              }
+            }
+          },
+          "links": {
+            "type": "text"
+          },
+          "aliases": {
+            "type": "text",
+            "fields": { 
+              "keyword": { 
+                "type": "keyword" 
+              }, 
+              "norm": { 
+                "type": "text", 
+                "analyzer": "string_lowercase", 
+                "fielddata": true 
+              }
+            }
+          },
+          "acronyms": {
+            "type": "text",
+            "fields": { 
+              "keyword": { 
+                "type": "keyword" 
+              }, 
+              "norm": { 
+                "type": "text", 
+                "analyzer": "string_lowercase", 
+                "fielddata": true 
+              }
+            }
+          },
+
+          "labels": {
+            "properties": {
+              "label": {
+                "type": "text",
+		"fields": {
+              	  "keyword": {
+                    "type": "keyword"
+                  },
+                  "norm": {
+                    "type": "text",
+                    "analyzer": "string_lowercase",
+                    "fielddata": true
+                  }
+                }
+              }
+            }
+          },
+
+          "country": {
+            "properties": {
+              "country_code": {
+                "type": "keyword"
+              },
+              "country_name": {
+                "type": "keyword"
+              }
+            }
+          },
+          "types": {
+            "type": "keyword"
+          },
+          "external_ids": {
+            "properties": {
+              "GRID": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "ISNI": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "Fundref": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "Wikidata": {
+                "properties": {
+                  "preferred": {
+                    "type": "keyword"
+                  },
+                  "all": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            } 
+          }
+        }
+      }
+    }
+}

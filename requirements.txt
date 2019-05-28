@@ -1,0 +1,13 @@
+Django==2.2
+elasticsearch_dsl==6.1.0
+pycountry==18.12.8
+requests==2.18.4
+requests-aws4auth==0.9
+mock==2.0.0
+base32_crockford==0.3.0
+elasticsearch==6.3.1
+djangorestframework==3.9.2
+coreapi==2.3.3
+django-prometheus==1.0.15
+sentry-sdk==0.7.14
+python-dotenv==0.10.1
