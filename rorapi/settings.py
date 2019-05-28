@@ -149,19 +149,17 @@ else:
 
 ES = {
     'HOSTS': [{'host': os.environ.get('ELASTIC_HOST', 'localhost'),
-               'port': os.environ.get('ELASTIC_PORT', '9200')}],
+               'port': os.environ.get('ELASTIC_PORT', '9200'),
+               'http_auth': http_auth }],
     'TIMEOUT': 60,
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
-    'BATCH_SIZE': 20,
-    'HTTP_AUTH': http_auth
+    'BATCH_SIZE': 20
 }
 
 connections.create_connection(
-    hosts=['{}:{}'.format(h['host'], h['port']) for h in ES['HOSTS']],
-    timeout=ES['TIMEOUT'],
-    http_auth=ES['HTTP_AUTH'],
-    connection_class=RequestsHttpConnection
+    hosts=ES['HOSTS'],
+    timeout=ES['TIMEOUT']
 )
 
 GRID = {
