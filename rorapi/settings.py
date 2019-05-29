@@ -160,8 +160,8 @@ ES = Elasticsearch(
     connection_class=RequestsHttpConnection) 
 
 GRID = {
-    'VERSION': '2019-02-17',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
+    'VERSION': '2019-05-06',
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
 }
 
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
