@@ -18,7 +18,7 @@ import sentry_sdk
 from dotenv import load_dotenv
 from django.urls import path
 from elasticsearch import Elasticsearch, RequestsHttpConnection
-from requests_aws4auth import AWS4Auth
+from requests_aws4auth import AWS4SigningKey, StrictAWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
 from rorapi.utils import import_envvars, listdir
 
@@ -142,7 +142,8 @@ ELASTIC_PASSWORD = os.environ.get('ELASTIC_PASSWORD', 'changeme')
 
 # use AWS4Auth for AWS Elasticsearch unless running locally via docker
 if ELASTIC_HOST != 'elasticsearch':
-    http_auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')
+    sig_key = AWS4SigningKey(os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es', None, False)
+    http_auth = StrictAWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), sig_key)
 else:
     http_auth = ('elastic', ELASTIC_PASSWORD)
 
