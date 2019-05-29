@@ -1,7 +1,7 @@
 import re
 
 from .models import Organization, ListResult, Errors
-from .settings import ES, ROR_API
+from .settings import ES, ES_VARS, ROR_API
 
 from elasticsearch_dsl import Search
 
@@ -10,7 +10,7 @@ class ESQueryBuilder():
     """Elasticsearch query builder class"""
 
     def __init__(self):
-        self.search = Search(index=ES['INDEX'])
+        self.search = Search(using=ES, index=ES_VARS['INDEX'])
 
     def add_id_query(self, id):
         self.search = self.search.query('match', id={'query': id,
@@ -44,8 +44,8 @@ class ESQueryBuilder():
                                     min_doc_count=1)
 
     def paginate(self, page):
-        self.search = self.search[((page-1) * ES['BATCH_SIZE']):
-                                  (page * ES['BATCH_SIZE'])]
+        self.search = self.search[((page-1) * ES_VARS['BATCH_SIZE']):
+                                  (page * ES_VARS['BATCH_SIZE'])]
 
     def get_query(self):
         return self.search
