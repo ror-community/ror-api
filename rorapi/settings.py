@@ -17,8 +17,7 @@ import sentry_sdk
 
 from dotenv import load_dotenv
 from django.urls import path
-from elasticsearch_dsl import connections
-from elasticsearch import RequestsHttpConnection
+from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
 from rorapi.utils import import_envvars, listdir
@@ -147,20 +146,18 @@ if ELASTIC_HOST != 'elasticsearch':
 else:
     http_auth = ('elastic', ELASTIC_PASSWORD)
 
-ES = {
-    'HOSTS': [{'host': os.environ.get('ELASTIC_HOST', 'localhost'),
-               'port': os.environ.get('ELASTIC_PORT', '9200'),
-               'http_auth': http_auth }],
-    'TIMEOUT': 60,
+ES_VARS = {
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20
 }
 
-connections.create_connection(
-    hosts=ES['HOSTS'],
-    timeout=ES['TIMEOUT']
-)
+ES = Elasticsearch(
+    hosts=[{'host': os.environ.get('ELASTIC_HOST', 'localhost'),
+            'port': int(os.environ.get('ELASTIC_PORT', '9200'))}],
+    http_auth=http_auth,
+    timeout=60,
+    connection_class=RequestsHttpConnection) 
 
 GRID = {
     'VERSION': '2019-02-17',

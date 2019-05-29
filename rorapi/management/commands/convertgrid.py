@@ -4,7 +4,6 @@ import random
 import rorapi.settings
 
 from django.core.management.base import BaseCommand
-from elasticsearch_dsl import connections
 
 
 def generate_ror_id():
@@ -29,7 +28,7 @@ def get_ror_id(grid_id, es):
     from the index. Otherwise, new ROR ID is generated.
     """
 
-    s = es.search(rorapi.settings.ES['INDEX'],
+    s = rorapi.settings.ES.search(rorapi.settings.ES_VARS['INDEX'],
                   body={'query': {'term': {'external_ids.GRID.all': grid_id}}})
     if s['hits']['total'] == 1:
         return s['hits']['hits'][0]['_id']
@@ -39,7 +38,7 @@ def get_ror_id(grid_id, es):
 def convert_organization(grid_org, es):
     """Converts the organization metadata from GRID schema to ROR schema."""
 
-    return {'id': get_ror_id(grid_org['id'], es),
+    return {'id': get_ror_id(grid_org['id'], rorapi.settings.ES),
             'name': grid_org['name'],
             'types': grid_org['types'],
             'links': grid_org['links'],
@@ -63,10 +62,8 @@ class Command(BaseCommand):
         with open(rorapi.settings.GRID['JSON_PATH'], 'r') as it:
             grid_data = json.load(it)
 
-        es = connections.get_connection()
-
         self.stdout.write('Converting GRID dataset to ROR schema')
-        ror_data = [convert_organization(org, es)
+        ror_data = [convert_organization(org, rorapi.settings.ES)
                     for org in grid_data['institutes']
                     if org['status'] == 'active']
         with open(rorapi.settings.GRID['ROR_PATH'], 'w') as outfile:

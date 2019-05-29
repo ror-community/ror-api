@@ -272,13 +272,6 @@ known results. They're provided to explore output of the matching on a larger sa
 - `config/crossref-1000.csv` -- 1000 affiliations taken from CrossRef. Contains duplicates
 - `config/crossref-1000-cermine.csv` -- above file, but `Institution` and `Country` columns have been populated using the [CERMINE](https://github.com/CeON/CERMINE) API
 
-To generate similar files you can run:
-
-```
-rake prepare:crossref_samples[1000] #generates data/crossref-sample.csv with 1000 rows
-rake prepare:enrich_cermine[data/crossref-sample] #generates data/crossref-sample-cermine.csv
-```
-
 ### Matching reports
 
 The output of the matching script is written to a collection of CSV files in the `data` directory.
