@@ -27,7 +27,7 @@ services:
     build: .
     image: rorcommunity/ror-api
     ports:
-      - "80:80"
+      - "9292:80"
       - "2222:22"
     volumes:
       - ./rorapi:/home/app/webapp/rorapi
