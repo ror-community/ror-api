@@ -160,20 +160,20 @@ ES = Elasticsearch(
     timeout=60,
     connection_class=RequestsHttpConnection) 
 
-GRID = {
-    'VERSION': '2018-11-14',
-    'URL': 'https://ndownloader.figshare.com/files/13575374'
-}
+# GRID = {
+#     'VERSION': '2018-11-14',
+#     'URL': 'https://ndownloader.figshare.com/files/13575374'
+# }
 
 # GRID = {
 #     'VERSION': '2019-02-17',
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
-# GRID = {
-#     'VERSION': '2019-05-06',
-#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
-# }
+GRID = {
+    'VERSION': '2019-05-06',
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+}
 
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                            'grid-{}'.format(GRID['VERSION']))
