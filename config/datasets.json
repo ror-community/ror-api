@@ -1,8 +1,0 @@
-{
-  "grid": {
-    "name": "grid.ac",
-    "version": "2019-02-17",
-    "download": "https://digitalscience.figshare.com/ndownloader/files/14399291",
-    "script": "bin/convert-grid.rb"
-  }
-}
