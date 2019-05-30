@@ -140,7 +140,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 ES_VARS = {
     'INDEX': 'organizations',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
-    'BATCH_SIZE': 500
+    'BATCH_SIZE': 20,
+    'BULK_SIZE': 500
 }
 
 ELASTIC_HOST = os.environ.get('ELASTIC_HOST', 'elasticsearch')
