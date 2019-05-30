@@ -24,9 +24,9 @@ class Command(BaseCommand):
                          'dest': {'index': backup_index}})
 
         try:
-            for i in range(0, len(dataset), ES_VARS['BATCH_SIZE']):
+            for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
                 body = []
-                for org in dataset[i:i+ES_VARS['BATCH_SIZE']]:
+                for org in dataset[i:i+ES_VARS['BULK_SIZE']]:
                     body.append({'index': {'_index': index,
                                            '_type': 'org',
                                            '_id': org['id']}})
