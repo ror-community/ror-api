@@ -19,7 +19,7 @@ install:
 before_script:
   - cp .env.travis .env
   - docker-compose up -d
-  - sleep 120
+  - docker-compose exec web python manage.py upgrade
   - docker-compose exec web python manage.py setup
 
 script:
