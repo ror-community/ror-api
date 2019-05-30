@@ -11,3 +11,4 @@ coreapi==2.3.3
 django-prometheus==1.0.15
 sentry-sdk==0.7.14
 python-dotenv==0.10.1
+django-cors-headers==3.0.2
