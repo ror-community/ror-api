@@ -67,18 +67,19 @@ class Command(BaseCommand):
             self.stdout.write('GRID dataset already converted')
             return
 
-        with open(GRID['GRID_JSON_PATH'], 'r') as it:
-            grid_data = json.load(it)
+        if not zipfile.is_zipfile(GRID['ROR_JSON_PATH']):
+            with open(GRID['GRID_JSON_PATH'], 'r') as it:
+                grid_data = json.load(it)
 
-        self.stdout.write('Converting GRID dataset to ROR schema')
-        ror_data = [convert_organization(org, ES)
-                    for org in grid_data['institutes']
-                    if org['status'] == 'active']
-        with open(GRID['ROR_JSON_PATH'], 'w') as outfile:
-            json.dump(ror_data, outfile, indent=4)
-        self.stdout.write('GRID dataset converted')
+            self.stdout.write('Converting GRID dataset to ROR schema')
+            ror_data = [convert_organization(org, ES)
+                        for org in grid_data['institutes']
+                        if org['status'] == 'active']
+            with open(GRID['ROR_JSON_PATH'], 'w') as outfile:
+                json.dump(ror_data, outfile, indent=4)
+            self.stdout.write('GRID dataset converted')
 
         # generate zip archive
         with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'w') as zipArchive:
-            zipArchive.write(GRID['ROR_JSON_PATH'], compress_type=zipfile.ZIP_DEFLATED)
+            zipArchive.write(GRID['ROR_JSON_PATH'], arcname='ror.json', compress_type=zipfile.ZIP_DEFLATED)
             self.stdout.write('ROR dataset ZIP archive created')
