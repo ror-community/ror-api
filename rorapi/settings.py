@@ -140,7 +140,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 ES_VARS = {
     'INDEX': 'org-id-grid',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
-    'BATCH_SIZE': 20
+    'BATCH_SIZE': 500
 }
 
 ELASTIC_HOST = os.environ.get('ELASTIC_HOST', 'elasticsearch')
@@ -161,15 +161,26 @@ ES = Elasticsearch(
     connection_class=RequestsHttpConnection) 
 
 GRID = {
-    'VERSION': '2019-05-06',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+    'VERSION': '2018-11-14',
+    'URL': 'https://ndownloader.figshare.com/files/13575374'
 }
+
+# GRID = {
+#     'VERSION': '2019-02-17',
+#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
+# }
+
+# GRID = {
+#     'VERSION': '2019-05-06',
+#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+# }
 
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                            'grid-{}'.format(GRID['VERSION']))
-GRID['ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
-GRID['JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
-GRID['ROR_PATH'] = os.path.join(GRID['DIR'], 'ror_dataset.json')
+GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
+GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
+GRID['ROR_ZIP_PATH'] = os.path.join(GRID['DIR'], 'ror.zip')
+GRID['ROR_JSON_PATH'] = os.path.join(GRID['DIR'], 'ror.json')
 
 ROR_API = {
     'PAGE_SIZE': 20,
