@@ -10,12 +10,6 @@ class Command(BaseCommand):
     help = 'Indexes ROR dataset'
 
     def handle(self, *args, **options):
-        # make sure ROR JSON file exists
-        if not zipfile.is_zipfile(GRID['ROR_ZIP_PATH']):
-            self.stdout.write('ROR dataset for GRID version {} not found. Please run the upgrade command first.'
-                    .format(GRID['VERSION']))
-            return
-
         with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'r') as zip_ref:
             zip_ref.extractall(GRID['DIR'])
         
@@ -39,6 +33,7 @@ class Command(BaseCommand):
                     body.append(org)
                 ES.bulk(body)
         except TransportError:
+            self.stdout.write(TransportError)
             ES.reindex(body={'source': {'index': backup_index},
                              'dest': {'index': index}})
 
