@@ -26,7 +26,7 @@ docker-compose exec web python manage.py test rorapi.tests_integration
 docker-compose exec web python manage.py test rorapi.tests_functional
 ```
 
-Visit <http://localhost/organizations>. For full API documentation, see [api\_documentation.md](api_documentation.md).
+Visit <http://localhost:9292/organizations>. For full API documentation, see [api\_documentation.md](api_documentation.md).
 
 ## JSON Format and Index Structure
 
