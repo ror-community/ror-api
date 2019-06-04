@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'r') as zip_ref:
             zip_ref.extractall(GRID['DIR'])
-        
+
         with open(GRID['ROR_JSON_PATH'], 'r') as it:
             dataset = json.load(it)
 

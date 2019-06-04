@@ -11,16 +11,13 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import sys
 import json
 import sentry_sdk
 
 from dotenv import load_dotenv
-from django.urls import path
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
-from rorapi.utils import import_envvars, listdir
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN', None),
@@ -33,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # nginx doesn't pass through most env variables
 # load ENV variables from .env file if it exists
 env_file = os.path.join(BASE_DIR, '.env')
-if os.path.isfile(env_file): 
+if os.path.isfile(env_file):
     load_dotenv()
 
 # load ENV variables from container environment if json file exists
@@ -44,13 +41,14 @@ try:
         for k, v in env_vars.items():
             os.environ[k] = v
 except Exception as e:
-	print(e)
+    print(e)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY', '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
@@ -145,7 +143,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
     'INDEX': 'organizations',
@@ -154,22 +152,21 @@ ES_VARS = {
     'BULK_SIZE': 500
 }
 
-ELASTIC_HOST = os.environ.get('ELASTIC_HOST', 'elasticsearch')
-ELASTIC_PASSWORD = os.environ.get('ELASTIC_PASSWORD', 'changeme')
-
 # use AWS4Auth for AWS Elasticsearch unless running locally via docker
-if ELASTIC_HOST != 'elasticsearch':
-    http_auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID', None), os.environ.get('AWS_SECRET_ACCESS_KEY', None), os.environ.get('AWS_REGION', None), 'es')
+if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
+    http_auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID'),
+                         os.environ.get('AWS_SECRET_ACCESS_KEY'),
+                         os.environ.get('AWS_REGION'), 'es')
 else:
-    http_auth = ('elastic', ELASTIC_PASSWORD)
+    http_auth = ('elastic', os.environ.get('ELASTIC_PASSWORD', 'changeme'))
 
 ES = Elasticsearch(
-    [{'host': os.environ.get('ELASTIC_HOST', 'localhost'),
+    [{'host': os.environ.get('ELASTIC_HOST', 'elasticsearch'),
       'port': int(os.environ.get('ELASTIC_PORT', '9200'))}],
     http_auth=http_auth,
     use_ssl=False,
     timeout=60,
-    connection_class=RequestsHttpConnection) 
+    connection_class=RequestsHttpConnection)
 
 # GRID = {
 #     'VERSION': '2018-11-14',
