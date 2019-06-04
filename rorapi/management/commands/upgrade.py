@@ -4,7 +4,7 @@ from .convertgrid import Command as ConvertGridCommand
 
 
 class Command(BaseCommand):
-    help = 'Upgrade ROR API with latest GRID data'
+    help = 'Generate up-to-date ror.zip from GRID data'
 
     def handle(self, *args, **options):
         DownloadGridCommand().handle(args, options)

@@ -1,7 +1,6 @@
 import base32_crockford
 import json
 import random
-import os
 import zipfile
 from rorapi.settings import ES, ES_VARS, ROR_API, GRID
 
@@ -81,5 +80,6 @@ class Command(BaseCommand):
 
         # generate zip archive
         with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'w') as zipArchive:
-            zipArchive.write(GRID['ROR_JSON_PATH'], arcname='ror.json', compress_type=zipfile.ZIP_DEFLATED)
+            zipArchive.write(GRID['ROR_JSON_PATH'], arcname='ror.json',
+                             compress_type=zipfile.ZIP_DEFLATED)
             self.stdout.write('ROR dataset ZIP archive created')
