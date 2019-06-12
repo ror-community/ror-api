@@ -5,12 +5,12 @@ from django.views import View
 
 from .models import OrganizationSerializer, ListResultSerializer, \
     ErrorsSerializer
-from .queries import search_organizations, retrieve_organization
+from .queries import search_organizations, retrieve_organization, get_ror_id
 
 
 class OrganizationViewSet(viewsets.ViewSet):
 
-    lookup_value_regex = r'https:\/\/ror\.org\/0\w{6}\d{2}'
+    lookup_value_regex = r'((https?:\/\/)?ror\.org\/)?0\w{6}\d{2}'
 
     def list(self, request):
         params = request.GET.dict()
@@ -23,7 +23,8 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        errors, organization = retrieve_organization(pk)
+        ror_id = get_ror_id(pk)
+        errors, organization = retrieve_organization(ror_id)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         serializer = OrganizationSerializer(organization)

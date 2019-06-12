@@ -180,9 +180,13 @@ class APITestCase(SimpleTestCase):
 
     def test_retrieval(self):
         for test_org in requests.get(BASE_URL).json()['items']:
-            output = requests.get(BASE_URL + '/' + test_org['id']).json()
-
-            self.assertEquals(output, test_org)
+            for test_id in \
+                [test_org['id'],
+                 re.sub('https', 'http', test_org['id']),
+                 re.sub(r'https:\/\/', '', test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', '', test_org['id'])]:
+                output = requests.get(BASE_URL + '/' + test_id).json()
+                self.assertEquals(output, test_org)
 
     def test_error(self):
         output = requests.get(BASE_URL, {'query': 'query',
