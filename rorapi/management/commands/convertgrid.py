@@ -1,5 +1,6 @@
 import base32_crockford
 import json
+import os.path
 import random
 import zipfile
 from rorapi.settings import ES, ES_VARS, ROR_API, GRID
@@ -66,7 +67,7 @@ class Command(BaseCommand):
             self.stdout.write('GRID dataset already converted')
             return
 
-        if not zipfile.is_zipfile(GRID['ROR_JSON_PATH']):
+        if not os.path.isfile(GRID['ROR_JSON_PATH']):
             with open(GRID['GRID_JSON_PATH'], 'r') as it:
                 grid_data = json.load(it)
 
