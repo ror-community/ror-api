@@ -103,14 +103,12 @@ class GetRorIDTestCase(SimpleTestCase):
 
     def test_no_id(self):
         self.assertIsNone(get_ror_id('no id here'))
+        self.assertIsNone(get_ror_id('http://0w7hudk23'))
+        self.assertIsNone(get_ror_id('https://0w7hudk23'))
 
     def test_extract_id(self):
         self.assertEquals(get_ror_id('0w7hudk23'), 'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('ror.org/0w7hudk23'),
-                          'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('http://0w7hudk23'),
-                          'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('https://0w7hudk23'),
                           'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('http://ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
