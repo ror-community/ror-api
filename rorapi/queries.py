@@ -4,7 +4,7 @@ from .models import Organization, ListResult, Errors
 from .settings import ES, ES_VARS, ROR_API
 
 from elasticsearch_dsl import Search
-
+from urllib.parse import unquote
 
 class ESQueryBuilder():
     """Elasticsearch query builder class"""
@@ -55,7 +55,7 @@ def get_ror_id(string):
     """Extracts ROR id from a string and transforms it into canonical form"""
 
     m = re.match(r'^(?:(?:(?:http|https):\/\/)?ror\.org\/)?(0\w{6}\d{2})$',
-                 string)
+                 unquote(string))
     if m is not None:
         return ROR_API['ID_PREFIX'] + m.group(1)
     return None
