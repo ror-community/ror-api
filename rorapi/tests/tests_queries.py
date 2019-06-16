@@ -110,9 +110,13 @@ class GetRorIDTestCase(SimpleTestCase):
         self.assertEquals(get_ror_id('0w7hudk23'), 'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
+        self.assertEquals(get_ror_id('ror.org%2F0w7hudk23'),
+                          'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('http://ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('https://ror.org/0w7hudk23'),
+                          'https://ror.org/0w7hudk23')
+        self.assertEquals(get_ror_id('https%3A%2F%2Fror.org%2F0w7hudk23'),
                           'https://ror.org/0w7hudk23')
 
 
