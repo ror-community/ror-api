@@ -44,18 +44,6 @@ class QueryBuilderTestCase(SimpleTestCase):
         self.assertEqual(qb.get_query().to_dict(),
                          {'query': {'query_string': {'query': 'query terms'}}})
 
-    def test_string_query_escaped(self):
-        qb = ESQueryBuilder()
-        qb.add_string_query(
-            r'query + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ / to escape')
-
-        self.assertEqual(
-            qb.get_query().to_dict(),
-            {'query':
-             {'query_string':
-              {'query': r'query \+ \- \= \&\& \|\| \> \< \! \( \) \{ \} ' +
-                        r'\[ \] \^ \" \~ \* \? \: \\ \/ to escape'}}})
-
     def test_name_query(self):
         qb = ESQueryBuilder()
         qb.add_name_query('query terms')
