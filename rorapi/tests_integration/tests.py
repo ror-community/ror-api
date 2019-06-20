@@ -188,6 +188,12 @@ class APITestCase(SimpleTestCase):
                 output = requests.get(BASE_URL + '/' + test_id).json()
                 self.assertEquals(output, test_org)
 
+    def test_query_grid_retrieval(self):
+        for test_org in requests.get(BASE_URL).json()['items']:
+            grid = test_org['external_ids']['GRID']['preferred']
+            output = requests.get(BASE_URL, {'query': '"' + grid + '"'}).json()
+            self.verify_single_item(output, test_org)
+
     def test_error(self):
         output = requests.get(BASE_URL, {'query': 'query',
                                          'illegal': 'whatever',

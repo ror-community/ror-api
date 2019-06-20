@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 
 from django.test import SimpleTestCase
@@ -15,6 +16,8 @@ API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 class AffiliationMatchingTestCase(SimpleTestCase):
 
     def match(self, affiliation):
+        affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
+                             lambda m: '\\' + m.group(), affiliation)
         results = requests.get('{}/organizations'.format(API_URL),
                                {'query': affiliation}).json()
         if 'items' not in results:
