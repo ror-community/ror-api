@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 
 from django.test import SimpleTestCase
@@ -15,6 +16,8 @@ API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 class SearchTestCase(SimpleTestCase):
 
     def search(self, query):
+        query = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
+                       lambda m: '\\' + m.group(), query)
         results = requests.get('{}/organizations'.format(API_URL),
                                {'query': query}).json()
         if 'items' not in results:
