@@ -26,8 +26,6 @@ class ESQueryBuilder():
                                         fields=fields)
 
     def add_string_query(self, terms):
-        terms = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
-                       lambda m: '\\' + m.group(), terms)
         self.search = self.search.query('query_string', query=terms)
 
     def add_name_query(self, terms):
