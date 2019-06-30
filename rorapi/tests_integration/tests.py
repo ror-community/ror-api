@@ -174,7 +174,8 @@ class APITestCase(SimpleTestCase):
                     [test_org['id'],
                      re.sub('https', 'http', test_org['id']),
                      re.sub(r'https:\/\/', '', test_org['id']),
-                     re.sub(r'https:\/\/ror.org\/', '', test_org['id'])]:
+                     re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
+                     re.sub(r'https%3A%2F%2Fror.org%2F', '', test_org['id'])]:
                 output = requests.get(BASE_URL, {'query': test_id}).json()
                 self.verify_single_item(output, test_org)
 
@@ -184,7 +185,8 @@ class APITestCase(SimpleTestCase):
                 [test_org['id'],
                  re.sub('https', 'http', test_org['id']),
                  re.sub(r'https:\/\/', '', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', '', test_org['id'])]:
+                 re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
+                 re.sub(r'https%3A%2F%2Fror.org%2F', '', test_org['id'])]:
                 output = requests.get(BASE_URL + '/' + test_id).json()
                 self.assertEquals(output, test_org)
 
