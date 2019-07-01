@@ -171,11 +171,15 @@ class APITestCase(SimpleTestCase):
     def test_query_retrieval(self):
         for test_org in requests.get(BASE_URL).json()['items']:
             for test_id in \
-                    [test_org['id'],
-                     re.sub('https', 'http', test_org['id']),
-                     re.sub(r'https:\/\/', '', test_org['id']),
-                     re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
-                     re.sub(r'https%3A%2F%2Fror.org%2F', '', test_org['id'])]:
+                [test_org['id'],
+                 re.sub('https', 'http', test_org['id']),
+                 re.sub(r'https:\/\/', '', test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', r'ror.org%2F', test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', r'http%3A%2F%2Fror.org%2F',
+                        test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', r'https%3A%2F%2Fror.org%2F',
+                        test_org['id'])]:
                 output = requests.get(BASE_URL, {'query': test_id}).json()
                 self.verify_single_item(output, test_org)
 
@@ -186,7 +190,11 @@ class APITestCase(SimpleTestCase):
                  re.sub('https', 'http', test_org['id']),
                  re.sub(r'https:\/\/', '', test_org['id']),
                  re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
-                 re.sub(r'https%3A%2F%2Fror.org%2F', '', test_org['id'])]:
+                 re.sub(r'https:\/\/ror.org\/', r'ror.org%2F', test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', r'http%3A%2F%2Fror.org%2F',
+                        test_org['id']),
+                 re.sub(r'https:\/\/ror.org\/', r'https%3A%2F%2Fror.org%2F',
+                        test_org['id'])]:
                 output = requests.get(BASE_URL + '/' + test_id).json()
                 self.assertEquals(output, test_org)
 
