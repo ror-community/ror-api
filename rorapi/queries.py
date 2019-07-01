@@ -6,6 +6,7 @@ from .settings import ES, ES_VARS, ROR_API
 from elasticsearch_dsl import Search
 from urllib.parse import unquote
 
+
 class ESQueryBuilder():
     """Elasticsearch query builder class"""
 
