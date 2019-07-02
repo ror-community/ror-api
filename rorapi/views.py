@@ -10,7 +10,8 @@ from .queries import search_organizations, retrieve_organization, get_ror_id
 
 class OrganizationViewSet(viewsets.ViewSet):
 
-    lookup_value_regex = r'((https?:\/\/)?ror\.org\/)?0\w{6}\d{2}'
+    lookup_value_regex = \
+        r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?0\w{6}\d{2}'
 
     def list(self, request):
         params = request.GET.dict()
