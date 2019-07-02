@@ -98,9 +98,15 @@ class GetRorIDTestCase(SimpleTestCase):
         self.assertEquals(get_ror_id('0w7hudk23'), 'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
+        self.assertEquals(get_ror_id('ror.org%2F0w7hudk23'),
+                          'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('http://ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
+        self.assertEquals(get_ror_id('http%3A%2F%2Fror.org%2F0w7hudk23'),
+                          'https://ror.org/0w7hudk23')
         self.assertEquals(get_ror_id('https://ror.org/0w7hudk23'),
+                          'https://ror.org/0w7hudk23')
+        self.assertEquals(get_ror_id('https%3A%2F%2Fror.org%2F0w7hudk23'),
                           'https://ror.org/0w7hudk23')
 
 
@@ -168,9 +174,17 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEquals(query.to_dict(), expected)
         query = build_search_query({'query': 'ror.org/0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
+        query = build_search_query({'query': 'ror.org%2F0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
         query = build_search_query({'query': 'http://ror.org/0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
+        query = build_search_query(
+            {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
         query = build_search_query({'query': 'https://ror.org/0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
+        query = build_search_query(
+            {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_ui(self):
