@@ -35,8 +35,12 @@ class SearchTestCase(SimpleTestCase):
         with open(os.path.join(os.path.dirname(__file__),
                                'data/dataset_names.json')) as names_file:
             data = json.load(names_file)
-        data_query = [(d, search(API_URL, param, d['affiliation']))
-                      for d in data]
+        data_query = []
+        for i, d in enumerate(data):
+            data_query.append(
+                (d, search(API_URL, param, d['affiliation'])))
+            if i % 100 == 0:
+                print('Progress: {0:.2f}%'.format(100 * i / len(data)))
         self.ranks = [get_rank(case['ror-id'], items)
                       for case, items in data_query]
         self.rank_max = rank_max
@@ -64,11 +68,15 @@ class QueryFuzzySearchTestCase(SearchTestCase):
         with open(os.path.join(os.path.dirname(__file__),
                                'data/dataset_names.json')) as names_file:
             data = json.load(names_file)
-        data_query = [(d, search(API_URL, 'query',
-                                 re.sub('([^ ])(?= |$)', r'\g<1>~',
-                                        escape_query(d['affiliation'])),
-                                 escape=False))
-                      for d in data]
+        data_query = []
+        for i, d in enumerate(data):
+            data_query.append(
+                (d, search(API_URL, 'query',
+                           re.sub('([^ ])(?= |$)', r'\g<1>~',
+                                  escape_query(d['affiliation'])),
+                           escape=False)))
+            if i % 100 == 0:
+                print('Progress: {0:.2f}%'.format(100 * i / len(data)))
         self.ranks = [get_rank(case['ror-id'], items)
                       for case, items in data_query]
         self.rank_max = RANK_MAX_QUERY_FUZZY
