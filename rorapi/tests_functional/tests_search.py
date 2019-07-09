@@ -1,53 +1,118 @@
 import json
 import os
 import re
-import requests
 
+from .evaluation import search, get_rank, mean_rank, recall_at_n, escape_query
 from django.test import SimpleTestCase
 
 
-RANK_MAX = 2.404506
-R1_MIN = 0.752242
-R5_MIN = 0.911979
+RANK_MAX_QUERY = 2.315534
+R1_MIN_QUERY = 0.749118
+R5_MIN_QUERY = 0.913082
+
+RANK_MAX_QUERY_FUZZY = 2.619402
+R1_MIN_QUERY_FUZZY = 0.728343
+R5_MIN_QUERY_FUZZY = 0.902090
+
+RANK_MAX_QUERY_UI = 2.221079
+R1_MIN_QUERY_UI = 0.747037
+R5_MIN_QUERY_UI = 0.919720
+
+RANK_MAX_QUERY_NAME = 3.522409
+R1_MIN_QUERY_NAME = 0.779396
+R5_MIN_QUERY_NAME = 0.854502
+
+RANK_MAX_QUERY_NAMES = 2.221079
+R1_MIN_QUERY_NAMES = 0.747037
+R5_MIN_QUERY_NAMES = 0.919720
 
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 class SearchTestCase(SimpleTestCase):
 
-    def search(self, query):
-        query = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
-                       lambda m: '\\' + m.group(), query)
-        results = requests.get('{}/organizations'.format(API_URL),
-                               {'query': query}).json()
-        if 'items' not in results:
-            return []
-        return results['items']
-
-    def get_rank(self, grid_id, items):
-        for i, item in enumerate(items):
-            if grid_id == item['external_ids']['GRID']['preferred']:
-                return i+1
-        return 21
-
-    def setUp(self):
+    def set_up(self, param, rank_max, r1_min, r5_min):
         with open(os.path.join(os.path.dirname(__file__),
                                'data/dataset_names.json')) as names_file:
             data = json.load(names_file)
-        data = [(d, self.search(d['affiliation'])) for d in data]
-        self.ranks = [self.get_rank(case['grid'], items)
-                      for case, items in data]
+        data_query = [(d, search(API_URL, param, d['affiliation']))
+                      for d in data]
+        self.ranks = [get_rank(case['ror-id'], items)
+                      for case, items in data_query]
+        self.rank_max = rank_max
+        self.r1_min = r1_min
+        self.r5_min = r5_min
 
-    def test_rank(self):
-        mean_rank = sum(self.ranks) / len(self.ranks)
-        self.assertTrue(mean_rank <= RANK_MAX)
+    def validate(self, name):
+        mean, ci = mean_rank(self.ranks)
+        print('\nMean rank for {}: {} {}'.format(name, mean, ci))
+        self.assertTrue(mean <= self.rank_max)
 
-    def test_recall_1(self):
-        recall_1 = \
-            sum([1 if r == 1 else 0 for r in self.ranks]) / len(self.ranks)
-        self.assertTrue(recall_1 >= R1_MIN)
+        recall_1, ci = recall_at_n(self.ranks, 1)
+        print('Recall@1 for {}: {} {}'.format(name, recall_1, ci))
+        self.assertTrue(recall_1 >= self.r1_min)
 
-    def test_recall_5(self):
-        recall_5 = \
-            sum([1 if r <= 5 else 0 for r in self.ranks]) / len(self.ranks)
-        self.assertTrue(recall_5 >= R5_MIN)
+        recall_5, ci = recall_at_n(self.ranks, 5)
+        print('Recall@5 for {}: {} {}'.format(name, recall_5, ci))
+        self.assertTrue(recall_5 >= self.r5_min)
+
+
+class QueryFuzzySearchTestCase(SearchTestCase):
+
+    def setUp(self):
+        self.param = 'query'
+        with open(os.path.join(os.path.dirname(__file__),
+                               'data/dataset_names.json')) as names_file:
+            data = json.load(names_file)
+        data_query = [(d, search(API_URL, 'query',
+                                 re.sub('([^ ])(?= |$)', r'\g<1>~',
+                                        escape_query(d['affiliation'])),
+                                 escape=False))
+                      for d in data]
+        self.ranks = [get_rank(case['ror-id'], items)
+                      for case, items in data_query]
+        self.rank_max = RANK_MAX_QUERY_FUZZY
+        self.r1_min = R1_MIN_QUERY_FUZZY
+        self.r5_min = R5_MIN_QUERY
+
+    def test_search_query(self):
+        self.validate('query (fuzzy)')
+
+
+class QuerySearchTestCase(SearchTestCase):
+
+    def setUp(self):
+        self.set_up('query', RANK_MAX_QUERY, R1_MIN_QUERY, R5_MIN_QUERY)
+
+    def test_search_query(self):
+        self.validate('query')
+
+
+class QueryUISearchTestCase(SearchTestCase):
+
+    def setUp(self):
+        self.set_up('query.ui', RANK_MAX_QUERY_UI, R1_MIN_QUERY_UI,
+                    R5_MIN_QUERY_UI)
+
+    def test_search_query_ui(self):
+        self.validate('query.ui')
+
+
+class QueryNameSearchTestCase(SearchTestCase):
+
+    def setUp(self):
+        self.set_up('query.name', RANK_MAX_QUERY_NAME, R1_MIN_QUERY_NAME,
+                    R5_MIN_QUERY_NAME)
+
+    def test_search_query_name(self):
+        self.validate('query.name')
+
+
+class QueryNamesSearchTestCase(SearchTestCase):
+
+    def setUp(self):
+        self.set_up('query.names', RANK_MAX_QUERY_NAMES, R1_MIN_QUERY_NAMES,
+                    R5_MIN_QUERY_NAMES)
+
+    def test_search_query_names(self):
+        self.validate('query.names')
