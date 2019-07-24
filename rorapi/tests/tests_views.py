@@ -2,7 +2,7 @@ import json
 import mock
 import os
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, Client
 from rest_framework.test import APIRequestFactory
 
 from .. import views
@@ -67,6 +67,15 @@ class ViewListTestCase(SimpleTestCase):
 
         self.assertEquals(list(organizations.keys()), ['errors'])
         self.assertEquals(len(organizations['errors']), 6)
+
+    def test_query_redirect(self):
+        client = Client()
+
+        response = client.get('/organizations?query.name=query')
+        self.assertRedirects(response, '/organizations?query=query')
+
+        response = client.get('/organizations?query.names=query')
+        self.assertRedirects(response, '/organizations?query=query')
 
 
 class ViewRetrievalTestCase(SimpleTestCase):

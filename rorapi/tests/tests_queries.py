@@ -26,17 +26,6 @@ class QueryBuilderTestCase(SimpleTestCase):
         self.assertEqual(qb.get_query().to_dict(),
                          {'query': {'match_all': {}}})
 
-    def test_multi_match_query(self):
-        qb = ESQueryBuilder()
-        qb.add_multi_match_query(['f1', 'field2', 'fi3'], 'query terms')
-
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'multi_match':
-                                    {'query': 'query terms',
-                                     'fields': ['f1', 'field2', 'fi3'],
-                                     'fuzziness': 'AUTO',
-                                     'max_expansions': 1}}})
-
     def test_string_query(self):
         qb = ESQueryBuilder()
         qb.add_string_query('query terms')
@@ -45,15 +34,6 @@ class QueryBuilderTestCase(SimpleTestCase):
                          {'query': {'query_string': {
                            'query': 'query terms',
                            'fuzzy_max_expansions': 1}}})
-
-    def test_name_query(self):
-        qb = ESQueryBuilder()
-        qb.add_name_query('query terms')
-
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'match': {'name.norm':
-                          {'fuzziness': 'AUTO', 'query': 'query terms',
-                           'max_expansions': 1}}}})
 
     def test_add_filters(self):
         qb = ESQueryBuilder()
@@ -198,27 +178,6 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                                       {'query': 'query terms',
                                        'fuzzy_max_expansions': 1}}))
 
-    def test_query_name(self):
-        query = build_search_query({'query.name': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'match': {'name.norm':
-                                                {'fuzziness': 'AUTO',
-                                                 'query': 'query terms',
-                                                 'max_expansions': 1}}}))
-
-    def test_query_names(self):
-        query = build_search_query({'query.names': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'multi_match':
-                                      {'query': 'query terms',
-                                       'fuzziness': 'AUTO',
-                                       'fields': ['name.norm', 'aliases.norm',
-                                                  'acronyms.norm',
-                                                  'labels.label.norm'],
-                                       'max_expansions': 1}}))
-
     def test_filter(self):
         f = 'key1:val1,k2:value2'
         e = [{'term': {'key1': 'val1'}}, {'term': {'k2': 'value2'}}]
@@ -227,20 +186,6 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEquals(query.to_dict(),
                           dict(self.default_query,
                                query={'bool': {'filter': e}}))
-
-        query = build_search_query({'query.names': 'query terms', 'filter': f})
-        self.assertEquals(
-            query.to_dict(),
-            dict(self.default_query,
-                 query={'bool':
-                        {'filter': e,
-                         'must': [{'multi_match':
-                                   {'query': 'query terms',
-                                    'max_expansions': 1,
-                                    'fuzziness': 'AUTO',
-                                    'fields': ['name.norm', 'aliases.norm',
-                                               'acronyms.norm',
-                                               'labels.label.norm']}}]}}))
 
         query = build_search_query({'query': 'query terms', 'filter': f})
         self.assertEquals(query.to_dict(),
@@ -265,14 +210,6 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                                query={'query_string':
                                       {'query': 'query terms',
                                        'fuzzy_max_expansions': 1}}))
-
-        query = build_search_query({'page': '5', 'query.name': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(base,
-                               query={'match': {'name.norm':
-                                                {'fuzziness': 'AUTO',
-                                                 'max_expansions': 1,
-                                                 'query': 'query terms'}}}))
 
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
