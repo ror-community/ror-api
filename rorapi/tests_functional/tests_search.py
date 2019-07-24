@@ -2,8 +2,9 @@ import json
 import os
 import re
 
-from .evaluation import search, get_rank, mean_rank, recall_at_n, escape_query
+from .evaluation import search, escape_query
 from django.test import SimpleTestCase
+from statsmodels.stats.api import DescrStatsW, proportion_confint
 
 
 RANK_MAX_QUERY = 2.315534
@@ -15,6 +16,23 @@ R1_MIN_QUERY_FUZZY = 0.728343
 R5_MIN_QUERY_FUZZY = 0.902090
 
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
+
+
+def get_rank(ror_id, items):
+    for i, item in enumerate(items):
+        if ror_id == item['id']:
+            return i+1
+    return 21
+
+
+def mean_rank(ranks):
+    return sum(ranks) / len(ranks), DescrStatsW(ranks).tconfint_mean()
+
+
+def recall_at_n(ranks, n):
+    s = len([r for r in ranks if r <= n])
+    a = len(ranks)
+    return s / a, proportion_confint(s, a)
 
 
 class SearchTestCase(SimpleTestCase):
