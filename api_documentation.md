@@ -10,11 +10,9 @@ The route `/organizations` gives the list of all organizations.
 
 ## Querying
 
-Parameters `query`, `query.name` and `query.names` can be used for querying:
+`query` parameter (e.g. `/organizations?query=Bath`) can be used for searching.
 
-  * `query` (e.g. `/organizations?query=Bath`) searches in all fields
-  * `query.name` (e.g. `/organizations?query.name=Bath+Spa+University`) searches in the main name of the organization
-  * `query.names` (e.g. `/organizations?query.names=WHO`) searches in all the name variants of the organization
+**Note**: Parameters `query.name` and `query.names` are now deprecated and redirect to `query`. If you are still using them, please switch to `query`, as they may be removed in the future. 
 
 ## Filtering
 
