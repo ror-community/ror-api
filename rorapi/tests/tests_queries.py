@@ -190,20 +190,6 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
 
-    def test_query_ui(self):
-        query = build_search_query({'query.ui': 'query terms'})
-        fields = ['id^10', 'external_ids.GRID.all^10',
-                  'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10',
-                  'external_ids.Wikidata.all^10', 'name.norm^5',
-                  'aliases.norm^5', 'acronyms.norm^5', 'labels.label.norm^5']
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'multi_match':
-                                      {'query': 'query terms',
-                                       'fields': fields,
-                                       'fuzziness': 'AUTO',
-                                       'max_expansions': 1}}))
-
     def test_query(self):
         query = build_search_query({'query': 'query terms'})
         self.assertEquals(query.to_dict(),

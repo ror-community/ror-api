@@ -70,7 +70,7 @@ def validate(params):
 
     illegal_names = [k for k in params.keys()
                      if k not in ['query', 'page', 'filter', 'query.name',
-                                  'query.names', 'query.ui']]
+                                  'query.names']]
     errors = ['query parameter \'{}\' is illegal'.format(n)
               for n in illegal_names]
 
@@ -115,13 +115,6 @@ def build_search_query(params):
             ['name.norm', 'aliases.norm', 'acronyms.norm',
              'labels.label.norm'],
             params.get('query.names'))
-    elif 'query.ui' in params:
-        qb.add_multi_match_query(
-            ['id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10',
-             'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10',
-             'name.norm^5', 'aliases.norm^5', 'acronyms.norm^5',
-             'labels.label.norm^5'],
-            params.get('query.ui'))
     else:
         qb.add_match_all_query()
 
