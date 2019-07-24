@@ -14,10 +14,6 @@ RANK_MAX_QUERY_FUZZY = 2.619402
 R1_MIN_QUERY_FUZZY = 0.728343
 R5_MIN_QUERY_FUZZY = 0.902090
 
-RANK_MAX_QUERY_UI = 2.221079
-R1_MIN_QUERY_UI = 0.747037
-R5_MIN_QUERY_UI = 0.919720
-
 RANK_MAX_QUERY_NAME = 3.522409
 R1_MIN_QUERY_NAME = 0.779396
 R5_MIN_QUERY_NAME = 0.854502
@@ -94,16 +90,6 @@ class QuerySearchTestCase(SearchTestCase):
 
     def test_search_query(self):
         self.validate('query')
-
-
-class QueryUISearchTestCase(SearchTestCase):
-
-    def setUp(self):
-        self.set_up('query.ui', RANK_MAX_QUERY_UI, R1_MIN_QUERY_UI,
-                    R5_MIN_QUERY_UI)
-
-    def test_search_query_ui(self):
-        self.validate('query.ui')
 
 
 class QueryNameSearchTestCase(SearchTestCase):

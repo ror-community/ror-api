@@ -75,10 +75,6 @@ class APITestCase(SimpleTestCase):
         self.verify_full_list(output)
         self.assertTrue(self.get_total(output) < total)
 
-        output = requests.get(BASE_URL, {'query.ui': 'university'}).json()
-        self.verify_full_list(output)
-        self.assertTrue(self.get_total(output) < total)
-
     def verify_paging(self, query):
         total = self.get_total_from_query(query)
         max_page = min(400, int(total / ROR_API['PAGE_SIZE']))
@@ -102,7 +98,6 @@ class APITestCase(SimpleTestCase):
         self.verify_paging({'query': 'university'})
         self.verify_paging({'query.name': 'university'})
         self.verify_paging({'query.names': 'university'})
-        self.verify_paging({'query.ui': 'university'})
         self.verify_paging({'query.name': 'university',
                             'filter': 'country.country_code:US'})
         self.verify_paging({'query': 'university',
@@ -162,7 +157,6 @@ class APITestCase(SimpleTestCase):
         self.verify_filtering({'query': 'university'})
         self.verify_filtering({'query.name': 'university'})
         self.verify_filtering({'query.names': 'university'})
-        self.verify_filtering({'query.ui': 'university'})
 
     def test_empty_output(self):
         output = requests.get(BASE_URL, {'filter': 'types:notatype'}).json()
