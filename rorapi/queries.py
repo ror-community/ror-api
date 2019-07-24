@@ -20,22 +20,9 @@ class ESQueryBuilder():
     def add_match_all_query(self):
         self.search = self.search.query('match_all')
 
-    def add_multi_match_query(self, fields, terms):
-        self.search = self.search.query('multi_match', query=terms,
-                                        fuzziness='AUTO',
-                                        max_expansions=1,
-                                        fields=fields)
-
     def add_string_query(self, terms):
         self.search = self.search.query('query_string', query=terms,
                                         fuzzy_max_expansions=1)
-
-    def add_name_query(self, terms):
-        self.search = self.search.query('match', **{'name.norm': {
-                                                      'query': terms,
-                                                      'fuzziness': 'AUTO',
-                                                      'max_expansions': 1
-                                                      }})
 
     def add_filters(self, filters):
         for f, v in filters:
@@ -69,8 +56,7 @@ def validate(params):
     that can be serialized into JSON or None."""
 
     illegal_names = [k for k in params.keys()
-                     if k not in ['query', 'page', 'filter', 'query.name',
-                                  'query.names']]
+                     if k not in ['query', 'page', 'filter']]
     errors = ['query parameter \'{}\' is illegal'.format(n)
               for n in illegal_names]
 
@@ -108,13 +94,6 @@ def build_search_query(params):
             qb.add_id_query(ror_id)
         else:
             qb.add_string_query(params.get('query'))
-    elif 'query.name' in params:
-        qb.add_name_query(params.get('query.name'))
-    elif 'query.names' in params:
-        qb.add_multi_match_query(
-            ['name.norm', 'aliases.norm', 'acronyms.norm',
-             'labels.label.norm'],
-            params.get('query.names'))
     else:
         qb.add_match_all_query()
 

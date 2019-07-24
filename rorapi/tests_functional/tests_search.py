@@ -14,14 +14,6 @@ RANK_MAX_QUERY_FUZZY = 2.619402
 R1_MIN_QUERY_FUZZY = 0.728343
 R5_MIN_QUERY_FUZZY = 0.902090
 
-RANK_MAX_QUERY_NAME = 3.522409
-R1_MIN_QUERY_NAME = 0.779396
-R5_MIN_QUERY_NAME = 0.854502
-
-RANK_MAX_QUERY_NAMES = 2.221079
-R1_MIN_QUERY_NAMES = 0.747037
-R5_MIN_QUERY_NAMES = 0.919720
-
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
@@ -90,23 +82,3 @@ class QuerySearchTestCase(SearchTestCase):
 
     def test_search_query(self):
         self.validate('query')
-
-
-class QueryNameSearchTestCase(SearchTestCase):
-
-    def setUp(self):
-        self.set_up('query.name', RANK_MAX_QUERY_NAME, R1_MIN_QUERY_NAME,
-                    R5_MIN_QUERY_NAME)
-
-    def test_search_query_name(self):
-        self.validate('query.name')
-
-
-class QueryNamesSearchTestCase(SearchTestCase):
-
-    def setUp(self):
-        self.set_up('query.names', RANK_MAX_QUERY_NAMES, R1_MIN_QUERY_NAMES,
-                    R5_MIN_QUERY_NAMES)
-
-    def test_search_query_names(self):
-        self.validate('query.names')
