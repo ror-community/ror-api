@@ -1,4 +1,4 @@
-Django==2.2.2
+Django==2.2.3
 elasticsearch_dsl==6.1.0
 pycountry==18.12.8
 requests==2.20.0
