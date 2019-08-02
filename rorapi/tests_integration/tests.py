@@ -67,17 +67,22 @@ class APITestCase(SimpleTestCase):
         self.verify_full_list(output)
         self.assertTrue(self.get_total(output) < total)
 
-        output = requests.get(BASE_URL, {'query.name': 'university'}).json()
-        self.verify_full_list(output)
-        self.assertTrue(self.get_total(output) < total)
+    def test_deprecated_queries(self):
+        for q in [{}, {'page': 7}, {'filter': 'country.country_code:US'},
+                  {'filter': 'country.country_code:US', 'page': 3}]:
+            output = requests.get(BASE_URL, dict(q, query='university')).json()
+            del output['time_taken']
+            output_deprecated = requests.get(
+                BASE_URL, dict(q, **{'query.name': 'university'})).json()
+            del output_deprecated['time_taken']
+            self.assertEqual(output_deprecated, output)
 
-        output = requests.get(BASE_URL, {'query.names': 'university'}).json()
-        self.verify_full_list(output)
-        self.assertTrue(self.get_total(output) < total)
-
-        output = requests.get(BASE_URL, {'query.ui': 'university'}).json()
-        self.verify_full_list(output)
-        self.assertTrue(self.get_total(output) < total)
+            output = requests.get(BASE_URL, dict(q, query='university')).json()
+            del output['time_taken']
+            output_deprecated = requests.get(
+                BASE_URL, dict(q, **{'query.names': 'university'})).json()
+            del output_deprecated['time_taken']
+            self.assertEqual(output_deprecated, output)
 
     def verify_paging(self, query):
         total = self.get_total_from_query(query)
@@ -100,11 +105,6 @@ class APITestCase(SimpleTestCase):
         self.verify_paging({})
 
         self.verify_paging({'query': 'university'})
-        self.verify_paging({'query.name': 'university'})
-        self.verify_paging({'query.names': 'university'})
-        self.verify_paging({'query.ui': 'university'})
-        self.verify_paging({'query.name': 'university',
-                            'filter': 'country.country_code:US'})
         self.verify_paging({'query': 'university',
                             'filter': 'types:Healthcare'})
 
@@ -160,9 +160,6 @@ class APITestCase(SimpleTestCase):
     def test_filtering(self):
         self.verify_filtering({})
         self.verify_filtering({'query': 'university'})
-        self.verify_filtering({'query.name': 'university'})
-        self.verify_filtering({'query.names': 'university'})
-        self.verify_filtering({'query.ui': 'university'})
 
     def test_empty_output(self):
         output = requests.get(BASE_URL, {'filter': 'types:notatype'}).json()

@@ -1,4 +1,4 @@
-Django==2.2.2
+Django==2.2.3
 elasticsearch_dsl==6.1.0
 pycountry==18.12.8
 requests==2.20.0
@@ -12,3 +12,4 @@ django-prometheus==1.0.15
 sentry-sdk==0.7.14
 python-dotenv==0.10.1
 django-cors-headers==3.0.2
+statsmodels==0.10.0

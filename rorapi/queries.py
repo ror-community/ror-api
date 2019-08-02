@@ -20,18 +20,9 @@ class ESQueryBuilder():
     def add_match_all_query(self):
         self.search = self.search.query('match_all')
 
-    def add_multi_match_query(self, fields, terms):
-        self.search = self.search.query('multi_match', query=terms,
-                                        operator='and', type='phrase_prefix',
-                                        slop=3, max_expansions=10,
-                                        fields=fields)
-
     def add_string_query(self, terms):
-        self.search = self.search.query('query_string', query=terms)
-
-    def add_name_query(self, terms):
-        self.search = self.search.query('match', name={'query': terms,
-                                                       'operator': 'and'})
+        self.search = self.search.query('query_string', query=terms,
+                                        fuzzy_max_expansions=1)
 
     def add_filters(self, filters):
         for f, v in filters:
@@ -65,8 +56,7 @@ def validate(params):
     that can be serialized into JSON or None."""
 
     illegal_names = [k for k in params.keys()
-                     if k not in ['query', 'page', 'filter', 'query.name',
-                                  'query.names', 'query.ui']]
+                     if k not in ['query', 'page', 'filter']]
     errors = ['query parameter \'{}\' is illegal'.format(n)
               for n in illegal_names]
 
@@ -104,18 +94,6 @@ def build_search_query(params):
             qb.add_id_query(ror_id)
         else:
             qb.add_string_query(params.get('query'))
-    elif 'query.name' in params:
-        qb.add_name_query(params.get('query.name'))
-    elif 'query.names' in params:
-        qb.add_multi_match_query(
-            ['name', 'aliases', 'acronyms', 'labels.label'],
-            params.get('query.names'))
-    elif 'query.ui' in params:
-        qb.add_multi_match_query(
-            ['_id^10', 'external_ids.GRID.all^10', 'external_ids.ISNI.all^10',
-             'external_ids.FundRef.all^10', 'external_ids.Wikidata.all^10',
-             'name^5', 'aliases^5', 'acronyms^5', 'labels.label^5', '_all'],
-            params.get('query.ui'))
     else:
         qb.add_match_all_query()
 

@@ -26,31 +26,14 @@ class QueryBuilderTestCase(SimpleTestCase):
         self.assertEqual(qb.get_query().to_dict(),
                          {'query': {'match_all': {}}})
 
-    def test_multi_match_query(self):
-        qb = ESQueryBuilder()
-        qb.add_multi_match_query(['f1', 'field2', 'fi3'], 'query terms')
-
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'multi_match':
-                                    {'query': 'query terms', 'operator': 'and',
-                                     'fields': ['f1', 'field2', 'fi3'],
-                                     'type': 'phrase_prefix', 'slop': 3,
-                                     'max_expansions': 10}}})
-
     def test_string_query(self):
         qb = ESQueryBuilder()
         qb.add_string_query('query terms')
 
         self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'query_string': {'query': 'query terms'}}})
-
-    def test_name_query(self):
-        qb = ESQueryBuilder()
-        qb.add_name_query('query terms')
-
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'match': {'name': {'query': 'query terms',
-                                                       'operator': 'and'}}}})
+                         {'query': {'query_string': {
+                           'query': 'query terms',
+                           'fuzzy_max_expansions': 1}}})
 
     def test_add_filters(self):
         qb = ESQueryBuilder()
@@ -187,46 +170,13 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
 
-    def test_query_ui(self):
-        query = build_search_query({'query.ui': 'query terms'})
-        fields = ['_id^10', 'external_ids.GRID.all^10',
-                  'external_ids.ISNI.all^10', 'external_ids.FundRef.all^10',
-                  'external_ids.Wikidata.all^10', 'name^5', 'aliases^5',
-                  'acronyms^5', 'labels.label^5', '_all']
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'multi_match':
-                                      {'query': 'query terms',
-                                       'operator': 'and', 'fields': fields,
-                                       'type': 'phrase_prefix', 'slop': 3,
-                                       'max_expansions': 10}}))
-
     def test_query(self):
         query = build_search_query({'query': 'query terms'})
         self.assertEquals(query.to_dict(),
                           dict(self.default_query,
                                query={'query_string':
-                                      {'query': 'query terms'}}))
-
-    def test_query_name(self):
-        query = build_search_query({'query.name': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'match': {'name':
-                                                {'query': 'query terms',
-                                                 'operator': 'and'}}}))
-
-    def test_query_names(self):
-        query = build_search_query({'query.names': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'multi_match':
                                       {'query': 'query terms',
-                                       'operator': 'and',
-                                       'fields': ['name', 'aliases',
-                                                  'acronyms', 'labels.label'],
-                                       'type': 'phrase_prefix', 'slop': 3,
-                                       'max_expansions': 10}}))
+                                       'fuzzy_max_expansions': 1}}))
 
     def test_filter(self):
         f = 'key1:val1,k2:value2'
@@ -237,26 +187,15 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                           dict(self.default_query,
                                query={'bool': {'filter': e}}))
 
-        query = build_search_query({'query.names': 'query terms', 'filter': f})
-        self.assertEquals(
-            query.to_dict(),
-            dict(self.default_query,
-                 query={'bool':
-                        {'filter': e,
-                         'must': [{'multi_match':
-                                   {'query': 'query terms', 'operator': 'and',
-                                    'type': 'phrase_prefix', 'slop': 3,
-                                    'max_expansions': 10,
-                                    'fields': ['name', 'aliases', 'acronyms',
-                                               'labels.label']}}]}}))
-
         query = build_search_query({'query': 'query terms', 'filter': f})
         self.assertEquals(query.to_dict(),
                           dict(self.default_query,
                                query={'bool':
                                       {'filter': e,
-                                       'must': [{'query_string':
-                                                 {'query': 'query terms'}}]}}))
+                                       'must': [
+                                        {'query_string':
+                                         {'query': 'query terms',
+                                          'fuzzy_max_expansions': 1}}]}}))
 
     def test_pagination(self):
         base = self.default_query
@@ -269,14 +208,8 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEquals(query.to_dict(),
                           dict(base,
                                query={'query_string':
-                                      {'query': 'query terms'}}))
-
-        query = build_search_query({'page': '5', 'query.name': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(base,
-                               query={'match': {'name':
-                                                {'query': 'query terms',
-                                                 'operator': 'and'}}}))
+                                      {'query': 'query terms',
+                                       'fuzzy_max_expansions': 1}}))
 
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
