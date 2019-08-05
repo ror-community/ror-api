@@ -5,7 +5,6 @@ import requests
 
 from django.test import SimpleTestCase
 
-
 ACCURACY_MIN = 0.337127
 PRECISION_MIN = 0.375375
 RECALL_MIN = 0.415973
@@ -14,12 +13,12 @@ API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 class AffiliationMatchingTestCase(SimpleTestCase):
-
     def match(self, affiliation):
         affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
                              lambda m: '\\' + m.group(), affiliation)
-        results = requests.get('{}/organizations'.format(API_URL),
-                               {'query': affiliation}).json()
+        results = requests.get('{}/organizations'.format(API_URL), {
+            'query': affiliation
+        }).json()
         if 'items' not in results:
             return []
         if not results['items']:
@@ -30,11 +29,15 @@ class AffiliationMatchingTestCase(SimpleTestCase):
         return [item['external_ids']['GRID']['preferred'] for item in items]
 
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/dataset_affiliations.json')) as affs_file:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/dataset_affiliations.json')) as affs_file:
             self.results = json.load(affs_file)
-        [d.update({'matched': self.get_grid_ids(self.match(d['affiliation']))})
-         for d in self.results]
+        [
+            d.update(
+                {'matched': self.get_grid_ids(self.match(d['affiliation']))})
+            for d in self.results
+        ]
 
     def test_accuracy(self):
         accuracy = \

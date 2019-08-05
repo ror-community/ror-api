@@ -13,10 +13,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # make sure ROR JSON file exists
         if not zipfile.is_zipfile(GRID['ROR_ZIP_PATH']):
-            self.stdout.write(
-                'ROR dataset for GRID version {} not found. '
-                .format(GRID['VERSION']) +
-                'Please run the upgrade command first.')
+            self.stdout.write('ROR dataset for GRID version {} not found. '.
+                              format(GRID['VERSION']) +
+                              'Please run the upgrade command first.')
             return
 
         DeleteIndexCommand().handle(args, options)

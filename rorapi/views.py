@@ -22,8 +22,7 @@ class OrganizationViewSet(viewsets.ViewSet):
                 'query.name' if 'query.name' in params else 'query.names'
             params['query'] = params[param_name]
             del params[param_name]
-            return redirect('{}?{}'.format(request.path,
-                                           urlencode(params)))
+            return redirect('{}?{}'.format(request.path, urlencode(params)))
         if 'format' in params:
             del params['format']
         errors, organizations = search_organizations(params)
@@ -42,11 +41,11 @@ class OrganizationViewSet(viewsets.ViewSet):
 
 
 organizations_router = routers.DefaultRouter(trailing_slash=False)
-organizations_router.register(r'organizations', OrganizationViewSet,
+organizations_router.register(r'organizations',
+                              OrganizationViewSet,
                               basename='organization')
 
 
 class HeartbeatView(View):
-
     def get(self, request):
         return HttpResponse('Ok')

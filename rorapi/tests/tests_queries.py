@@ -10,68 +10,109 @@ from .utils import IterableAttrDict
 
 
 class QueryBuilderTestCase(SimpleTestCase):
-
     def test_id_query(self):
         qb = ESQueryBuilder()
         qb.add_id_query('ror-id')
 
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'match': {'id': {'query': 'ror-id',
-                                                     'operator': 'and'}}}})
+        self.assertEqual(qb.get_query().to_dict(), {
+            'query': {
+                'match': {
+                    'id': {
+                        'query': 'ror-id',
+                        'operator': 'and'
+                    }
+                }
+            }
+        })
 
     def test_match_all_query(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
 
         self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'match_all': {}}})
+                         {'query': {
+                             'match_all': {}
+                         }})
 
     def test_string_query(self):
         qb = ESQueryBuilder()
         qb.add_string_query('query terms')
 
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'query_string': {
-                           'query': 'query terms',
-                           'fuzzy_max_expansions': 1}}})
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'query_string': {
+                        'query': 'query terms',
+                        'fuzzy_max_expansions': 1
+                    }
+                }
+            })
 
     def test_add_filters(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
         qb.add_filters([('key1', 'val1'), ('k2', 'value2')])
 
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'bool': {'filter':
-                                             [{'term': {'key1': 'val1'}},
-                                              {'term': {'k2': 'value2'}}]}}})
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'bool': {
+                        'filter': [{
+                            'term': {
+                                'key1': 'val1'
+                            }
+                        }, {
+                            'term': {
+                                'k2': 'value2'
+                            }
+                        }]
+                    }
+                }
+            })
 
     def test_add_aggregations(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
         qb.add_aggregations([('countries', 'code'), ('types', 'type')])
 
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'match_all': {}},
-                          'aggs':
-                          {'countries': {'terms':
-                                         {'field': 'code',
-                                          'min_doc_count': 1, 'size': 10}},
-                           'types': {'terms': {'field': 'type',
-                                               'min_doc_count': 1,
-                                               'size': 10}}}})
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'match_all': {}
+                },
+                'aggs': {
+                    'countries': {
+                        'terms': {
+                            'field': 'code',
+                            'min_doc_count': 1,
+                            'size': 10
+                        }
+                    },
+                    'types': {
+                        'terms': {
+                            'field': 'type',
+                            'min_doc_count': 1,
+                            'size': 10
+                        }
+                    }
+                }
+            })
 
     def test_paginate(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
         qb.paginate(10)
 
-        self.assertEqual(qb.get_query().to_dict(),
-                         {'query': {'match_all': {}},
-                          'from': 180, 'size': 20})
+        self.assertEqual(qb.get_query().to_dict(), {
+            'query': {
+                'match_all': {}
+            },
+            'from': 180,
+            'size': 20
+        })
 
 
 class GetRorIDTestCase(SimpleTestCase):
-
     def test_no_id(self):
         self.assertIsNone(get_ror_id('no id here'))
         self.assertIsNone(get_ror_id('http://0w7hudk23'))
@@ -94,17 +135,21 @@ class GetRorIDTestCase(SimpleTestCase):
 
 
 class ValidationTestCase(SimpleTestCase):
-
     def test_illegal_parameters(self):
-        error = validate({'query': 'query', 'illegal': 'whatever',
-                          'another': 3})
+        error = validate({
+            'query': 'query',
+            'illegal': 'whatever',
+            'another': 3
+        })
         self.assertEquals(len(error.errors), 2)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
 
     def test_invalid_filter(self):
-        error = validate({'query': 'query',
-                          'filter': 'fi1:e,types:F,f3,field2:44'})
+        error = validate({
+            'query': 'query',
+            'filter': 'fi1:e,types:F,f3,field2:44'
+        })
         self.assertEquals(len(error.errors), 3)
         self.assertTrue(any(['fi1' in e for e in error.errors]))
         self.assertTrue(any(['field2' in e for e in error.errors]))
@@ -116,9 +161,13 @@ class ValidationTestCase(SimpleTestCase):
         self.assertTrue('whatever' in error.errors[0])
 
     def test_multiple_errors(self):
-        error = validate({'query': 'query', 'illegal': 'whatever',
-                          'filter': 'fi1:e,types:F,f3,field2:44', 'another': 3,
-                          'page': 'third'})
+        error = validate({
+            'query': 'query',
+            'illegal': 'whatever',
+            'filter': 'fi1:e,types:F,f3,field2:44',
+            'another': 3,
+            'page': 'third'
+        })
         self.assertEquals(len(error.errors), 6)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
@@ -128,13 +177,15 @@ class ValidationTestCase(SimpleTestCase):
         self.assertTrue(any(['third' in e for e in error.errors]))
 
     def test_all_good(self):
-        error = validate({'query': 'query', 'page': 4,
-                          'filter': 'country.country_code:DE,types:s'})
+        error = validate({
+            'query': 'query',
+            'page': 4,
+            'filter': 'country.country_code:DE,types:s'
+        })
         self.assertIsNone(error)
 
 
 class BuildSearchQueryTestCase(SimpleTestCase):
-
     def setUp(self):
         self.default_query = \
             {'aggs': {'countries': {'terms': {'field': 'country.country_code',
@@ -149,9 +200,14 @@ class BuildSearchQueryTestCase(SimpleTestCase):
 
     def test_query_id(self):
         expected = dict(self.default_query,
-                        query={'match':
-                               {'id': {'query': 'https://ror.org/0w7hudk23',
-                                       'operator': 'and'}}})
+                        query={
+                            'match': {
+                                'id': {
+                                    'query': 'https://ror.org/0w7hudk23',
+                                    'operator': 'and'
+                                }
+                            }
+                        })
 
         query = build_search_query({'query': '0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
@@ -172,30 +228,43 @@ class BuildSearchQueryTestCase(SimpleTestCase):
 
     def test_query(self):
         query = build_search_query({'query': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'query_string':
-                                      {'query': 'query terms',
-                                       'fuzzy_max_expansions': 1}}))
+        self.assertEquals(
+            query.to_dict(),
+            dict(self.default_query,
+                 query={
+                     'query_string': {
+                         'query': 'query terms',
+                         'fuzzy_max_expansions': 1
+                     }
+                 }))
 
     def test_filter(self):
         f = 'key1:val1,k2:value2'
         e = [{'term': {'key1': 'val1'}}, {'term': {'k2': 'value2'}}]
 
         query = build_search_query({'filter': f})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'bool': {'filter': e}}))
+        self.assertEquals(
+            query.to_dict(),
+            dict(self.default_query, query={'bool': {
+                'filter': e
+            }}))
 
         query = build_search_query({'query': 'query terms', 'filter': f})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query,
-                               query={'bool':
-                                      {'filter': e,
-                                       'must': [
-                                        {'query_string':
-                                         {'query': 'query terms',
-                                          'fuzzy_max_expansions': 1}}]}}))
+        self.assertEquals(
+            query.to_dict(),
+            dict(self.default_query,
+                 query={
+                     'bool': {
+                         'filter':
+                         e,
+                         'must': [{
+                             'query_string': {
+                                 'query': 'query terms',
+                                 'fuzzy_max_expansions': 1
+                             }
+                         }]
+                     }
+                 }))
 
     def test_pagination(self):
         base = self.default_query
@@ -205,27 +274,37 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEquals(query.to_dict(), dict(base, query={'match_all': {}}))
 
         query = build_search_query({'page': '5', 'query': 'query terms'})
-        self.assertEquals(query.to_dict(),
-                          dict(base,
-                               query={'query_string':
-                                      {'query': 'query terms',
-                                       'fuzzy_max_expansions': 1}}))
+        self.assertEquals(
+            query.to_dict(),
+            dict(base,
+                 query={
+                     'query_string': {
+                         'query': 'query terms',
+                         'fuzzy_max_expansions': 1
+                     }
+                 }))
 
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
-
     def test_retrieve_query(self):
         query = build_retrieve_query('ror-id')
-        self.assertEquals(query.to_dict(),
-                          {'query': {'match': {'id': {'operator': 'and',
-                                                      'query': 'ror-id'}}}})
+        self.assertEquals(query.to_dict(), {
+            'query': {
+                'match': {
+                    'id': {
+                        'operator': 'and',
+                        'query': 'ror-id'
+                    }
+                }
+            }
+        })
 
 
 class SearchOrganizationsTestCase(SimpleTestCase):
-
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_search.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_search.json'), 'r') as f:
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
@@ -268,10 +347,13 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        error, organizations = search_organizations(
-            {'query': 'query', 'illegal': 'whatever',
-             'filter': 'fi1:e,types:F,f3,field2:44', 'another': 3,
-             'page': 'third'})
+        error, organizations = search_organizations({
+            'query': 'query',
+            'illegal': 'whatever',
+            'filter': 'fi1:e,types:F,f3,field2:44',
+            'another': 3,
+            'page': 'third'
+        })
         self.assertIsNone(organizations)
 
         search_mock.assert_not_called()
@@ -279,13 +361,14 @@ class SearchOrganizationsTestCase(SimpleTestCase):
 
 
 class RetrieveOrganizationsTestCase(SimpleTestCase):
-
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_retrieve.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_retrieve.json'), 'r') as f:
             self.test_data = json.load(f)
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_empty.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_empty.json'), 'r') as f:
             self.test_data_empty = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
