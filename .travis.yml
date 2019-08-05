@@ -10,6 +10,10 @@ services:
 env:
   - DOCKER_COMPOSE_VERSION=1.23.2
 
+before_install:
+  - pip3 install yapf
+  - yapf -d -r .
+
 install:
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
