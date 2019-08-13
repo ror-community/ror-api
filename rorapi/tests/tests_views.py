@@ -12,10 +12,10 @@ factory = APIRequestFactory()
 
 
 class ViewListTestCase(SimpleTestCase):
-
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_search.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_search.json'), 'r') as f:
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
@@ -79,13 +79,14 @@ class ViewListTestCase(SimpleTestCase):
 
 
 class ViewRetrievalTestCase(SimpleTestCase):
-
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_retrieve.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_retrieve.json'), 'r') as f:
             self.test_data = json.load(f)
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_empty.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_empty.json'), 'r') as f:
             self.test_data_empty = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
@@ -99,7 +100,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
 
-        self.assertEquals(organization,  self.test_data['hits']['hits'][0])
+        self.assertEquals(organization, self.test_data['hits']['hits'][0])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_non_existing_organization(self, search_mock):
@@ -118,17 +119,16 @@ class ViewRetrievalTestCase(SimpleTestCase):
 
 
 class MetricsPageViewTestCase(SimpleTestCase):
-
     def test_request_home_page(self):
         response = self.client.get('/metrics')
         self.assertEquals(response.status_code, 200)
 
 
 class MetricsPageCountTestCase(SimpleTestCase):
-
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__),
-                               'data/test_data_search.json'), 'r') as f:
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_search.json'), 'r') as f:
             self.test_data = json.load(f)
 
     def current_home_page_count(self):
@@ -140,8 +140,7 @@ class MetricsPageCountTestCase(SimpleTestCase):
         output = response.content.decode()
         parsed = {
             line.split()[0]: line.split()[1]
-            for line in output.splitlines()
-            if not line.startswith('#')
+            for line in output.splitlines() if not line.startswith('#')
         }
         return float(parsed[KEY])
 

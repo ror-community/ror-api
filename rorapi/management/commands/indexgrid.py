@@ -20,22 +20,38 @@ class Command(BaseCommand):
 
         index = ES_VARS['INDEX']
         backup_index = '{}-tmp'.format(index)
-        ES.reindex(body={'source': {'index': index},
-                         'dest': {'index': backup_index}})
+        ES.reindex(body={
+            'source': {
+                'index': index
+            },
+            'dest': {
+                'index': backup_index
+            }
+        })
 
         try:
             for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
                 body = []
-                for org in dataset[i:i+ES_VARS['BULK_SIZE']]:
-                    body.append({'index': {'_index': index,
-                                           '_type': 'org',
-                                           '_id': org['id']}})
+                for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
+                    body.append({
+                        'index': {
+                            '_index': index,
+                            '_type': 'org',
+                            '_id': org['id']
+                        }
+                    })
                     body.append(org)
                 ES.bulk(body)
         except TransportError:
             self.stdout.write(TransportError)
-            ES.reindex(body={'source': {'index': backup_index},
-                             'dest': {'index': index}})
+            ES.reindex(body={
+                'source': {
+                    'index': backup_index
+                },
+                'dest': {
+                    'index': index
+                }
+            })
 
         if ES.indices.exists(backup_index):
             ES.indices.delete(backup_index)

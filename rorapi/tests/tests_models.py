@@ -6,7 +6,6 @@ from .utils import AttrDict
 
 
 class EntityTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
         data = {'a': 0, 'b': 123, 'third': 'a thousand'}
         entity = Entity(AttrDict(data), ['a', 'third', 'b'])
@@ -26,10 +25,17 @@ class EntityTestCase(SimpleTestCase):
 
 
 class ExternalIdsTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
-        data = {'ISNI': {'preferred': 'isni-p', 'all': ['isni-a', 'isni-b']},
-                'GRID': {'preferred': 'grid-p', 'all': 'grid-a'}}
+        data = {
+            'ISNI': {
+                'preferred': 'isni-p',
+                'all': ['isni-a', 'isni-b']
+            },
+            'GRID': {
+                'preferred': 'grid-p',
+                'all': 'grid-a'
+            }
+        }
         entity = ExternalIds(AttrDict(data))
         self.assertEqual(entity.ISNI.preferred, data['ISNI']['preferred'])
         self.assertEqual(entity.ISNI.all, data['ISNI']['all'])
@@ -37,10 +43,21 @@ class ExternalIdsTestCase(SimpleTestCase):
         self.assertEqual(entity.GRID.all, data['GRID']['all'])
 
     def test_omit_attributes(self):
-        entity = ExternalIds(AttrDict(
-            {'FundRef': {'preferred': 'fr-p', 'all': ['fr-a', 'fr-b']},
-             'GRID': {'preferred': 'grid-p', 'all': 'grid-a'},
-             'other': {'preferred': 'isni-p', 'all': ['isni-a', 'isni-b']}}))
+        entity = ExternalIds(
+            AttrDict({
+                'FundRef': {
+                    'preferred': 'fr-p',
+                    'all': ['fr-a', 'fr-b']
+                },
+                'GRID': {
+                    'preferred': 'grid-p',
+                    'all': 'grid-a'
+                },
+                'other': {
+                    'preferred': 'isni-p',
+                    'all': ['isni-a', 'isni-b']
+                }
+            }))
         msg = '\'ExternalIds\' object has no attribute \'{}\''
         with self.assertRaisesMessage(AttributeError, msg.format('ISNI')):
             entity.ISNI
@@ -51,7 +68,6 @@ class ExternalIdsTestCase(SimpleTestCase):
 
 
 class OrganizationTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
         data = \
             {'id': 'ror-id',
@@ -108,7 +124,6 @@ class OrganizationTestCase(SimpleTestCase):
 
 
 class TypeBucketTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
         bucket = TypeBucket(AttrDict({'key': 'Type', 'doc_count': 482}))
         self.assertEqual(bucket.id, 'type')
@@ -117,7 +132,6 @@ class TypeBucketTestCase(SimpleTestCase):
 
 
 class CountryBucketTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
         bucket = CountryBucket(AttrDict({'key': 'IE', 'doc_count': 4821}))
         self.assertEqual(bucket.id, 'ie')
@@ -126,15 +140,34 @@ class CountryBucketTestCase(SimpleTestCase):
 
 
 class AggregationsTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
-        aggr = Aggregations(AttrDict(
-            {'types': {'buckets': [{'key': 'TyPE 1', 'doc_count': 482},
-                                   {'key': 'Type2', 'doc_count': 42}]},
-             'countries': {'buckets': [{'key': 'IE', 'doc_count': 48212},
-                                       {'key': 'FR', 'doc_count': 4821},
-                                       {'key': 'GB', 'doc_count': 482},
-                                       {'key': 'US', 'doc_count': 48}]}}))
+        aggr = Aggregations(
+            AttrDict({
+                'types': {
+                    'buckets': [{
+                        'key': 'TyPE 1',
+                        'doc_count': 482
+                    }, {
+                        'key': 'Type2',
+                        'doc_count': 42
+                    }]
+                },
+                'countries': {
+                    'buckets': [{
+                        'key': 'IE',
+                        'doc_count': 48212
+                    }, {
+                        'key': 'FR',
+                        'doc_count': 4821
+                    }, {
+                        'key': 'GB',
+                        'doc_count': 482
+                    }, {
+                        'key': 'US',
+                        'doc_count': 48
+                    }]
+                }
+            }))
         self.assertEqual(len(aggr.types), 2)
         self.assertEqual(aggr.types[0].id, 'type 1')
         self.assertEqual(aggr.types[0].title, 'TyPE 1')
@@ -160,7 +193,6 @@ class AggregationsTestCase(SimpleTestCase):
 
 
 class ErrorsTestCase(SimpleTestCase):
-
     def test_attributes_exist(self):
         data = ['err1', 'e2', 'terrible error 3']
         error = Errors(data)
