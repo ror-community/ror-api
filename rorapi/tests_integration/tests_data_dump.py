@@ -8,13 +8,11 @@ import zipfile
 from django.test import SimpleTestCase
 from ..settings import GRID
 
-
 BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
 class DataDumpTestCase(SimpleTestCase):
-
     def setUp(self):
         with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'r') as z:
             with z.open('ror.json') as f:
@@ -26,14 +24,16 @@ class DataDumpTestCase(SimpleTestCase):
         self.assertTrue(len(self.data_dump) > 90000)
         # schema check
         for item in self.data_dump:
-            for l in ['external_ids', 'links', 'acronyms', 'types', 'name',
-                      'country', 'aliases', 'wikipedia_url', 'labels', 'id']:
+            for l in [
+                    'external_ids', 'links', 'acronyms', 'types', 'name',
+                    'country', 'aliases', 'wikipedia_url', 'labels', 'id'
+            ]:
                 self.assertTrue(l in item)
             self.assertTrue('GRID' in item['external_ids'])
             self.assertTrue('country_code' in item['country'])
             self.assertTrue('country_name' in item['country'])
-            self.assertIsNotNone(re.match(r'https:\/\/ror\.org\/0\w{6}\d{2}',
-                                          item['id']))
+            self.assertIsNotNone(
+                re.match(r'https:\/\/ror\.org\/0\w{6}\d{2}', item['id']))
 
     def test_compare_data_dump_and_index(self):
         data_index = requests.get(BASE_URL).json()

@@ -2,38 +2,38 @@ import pycountry
 
 from rest_framework import serializers
 
-
 #####################################################################
 # Models                                                            #
 #####################################################################
 
+
 class Entity:
     """Generic model class"""
-
     def __init__(self, base_object, attributes):
         [setattr(self, a, getattr(base_object, a)) for a in attributes]
 
 
 class ExternalIds:
     """A model class for storing external identifiers"""
-
     def __init__(self, data):
-        for a in ['ISNI', 'FundRef', 'HESA', 'UCAS', 'UKPRN', 'CNRS',
-                  'OrgRef', 'Wikidata', 'GRID']:
+        for a in [
+                'ISNI', 'FundRef', 'HESA', 'UCAS', 'UKPRN', 'CNRS', 'OrgRef',
+                'Wikidata', 'GRID'
+        ]:
             try:
-                setattr(self, a,
-                        Entity(getattr(data, a), ['preferred', 'all']))
+                setattr(self, a, Entity(getattr(data, a),
+                                        ['preferred', 'all']))
             except AttributeError:
                 pass
 
 
 class Organization(Entity):
     """Organization model class"""
-
     def __init__(self, data):
-        super(Organization, self).__init__(data, ['id', 'name', 'types',
-                                                  'links', 'aliases',
-                                                  'acronyms', 'wikipedia_url'])
+        super(Organization, self).__init__(data, [
+            'id', 'name', 'types', 'links', 'aliases', 'acronyms',
+            'wikipedia_url'
+        ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
         self.external_ids = ExternalIds(data.external_ids)
@@ -41,7 +41,6 @@ class Organization(Entity):
 
 class TypeBucket:
     """A model class for type aggregation bucket"""
-
     def __init__(self, data):
         self.id = data.key.lower()
         self.title = data.key
@@ -50,7 +49,6 @@ class TypeBucket:
 
 class CountryBucket:
     """A model class for country aggregation bucket"""
-
     def __init__(self, data):
         self.id = data.key.lower()
         country = pycountry.countries.get(alpha_2=data.key)
@@ -63,7 +61,6 @@ class CountryBucket:
 
 class Aggregations:
     """Aggregations model class"""
-
     def __init__(self, data):
         self.types = [TypeBucket(b) for b in data.types.buckets]
         self.countries = [CountryBucket(b) for b in data.countries.buckets]
@@ -71,7 +68,6 @@ class Aggregations:
 
 class ListResult:
     """A model class for the list of organizations returned from the search"""
-
     def __init__(self, data):
         self.number_of_results = data.hits.total
         self.time_taken = data.took
@@ -81,7 +77,6 @@ class ListResult:
 
 class Errors:
     """Errors model class"""
-
     def __init__(self, errors):
         self.errors = errors
 
@@ -89,6 +84,7 @@ class Errors:
 ######################################################################
 # Serializers                                                        #
 ######################################################################
+
 
 class OrganizationLabelSerializer(serializers.Serializer):
     label = serializers.CharField()

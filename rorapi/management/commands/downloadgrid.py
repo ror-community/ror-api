@@ -15,12 +15,12 @@ class Command(BaseCommand):
         # make sure we are not overwriting an existing ROR JSON file
         # with new ROR identifiers
         if zipfile.is_zipfile(GRID['ROR_ZIP_PATH']):
-            self.stdout.write('Already downloaded GRID version {}'
-                              .format(GRID['VERSION']))
+            self.stdout.write('Already downloaded GRID version {}'.format(
+                GRID['VERSION']))
             return
 
-        self.stdout.write('Downloading GRID version {}'
-                          .format(GRID['VERSION']))
+        self.stdout.write('Downloading GRID version {}'.format(
+            GRID['VERSION']))
         r = requests.get(GRID['URL'])
         with open(GRID['GRID_ZIP_PATH'], 'wb') as f:
             f.write(r.content)
