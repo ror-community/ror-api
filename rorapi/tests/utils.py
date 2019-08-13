@@ -1,12 +1,12 @@
 class AttrDict(dict):
-
     def __init__(self, nested_dict):
         for k, v in nested_dict.items():
             if isinstance(v, dict):
                 self[k] = AttrDict(v)
             elif isinstance(v, list):
-                self[k] = [AttrDict(e) if isinstance(e, dict) else e
-                           for e in v]
+                self[k] = [
+                    AttrDict(e) if isinstance(e, dict) else e for e in v
+                ]
             else:
                 self[k] = v
 
@@ -18,7 +18,6 @@ class AttrDict(dict):
 
 
 class IterableAttrDict():
-
     def __init__(self, nested_dict, iter_list):
         self.attr_dict = AttrDict(nested_dict)
         self.iter_list = [AttrDict(i) for i in iter_list]

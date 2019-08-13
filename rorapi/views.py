@@ -2,10 +2,12 @@ from rest_framework import viewsets, routers
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
+from django.shortcuts import redirect
 
 from .models import OrganizationSerializer, ListResultSerializer, \
     ErrorsSerializer
 from .queries import search_organizations, retrieve_organization, get_ror_id
+from urllib.parse import urlencode
 
 
 class OrganizationViewSet(viewsets.ViewSet):
@@ -15,6 +17,12 @@ class OrganizationViewSet(viewsets.ViewSet):
 
     def list(self, request):
         params = request.GET.dict()
+        if 'query.name' in params or 'query.names' in params:
+            param_name = \
+                'query.name' if 'query.name' in params else 'query.names'
+            params['query'] = params[param_name]
+            del params[param_name]
+            return redirect('{}?{}'.format(request.path, urlencode(params)))
         if 'format' in params:
             del params['format']
         errors, organizations = search_organizations(params)
@@ -33,11 +41,11 @@ class OrganizationViewSet(viewsets.ViewSet):
 
 
 organizations_router = routers.DefaultRouter(trailing_slash=False)
-organizations_router.register(r'organizations', OrganizationViewSet,
+organizations_router.register(r'organizations',
+                              OrganizationViewSet,
                               basename='organization')
 
 
 class HeartbeatView(View):
-
     def get(self, request):
         return HttpResponse('Ok')
