@@ -19,10 +19,8 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
 
-sentry_sdk.init(
-    dsn=os.environ.get('SENTRY_DSN', None),
-    integrations=[DjangoIntegration()]
-)
+sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN', None),
+                integrations=[DjangoIntegration()])
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,7 +52,6 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -106,11 +103,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'rorapi.wsgi.application'
 
-
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    )
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', )
 }
 
 # Database
@@ -118,12 +112,10 @@ REST_FRAMEWORK = {
 
 DATABASES = {}
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = []
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -160,13 +152,14 @@ if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
 else:
     http_auth = ('elastic', os.environ.get('ELASTIC_PASSWORD', 'changeme'))
 
-ES = Elasticsearch(
-    [{'host': os.environ.get('ELASTIC_HOST', 'elasticsearch'),
-      'port': int(os.environ.get('ELASTIC_PORT', '9200'))}],
-    http_auth=http_auth,
-    use_ssl=False,
-    timeout=60,
-    connection_class=RequestsHttpConnection)
+ES = Elasticsearch([{
+    'host': os.environ.get('ELASTIC_HOST', 'elasticsearch'),
+    'port': int(os.environ.get('ELASTIC_PORT', '9200'))
+}],
+                   http_auth=http_auth,
+                   use_ssl=False,
+                   timeout=60,
+                   connection_class=RequestsHttpConnection)
 
 # GRID = {
 #     'VERSION': '2018-11-14',
@@ -190,7 +183,4 @@ GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 GRID['ROR_ZIP_PATH'] = os.path.join(GRID['DIR'], 'ror.zip')
 GRID['ROR_JSON_PATH'] = os.path.join(GRID['DIR'], 'ror.json')
 
-ROR_API = {
-    'PAGE_SIZE': 20,
-    'ID_PREFIX': 'https://ror.org/'
-}
+ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
