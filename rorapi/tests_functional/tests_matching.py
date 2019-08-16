@@ -30,7 +30,11 @@ class AffiliationMatchingTestCase(SimpleTestCase):
                 os.path.join(os.path.dirname(__file__),
                              'data/dataset_affiliations.json')) as affs_file:
             self.dataset = json.load(affs_file)
-        self.results = [self.match(d['affiliation']) for d in self.dataset]
+        self.results = []
+        for i, d in enumerate(self.dataset):
+            self.results.append(self.match(d['affiliation']))
+            if i % 100 == 0:
+                print('Progress: {0:.2f}%'.format(100 * i / len(self.dataset)))
 
     def test_matching(self):
         correct = len([
