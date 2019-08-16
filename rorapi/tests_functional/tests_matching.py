@@ -4,10 +4,11 @@ import re
 import requests
 
 from django.test import SimpleTestCase
+from statsmodels.stats.api import proportion_confint
 
-ACCURACY_MIN = 0.337127
-PRECISION_MIN = 0.375375
-RECALL_MIN = 0.415973
+ACCURACY_MIN = 0.885741
+PRECISION_MIN = 0.915426
+RECALL_MIN = 0.920048
 
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
@@ -17,47 +18,48 @@ class AffiliationMatchingTestCase(SimpleTestCase):
         affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
                              lambda m: '\\' + m.group(), affiliation)
         results = requests.get('{}/organizations'.format(API_URL), {
-            'query': affiliation
+            'affiliation': affiliation
         }).json()
-        if 'items' not in results:
-            return []
-        if not results['items']:
-            return []
-        return [results['items'][0]]
-
-    def get_grid_ids(self, items):
-        return [item['external_ids']['GRID']['preferred'] for item in items]
+        return [
+            item.get('organization').get('id') for item in results.get('items')
+            if item.get('chosen')
+        ]
 
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
                              'data/dataset_affiliations.json')) as affs_file:
-            self.results = json.load(affs_file)
-        [
-            d.update(
-                {'matched': self.get_grid_ids(self.match(d['affiliation']))})
-            for d in self.results
-        ]
+            self.dataset = json.load(affs_file)
+        self.results = [self.match(d['affiliation']) for d in self.dataset]
 
-    def test_accuracy(self):
-        accuracy = \
-            len([r for r in self.results
-                 if set(r['grid_ids']) == set(r['matched'])]) / \
-            len(self.results)
+    def test_matching(self):
+        correct = len([
+            d for d, r in zip(self.dataset, self.results)
+            if set(d.get('ror_ids')) == set(r)
+        ])
+        total = len(self.results)
+        accuracy = correct / total
+
+        print('Accuracy: {} {}'.format(accuracy,
+                                       proportion_confint(correct, total)))
         self.assertTrue(accuracy >= ACCURACY_MIN)
 
-    def test_precision(self):
-        precision = \
-            sum([len(set(r['grid_ids'])
-                     .intersection(set(r['matched'])))
-                 for r in self.results]) / \
-            sum([len(r['matched']) for r in self.results])
+        correct = sum([
+            len(set(r).intersection(set(d.get('ror_ids'))))
+            for d, r in zip(self.dataset, self.results)
+        ])
+        total = sum([len(r) for r in self.results])
+        precision = correct / total
+        print('Precision: {} {}'.format(precision,
+                                        proportion_confint(correct, total)))
         self.assertTrue(precision >= PRECISION_MIN)
 
-    def test_recall(self):
-        recall = \
-            sum([len(set(r['grid_ids'])
-                     .intersection(set(r['matched'])))
-                 for r in self.results]) / \
-            sum([len(r['grid_ids']) for r in self.results])
+        correct = sum([
+            len(set(r).intersection(set(d.get('ror_ids'))))
+            for d, r in zip(self.dataset, self.results)
+        ])
+        total = sum([len(d.get('ror_ids')) for d in self.dataset])
+        recall = correct / total
+        print('Recall: {} {}'.format(recall,
+                                     proportion_confint(correct, total)))
         self.assertTrue(recall >= RECALL_MIN)
