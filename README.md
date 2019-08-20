@@ -5,7 +5,7 @@
 ## API Documentation
 ROR API allows to iterate, query and filter the organizations indexed in ROR. The results are returned in JSON.
 
-ROR data downloads are stored [here](/ror-api/rorapi/data).
+ROR data downloads are stored here: <https://github.com/ror-community/ror-api/tree/master/rorapi/data>.
 
 ### Retrieval
 
