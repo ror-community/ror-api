@@ -75,6 +75,24 @@ class ListResult:
         self.meta = Aggregations(data.aggregations)
 
 
+class MatchedOrganization:
+    """A model class for an organization matched based on an affiliation
+    string"""
+    def __init__(self, data):
+        self.substring = data.substring
+        self.score = data.score
+        self.matching_type = data.matching_type
+        self.chosen = data.chosen
+        self.organization = data.organization
+
+
+class MatchingResult:
+    """A model class for the result of affiliation matching"""
+    def __init__(self, data):
+        self.number_of_results = len(data)
+        self.items = [MatchedOrganization(x) for x in data]
+
+
 class Errors:
     """Errors model class"""
     def __init__(self, errors):
@@ -147,6 +165,19 @@ class ListResultSerializer(serializers.Serializer):
     time_taken = serializers.IntegerField()
     items = OrganizationSerializer(many=True)
     meta = AggregationsSerializer()
+
+
+class MatchedOrganizationSerializer(serializers.Serializer):
+    substring = serializers.CharField()
+    score = serializers.FloatField()
+    matching_type = serializers.CharField()
+    chosen = serializers.BooleanField()
+    organization = OrganizationSerializer()
+
+
+class MatchingResultSerializer(serializers.Serializer):
+    number_of_results = serializers.IntegerField()
+    items = MatchedOrganizationSerializer(many=True)
 
 
 class ErrorsSerializer(serializers.Serializer):
