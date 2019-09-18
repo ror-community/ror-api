@@ -4,8 +4,9 @@ from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import redirect
 
+from .matching import match_organizations
 from .models import OrganizationSerializer, ListResultSerializer, \
-    ErrorsSerializer
+    MatchingResultSerializer, ErrorsSerializer
 from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 
@@ -25,10 +26,17 @@ class OrganizationViewSet(viewsets.ViewSet):
             return redirect('{}?{}'.format(request.path, urlencode(params)))
         if 'format' in params:
             del params['format']
-        errors, organizations = search_organizations(params)
+
+        if 'affiliation' in params:
+            errors, organizations = match_organizations(params)
+        else:
+            errors, organizations = search_organizations(params)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
-        serializer = ListResultSerializer(organizations)
+        if 'affiliation' in params:
+            serializer = MatchingResultSerializer(organizations)
+        else:
+            serializer = ListResultSerializer(organizations)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):

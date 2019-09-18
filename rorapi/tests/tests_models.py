@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 
 from ..models import Entity, ExternalIds, Organization, TypeBucket, \
-    CountryBucket, Aggregations, Errors
+    CountryBucket, Aggregations, Errors, MatchedOrganization, MatchingResult
 from .utils import AttrDict
 
 
@@ -190,6 +190,35 @@ class AggregationsTestCase(SimpleTestCase):
         self.assertEqual(aggr.countries[3].id, 'us')
         self.assertEqual(aggr.countries[3].title, 'United States of America')
         self.assertEqual(aggr.countries[3].count, 48)
+
+
+class MatchedOrganizationTestCase(SimpleTestCase):
+    def test_attributes_exist(self):
+        data = \
+            {'substring': 'UGallifrey',
+             'score': 0.95,
+             'matching_type': 'fuzzy',
+             'chosen': True,
+             'organization':
+             {'id': 'ror-id',
+              'name': 'University of Gallifrey',
+              'types': ['research centre'],
+              'links': [],
+              'aliases': [],
+              'acronyms': [],
+              'wikipedia_url': 'https://en.wikipedia.org/wiki/Gallifrey',
+              'labels': [],
+              'country': {'country_name': 'Gallifrey', 'country_code': 'GE'},
+              'external_ids': {}}}
+        organization = MatchedOrganization(AttrDict(data))
+        self.assertEqual(organization.substring, data['substring'])
+        self.assertEqual(organization.score, data['score'])
+        self.assertEqual(organization.matching_type, data['matching_type'])
+        self.assertEqual(organization.chosen, data['chosen'])
+        self.assertEqual(organization.organization.id,
+                         data['organization']['id'])
+        self.assertEqual(organization.organization.name,
+                         data['organization']['name'])
 
 
 class ErrorsTestCase(SimpleTestCase):

@@ -1,50 +1,11 @@
 import re
 
-from .models import Organization, ListResult, Errors
-from .settings import ES, ES_VARS, ROR_API
+from .matching import match_affiliation
+from .models import Organization, ListResult, MatchingResult, Errors
+from .settings import ROR_API
+from .es_utils import ESQueryBuilder
 
-from elasticsearch_dsl import Search
 from urllib.parse import unquote
-
-
-class ESQueryBuilder():
-    """Elasticsearch query builder class"""
-    def __init__(self):
-        self.search = Search(using=ES, index=ES_VARS['INDEX'])
-
-    def add_id_query(self, id):
-        self.search = self.search.query('match',
-                                        id={
-                                            'query': id,
-                                            'operator': 'and'
-                                        })
-
-    def add_match_all_query(self):
-        self.search = self.search.query('match_all')
-
-    def add_string_query(self, terms):
-        self.search = self.search.query('query_string',
-                                        query=terms,
-                                        fuzzy_max_expansions=1)
-
-    def add_filters(self, filters):
-        for f, v in filters:
-            self.search = self.search.filter('term', **{f: v})
-
-    def add_aggregations(self, names):
-        for name in names:
-            self.search.aggs.bucket(name[0],
-                                    'terms',
-                                    field=name[1],
-                                    size=10,
-                                    min_doc_count=1)
-
-    def paginate(self, page):
-        self.search = self.search[((page - 1) * ES_VARS['BATCH_SIZE']):(
-            page * ES_VARS['BATCH_SIZE'])]
-
-    def get_query(self):
-        return self.search
 
 
 def get_ror_id(string):
@@ -137,6 +98,7 @@ def search_organizations(params):
     error = validate(params)
     if error is not None:
         return error, None
+
     search = build_search_query(params)
     return None, ListResult(search.execute())
 
