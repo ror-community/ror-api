@@ -171,13 +171,8 @@ ES = Elasticsearch([{
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
-#GRID = {
-#    'VERSION': '2019-05-06',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
-#}
-
 GRID = {
-    'VERSION': '2019-09-19',
+    'VERSION': '2019-05-06',
     'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
 }
 
