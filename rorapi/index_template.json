@@ -61,19 +61,7 @@
               }
             }
           },
-          "status": {
-            "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
-              "norm": { 
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
-              }
-            }
-          },
+
           "labels": {
             "properties": {
               "label": {
