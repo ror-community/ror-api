@@ -11,12 +11,12 @@ A single organization record is represented by the following JSON structure:
         "name": "PSL Research University",
         "types": ["Education"],
         "links": ["https://www.psl.eu/en/university"],
-        "aliases": ["Universit&#00E9; PSL"],
+        "aliases": ["Université PSL"],
         "acronyms": ["PSL"],
         "wikipedia_url": "https://en.wikipedia.org/wiki/PSL_Research_University",
         "labels": [
             {
-                "label": "Universit&#00E9; de recherche Paris Sciences et Lettres",
+                "label": "Université de recherche Paris Sciences et Lettres",
                 "iso639": "fr"
             }
         ],
