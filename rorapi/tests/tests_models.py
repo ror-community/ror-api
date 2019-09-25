@@ -77,6 +77,7 @@ class OrganizationTestCase(SimpleTestCase):
              'aliases': ['Gallifrey University',
                          'Timey-Wimey University of Gallifrey'],
              'acronyms': ['UG'],
+             'status': 'active',
              'wikipedia_url': 'https://en.wikipedia.org/wiki/Gallifrey',
              'labels': [
                  {'label': 'Uniwersytet Gallifrenski', 'iso639': 'pl'},
@@ -95,6 +96,7 @@ class OrganizationTestCase(SimpleTestCase):
         self.assertEqual(organization.links, data['links'])
         self.assertEqual(organization.aliases, data['aliases'])
         self.assertEqual(organization.acronyms, data['acronyms'])
+        self.assertEqual(organization.status, data['status'])
         self.assertEqual(organization.wikipedia_url, data['wikipedia_url'])
         self.assertEqual(len(organization.labels), 2)
         self.assertEqual(organization.labels[0].label,

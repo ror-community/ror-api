@@ -31,7 +31,7 @@ class Organization(Entity):
     """Organization model class"""
     def __init__(self, data):
         super(Organization, self).__init__(data, [
-            'id', 'name', 'types', 'links', 'aliases', 'acronyms',
+            'id', 'name', 'types', 'links', 'aliases', 'acronyms','status',
             'wikipedia_url'
         ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
@@ -143,6 +143,7 @@ class OrganizationSerializer(serializers.Serializer):
     links = serializers.StringRelatedField(many=True)
     aliases = serializers.StringRelatedField(many=True)
     acronyms = serializers.StringRelatedField(many=True)
+    status = serializers.CharField()
     wikipedia_url = serializers.CharField()
     labels = OrganizationLabelSerializer(many=True)
     country = CountrySerializer()
