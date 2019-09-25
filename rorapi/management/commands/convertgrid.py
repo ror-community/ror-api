@@ -56,8 +56,6 @@ def convert_organization(grid_org, es):
         grid_org['aliases'],
         'acronyms':
         grid_org['acronyms'],
-        'status':
-        grid_org['status'],
         'wikipedia_url':
         grid_org['wikipedia_url'],
         'labels':
