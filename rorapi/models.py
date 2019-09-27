@@ -31,8 +31,8 @@ class Organization(Entity):
     """Organization model class"""
     def __init__(self, data):
         super(Organization, self).__init__(data, [
-            'id', 'name', 'types', 'links', 'aliases', 'acronyms',
-            'status', 'wikipedia_url'
+            'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
+            'wikipedia_url'
         ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
