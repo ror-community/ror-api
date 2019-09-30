@@ -5,7 +5,7 @@ import re
 import requests
 
 from django.test import SimpleTestCase
-from ..settings import ROR_API
+from ..settings import ROR_API, ES_VARS
 
 BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
@@ -115,6 +115,15 @@ class APITestCase(SimpleTestCase):
             'query': 'university',
             'filter': 'types:Healthcare'
         })
+
+    def test_iteration(self):
+        total = 10000
+        ids = []
+        for page in range(1, int(round(10000 / ES_VARS['BATCH_SIZE'])) + 1):
+            output = requests.get(BASE_URL, {'page': page}).json()
+            ids.extend([i['id'] for i in output['items']])
+        self.assertEquals(len(ids), total)
+        self.assertEquals(len(set(ids)), total)
 
     def verify_filtering(self, query):
         aggregations = requests.get(BASE_URL, query).json()['meta']
@@ -238,6 +247,13 @@ class APITestCase(SimpleTestCase):
         }).json()
         self.assertEquals(len(output['errors']), 1)
         self.assertTrue('\'whatever\'' in output['errors'][0])
+
+        output = requests.get(BASE_URL, {
+            'query': 'query',
+            'page': '10000'
+        }).json()
+        self.assertEquals(len(output['errors']), 1)
+        self.assertTrue('\'10000\'' in output['errors'][0])
 
         output = requests.get(
             BASE_URL, {
