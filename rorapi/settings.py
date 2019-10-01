@@ -141,6 +141,7 @@ ES_VARS = {
     'INDEX': 'organizations',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
+    'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
     'BULK_SIZE': 500
 }
 

@@ -119,7 +119,7 @@ class APITestCase(SimpleTestCase):
     def test_iteration(self):
         total = 10000
         ids = []
-        for page in range(1, int(round(10000 / ES_VARS['BATCH_SIZE'])) + 1):
+        for page in range(1, ES_VARS['MAX_PAGE'] + 1):
             output = requests.get(BASE_URL, {'page': page}).json()
             ids.extend([i['id'] for i in output['items']])
         self.assertEquals(len(ids), total)

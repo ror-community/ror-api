@@ -49,11 +49,9 @@ def validate(params):
         page = params.get('page')
         try:
             page = int(page)
-            min_page = 1
-            max_page = int(round(10000 / ES_VARS['BATCH_SIZE']))
-            if page < min_page or page > max_page:
+            if page < 1 or page > ES_VARS['MAX_PAGE']:
                 errors.append('page \'{}\' outside of range {}-{}'.format(
-                    page, min_page, max_page))
+                    page, 1, ES_VARS['MAX_PAGE']))
         except ValueError:
             errors.append('page \'{}\' is not an integer'.format(page))
 
