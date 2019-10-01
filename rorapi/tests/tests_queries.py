@@ -55,7 +55,7 @@ class ValidationTestCase(SimpleTestCase):
     def test_invalid_page(self):
         for page in [
                 'whatever', '-5', '0',
-                str(int(round(10000 / ES_VARS['BATCH_SIZE'])) + 1), '10000'
+                str(ES_VARS['MAX_PAGE'] + 1), '10001'
         ]:
             error = validate({'query': 'query', 'page': page})
             self.assertEquals(len(error.errors), 1)
