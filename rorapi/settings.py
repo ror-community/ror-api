@@ -182,9 +182,9 @@ GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 
 ROR = {'VERSION': '2019-09-19'}
-    
+
 ROR['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
-                           'ror-{}'.format(ROR['VERSION']))
+                          'ror-{}'.format(ROR['VERSION']))
 ROR['ROR_ZIP_PATH'] = os.path.join(ROR['DIR'], 'ror.zip')
 ROR['ROR_JSON_PATH'] = os.path.join(ROR['DIR'], 'ror.json')
 
