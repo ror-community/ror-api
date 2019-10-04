@@ -3,7 +3,7 @@ import json
 import os.path
 import random
 import zipfile
-from rorapi.settings import ES, ES_VARS, ROR_API, GRID
+from rorapi.settings import ES, ES_VARS, ROR_API, GRID, ROR
 
 from django.core.management.base import BaseCommand
 
@@ -79,13 +79,14 @@ class Command(BaseCommand):
     help = 'Converts GRID dataset to ROR schema'
 
     def handle(self, *args, **options):
+        os.makedirs(ROR['DIR'], exist_ok=True)
         # make sure we are not overwriting an existing ROR JSON file
         # with new ROR identifiers
-        if zipfile.is_zipfile(GRID['ROR_ZIP_PATH']):
-            self.stdout.write('GRID dataset already converted')
+        if zipfile.is_zipfile(ROR['ROR_ZIP_PATH']):
+            self.stdout.write('ROR dataset already exist')
             return
 
-        if not os.path.isfile(GRID['ROR_JSON_PATH']):
+        if not os.path.isfile(ROR['ROR_JSON_PATH']):
             with open(GRID['GRID_JSON_PATH'], 'r') as it:
                 grid_data = json.load(it)
 
@@ -94,13 +95,13 @@ class Command(BaseCommand):
                 convert_organization(org, ES)
                 for org in grid_data['institutes'] if org['status'] == 'active'
             ]
-            with open(GRID['ROR_JSON_PATH'], 'w') as outfile:
+            with open(ROR['ROR_JSON_PATH'], 'w') as outfile:
                 json.dump(ror_data, outfile, indent=4)
-            self.stdout.write('GRID dataset converted')
+            self.stdout.write('ROR dataset created')
 
         # generate zip archive
-        with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'w') as zipArchive:
-            zipArchive.write(GRID['ROR_JSON_PATH'],
+        with zipfile.ZipFile(ROR['ROR_ZIP_PATH'], 'w') as zipArchive:
+            zipArchive.write(ROR['ROR_JSON_PATH'],
                              arcname='ror.json',
                              compress_type=zipfile.ZIP_DEFLATED)
             self.stdout.write('ROR dataset ZIP archive created')

@@ -171,13 +171,8 @@ ES = Elasticsearch([{
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
-# GRID = {
-#    'VERSION': '2019-05-06',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
-#}
-
 GRID = {
-    'VERSION': '2019-09-19',
+    'VERSION': '2019-05-06',
     'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
 }
 
@@ -185,7 +180,12 @@ GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                            'grid-{}'.format(GRID['VERSION']))
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
-GRID['ROR_ZIP_PATH'] = os.path.join(GRID['DIR'], 'ror.zip')
-GRID['ROR_JSON_PATH'] = os.path.join(GRID['DIR'], 'ror.json')
+
+ROR = {'VERSION': '2019-09-19'}
+    
+ROR['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
+                           'ror-{}'.format(ROR['VERSION']))
+ROR['ROR_ZIP_PATH'] = os.path.join(ROR['DIR'], 'ror.zip')
+ROR['ROR_JSON_PATH'] = os.path.join(ROR['DIR'], 'ror.json')
 
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
