@@ -1,6 +1,6 @@
 import json
 import zipfile
-from rorapi.settings import ES, ES_VARS, GRID
+from rorapi.settings import ES, ES_VARS, GRID, ROR
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
@@ -10,10 +10,10 @@ class Command(BaseCommand):
     help = 'Indexes ROR dataset'
 
     def handle(self, *args, **options):
-        with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'r') as zip_ref:
-            zip_ref.extractall(GRID['DIR'])
+        with zipfile.ZipFile(ROR['ROR_ZIP_PATH'], 'r') as zip_ref:
+            zip_ref.extractall(ROR['DIR'])
 
-        with open(GRID['ROR_JSON_PATH'], 'r') as it:
+        with open(ROR['ROR_JSON_PATH'], 'r') as it:
             dataset = json.load(it)
 
         self.stdout.write('Indexing ROR dataset')
