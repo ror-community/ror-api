@@ -181,11 +181,11 @@ GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 
-ROR = {'VERSION': '2019-09-19'}
+ROR_DUMP = {'VERSION': '2019-09-19'}
 
-ROR['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
-                          'ror-{}'.format(ROR['VERSION']))
-ROR['ROR_ZIP_PATH'] = os.path.join(ROR['DIR'], 'ror.zip')
-ROR['ROR_JSON_PATH'] = os.path.join(ROR['DIR'], 'ror.json')
+ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
+                               'ror-{}'.format(ROR_DUMP['VERSION']))
+ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.zip')
+ROR_DUMP['ROR_JSON_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.json')
 
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}

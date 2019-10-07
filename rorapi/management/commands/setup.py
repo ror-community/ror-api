@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from .deleteindex import Command as DeleteIndexCommand
 from .createindex import Command as CreateIndexCommand
 from .indexgrid import Command as IndexGridCommand
-from rorapi.settings import GRID, ROR
+from rorapi.settings import GRID, ROR_DUMP
 
 
 class Command(BaseCommand):
@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # make sure ROR JSON file exists
-        if not zipfile.is_zipfile(ROR['ROR_ZIP_PATH']):
+        if not zipfile.is_zipfile(ROR_DUMP['ROR_ZIP_PATH']):
             self.stdout.write('ROR dataset for GRID version {} not found. '.
                               format(GRID['VERSION']) +
                               'Please run the upgrade command first.')
