@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         # make sure we are not overwriting an existing ROR JSON file
         # with new ROR identifiers
-        if zipfile.is_zipfile(GRID['ROR_ZIP_PATH']):
+        if zipfile.is_zipfile(GRID['GRID_ZIP_PATH']):
             self.stdout.write('Already downloaded GRID version {}'.format(
                 GRID['VERSION']))
             return
