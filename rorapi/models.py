@@ -18,7 +18,7 @@ class ExternalIds:
     def __init__(self, data):
         for a in [
                 'ISNI', 'FundRef', 'HESA', 'UCAS', 'UKPRN', 'CNRS', 'OrgRef',
-                'Wikidata', 'GRID'
+                'Wikidata', 'GRID', 'ROR'
         ]:
             try:
                 setattr(self, a, Entity(getattr(data, a),
@@ -134,6 +134,7 @@ class ExternalIdsSerializer(serializers.Serializer):
     OrgRef = ExternalIdSerializer(required=False)
     Wikidata = ExternalIdSerializer(required=False)
     GRID = GridExternalIdSerializer(required=False)
+    ROR = ExternalIdSerializer(required=False)
 
 
 class OrganizationSerializer(serializers.Serializer):
