@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/ror-community/ror-api.svg?branch=master)](https://travis-ci.com/ror-community/ror-api)
 
+
 # Research Organization Registry (ROR) API
 
 ROR API allows to retrieve, search and filter the organizations indexed in ROR. The results are returned in JSON.
