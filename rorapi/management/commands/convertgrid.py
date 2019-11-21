@@ -67,12 +67,16 @@ def convert_organization(grid_org, es):
             'country_name': grid_org['addresses'][0]['country']
         },
         'external_ids':
-        dict(grid_org.get('external_ids', {}),
+        getExternalIds(dict(grid_org.get('external_ids', {}),
              GRID={
                  'preferred': grid_org['id'],
                  'all': grid_org['id']
-             })
+             }))
     }
+
+def getExternalIds(external_ids):
+    if 'ROR' in external_ids: del external_ids['ROR']
+    return external_ids
 
 
 class Command(BaseCommand):
