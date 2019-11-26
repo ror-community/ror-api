@@ -1,9 +1,32 @@
 import json
+import re
 import zipfile
 from rorapi.settings import ES, ES_VARS, GRID, ROR_DUMP
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
+
+
+def get_nested_names(org):
+    yield org['name']
+    for label in org['labels']:
+        yield label['label']
+    for alias in org['aliases']:
+        yield alias
+    for acronym in org['acronyms']:
+        yield acronym
+
+
+def get_nested_ids(org):
+    yield org['id']
+    yield re.sub('https://', '', org['id'])
+    yield re.sub('https://ror.org/', '', org['id'])
+    for ext_name, ext_id in org['external_ids'].items():
+        if ext_name == 'GRID':
+            yield ext_id['all']
+        else:
+            for eid in ext_id['all']:
+                yield eid
 
 
 class Command(BaseCommand):
@@ -40,6 +63,12 @@ class Command(BaseCommand):
                             '_id': org['id']
                         }
                     })
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids(org)]
                     body.append(org)
                 ES.bulk(body)
         except TransportError:

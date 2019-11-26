@@ -19,9 +19,12 @@ class ESQueryBuilder():
         self.search = self.search.query('match_all')
 
     def add_string_query(self, terms):
-        self.search = self.search.query('query_string',
-                                        query=terms,
-                                        fuzzy_max_expansions=1)
+        self.search = self.search.query('nested',
+                                        path='names_ids',
+                                        score_mode='max',
+                                        query=Q('query_string',
+                                                query=terms,
+                                                fuzzy_max_expansions=1))
 
     def add_phrase_query(self, fields, terms):
         self.search.query = Q(

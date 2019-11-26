@@ -128,9 +128,15 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             query.to_dict(),
             dict(self.default_query,
                  query={
-                     'query_string': {
-                         'query': 'query terms',
-                         'fuzzy_max_expansions': 1
+                     'nested': {
+                         'path': 'names_ids',
+                         'score_mode': 'max',
+                         'query': {
+                             'query_string': {
+                                 'query': 'query terms',
+                                 'fuzzy_max_expansions': 1
+                             }
+                         }
                      }
                  }))
 
@@ -154,9 +160,15 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                          'filter':
                          e,
                          'must': [{
-                             'query_string': {
-                                 'query': 'query terms',
-                                 'fuzzy_max_expansions': 1
+                             'nested': {
+                                 'path': 'names_ids',
+                                 'score_mode': 'max',
+                                 'query': {
+                                     'query_string': {
+                                         'query': 'query terms',
+                                         'fuzzy_max_expansions': 1
+                                     }
+                                 }
                              }
                          }]
                      }
@@ -174,9 +186,15 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             query.to_dict(),
             dict(base,
                  query={
-                     'query_string': {
-                         'query': 'query terms',
-                         'fuzzy_max_expansions': 1
+                     'nested': {
+                         'path': 'names_ids',
+                         'score_mode': 'max',
+                         'query': {
+                             'query_string': {
+                                 'query': 'query terms',
+                                 'fuzzy_max_expansions': 1
+                             }
+                         }
                      }
                  }))
 
