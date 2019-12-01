@@ -26,7 +26,8 @@ class DataDumpTestCase(SimpleTestCase):
         for item in self.data_dump:
             for l in [
                     'external_ids', 'links', 'acronyms', 'types', 'name',
-                    'country', 'aliases', 'wikipedia_url', 'labels', 'id'
+                    'country', 'aliases', 'status', 'wikipedia_url', 'labels',
+                    'id'
             ]:
                 self.assertTrue(l in item)
             self.assertTrue('GRID' in item['external_ids'])
@@ -42,4 +43,5 @@ class DataDumpTestCase(SimpleTestCase):
         sample = random.sample(self.data_dump, 100)
         for item_dump in sample:
             item_index = requests.get(BASE_URL + '/' + item_dump['id']).json()
+            self.maxDiff = None
             self.assertEquals(item_index, item_dump)
