@@ -6,7 +6,7 @@ import requests
 import zipfile
 
 from django.test import SimpleTestCase
-from ..settings import GRID
+from ..settings import GRID, ROR_DUMP
 
 BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
@@ -14,7 +14,7 @@ BASE_URL = '{}/organizations'.format(
 
 class DataDumpTestCase(SimpleTestCase):
     def setUp(self):
-        with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'r') as z:
+        with zipfile.ZipFile(ROR_DUMP['ROR_ZIP_PATH'], 'r') as z:
             with z.open('ror.json') as f:
                 data = f.read()
                 self.data_dump = json.loads(data.decode("utf-8"))
@@ -26,7 +26,8 @@ class DataDumpTestCase(SimpleTestCase):
         for item in self.data_dump:
             for l in [
                     'external_ids', 'links', 'acronyms', 'types', 'name',
-                    'country', 'aliases', 'wikipedia_url', 'labels', 'id'
+                    'country', 'aliases', 'status', 'wikipedia_url', 'labels',
+                    'id'
             ]:
                 self.assertTrue(l in item)
             self.assertTrue('GRID' in item['external_ids'])
@@ -42,4 +43,5 @@ class DataDumpTestCase(SimpleTestCase):
         sample = random.sample(self.data_dump, 100)
         for item_dump in sample:
             item_index = requests.get(BASE_URL + '/' + item_dump['id']).json()
+            self.maxDiff = None
             self.assertEquals(item_index, item_dump)

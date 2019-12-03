@@ -2,7 +2,7 @@ import re
 
 from .matching import match_affiliation
 from .models import Organization, ListResult, MatchingResult, Errors
-from .settings import ROR_API
+from .settings import ROR_API, ES_VARS
 from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
@@ -46,11 +46,14 @@ def validate(params):
         ['filter key \'{}\' is illegal'.format(k) for k in illegal_keys])
 
     if 'page' in params:
+        page = params.get('page')
         try:
-            int(params.get('page'))
+            page = int(page)
+            if page < 1 or page > ES_VARS['MAX_PAGE']:
+                errors.append('page \'{}\' outside of range {}-{}'.format(
+                    page, 1, ES_VARS['MAX_PAGE']))
         except ValueError:
-            errors.append('page \'{}\' is not an integer'.format(
-                params.get('page')))
+            errors.append('page \'{}\' is not an integer'.format(page))
 
     return Errors(errors) if errors else None
 
