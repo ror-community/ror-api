@@ -141,6 +141,7 @@ ES_VARS = {
     'INDEX': 'organizations',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
+    'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
     'BULK_SIZE': 500
 }
 
@@ -171,16 +172,26 @@ ES = Elasticsearch([{
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
+#GRID = {
+#    'VERSION': '2019-05-06',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+#}
+
 GRID = {
-    'VERSION': '2019-05-06',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+    'VERSION': '2019-10-06',
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/17948195'
 }
 
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                            'grid-{}'.format(GRID['VERSION']))
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
-GRID['ROR_ZIP_PATH'] = os.path.join(GRID['DIR'], 'ror.zip')
-GRID['ROR_JSON_PATH'] = os.path.join(GRID['DIR'], 'ror.json')
+
+ROR_DUMP = {'VERSION': '2019-11-07'}
+
+ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
+                               'ror-{}'.format(ROR_DUMP['VERSION']))
+ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.zip')
+ROR_DUMP['ROR_JSON_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.json')
 
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}

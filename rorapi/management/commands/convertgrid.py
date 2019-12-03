@@ -3,7 +3,7 @@ import json
 import os.path
 import random
 import zipfile
-from rorapi.settings import ES, ES_VARS, ROR_API, GRID
+from rorapi.settings import ES, ES_VARS, ROR_API, GRID, ROR_DUMP
 
 from django.core.management.base import BaseCommand
 
@@ -56,6 +56,8 @@ def convert_organization(grid_org, es):
         grid_org['aliases'],
         'acronyms':
         grid_org['acronyms'],
+        'status':
+        grid_org['status'],
         'wikipedia_url':
         grid_org['wikipedia_url'],
         'labels':
@@ -65,25 +67,32 @@ def convert_organization(grid_org, es):
             'country_name': grid_org['addresses'][0]['country']
         },
         'external_ids':
-        dict(grid_org.get('external_ids', {}),
-             GRID={
-                 'preferred': grid_org['id'],
-                 'all': grid_org['id']
-             })
+        getExternalIds(
+            dict(grid_org.get('external_ids', {}),
+                 GRID={
+                     'preferred': grid_org['id'],
+                     'all': grid_org['id']
+                 }))
     }
+
+
+def getExternalIds(external_ids):
+    if 'ROR' in external_ids: del external_ids['ROR']
+    return external_ids
 
 
 class Command(BaseCommand):
     help = 'Converts GRID dataset to ROR schema'
 
     def handle(self, *args, **options):
+        os.makedirs(ROR_DUMP['DIR'], exist_ok=True)
         # make sure we are not overwriting an existing ROR JSON file
         # with new ROR identifiers
-        if zipfile.is_zipfile(GRID['ROR_ZIP_PATH']):
-            self.stdout.write('GRID dataset already converted')
+        if zipfile.is_zipfile(ROR_DUMP['ROR_ZIP_PATH']):
+            self.stdout.write('ROR dataset already exist')
             return
 
-        if not os.path.isfile(GRID['ROR_JSON_PATH']):
+        if not os.path.isfile(ROR_DUMP['ROR_JSON_PATH']):
             with open(GRID['GRID_JSON_PATH'], 'r') as it:
                 grid_data = json.load(it)
 
@@ -92,13 +101,13 @@ class Command(BaseCommand):
                 convert_organization(org, ES)
                 for org in grid_data['institutes'] if org['status'] == 'active'
             ]
-            with open(GRID['ROR_JSON_PATH'], 'w') as outfile:
+            with open(ROR_DUMP['ROR_JSON_PATH'], 'w') as outfile:
                 json.dump(ror_data, outfile, indent=4)
-            self.stdout.write('GRID dataset converted')
+            self.stdout.write('ROR dataset created')
 
         # generate zip archive
-        with zipfile.ZipFile(GRID['ROR_ZIP_PATH'], 'w') as zipArchive:
-            zipArchive.write(GRID['ROR_JSON_PATH'],
+        with zipfile.ZipFile(ROR_DUMP['ROR_ZIP_PATH'], 'w') as zipArchive:
+            zipArchive.write(ROR_DUMP['ROR_JSON_PATH'],
                              arcname='ror.json',
                              compress_type=zipfile.ZIP_DEFLATED)
             self.stdout.write('ROR dataset ZIP archive created')

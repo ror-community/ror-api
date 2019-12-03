@@ -5,6 +5,7 @@ import os
 from django.test import SimpleTestCase
 from ..queries import get_ror_id, validate, build_search_query, \
     build_retrieve_query, search_organizations, retrieve_organization
+from ..settings import ES_VARS
 from .utils import IterableAttrDict
 
 
@@ -52,9 +53,13 @@ class ValidationTestCase(SimpleTestCase):
         self.assertTrue(any(['f3' in e for e in error.errors]))
 
     def test_invalid_page(self):
-        error = validate({'query': 'query', 'page': 'whatever'})
-        self.assertEquals(len(error.errors), 1)
-        self.assertTrue('whatever' in error.errors[0])
+        for page in [
+                'whatever', '-5', '0',
+                str(ES_VARS['MAX_PAGE'] + 1), '10001'
+        ]:
+            error = validate({'query': 'query', 'page': page})
+            self.assertEquals(len(error.errors), 1)
+            self.assertTrue(page in error.errors[0])
 
     def test_multiple_errors(self):
         error = validate({

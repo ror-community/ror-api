@@ -24,6 +24,7 @@
                     "acronyms": [
                         "CNEN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "http://en.wikipedia.org/wiki/National_Nuclear_Energy_Commission",
                     "labels": [
                         {
@@ -65,6 +66,7 @@
                     "acronyms": [
                         "AVN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -96,6 +98,7 @@
                     "acronyms": [
                         "IPEN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -133,6 +136,7 @@
                     "acronyms": [
                         "CCHEN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -170,6 +174,7 @@
                     "acronyms": [
                         "NP"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [],
                     "country": {
@@ -202,6 +207,7 @@
                     "acronyms": [
                         "IEN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -239,6 +245,7 @@
                     "acronyms": [
                         "CSN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -280,6 +287,7 @@
                     ],
                     "aliases": [],
                     "acronyms": [],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -323,6 +331,7 @@
                     "acronyms": [
                         "IRSN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Institut_de_radioprotection_et_de_s%C3%BBret%C3%A9_nucl%C3%A9aire",
                     "labels": [
                         {
@@ -378,6 +387,7 @@
                     "acronyms": [
                         "ANS"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/American_Nuclear_Society",
                     "labels": [],
                     "country": {
@@ -422,6 +432,7 @@
                     "acronyms": [
                         "IBRAE RAN"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [
                         {
@@ -459,6 +470,7 @@
                     "acronyms": [
                         "NTI"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Threat_Initiative",
                     "labels": [],
                     "country": {
@@ -487,6 +499,7 @@
                     "acronyms": [
                         "MINT"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Malaysian_Nuclear_Agency",
                     "labels": [
                         {
@@ -533,6 +546,7 @@
                         "ENEA",
                         "NEA"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Energy_Agency",
                     "labels": [],
                     "country": {
@@ -571,6 +585,7 @@
                     "acronyms": [
                         "NI"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Institute",
                     "labels": [],
                     "country": {
@@ -611,6 +626,7 @@
                     "acronyms": [
                         "NMI"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [],
                     "country": {
@@ -637,6 +653,7 @@
                     "acronyms": [
                         "INRNE"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Institute_for_Nuclear_Research_and_Nuclear_Energy",
                     "labels": [],
                     "country": {
@@ -669,6 +686,7 @@
                     "acronyms": [
                         "CNL"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [],
                     "country": {
@@ -698,6 +716,7 @@
                         "UJF",
                         "NPI"
                     ],
+                    "status": "active",
                     "wikipedia_url": "",
                     "labels": [],
                     "country": {
@@ -730,6 +749,7 @@
                     "acronyms": [
                         "NDA"
                     ],
+                    "status": "active",
                     "wikipedia_url": "https://en.wikipedia.org/wiki/Nuclear_Decommissioning_Authority",
                     "labels": [],
                     "country": {
