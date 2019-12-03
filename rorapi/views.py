@@ -56,4 +56,10 @@ organizations_router.register(r'organizations',
 
 class HeartbeatView(View):
     def get(self, request):
-        return HttpResponse('Ok')
+        try:
+            errors, organizations = search_organizations({})
+            if errors is None:
+                return HttpResponse('OK')
+        except:
+            pass
+        return HttpResponse(status=500)
