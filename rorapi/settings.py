@@ -141,6 +141,7 @@ ES_VARS = {
     'INDEX': 'organizations',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
+    'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
     'BULK_SIZE': 500
 }
 
@@ -171,9 +172,14 @@ ES = Elasticsearch([{
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
+#GRID = {
+#    'VERSION': '2019-05-06',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+#}
+
 GRID = {
-    'VERSION': '2019-05-06',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+    'VERSION': '2019-10-06',
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/17948195'
 }
 
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
@@ -181,7 +187,7 @@ GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 
-ROR_DUMP = {'VERSION': '2019-09-19'}
+ROR_DUMP = {'VERSION': '2019-11-07'}
 
 ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                                'ror-{}'.format(ROR_DUMP['VERSION']))
