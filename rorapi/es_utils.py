@@ -7,6 +7,7 @@ class ESQueryBuilder():
     """Elasticsearch query builder class"""
     def __init__(self):
         self.search = Search(using=ES, index=ES_VARS['INDEX'])
+        self.search = self.search.params(search_type='dfs_query_then_fetch')
 
     def add_id_query(self, id):
         self.search = self.search.query('match',
