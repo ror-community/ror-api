@@ -46,11 +46,6 @@ after_success:
       docker push $REPO:$TRAVIS_BRANCH;
       echo "Pushed to" $REPO:$TRAVIS_BRANCH;
       AUTO_DEPLOY=true;
-    elif [[ "$TRAVIS_BRANCH" == "feature/index_child_docs" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-      docker build -f Dockerfile -t $REPO:$TRAVIS_BRANCH .;
-      docker push $REPO:$TRAVIS_BRANCH;
-      echo "Pushed to" $REPO:$TRAVIS_BRANCH;
-      AUTO_DEPLOY=true;
     else
       docker build -f Dockerfile -t $REPO:$TRAVIS_BRANCH .;
       docker push $REPO:$TRAVIS_BRANCH;
