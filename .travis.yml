@@ -36,10 +36,10 @@ after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - REPO=rorcommunity/ror-api;
   - AUTO_DEPLOY=false;
-  - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-      docker build -f Dockerfile -t $REPO .;
-      docker push $REPO;
-      echo "Pushed to" $REPO;
+  - if [ "${TRAVIS_TAG?}" ]; then
+      docker build -f Dockerfile -t $REPO:$TRAVIS_TAG .;
+      docker push $REPO:$TRAVIS_TAG;
+      echo "Pushed to" $REPO:$TRAVIS_TAG;
       AUTO_DEPLOY=true;
     elif [[ "$TRAVIS_BRANCH" == "dev" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
       docker build -f Dockerfile -t $REPO:$TRAVIS_BRANCH .;
@@ -62,7 +62,7 @@ after_success:
       
       sentry-cli releases new ror-api:${GIT_TAG} --finalize --project ror-api;
       
-      if [ "$TRAVIS_BRANCH" == "master" ]; then
+      if [ "${TRAVIS_TAG?}" ]; then
         ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api.auto.tfvars;
         sentry-cli releases deploys ror-ap:${GIT_TAG} new -e production;
       else
@@ -77,15 +77,14 @@ after_success:
       git config user.email ${DOCKER_EMAIL};
       git config user.name ${DOCKER_USERNAME};
 
-      if [ "$TRAVIS_BRANCH" == "master" ]; then
+      if [ "${TRAVIS_TAG?}" ]; then
         git add ror/services/api/_ror-api.auto.tfvars;
-      elif [ "$TRAVIS_BRANCH" == "dev" ]; then
+        git commit -m "Adding ror-api git variables for commit tagged ${TRAVIS_TAG?}";
+      else
         git add ror/services/api/_ror-api-dev.auto.tfvars;
-      elif [ "$TRAVIS_BRANCH" == "python_rewrite" ]; then
-        git add ror/services/api/_ror-api-dev.auto.tfvars;
+        git commit -m "Adding ror-api git variables for latest commit on branch $TRAVIS_BRANCH";
       fi
 
-      git commit -m "Adding ror-api git variables for latest commit on branch $TRAVIS_BRANCH";
       git push "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git" master;
     fi
 
