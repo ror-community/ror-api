@@ -55,4 +55,4 @@ class Command(BaseCommand):
 
         if ES.indices.exists(backup_index):
             ES.indices.delete(backup_index)
-        self.stdout.write('ROR dataset indexed')
+        self.stdout.write('ROR dataset ' + ROR_DUMP['VERSION'] + ' indexed')
