@@ -88,7 +88,7 @@ class QueryFuzzySearchTestCase(SearchTestCase):
         ]
         self.rank_max = RANK_MAX_QUERY_FUZZY
         self.r1_min = R1_MIN_QUERY_FUZZY
-        self.r5_min = R5_MIN_QUERY
+        self.r5_min = R5_MIN_QUERY_FUZZY
 
     def test_search_query(self):
         self.validate('query (fuzzy)')
