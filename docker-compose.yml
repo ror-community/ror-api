@@ -18,6 +18,7 @@ services:
       interval: 10s
       timeout: 1s
   web:
+    container_name: rorapiweb
     env_file: .env
     environment:
       ELASTIC_HOST: elasticsearch
