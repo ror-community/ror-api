@@ -183,7 +183,7 @@ ES = Elasticsearch([{
 # }
 
 GRID = {
-    'VERSION': '2019-12-18',
+    'VERSION': '2019-12-10',
     'URL': 'https://digitalscience.figshare.com/ndownloader/files/20151785'
 }
 

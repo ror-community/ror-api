@@ -33,7 +33,10 @@
             }
           },
           "links": {
-            "type": "text"
+            "type": "keyword"
+          },
+          "wikipedia_url": {
+            "type": "keyword"
           },
           "aliases": {
             "type": "text",
@@ -61,21 +64,9 @@
               }
             }
           },
-
           "status": {
-            "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
-              "norm": { 
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
-              }
-            }
+            "type": "keyword"
           },
-
           "labels": {
             "properties": {
               "label": {
@@ -150,6 +141,19 @@
                 }
               }
             } 
+          },
+
+          "names_ids": {
+            "type": "nested",
+            "properties": {
+              "id": {
+                "type": "keyword"
+              },
+              "name": {
+                "type": "text",
+                "analyzer": "string_lowercase"
+              }
+            }
           }
         }
       }
