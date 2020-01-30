@@ -2,7 +2,7 @@
 
 # Research Organization Registry (ROR) API
 
-ROR API allows to retrieve, search and filter the organizations indexed in ROR. The results are returned in JSON.
+The ROR API allows to retrieve, search and filter the organizations indexed in ROR. The results are returned in JSON.
 
 A single organization record is represented by the following JSON structure:
 
