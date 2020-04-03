@@ -133,7 +133,9 @@ ROR dataset created
 ROR dataset ZIP archive created
 ```
 
-This will create a new `data/ror-2020-03-15` folder, containing a `ror.json` and `ror.zip`.
+This will create a new `data/ror-2020-03-15` folder, containing a `ror.json` and `ror.zip`. To finish the process, add the new folder to git and push to the GitHub repo.
+
+To install the updated ROR data, run `./manage.py setup`.
 
 ## Data dumps
 
