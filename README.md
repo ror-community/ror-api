@@ -105,6 +105,38 @@ The output contains a list of items. An item represents an organization matched 
 
 If you require a hard decision about which organizations are mentioned in the given affiliation string, use `chosen` field. Otherwise, the resulting list can be examined in a similar manner as any search result list.
 
+## Import GRID data
+
+To import GRID data, you need a system where `setup` has been run successfully. Then first updated the `GRID` variable in `settings.py`, e.g. 
+
+```
+GRID = {
+    'VERSION': '2020-03-15',
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/22091379'
+}
+```
+
+And, also in `settings.py`, set the `ROR_DUMP` variable, e.g.
+
+```
+ROR_DUMP = {'VERSION': '2020-04-02'}
+```
+
+Then run this command: `./manage.py upgrade`.
+
+You should see this in the console:
+
+```
+Downloading GRID version 2020-03-15
+Converting GRID dataset to ROR schema
+ROR dataset created
+ROR dataset ZIP archive created
+```
+
+This will create a new `data/ror-2020-03-15` folder, containing a `ror.json` and `ror.zip`. To finish the process, add the new folder to git and push to the GitHub repo.
+
+To install the updated ROR data, run `./manage.py setup`.
+
 ## Data dumps
 
 It is possible to download the whole ROR dataset. ROR data downloads are stored here: <https://github.com/ror-community/ror-api/tree/master/rorapi/data>.
