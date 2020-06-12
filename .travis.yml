@@ -19,6 +19,7 @@ install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  - sudo pip install awscli
 
 before_script:
   - cp .env.travis .env
@@ -33,6 +34,8 @@ script:
   - docker-compose exec web python manage.py test rorapi.tests_functional
 
 after_success:
+  - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY
+  - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_KEY
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - REPO=rorcommunity/ror-api;
   - AUTO_DEPLOY=false;
@@ -59,10 +62,12 @@ after_success:
       export GIT_SHA=$(git rev-parse --short HEAD);
       export GIT_TAG=$(git describe --tags $(git rev-list --tags --max-count=1));
       git clone "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git";
-      
+
       sentry-cli releases new ror-api:${GIT_TAG} --finalize --project ror-api;
-      
+
       if [ "${TRAVIS_TAG?}" ]; then
+        aws configure set preview.cloudfront true
+        aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
         ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api.auto.tfvars;
         sentry-cli releases deploys ror-ap:${GIT_TAG} new -e production;
       else
