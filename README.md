@@ -107,7 +107,7 @@ If you require a hard decision about which organizations are mentioned in the gi
 
 ## Import GRID data
 
-To import GRID data, you need a system where `setup` has been run successfully. Then first updated the `GRID` variable in `settings.py`, e.g. 
+To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g. 
 
 ```
 GRID = {
