@@ -130,13 +130,13 @@ docker-compose up -d
 ```
 Let it run for a little while. If the `organizations` does not exist, run
 ```
-docker-compose exec web python manage.py createindex
+docker-compose exec web python manage.py setup
 ```
 and then run this command:
 ```
 docker-compose exec web python manage.py upgrade
 ```
-If the index already exists, skip the `createindex` command.
+If the index already exists, skip the `setup` command.
 
 If this is not being run locally, from the machine hosting the api, do all the commands above but without `docker-compose exec web python`. Also make sure that the api is running and that the index is already created. If not, please run the `./manage.py createindex` command.
 
