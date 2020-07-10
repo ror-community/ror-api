@@ -107,7 +107,7 @@ If you require a hard decision about which organizations are mentioned in the gi
 
 ## Import GRID data
 
-To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g. 
+To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g.
 
 ```
 GRID = {
@@ -122,7 +122,23 @@ And, also in `settings.py`, set the `ROR_DUMP` variable, e.g.
 ROR_DUMP = {'VERSION': '2020-04-02'}
 ```
 
-Then run this command: `./manage.py upgrade`.
+There are two ways to do this. If running locally, please run all commands through docker. Otherwise, run it on the machine that hosts the api.
+
+For local use, from the base of the repository, run:
+```
+docker-compose up -d
+```
+Let it run for a little while. If the `organizations` does not exist, run
+```
+docker-compose exec web python manage.py createindex
+```
+and then run this command:
+```
+docker-compose exec web python manage.py upgrade
+```
+If the index already exists, skip the `createindex` command.
+
+If this is not being run locally, from the machine hosting the api, do all the commands above but without `docker-compose exec web python`. Also make sure that the api is running and that the index is already created. If not, please run the `./manage.py createindex` command.
 
 You should see this in the console:
 
