@@ -138,7 +138,7 @@ docker-compose exec web python manage.py upgrade
 ```
 If the index already exists, skip the `setup` command.
 
-If this is not being run locally, from the machine hosting the api, do all the commands above but without `docker-compose exec web python`. Also make sure that the api is running and that the index is already created. If not, please run the `./manage.py createindex` command.
+If this is not being run locally, from the machine hosting the api, do all the commands above but without `docker-compose exec web python`. Also make sure that the api is running and that the index is already created. To create the index, please run the `./manage.py createindex` command.
 
 You should see this in the console:
 
