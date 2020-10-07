@@ -134,6 +134,13 @@
                   },
                   "nuts_level3": {
                     "type": "keyword"
+                  },
+                  "geonames_admin1": {
+                    "properties": {
+                      "name": {
+                        "type": "keyword"
+                      }
+                    }
                   }
                 }
               }
