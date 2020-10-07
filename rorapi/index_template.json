@@ -139,8 +139,20 @@
                     "properties": {
                       "name": {
                         "type": "keyword"
+                      },
+                      "ascii_name": {
+                        "type": "keyword"
+                      },
+                      "code": {
+                        "type": "keyword"
                       }
                     }
+                  },
+                  "geonames_admin2": {
+                    "type": "keyword"
+                  },
+                  "license": {
+                    "type": "text"
                   }
                 }
               }
