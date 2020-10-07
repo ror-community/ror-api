@@ -111,6 +111,31 @@
               },
               "postcode": {
                 "type": "keyword"
+              },
+              "primary": {
+                "type": "boolean"
+              },
+              "city": {
+                "type": "keyword"
+              },
+              "geonames_city": {
+                "properties": {
+                  "id": {
+                    "type": "keyword"
+                  },
+                  "city": {
+                    "type": "keyword"
+                  },
+                  "nuts_level1": {
+                    "type": "keyword"
+                  },
+                  "nuts_level2": {
+                    "type": "keyword"
+                  },
+                  "nuts_level3": {
+                    "type": "keyword"
+                  }
+                }
               }
             }
           },
