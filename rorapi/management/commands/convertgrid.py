@@ -40,13 +40,21 @@ def get_ror_id(grid_id, es):
     return generate_ror_id()
 
 def addresses(location):
-    unwanted_keys = ["geonames_admin2","license"]
+    line = ""
+    combine_lines = ["line_1","line_2","line_3","country","country_code"]
     new_addresses = []
     hsh = {}
+    hsh["line"] = ""
     for h in location:
-        for k,v in hsh.items():
-            if not(k in unwanted_keys):
+        for k,v in h.items():
+            if not(k in combine_lines):
                 hsh[k] = v
+            else:
+                n = []
+                for i in combine_lines:
+                    if not(h[i] is None):
+                        n.append(h[i])
+                hsh["line"] = " ".join(n)
         new_addresses.append(hsh)
     return new_addresses
 
