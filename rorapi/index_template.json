@@ -8,8 +8,8 @@
         "normalizer": {
           "keyword_lowercase": { "type": "custom", "filter": ["lowercase"] }
         },
-        "filter": { 
-          "ascii_folding": { "type": "asciifolding", "preserve_original": true } 
+        "filter": {
+          "ascii_folding": { "type": "asciifolding", "preserve_original": true }
         }
       }
     },
@@ -21,14 +21,14 @@
           },
           "name": {
             "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
               "norm": {
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
+                "type": "text",
+                "analyzer": "string_lowercase",
+                "fielddata": true
               }
             }
           },
@@ -40,27 +40,27 @@
           },
           "aliases": {
             "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
-              "norm": { 
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
+              "norm": {
+                "type": "text",
+                "analyzer": "string_lowercase",
+                "fielddata": true
               }
             }
           },
           "acronyms": {
             "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
-              "norm": { 
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
+              "norm": {
+                "type": "text",
+                "analyzer": "string_lowercase",
+                "fielddata": true
               }
             }
           },
@@ -97,6 +97,35 @@
           },
           "types": {
             "type": "keyword"
+          },
+          "addresses": {
+            "properties": {
+              "line":  {
+                "type": "text"
+                },
+              "lat": {
+                "type": "geo_point"
+              },
+              "lng": {
+                "type": "geo_point"
+              },
+              "postcode": {
+                "type": "keyword"
+              }
+            }
+          },
+          "relationships": {
+            "properties": {
+              "type":  {
+                "type": "keyword"
+                },
+              "label": {
+                "type": "keyword"
+              },
+              "id": {
+                "type": "keyword"
+                }
+              }
           },
           "external_ids": {
             "properties": {
@@ -140,7 +169,7 @@
                   }
                 }
               }
-            } 
+            }
           },
 
           "names_ids": {

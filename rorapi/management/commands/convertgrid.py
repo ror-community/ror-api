@@ -39,6 +39,16 @@ def get_ror_id(grid_id, es):
         return s['hits']['hits'][0]['_id']
     return generate_ror_id()
 
+def addresses(location):
+    unwanted_keys = ["geonames_admin2","license"]
+    new_addresses = []
+    hsh = {}
+    for h in location:
+        for k,v in hsh.items():
+            if not(k in unwanted_keys):
+                hsh[k] = v
+        new_addresses.append(hsh)
+    return new_addresses
 
 def convert_organization(grid_org, es):
     """Converts the organization metadata from GRID schema to ROR schema."""
@@ -66,6 +76,8 @@ def convert_organization(grid_org, es):
             'country_code': grid_org['addresses'][0]['country_code'],
             'country_name': grid_org['addresses'][0]['country']
         },
+        'relationships': grid_org["relationships"],
+        'addresses': addresses(grid_org["addresses"]),
         'external_ids':
         getExternalIds(
             dict(grid_org.get('external_ids', {}),
@@ -74,7 +86,6 @@ def convert_organization(grid_org, es):
                      'all': grid_org['id']
                  }))
     }
-
 
 def getExternalIds(external_ids):
     if 'ROR' in external_ids: del external_ids['ROR']
@@ -89,7 +100,7 @@ class Command(BaseCommand):
         # make sure we are not overwriting an existing ROR JSON file
         # with new ROR identifiers
         if zipfile.is_zipfile(ROR_DUMP['ROR_ZIP_PATH']):
-            self.stdout.write('ROR dataset already exist')
+            self.stdout.write('ROR dataset already exists')
             return
 
         if not os.path.isfile(ROR_DUMP['ROR_JSON_PATH']):
