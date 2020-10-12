@@ -41,7 +41,8 @@ def get_ror_id(grid_id, es):
 
 def addresses(location):
     line = ""
-    combine_lines = ["line_1","line_2","line_3","country","country_code"]
+    address = ["line_1","line_2","line_3"]
+    combine_lines = address + ["country","country_code"]
     new_addresses = []
     hsh = {}
     hsh["line"] = ""
@@ -51,7 +52,7 @@ def addresses(location):
                 hsh[k] = v
             else:
                 n = []
-                for i in combine_lines:
+                for i in address:
                     if not(h[i] is None):
                         n.append(h[i])
                 hsh["line"] = " ".join(n)
@@ -80,6 +81,12 @@ def convert_organization(grid_org, es):
         grid_org['wikipedia_url'],
         'labels':
         grid_org['labels'],
+        'email_address':
+        grid_org['email_address'],
+        'ip_addresses':
+        grid_org['ip_addresses'],
+        'established':
+        grid_org['established'],
         'country': {
             'country_code': grid_org['addresses'][0]['country_code'],
             'country_name': grid_org['addresses'][0]['country']
