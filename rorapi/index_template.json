@@ -131,6 +131,31 @@
                   },
                   "city": {
                     "type": "keyword"
+                  },
+                  "nuts_level1": {
+                    "type": "keyword"
+                  },
+                  "nuts_level2": {
+                    "type": "keyword"
+                  },
+                  "nuts_level3": {
+                    "type": "keyword"
+                  },
+                  "geonames_admin1": {
+                    "properties": {
+                      "ascii_name": {
+                        "type": "keyword"
+                      },
+                      "name": {
+                        "type": "keyword"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "geonames_admin2": {
+                    "type": "keyword"
                   }
                 }
               }
