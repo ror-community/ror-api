@@ -98,6 +98,15 @@
           "types": {
             "type": "keyword"
           },
+          "email_address": {
+            "type": "text"
+          },
+          "established": {
+            "type": "date"
+          },
+          "ip_addresses": {
+            "type": "text"
+          },
           "addresses": {
             "properties": {
               "line":  {
@@ -133,13 +142,34 @@
                     "type": "keyword"
                   },
                   "nuts_level1": {
-                    "type": "keyword"
+                    "properties": {
+                      "name": {
+                        "type": "text"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
                   },
                   "nuts_level2": {
-                    "type": "keyword"
+                    "properties": {
+                      "name": {
+                        "type": "text"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
                   },
                   "nuts_level3": {
-                    "type": "keyword"
+                    "properties": {
+                      "name": {
+                        "type": "text"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
                   },
                   "geonames_admin1": {
                     "properties": {
