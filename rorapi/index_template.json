@@ -104,10 +104,10 @@
                 "type": "text"
                 },
               "lat": {
-                "type": "geo_point"
+                "type": "keyword"
               },
               "lng": {
-                "type": "geo_point"
+                "type": "keyword"
               },
               "postcode": {
                 "type": "keyword"
@@ -118,6 +118,12 @@
               "city": {
                 "type": "keyword"
               },
+              "state": {
+                "type": "keyword"
+              },
+              "state_code": {
+                "type": "keyword"
+              },
               "geonames_city": {
                 "properties": {
                   "id": {
@@ -125,34 +131,6 @@
                   },
                   "city": {
                     "type": "keyword"
-                  },
-                  "nuts_level1": {
-                    "type": "keyword"
-                  },
-                  "nuts_level2": {
-                    "type": "keyword"
-                  },
-                  "nuts_level3": {
-                    "type": "keyword"
-                  },
-                  "geonames_admin1": {
-                    "properties": {
-                      "name": {
-                        "type": "keyword"
-                      },
-                      "ascii_name": {
-                        "type": "keyword"
-                      },
-                      "code": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "geonames_admin2": {
-                    "type": "keyword"
-                  },
-                  "license": {
-                    "type": "text"
                   }
                 }
               }
