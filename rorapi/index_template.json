@@ -71,19 +71,22 @@
             "properties": {
               "label": {
                 "type": "text",
-		"fields": {
-              	  "keyword": {
-                    "type": "keyword"
+		              "fields": {
+              	     "keyword": {
+                       "type": "keyword"
+                      },
+                      "norm": {
+                        "type": "text",
+                        "analyzer": "string_lowercase",
+                        "fielddata": true
+                      }
+                    }
                   },
-                  "norm": {
-                    "type": "text",
-                    "analyzer": "string_lowercase",
-                    "fielddata": true
+                  "iso639": {
+                    "type": "keyword"
                   }
                 }
-              }
-            }
-          },
+              },
 
           "country": {
             "properties": {
@@ -185,7 +188,17 @@
                     }
                   },
                   "geonames_admin2": {
-                    "type": "keyword"
+                    "properties": {
+                      "ascii_name": {
+                        "type": "keyword"
+                      },
+                      "name": {
+                        "type": "keyword"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
                   },
                   "license": {
                     "properties": {
