@@ -192,17 +192,20 @@ ES = Elasticsearch([{
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/22091379'
 # }
 
+#GRID = {
+    #'VERSION': '2020-06-29',
+    #'URL': 'https://digitalscience.figshare.com/ndownloader/files/23552738'
+#}
 GRID = {
-    'VERSION': '2020-06-29',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/23552738'
+    'VERSION': '2020-10-06',
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25039403'
 }
-
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                            'grid-{}'.format(GRID['VERSION']))
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 
-ROR_DUMP = {'VERSION': '2020-07-06'}
+ROR_DUMP = {'VERSION': '2020-10-19'}
 
 ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                                'ror-{}'.format(ROR_DUMP['VERSION']))
