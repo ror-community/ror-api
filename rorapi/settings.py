@@ -194,7 +194,7 @@ ES = Elasticsearch([{
 
 GRID = {
     'VERSION': '2020-10-06',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/23552738'
+    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25039403'
 }
 
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
