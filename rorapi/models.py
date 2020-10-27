@@ -32,12 +32,12 @@ class Organization(Entity):
     def __init__(self, data):
         super(Organization, self).__init__(data, [
             'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
-            'wikipedia_url'
+            'wikipedia_url','established','relationships'
         ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
+        self.relationships = [Entity(r, ['type','label','id']) for r in data.relationships]
         self.external_ids = ExternalIds(data.external_ids)
-
 
 class TypeBucket:
     """A model class for type aggregation bucket"""
@@ -108,6 +108,10 @@ class OrganizationLabelSerializer(serializers.Serializer):
     label = serializers.CharField()
     iso639 = serializers.CharField()
 
+class OrganizationRelationshipsSerializer(serializers.Serializer):
+    label = serializers.CharField()
+    type = serializers.CharField()
+    id = serializers.CharField()
 
 class CountrySerializer(serializers.Serializer):
     country_name = serializers.CharField()
@@ -139,7 +143,9 @@ class ExternalIdsSerializer(serializers.Serializer):
 class OrganizationSerializer(serializers.Serializer):
     id = serializers.CharField()
     name = serializers.CharField()
+    established = serializers.IntegerField()
     types = serializers.StringRelatedField(many=True)
+    relationships = OrganizationRelationshipsSerializer(many=True)
     links = serializers.StringRelatedField(many=True)
     aliases = serializers.StringRelatedField(many=True)
     acronyms = serializers.StringRelatedField(many=True)
