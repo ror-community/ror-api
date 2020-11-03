@@ -3,6 +3,7 @@ import json
 import os.path
 import random
 import zipfile
+import re
 from rorapi.settings import ES, ES_VARS, ROR_API, GRID, ROR_DUMP
 
 from django.core.management.base import BaseCommand
@@ -55,7 +56,11 @@ def addresses(location):
                 for i in address:
                     if not(h[i] is None):
                         n.append(h[i])
-                hsh["line"] = " ".join(n)
+                line = " ".join(n)
+                line = re.sub(' +',' ',line)
+                if (len(line) == 1 and line == " "):
+                    line = line.strip()
+                hsh["line"] = line
         new_addresses.append(hsh)
     return new_addresses
 

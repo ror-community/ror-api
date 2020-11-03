@@ -12,6 +12,17 @@ class Entity:
     def __init__(self, base_object, attributes):
         [setattr(self, a, getattr(base_object, a)) for a in attributes]
 
+class GeoCity:
+    """A model class for storing external identifiers"""
+    def __init__(self, data):
+        for a in [
+                'geonames_city'
+        ]:
+            try:
+                setattr(self, a, Entity(getattr(data, a),
+                                        ['id']))
+            except AttributeError:
+                pass
 
 class ExternalIds:
     """A model class for storing external identifiers"""
@@ -32,11 +43,13 @@ class Organization(Entity):
     def __init__(self, data):
         super(Organization, self).__init__(data, [
             'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
-            'wikipedia_url','established','relationships'
+            'wikipedia_url','established','relationships','addresses'
         ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
         self.relationships = [Entity(r, ['type','label','id']) for r in data.relationships]
+        self.addresses = [Entity(a, ['lng','lat','state_code','city','postcode','line']) for a in data.addresses]
+        self.geonames_city = GeoCity(data.addresses)
         self.external_ids = ExternalIds(data.external_ids)
 
 class TypeBucket:
@@ -117,6 +130,23 @@ class CountrySerializer(serializers.Serializer):
     country_name = serializers.CharField()
     country_code = serializers.CharField()
 
+class AddressGeoNamesSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    id = serializers.CharField()
+    ascii_name = serializers.CharField()
+    code = serializers.CharField()
+
+class GeoNamesCitySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+class OrganizationAddressesSerializer(serializers.Serializer):
+    lat = serializers.CharField()
+    lng = serializers.CharField()
+    state_code = serializers.CharField()
+    city = serializers.CharField()
+    postcode = serializers.CharField()
+    line = serializers.CharField()
+
 
 class ExternalIdSerializer(serializers.Serializer):
     preferred = serializers.CharField()
@@ -146,6 +176,8 @@ class OrganizationSerializer(serializers.Serializer):
     established = serializers.IntegerField()
     types = serializers.StringRelatedField(many=True)
     relationships = OrganizationRelationshipsSerializer(many=True)
+    addresses = OrganizationAddressesSerializer(many=True)
+    geonames_city = GeoNamesCitySerializer()
     links = serializers.StringRelatedField(many=True)
     aliases = serializers.StringRelatedField(many=True)
     acronyms = serializers.StringRelatedField(many=True)
