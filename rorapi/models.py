@@ -12,17 +12,41 @@ class Entity:
     def __init__(self, base_object, attributes):
         [setattr(self, a, getattr(base_object, a)) for a in attributes]
 
-class GeoCity:
+class GeoAdmin:
+    def __init__(self, data):
+        self.id = getattr(data,'id',None)
+        self.code = getattr(data,'code',None)
+        self.name = getattr(data,'name',None)
+        self.ascii_name = getattr(data,'ascii_name',None)
+
+class Nuts:
+    def __init__(self, data):
+        self.code = getattr(data,'code',None)
+        self.name = getattr(data,'name',None)
+
+class GeoNamesCity:
+    def __init__(self, data):
+        self.id = data.id
+        self.city = data.city
+        self.geonames_admin1 = GeoAdmin(data.geonames_admin1)
+        self.geonames_admin2 = GeoAdmin(data.geonames_admin2)
+        self.nuts_level1 = Nuts(data.nuts_level1)
+        self.nuts_level2 = Nuts(data.nuts_level2)
+        self.nuts_level3 = Nuts(data.nuts_level3)
+
+class Addresses:
     """A model class for storing external identifiers"""
     def __init__(self, data):
-        for a in [
-                'geonames_city'
-        ]:
-            try:
-                setattr(self, a, Entity(getattr(data, a),
-                                        ['id']))
-            except AttributeError:
-                pass
+        self.country_geonames_id = data.country_geonames_id
+        self.lat = data.lat
+        self.lng = data.lng
+        self.line = data.line
+        self.state_code = data.state_code
+        self.state = data.state
+        self.postcode = data.postcode
+        self.city = data.city
+        self.geonames_city = GeoNamesCity(data.geonames_city)
+
 
 class ExternalIds:
     """A model class for storing external identifiers"""
@@ -48,8 +72,7 @@ class Organization(Entity):
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
         self.relationships = [Entity(r, ['type','label','id']) for r in data.relationships]
-        self.addresses = [Entity(a, ['lng','lat','state_code','city','postcode','line']) for a in data.addresses]
-        self.geonames_city = GeoCity(data.addresses)
+        self.addresses = [Addresses(a) for a in data.addresses]
         self.external_ids = ExternalIds(data.external_ids)
 
 class TypeBucket:
@@ -130,6 +153,9 @@ class CountrySerializer(serializers.Serializer):
     country_name = serializers.CharField()
     country_code = serializers.CharField()
 
+class NutsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    code = serializers.CharField()
 class AddressGeoNamesSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.CharField()
@@ -138,15 +164,22 @@ class AddressGeoNamesSerializer(serializers.Serializer):
 
 class GeoNamesCitySerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    city = serializers.StringRelatedField()
+    geonames_admin1 = AddressGeoNamesSerializer()
+    geonames_admin2 = AddressGeoNamesSerializer()
+    nuts_level1 = NutsSerializer()
+    nuts_level2 = NutsSerializer()
+    nuts_level3 = NutsSerializer()
 
 class OrganizationAddressesSerializer(serializers.Serializer):
     lat = serializers.CharField()
     lng = serializers.CharField()
     state_code = serializers.CharField()
     city = serializers.CharField()
+    geonames_city = GeoNamesCitySerializer()
     postcode = serializers.CharField()
     line = serializers.CharField()
-
+    country_geonames_id = serializers.IntegerField()
 
 class ExternalIdSerializer(serializers.Serializer):
     preferred = serializers.CharField()
@@ -177,7 +210,6 @@ class OrganizationSerializer(serializers.Serializer):
     types = serializers.StringRelatedField(many=True)
     relationships = OrganizationRelationshipsSerializer(many=True)
     addresses = OrganizationAddressesSerializer(many=True)
-    geonames_city = GeoNamesCitySerializer()
     links = serializers.StringRelatedField(many=True)
     aliases = serializers.StringRelatedField(many=True)
     acronyms = serializers.StringRelatedField(many=True)
