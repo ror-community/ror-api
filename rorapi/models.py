@@ -12,19 +12,24 @@ class Entity:
     def __init__(self, base_object, attributes):
         [setattr(self, a, getattr(base_object, a)) for a in attributes]
 
+
 class GeoAdmin:
     def __init__(self, data):
-        self.id = getattr(data,'id',None)
-        self.code = getattr(data,'code',None)
-        self.name = getattr(data,'name',None)
-        self.ascii_name = getattr(data,'ascii_name',None)
+        self.id = getattr(data, 'id', None)
+        self.code = getattr(data, 'code', None)
+        self.name = getattr(data, 'name', None)
+        self.ascii_name = getattr(data, 'ascii_name', None)
+
 
 class Nuts:
+    """A model class for storing the NUTS metadata"""
     def __init__(self, data):
-        self.code = getattr(data,'code',None)
-        self.name = getattr(data,'name',None)
+        self.code = getattr(data, 'code', None)
+        self.name = getattr(data, 'name', None)
+
 
 class GeoNamesCity:
+    """A model class for storing geonames city hash"""
     def __init__(self, data):
         self.id = data.id
         self.city = data.city
@@ -34,8 +39,9 @@ class GeoNamesCity:
         self.nuts_level2 = Nuts(data.nuts_level2)
         self.nuts_level3 = Nuts(data.nuts_level3)
 
+
 class Addresses:
-    """A model class for storing external identifiers"""
+    """A model class for storing addresses"""
     def __init__(self, data):
         self.country_geonames_id = data.country_geonames_id
         self.lat = data.lat
@@ -67,13 +73,16 @@ class Organization(Entity):
     def __init__(self, data):
         super(Organization, self).__init__(data, [
             'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
-            'wikipedia_url','established','relationships','addresses'
+            'wikipedia_url', 'established', 'relationships', 'addresses'
         ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
-        self.relationships = [Entity(r, ['type','label','id']) for r in data.relationships]
+        self.relationships = [
+            Entity(r, ['type', 'label', 'id']) for r in data.relationships
+        ]
         self.addresses = [Addresses(a) for a in data.addresses]
         self.external_ids = ExternalIds(data.external_ids)
+
 
 class TypeBucket:
     """A model class for type aggregation bucket"""
@@ -144,23 +153,29 @@ class OrganizationLabelSerializer(serializers.Serializer):
     label = serializers.CharField()
     iso639 = serializers.CharField()
 
+
 class OrganizationRelationshipsSerializer(serializers.Serializer):
     label = serializers.CharField()
     type = serializers.CharField()
     id = serializers.CharField()
 
+
 class CountrySerializer(serializers.Serializer):
     country_name = serializers.CharField()
     country_code = serializers.CharField()
 
+
 class NutsSerializer(serializers.Serializer):
     name = serializers.CharField()
     code = serializers.CharField()
+
+
 class AddressGeoNamesSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.CharField()
     ascii_name = serializers.CharField()
     code = serializers.CharField()
+
 
 class GeoNamesCitySerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -171,6 +186,7 @@ class GeoNamesCitySerializer(serializers.Serializer):
     nuts_level2 = NutsSerializer()
     nuts_level3 = NutsSerializer()
 
+
 class OrganizationAddressesSerializer(serializers.Serializer):
     lat = serializers.CharField()
     lng = serializers.CharField()
@@ -180,6 +196,7 @@ class OrganizationAddressesSerializer(serializers.Serializer):
     postcode = serializers.CharField()
     line = serializers.CharField()
     country_geonames_id = serializers.IntegerField()
+
 
 class ExternalIdSerializer(serializers.Serializer):
     preferred = serializers.CharField()

@@ -40,29 +40,31 @@ def get_ror_id(grid_id, es):
         return s['hits']['hits'][0]['_id']
     return generate_ror_id()
 
+
 def addresses(location):
     line = ""
-    address = ["line_1","line_2","line_3"]
-    combine_lines = address + ["country","country_code"]
+    address = ["line_1", "line_2", "line_3"]
+    combine_lines = address + ["country", "country_code"]
     new_addresses = []
     hsh = {}
     hsh["line"] = ""
     for h in location:
-        for k,v in h.items():
-            if not(k in combine_lines):
+        for k, v in h.items():
+            if not (k in combine_lines):
                 hsh[k] = v
             else:
                 n = []
                 for i in address:
-                    if not(h[i] is None):
+                    if not (h[i] is None):
                         n.append(h[i])
                 line = " ".join(n)
-                line = re.sub(' +',' ',line)
+                line = re.sub(' +', ' ', line)
                 if (len(line) == 1 and line == " "):
                     line = line.strip()
                 hsh["line"] = line
         new_addresses.append(hsh)
     return new_addresses
+
 
 def convert_organization(grid_org, es):
     """Converts the organization metadata from GRID schema to ROR schema."""
@@ -96,8 +98,10 @@ def convert_organization(grid_org, es):
             'country_code': grid_org['addresses'][0]['country_code'],
             'country_name': grid_org['addresses'][0]['country']
         },
-        'relationships': grid_org["relationships"],
-        'addresses': addresses(grid_org["addresses"]),
+        'relationships':
+        grid_org["relationships"],
+        'addresses':
+        addresses(grid_org["addresses"]),
         'external_ids':
         getExternalIds(
             dict(grid_org.get('external_ids', {}),
@@ -106,6 +110,7 @@ def convert_organization(grid_org, es):
                      'all': grid_org['id']
                  }))
     }
+
 
 def getExternalIds(external_ids):
     if 'ROR' in external_ids: del external_ids['ROR']
