@@ -31,14 +31,28 @@ class Nuts:
 class GeoNamesCity:
     """A model class for storing geonames city hash"""
     def __init__(self, data):
-        self.id = data.id
-        self.city = data.city
-        self.geonames_admin1 = GeoAdmin(data.geonames_admin1)
-        self.geonames_admin2 = GeoAdmin(data.geonames_admin2)
-        self.nuts_level1 = Nuts(data.nuts_level1)
-        self.nuts_level2 = Nuts(data.nuts_level2)
-        self.nuts_level3 = Nuts(data.nuts_level3)
-
+        self.id = getattr(data,'id',None)
+        self.city = getattr(data,'city',None)
+        if hasattr(data,'geonames_admin1'):
+            self.geonames_admin1 = GeoAdmin(data.geonames_admin1)
+        else:
+            self.geonames_admin1 = None
+        if hasattr(data,'geonames_admin2'):
+            self.geonames_admin2 = GeoAdmin(data.geonames_admin2)
+        else:
+            self.geonames_admin2 = None
+        if hasattr(data,'nuts_level1'):
+            self.nuts_level1 = GeoAdmin(data.nuts_level1)
+        else:
+            self.nuts_level1 = None
+        if hasattr(data,'nuts_level2'):
+            self.nuts_level2 = GeoAdmin(data.nuts_level2)
+        else:
+            self.nuts_level2 = None
+        if hasattr(data,'nuts_level3'):
+            self.nuts_level3 = GeoAdmin(data.nuts_level3)
+        else:
+            self.nuts_level3 = None
 
 class Addresses:
     """A model class for storing addresses"""
