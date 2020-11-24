@@ -27,12 +27,21 @@ class Nuts:
         self.code = getattr(data, 'code', None)
         self.name = getattr(data, 'name', None)
 
+class License:
+    """A model class for storing license metadata"""
+    def __init__(self, data):
+        self.attribution = getattr(data, 'attribution', None)
+        self.license = getattr(data, 'license', None)
 
 class GeoNamesCity:
     """A model class for storing geonames city hash"""
     def __init__(self, data):
         self.id = getattr(data,'id',None)
         self.city = getattr(data,'city',None)
+        if hasattr(data,'license'):
+            self.license = License(data.license)
+        else:
+            self.license = None
         if hasattr(data,'geonames_admin1'):
             self.geonames_admin1 = GeoAdmin(data.geonames_admin1)
         else:
@@ -62,11 +71,11 @@ class Addresses:
         self.lng = data.lng
         self.line = data.line
         self.state_code = data.state_code
-        self.state = data.state
+        self.state = getattr(data,'state',None)
         self.postcode = data.postcode
         self.city = data.city
+        self.primary = data.primary
         self.geonames_city = GeoNamesCity(data.geonames_city)
-
 
 class ExternalIds:
     """A model class for storing external identifiers"""
@@ -91,6 +100,9 @@ class Organization(Entity):
         ])
         self.labels = [Entity(l, ['label', 'iso639']) for l in data.labels]
         self.country = Entity(data.country, ['country_name', 'country_code'])
+        self.ip_addresses = data.ip_addresses
+        self.established = getattr(data,'established',None)
+        self.email_address = getattr(data,'email_address',None)
         self.relationships = [
             Entity(r, ['type', 'label', 'id']) for r in data.relationships
         ]
@@ -178,6 +190,9 @@ class CountrySerializer(serializers.Serializer):
     country_name = serializers.CharField()
     country_code = serializers.CharField()
 
+class LicenseSerializer(serializers.Serializer):
+    attribution = serializers.StringRelatedField()
+    license = serializers.StringRelatedField()
 
 class NutsSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -186,7 +201,7 @@ class NutsSerializer(serializers.Serializer):
 
 class AddressGeoNamesSerializer(serializers.Serializer):
     name = serializers.CharField()
-    id = serializers.CharField()
+    id = serializers.IntegerField()
     ascii_name = serializers.CharField()
     code = serializers.CharField()
 
@@ -196,18 +211,21 @@ class GeoNamesCitySerializer(serializers.Serializer):
     city = serializers.StringRelatedField()
     geonames_admin1 = AddressGeoNamesSerializer()
     geonames_admin2 = AddressGeoNamesSerializer()
+    license = LicenseSerializer()
     nuts_level1 = NutsSerializer()
     nuts_level2 = NutsSerializer()
     nuts_level3 = NutsSerializer()
 
 
 class OrganizationAddressesSerializer(serializers.Serializer):
-    lat = serializers.CharField()
-    lng = serializers.CharField()
+    lat = serializers.DecimalField(max_digits=None, decimal_places=10,coerce_to_string=False)
+    lng = serializers.DecimalField(max_digits=None, decimal_places=10,coerce_to_string=False)
+    state = serializers.StringRelatedField()
     state_code = serializers.CharField()
     city = serializers.CharField()
     geonames_city = GeoNamesCitySerializer()
     postcode = serializers.CharField()
+    primary = serializers.BooleanField()
     line = serializers.CharField()
     country_geonames_id = serializers.IntegerField()
 
@@ -237,6 +255,8 @@ class ExternalIdsSerializer(serializers.Serializer):
 class OrganizationSerializer(serializers.Serializer):
     id = serializers.CharField()
     name = serializers.CharField()
+    email_address = serializers.StringRelatedField()
+    ip_addresses = serializers.StringRelatedField(many=True)
     established = serializers.IntegerField()
     types = serializers.StringRelatedField(many=True)
     relationships = OrganizationRelationshipsSerializer(many=True)

@@ -1,71 +1,129 @@
 {
-    "took": 7,
-    "timed_out": false,
-    "_shards": {
-        "total": 5,
-        "successful": 5,
-        "skipped": 0,
-        "failed": 0
-    },
-    "hits": {
-        "total": 1,
-        "max_score": 9.676415,
-        "hits": [
-            {
-                    "id": "https://ror.org/006rfg424",
-                    "name": "Nuclear Physics",
-                    "types": [
-                        "Facility"
-                    ],
-                    "links": [
-                        "http://science.energy.gov/np/"
-                    ],
-                    "aliases": [],
-                    "acronyms": [
-                        "NP"
-                    ],
-                    "status": "active",
-                    "wikipedia_url": "",
-                    "labels": [],
-                    "country": {
-                        "country_code": "US",
-                        "country_name": "United States"
-                    },
-                    "external_ids": {
-                        "FundRef": {
-                            "preferred": null,
-                            "all": [
-                                "100006209"
-                            ]
-                        },
-                        "GRID": {
-                            "preferred": "grid.453025.5",
-                            "all": "grid.453025.5"
-                        }
-                    }
-            }
-        ]
-    },
-    "aggregations": {
-        "types": {
-            "doc_count_error_upper_bound": 0,
-            "sum_other_doc_count": 0,
-            "buckets": [
-                {
-                    "key": "Facility",
-                    "doc_count": 1
-                }
-            ]
+  "took": 7,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 1,
+    "max_score": 9.676415,
+    "hits": [
+      {
+        "links": [
+          "https://science.osti.gov/np"
+        ],
+        "ip_addresses": [],
+        "wikipedia_url": "",
+        "labels": [],
+        "country": {
+          "country_name": "United States",
+          "country_code": "US"
         },
-        "countries": {
-            "doc_count_error_upper_bound": 0,
-            "sum_other_doc_count": 0,
-            "buckets": [
-                {
-                    "key": "US",
-                    "doc_count": 1
-		}
-            ]
+        "types": [
+          "Government"
+        ],
+        "aliases": [],
+        "relationships": [
+          {
+            "label": "Office of Science",
+            "type": "Parent",
+            "id": "grid.453216.7"
+          }
+        ],
+        "id": "https://ror.org/016whj324",
+        "addresses": [
+          {
+            "lat": 38.88758,
+            "lng": -77.025728,
+            "state_code": "US-DC",
+            "postcode": "",
+            "geonames_city": {
+              "nuts_level2": null,
+              "geonames_admin1": {
+                "name": "Washington, D.C.",
+                "code": "US.DC",
+                "ascii_name": "Washington, D.C.",
+                "id": 4138106
+              },
+              "nuts_level3": null,
+              "geonames_admin2": {
+                "name": "Washington County",
+                "code": "US.DC.001",
+                "ascii_name": "Washington County",
+                "id": 4140987
+              },
+              "city": "Washington, D.C.",
+              "id": 4140963,
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level1": null
+            },
+            "line": "",
+            "city": "Washington D.C.",
+            "primary": false,
+            "country_geonames_id": 6252001,
+            "state": "District of Columbia"
+          }
+        ],
+        "status": "active",
+        "established": 1996,
+        "email_address": null,
+        "name": "Office of Nuclear Physics",
+        "acronyms": [
+          "NP"
+        ],
+        "external_ids": {
+          "GRID": {
+            "all": "grid.453025.5",
+            "preferred": "grid.453025.5"
+          },
+          "ISNI": {
+            "all": [
+              "0000 0004 5897 7463"
+            ],
+            "preferred": null
+          },
+          "Wikidata": {
+            "all": [
+              "Q30296535"
+            ],
+            "preferred": null
+          },
+          "FundRef": {
+            "all": [
+              "100006209"
+            ],
+            "preferred": null
+          }
         }
+      }
+    ]
+  },
+  "aggregations": {
+    "types": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "Facility",
+          "doc_count": 1
+        }
+      ]
+    },
+    "countries": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "US",
+          "doc_count": 1
+        }
+      ]
     }
+  }
 }

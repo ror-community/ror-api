@@ -59,7 +59,6 @@ def geonames_city(geonames_city):
                 geonames_city_hsh[k] = {i:None for i in nuts_attributes}
         else:
             geonames_city_hsh[k] = v
-    print("geonames_city: ", geonames_city_hsh)
     return geonames_city_hsh
 
 def addresses(location):

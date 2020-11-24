@@ -116,10 +116,10 @@
                 "type": "text"
                 },
               "lat": {
-                "type": "keyword"
+                "type": "float"
               },
               "lng": {
-                "type": "keyword"
+                "type": "float"
               },
               "postcode": {
                 "type": "keyword"
@@ -139,7 +139,7 @@
               "geonames_city": {
                 "properties": {
                   "id": {
-                    "type": "keyword"
+                    "type": "integer"
                   },
                   "city": {
                     "type": "keyword"
