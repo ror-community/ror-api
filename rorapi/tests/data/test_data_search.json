@@ -12,515 +12,25 @@
     "max_score": 9.197718,
     "hits": [
       {
-        "links": [
-          "http://www.avn.be/avn/doc.php?nd=o2&tid=2&lg=1&docid=29&site=1"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Nuclear Safety Institute",
-            "iso639": "en"
-          }
-        ],
-        "country": {
-          "country_name": "Belgium",
-          "country_code": "BE"
-        },
-        "types": [
-          "Other"
-        ],
-        "aliases": [],
-        "relationships": [],
-        "id": "https://ror.org/03143h912",
-        "addresses": [
-          {
-            "lat": 50.823931,
-            "lng": 4.314887,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": {
-                "code": "BE10",
-                "name": "Région de Bruxelles-Capitale / Brussels Hoofdstedelijk Gewest"
-              },
-              "geonames_admin1": {
-                "name": "Brussels Capital",
-                "code": "BE.BRU",
-                "ascii_name": "Brussels Capital",
-                "id": 2800867
-              },
-              "nuts_level3": {
-                "code": "BE100",
-                "name": "Arr. de Bruxelles-Capitale / Arr. van Brussel-Hoofdstad"
-              },
-              "geonames_admin2": {
-                "name": "Bruxelles-Capitale",
-                "code": "BE.BRU.BRU",
-                "ascii_name": "Bruxelles-Capitale",
-                "id": 6693370
-              },
-              "city": "Brussels",
-              "id": 2800866,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": {
-                "code": "BE1",
-                "name": "RÉGION DE BRUXELLES-CAPITALE / BRUSSELS HOOFDSTEDELIJK GEWEST"
-              }
-            },
-            "line": "",
-            "city": "Brussels",
-            "primary": false,
-            "country_geonames_id": 2802361,
-            "state": null
-          }
-        ],
-        "status": "active",
-        "established": null,
-        "email_address": null,
-        "name": "Association Vinçotte Nuclear",
-        "acronyms": [
-          "AVN"
-        ],
-        "external_ids": {
-          "GRID": {
-            "all": "grid.423673.7",
-            "preferred": "grid.423673.7"
-          }
-        }
-      },
-      {
-        "links": [
-          "http://www.cnen.gov.br/"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "http://en.wikipedia.org/wiki/National_Nuclear_Energy_Commission",
-        "labels": [
-          {
-            "label": "Comissão Nacional de Energia Nuclear",
-            "iso639": "pt"
-          },
-          {
-            "label": "National Nuclear Energy Commission",
-            "iso639": "en"
-          }
-        ],
-        "country": {
-          "country_name": "Brazil",
-          "country_code": "BR"
-        },
-        "types": [
-          "Government"
-        ],
-        "aliases": [],
-        "relationships": [
-          {
-            "label": "Ministry of Science and Technology",
-            "type": "Parent",
-            "id": "grid.436069.e"
-          },
-          {
-            "label": "Centro de Desenvolvimento da Tecnologia Nuclear",
-            "type": "Child",
-            "id": "grid.466576.0"
-          },
-          {
-            "label": "Instituto de Pesquisas Energéticas e Nucleares",
-            "type": "Child",
-            "id": "grid.466806.a"
-          },
-          {
-            "label": "Instituto de Radioproteção e Dosimetria",
-            "type": "Child",
-            "id": "grid.420088.6"
-          },
-          {
-            "label": "Nuclear Engineering Institute",
-            "type": "Child",
-            "id": "grid.457037.2"
-          }
-        ],
-        "id": "https://ror.org/0574atv95",
-        "addresses": [
-          {
-            "lat": -22.9112163,
-            "lng": -43.2093781,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": null,
-              "geonames_admin1": {
-                "name": "Rio de Janeiro",
-                "code": "BR.21",
-                "ascii_name": "Rio de Janeiro",
-                "id": 3451189
-              },
-              "nuts_level3": null,
-              "geonames_admin2": {
-                "name": "Rio de Janeiro",
-                "code": "BR.21.3304557",
-                "ascii_name": "Rio de Janeiro",
-                "id": 6322060
-              },
-              "city": "Rio de Janeiro",
-              "id": 3451190,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": null
-            },
-            "line": "",
-            "city": "Rio de Janeiro",
-            "primary": false,
-            "country_geonames_id": 3469034,
-            "state": null
-          }
-        ],
-        "status": "active",
-        "established": 1956,
-        "email_address": "",
-        "name": "National Nuclear Energy Commission",
-        "acronyms": [
-          "CNEN"
-        ],
-        "external_ids": {
-          "GRID": {
-            "all": "grid.418852.2",
-            "preferred": "grid.418852.2"
-          },
-          "Wikidata": {
-            "all": [
-              "Q2328722"
-            ],
-            "preferred": null
-          }
-        }
-      },
-      {
-        "links": [
-          "https://www.ipen.br/portal_por/portal/default.php"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Nuclear Energy Research Institute",
-            "iso639": "en"
-          }
-        ],
-        "country": {
-          "country_name": "Brazil",
-          "country_code": "BR"
-        },
-        "types": [
-          "Facility"
-        ],
-        "aliases": [],
-        "relationships": [
-          {
-            "label": "National Nuclear Energy Commission",
-            "type": "Parent",
-            "id": "grid.418852.2"
-          }
-        ],
-        "id": "https://ror.org/0006v2e82",
-        "addresses": [
-          {
-            "lat": -23.56636,
-            "lng": -46.738077,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": null,
-              "geonames_admin1": {
-                "name": "São Paulo",
-                "code": "BR.27",
-                "ascii_name": "Sao Paulo",
-                "id": 3448433
-              },
-              "nuts_level3": null,
-              "geonames_admin2": null,
-              "city": "São Paulo",
-              "id": 3448439,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": null
-            },
-            "line": "",
-            "city": "São Paulo",
-            "primary": false,
-            "country_geonames_id": 3469034,
-            "state": null
-          }
-        ],
-        "status": "active",
-        "established": 1982,
-        "email_address": null,
-        "name": "Instituto de Pesquisas Energéticas e Nucleares",
-        "acronyms": [
-          "IPEN"
-        ],
-        "external_ids": {
-          "ISNI": {
-            "all": [
-              "0000 0001 2104 465X"
-            ],
-            "preferred": null
-          },
-          "GRID": {
-            "all": "grid.466806.a",
-            "preferred": "grid.466806.a"
-          }
-        }
-      },
-      {
-        "links": [
-          "http://www.ien.gov.br/ingles/index.php"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Instituto de Engenharia Nuclear",
-            "iso639": "pt"
-          }
-        ],
-        "country": {
-          "country_name": "Brazil",
-          "country_code": "BR"
-        },
-        "types": [
-          "Facility"
-        ],
-        "aliases": [],
-        "relationships": [
-          {
-            "label": "National Nuclear Energy Commission",
-            "type": "Parent",
-            "id": "grid.418852.2"
-          }
-        ],
-        "id": "https://ror.org/02gs89s04",
-        "addresses": [
-          {
-            "lat": -22.864328,
-            "lng": -43.285511,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": null,
-              "geonames_admin1": {
-                "name": "Rio de Janeiro",
-                "code": "BR.21",
-                "ascii_name": "Rio de Janeiro",
-                "id": 3451189
-              },
-              "nuts_level3": null,
-              "geonames_admin2": {
-                "name": "Rio de Janeiro",
-                "code": "BR.21.3304557",
-                "ascii_name": "Rio de Janeiro",
-                "id": 6322060
-              },
-              "city": "Rio de Janeiro",
-              "id": 3451190,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": null
-            },
-            "line": "",
-            "city": "Rio de Janeiro",
-            "primary": false,
-            "country_geonames_id": 3469034,
-            "state": null
-          }
-        ],
-        "status": "active",
-        "established": 1962,
-        "email_address": null,
-        "name": "Nuclear Engineering Institute",
-        "acronyms": [
-          "IEN"
-        ],
-        "external_ids": {
-          "ISNI": {
-            "all": [
-              "0000 0001 0287 6514"
-            ],
-            "preferred": null
-          },
-          "GRID": {
-            "all": "grid.457037.2",
-            "preferred": "grid.457037.2"
-          }
-        }
-      },
-      {
-        "links": [
-          "https://www.csn.es/home"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Consejo de Seguaridad Nuclear",
-            "iso639": "es"
-          }
-        ],
-        "country": {
-          "country_name": "Spain",
-          "country_code": "ES"
-        },
-        "types": [
-          "Government"
-        ],
-        "aliases": [],
-        "relationships": [],
-        "id": "https://ror.org/00g1h0x30",
-        "addresses": [
-          {
-            "lat": 40.448238,
-            "lng": -3.713661,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": {
-                "code": "ES30",
-                "name": "Comunidad de Madrid"
-              },
-              "geonames_admin1": {
-                "name": "Madrid",
-                "code": "ES.29",
-                "ascii_name": "Madrid",
-                "id": 3117732
-              },
-              "nuts_level3": {
-                "code": "ES300",
-                "name": "Madrid"
-              },
-              "geonames_admin2": {
-                "name": "Provincia de Madrid",
-                "code": "ES.29.M",
-                "ascii_name": "Provincia de Madrid",
-                "id": 6355233
-              },
-              "city": "Madrid",
-              "id": 3117735,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": {
-                "code": "ES3",
-                "name": "COMUNIDAD DE MADRID"
-              }
-            },
-            "line": "",
-            "city": "Madrid",
-            "primary": false,
-            "country_geonames_id": 2510769,
-            "state": null
-          }
-        ],
-        "status": "active",
-        "established": 1977,
-        "email_address": null,
-        "name": "Nuclear Safety Council",
-        "acronyms": [
-          "CSN"
-        ],
-        "external_ids": {
-          "GRID": {
-            "all": "grid.423604.7",
-            "preferred": "grid.423604.7"
-          },
-          "ISNI": {
-            "all": [
-              "0000 0001 2162 8874"
-            ],
-            "preferred": null
-          },
-          "FundRef": {
-            "all": [
-              "501100006055"
-            ],
-            "preferred": null
-          }
-        }
-      },
-      {
-        "links": [
-          "http://www.cchen.cl/"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Chilean Nuclear Energy Commission",
-            "iso639": "en"
-          }
-        ],
-        "country": {
-          "country_name": "Chile",
-          "country_code": "CL"
-        },
-        "types": [
-          "Government"
-        ],
-        "aliases": [],
-        "relationships": [],
-        "id": "https://ror.org/0381m6x03",
-        "addresses": [
-          {
-            "lat": -33.451301,
-            "lng": -70.93283,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": null,
-              "geonames_admin1": {
-                "name": "Santiago Metropolitan",
-                "code": "CL.12",
-                "ascii_name": "Santiago Metropolitan",
-                "id": 3873544
-              },
-              "nuts_level3": null,
-              "geonames_admin2": {
-                "name": "Provincia de Santiago",
-                "code": "CL.12.131",
-                "ascii_name": "Provincia de Santiago",
-                "id": 3871332
-              },
-              "city": "Santiago",
-              "id": 3871336,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": null
-            },
-            "line": "",
-            "city": "Santiago",
-            "primary": false,
-            "country_geonames_id": 3895114,
-            "state": null
-          }
-        ],
         "status": "active",
         "established": 1964,
-        "email_address": null,
         "name": "Comisión Chilena de Energía Nuclear",
         "acronyms": [
           "CCHEN"
         ],
+        "id": "https://ror.org/03hv95d67",
+        "email_address": null,
+        "country": {
+          "country_code": "CL",
+          "country_name": "Chile"
+        },
+        "labels": [
+          {
+            "iso639": "en",
+            "label": "Chilean Nuclear Energy Commission"
+          }
+        ],
+        "aliases": [],
         "external_ids": {
           "ISNI": {
             "all": [
@@ -532,354 +42,404 @@
             "all": "grid.472538.f",
             "preferred": "grid.472538.f"
           }
-        }
-      },
-      {
-        "links": [
-          "http://www.ichtj.waw.pl/drupal/"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Institute of Nuclear Chemistry and Technology",
-            "iso639": "en"
-          }
-        ],
-        "country": {
-          "country_name": "Poland",
-          "country_code": "PL"
         },
         "types": [
-          "Facility"
+          "Government"
         ],
-        "aliases": [],
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "http://www.cchen.cl/"
+        ],
         "relationships": [],
-        "id": "https://ror.org/00ppc5w31",
         "addresses": [
           {
-            "lat": 52.302901,
-            "lng": 20.982267,
-            "state_code": "",
+            "city": "Santiago",
+            "lat": -33.451301,
+            "lng": -70.93283,
             "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 3895114,
             "geonames_city": {
-              "nuts_level2": {
-                "code": "PL12",
-                "name": "Mazowieckie"
-              },
               "geonames_admin1": {
-                "name": "Mazovia",
-                "code": "PL.78",
-                "ascii_name": "Mazovia",
-                "id": 858787
+                "id": 3873544,
+                "name": "Santiago Metropolitan",
+                "ascii_name": "Santiago Metropolitan",
+                "code": "CL.12"
               },
-              "nuts_level3": {
-                "code": "PL127",
-                "name": "Miasto Warszawa"
-              },
-              "geonames_admin2": {
-                "name": "Warszawa",
-                "code": "PL.78.1465",
-                "ascii_name": "Warszawa",
-                "id": 6695624
-              },
-              "city": "Warsaw",
-              "id": 756135,
+              "city": "Santiago",
               "license": {
                 "attribution": "Data from geonames.org under a CC-BY 3.0 license",
                 "license": "http://creativecommons.org/licenses/by/3.0/"
               },
+              "nuts_level2": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level3": {
+                "code": null,
+                "name": null
+              },
               "nuts_level1": {
-                "code": "PL1",
-                "name": "REGION CENTRALNY"
+                "code": null,
+                "name": null
+              },
+              "id": 3871336,
+              "geonames_admin2": {
+                "id": 3871332,
+                "name": "Provincia de Santiago",
+                "ascii_name": "Provincia de Santiago",
+                "code": "CL.12.131"
               }
             },
-            "line": "",
-            "city": "Warsaw",
-            "primary": false,
-            "country_geonames_id": 798544,
             "state": null
           }
-        ],
-        "status": "active",
-        "established": 1982,
-        "email_address": null,
-        "name": "Instytut Chemii i Techniki Jądrowej",
-        "acronyms": [],
-        "external_ids": {
-          "ISNI": {
-            "all": [
-              "0000 0001 2289 0890"
-            ],
-            "preferred": null
-          },
-          "GRID": {
-            "all": "grid.418850.0",
-            "preferred": "grid.418850.0"
-          }
-        }
+        ]
       },
       {
-        "links": [
-          "http://www.inrne.bas.bg/"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "https://en.wikipedia.org/wiki/Institute_for_Nuclear_Research_and_Nuclear_Energy",
-        "labels": [],
-        "country": {
-          "country_name": "Bulgaria",
-          "country_code": "BG"
-        },
-        "types": [
-          "Facility"
-        ],
-        "aliases": [],
-        "relationships": [
-          {
-            "label": "Bulgarian Academy of Sciences",
-            "type": "Parent",
-            "id": "grid.410344.6"
-          }
-        ],
-        "id": "https://ror.org/01twx4625",
-        "addresses": [
-          {
-            "lat": 42.653624,
-            "lng": 23.388728,
-            "state_code": "",
-            "postcode": "",
-            "geonames_city": {
-              "nuts_level2": {
-                "code": "BG41",
-                "name": "Югозападен (Yugozapaden)"
-              },
-              "geonames_admin1": {
-                "name": "Sofia-Capital",
-                "code": "BG.42",
-                "ascii_name": "Sofia-Capital",
-                "id": 731061
-              },
-              "nuts_level3": {
-                "code": "BG411",
-                "name": "София (столица) (Sofia (stolitsa))"
-              },
-              "geonames_admin2": {
-                "name": "Stolichna Obshtina",
-                "code": "BG.42.SOF46",
-                "ascii_name": "Stolichna Obshtina",
-                "id": 6458974
-              },
-              "city": "Sofia",
-              "id": 727011,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": {
-                "code": "BG4",
-                "name": "ЮГОЗАПАДНА И ЮЖНА ЦЕНТРАЛНА БЪЛГАРИЯ (YUGOZAPADNA I YUZHNA TSENTRALNA BULGARIA)"
-              }
-            },
-            "line": "",
-            "city": "Sofia",
-            "primary": false,
-            "country_geonames_id": 732800,
-            "state": null
-          }
-        ],
         "status": "active",
-        "established": 1946,
-        "email_address": null,
-        "name": "Institute for Nuclear Research and Nuclear Energy",
+        "established": null,
+        "name": "Association Vinçotte Nuclear",
         "acronyms": [
-          "INRNE"
+          "AVN"
         ],
-        "external_ids": {
-          "GRID": {
-            "all": "grid.425050.6",
-            "preferred": "grid.425050.6"
-          },
-          "Wikidata": {
-            "all": [
-              "Q15995178"
-            ],
-            "preferred": null
-          }
-        }
-      },
-      {
-        "links": [
-          "https://www.kns.org/?lang=english"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
+        "id": "https://ror.org/02mx39t82",
+        "email_address": null,
+        "country": {
+          "country_code": "BE",
+          "country_name": "Belgium"
+        },
         "labels": [
           {
-            "label": "한국원자력학회",
-            "iso639": "ko"
+            "iso639": "en",
+            "label": "Nuclear Safety Institute"
           }
         ],
-        "country": {
-          "country_name": "South Korea",
-          "country_code": "KR"
+        "aliases": [],
+        "external_ids": {
+          "GRID": {
+            "all": "grid.423673.7",
+            "preferred": "grid.423673.7"
+          }
         },
         "types": [
           "Other"
         ],
-        "aliases": [
-          "Korea Nuclear Power Society"
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "http://www.avn.be/avn/doc.php?nd=o2&tid=2&lg=1&docid=29&site=1"
         ],
         "relationships": [],
-        "id": "https://ror.org/05r5bpp80",
         "addresses": [
           {
-            "lat": 36.362615,
-            "lng": 127.337358,
-            "state_code": "",
+            "city": "Brussels",
+            "lat": 50.823931,
+            "lng": 4.314887,
             "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 2802361,
             "geonames_city": {
-              "nuts_level2": null,
               "geonames_admin1": {
-                "name": "Daejeon",
-                "code": "KR.19",
-                "ascii_name": "Daejeon",
-                "id": 1835224
+                "id": 2800867,
+                "name": "Brussels Capital",
+                "ascii_name": "Brussels Capital",
+                "code": "BE.BRU"
               },
-              "nuts_level3": null,
-              "geonames_admin2": null,
-              "city": "Daejeon",
-              "id": 1835235,
+              "city": "Brussels",
               "license": {
                 "attribution": "Data from geonames.org under a CC-BY 3.0 license",
                 "license": "http://creativecommons.org/licenses/by/3.0/"
               },
-              "nuts_level1": null
+              "nuts_level2": {
+                "code": "BE10",
+                "name": "Région de Bruxelles-Capitale / Brussels Hoofdstedelijk Gewest"
+              },
+              "nuts_level3": {
+                "code": "BE100",
+                "name": "Arr. de Bruxelles-Capitale / Arr. van Brussel-Hoofdstad"
+              },
+              "nuts_level1": {
+                "code": "BE1",
+                "name": "RÉGION DE BRUXELLES-CAPITALE / BRUSSELS HOOFDSTEDELIJK GEWEST"
+              },
+              "id": 2800866,
+              "geonames_admin2": {
+                "id": 6693370,
+                "name": "Bruxelles-Capitale",
+                "ascii_name": "Bruxelles-Capitale",
+                "code": "BE.BRU.BRU"
+              }
             },
-            "line": "",
-            "city": "Daejeon",
-            "primary": false,
-            "country_geonames_id": 1835841,
             "state": null
           }
-        ],
+        ]
+      },
+      {
         "status": "active",
-        "established": 1969,
-        "email_address": null,
-        "name": "Korean Nuclear Society",
+        "established": 1956,
+        "name": "National Nuclear Energy Commission",
         "acronyms": [
-          "KNS"
+          "CNEN"
         ],
+        "id": "https://ror.org/03ycms792",
+        "email_address": "",
+        "country": {
+          "country_code": "BR",
+          "country_name": "Brazil"
+        },
+        "labels": [
+          {
+            "iso639": "pt",
+            "label": "Comissão Nacional de Energia Nuclear"
+          },
+          {
+            "iso639": "en",
+            "label": "National Nuclear Energy Commission"
+          }
+        ],
+        "aliases": [],
         "external_ids": {
-          "ISNI": {
+          "Wikidata": {
             "all": [
-              "0000 0000 9581 7582"
+              "Q2328722"
             ],
             "preferred": null
           },
           "GRID": {
-            "all": "grid.496216.e",
-            "preferred": "grid.496216.e"
+            "all": "grid.418852.2",
+            "preferred": "grid.418852.2"
           }
-        }
-      },
-      {
-        "links": [
-          "http://umr3664.curie.fr/en/UMR3664"
-        ],
-        "ip_addresses": [],
-        "wikipedia_url": "",
-        "labels": [
-          {
-            "label": "Dynamique du noyau",
-            "iso639": "fr"
-          }
-        ],
-        "country": {
-          "country_name": "France",
-          "country_code": "FR"
         },
         "types": [
-          "Facility"
+          "Government"
         ],
-        "aliases": [],
+        "wikipedia_url": "http://en.wikipedia.org/wiki/National_Nuclear_Energy_Commission",
+        "ip_addresses": [],
+        "links": [
+          "http://www.cnen.gov.br/"
+        ],
         "relationships": [
           {
-            "label": "Institut des Sciences Biologiques",
+            "id": "grid.436069.e",
             "type": "Parent",
-            "id": "grid.456999.e"
+            "label": "Ministry of Science and Technology"
           },
           {
-            "label": "Institute Curie",
-            "type": "Parent",
-            "id": "grid.418596.7"
+            "id": "grid.466576.0",
+            "type": "Child",
+            "label": "Centro de Desenvolvimento da Tecnologia Nuclear"
           },
           {
-            "label": "Sorbonne University",
-            "type": "Parent",
-            "id": "grid.462844.8"
+            "id": "grid.466806.a",
+            "type": "Child",
+            "label": "Instituto de Pesquisas Energéticas e Nucleares"
+          },
+          {
+            "id": "grid.420088.6",
+            "type": "Child",
+            "label": "Instituto de Radioproteção e Dosimetria"
+          },
+          {
+            "id": "grid.457037.2",
+            "type": "Child",
+            "label": "Nuclear Engineering Institute"
           }
         ],
-        "id": "https://ror.org/0386kpe11",
         "addresses": [
           {
-            "lat": 48.843852,
-            "lng": 2.344863,
-            "state_code": "",
+            "city": "Rio de Janeiro",
+            "lat": -22.9112163,
+            "lng": -43.2093781,
             "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 3469034,
             "geonames_city": {
-              "nuts_level2": {
-                "code": "FR10",
-                "name": "Île de France"
-              },
               "geonames_admin1": {
-                "name": "Île-de-France",
-                "code": "FR.11",
-                "ascii_name": "Ile-de-France",
-                "id": 3012874
+                "id": 3451189,
+                "name": "Rio de Janeiro",
+                "ascii_name": "Rio de Janeiro",
+                "code": "BR.21"
               },
-              "nuts_level3": {
-                "code": "FR101",
-                "name": "Paris"
-              },
-              "geonames_admin2": {
-                "name": "Paris",
-                "code": "FR.11.75",
-                "ascii_name": "Paris",
-                "id": 2968815
-              },
-              "city": "Paris",
-              "id": 2988507,
+              "city": "Rio de Janeiro",
               "license": {
                 "attribution": "Data from geonames.org under a CC-BY 3.0 license",
                 "license": "http://creativecommons.org/licenses/by/3.0/"
               },
+              "nuts_level2": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level3": {
+                "code": null,
+                "name": null
+              },
               "nuts_level1": {
-                "code": "FR1",
-                "name": "ÎLE DE FRANCE"
+                "code": null,
+                "name": null
+              },
+              "id": 3451190,
+              "geonames_admin2": {
+                "id": 6322060,
+                "name": "Rio de Janeiro",
+                "ascii_name": "Rio de Janeiro",
+                "code": "BR.21.3304557"
               }
             },
-            "line": "",
-            "city": "Paris",
-            "primary": false,
-            "country_geonames_id": 3017382,
             "state": null
           }
-        ],
+        ]
+      },
+      {
         "status": "active",
-        "established": null,
+        "established": 2001,
+        "name": "Institut de Radioprotection et de Sûreté Nucléaire",
+        "acronyms": [
+          "IRSN"
+        ],
+        "id": "https://ror.org/01ha22c77",
         "email_address": null,
-        "name": "Nuclear Dynamics",
-        "acronyms": [],
+        "country": {
+          "country_code": "FR",
+          "country_name": "France"
+        },
+        "labels": [
+          {
+            "iso639": "en",
+            "label": "Radioprotection and Nuclear Safety Institute"
+          }
+        ],
+        "aliases": [],
         "external_ids": {
-          "CNRS": {
+          "Wikidata": {
             "all": [
-              "UMR3664"
+              "Q1502878"
             ],
             "preferred": null
           },
           "ISNI": {
             "all": [
+              "0000 0001 1414 6236"
+            ],
+            "preferred": null
+          },
+          "GRID": {
+            "all": "grid.418735.c",
+            "preferred": "grid.418735.c"
+          },
+          "FundRef": {
+            "all": [
+              "501100004598"
+            ],
+            "preferred": null
+          },
+          "OrgRef": {
+            "all": [
+              "4890844"
+            ],
+            "preferred": null
+          }
+        },
+        "types": [
+          "Government"
+        ],
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Institut_de_radioprotection_et_de_s%C3%BBret%C3%A9_nucl%C3%A9aire",
+        "ip_addresses": [],
+        "links": [
+          "http://www.irsn.fr/EN/Pages/home.aspx"
+        ],
+        "relationships": [
+          {
+            "id": "grid.503312.6",
+            "type": "Child",
+            "label": "Laboratoire de Mécanique et Génie Civil"
+          },
+          {
+            "id": "grid.464061.1",
+            "type": "Child",
+            "label": "PhysicoChimie des Processus de Combustion et de l'Atmosphère"
+          }
+        ],
+        "addresses": [
+          {
+            "city": "Fontenay-aux-Roses",
+            "lat": 49.140533,
+            "lng": 2.190249,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 3017382,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 3012874,
+                "name": "Île-de-France",
+                "ascii_name": "Ile-de-France",
+                "code": "FR.11"
+              },
+              "city": "Fontenay-aux-Roses",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": "FR10",
+                "name": "Île de France"
+              },
+              "nuts_level3": {
+                "code": "FR105",
+                "name": "Hauts-de-Seine"
+              },
+              "nuts_level1": {
+                "code": "FR1",
+                "name": "ÎLE DE FRANCE"
+              },
+              "id": 3017924,
+              "geonames_admin2": {
+                "id": 3013657,
+                "name": "Hauts-de-Seine",
+                "ascii_name": "Hauts-de-Seine",
+                "code": "FR.11.92"
+              }
+            },
+            "state": null
+          }
+        ]
+      },
+      {
+        "status": "active",
+        "established": null,
+        "name": "Nuclear Dynamics",
+        "acronyms": [],
+        "id": "https://ror.org/04team556",
+        "email_address": null,
+        "country": {
+          "country_code": "FR",
+          "country_name": "France"
+        },
+        "labels": [
+          {
+            "iso639": "fr",
+            "label": "Dynamique du noyau"
+          }
+        ],
+        "aliases": [],
+        "external_ids": {
+          "ISNI": {
+            "all": [
               "0000 0004 0382 2624"
+            ],
+            "preferred": null
+          },
+          "CNRS": {
+            "all": [
+              "UMR3664"
             ],
             "preferred": null
           },
@@ -887,90 +447,617 @@
             "all": "grid.462325.4",
             "preferred": "grid.462325.4"
           }
-        }
+        },
+        "types": [
+          "Facility"
+        ],
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "http://umr3664.curie.fr/en/UMR3664"
+        ],
+        "relationships": [
+          {
+            "id": "grid.456999.e",
+            "type": "Parent",
+            "label": "Institut des Sciences Biologiques"
+          },
+          {
+            "id": "grid.418596.7",
+            "type": "Parent",
+            "label": "Institute Curie"
+          },
+          {
+            "id": "grid.462844.8",
+            "type": "Parent",
+            "label": "Sorbonne University"
+          }
+        ],
+        "addresses": [
+          {
+            "city": "Paris",
+            "lat": 48.843852,
+            "lng": 2.344863,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 3017382,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 3012874,
+                "name": "Île-de-France",
+                "ascii_name": "Ile-de-France",
+                "code": "FR.11"
+              },
+              "city": "Paris",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": "FR10",
+                "name": "Île de France"
+              },
+              "nuts_level3": {
+                "code": "FR101",
+                "name": "Paris"
+              },
+              "nuts_level1": {
+                "code": "FR1",
+                "name": "ÎLE DE FRANCE"
+              },
+              "id": 2988507,
+              "geonames_admin2": {
+                "id": 2968815,
+                "name": "Paris",
+                "ascii_name": "Paris",
+                "code": "FR.11.75"
+              }
+            },
+            "state": null
+          }
+        ]
+      },
+      {
+        "status": "active",
+        "established": 1977,
+        "name": "Nuclear Safety Council",
+        "acronyms": [
+          "CSN"
+        ],
+        "id": "https://ror.org/0457hyq42",
+        "email_address": null,
+        "country": {
+          "country_code": "ES",
+          "country_name": "Spain"
+        },
+        "labels": [
+          {
+            "iso639": "es",
+            "label": "Consejo de Seguaridad Nuclear"
+          }
+        ],
+        "aliases": [],
+        "external_ids": {
+          "ISNI": {
+            "all": [
+              "0000 0001 2162 8874"
+            ],
+            "preferred": null
+          },
+          "GRID": {
+            "all": "grid.423604.7",
+            "preferred": "grid.423604.7"
+          },
+          "FundRef": {
+            "all": [
+              "501100006055"
+            ],
+            "preferred": null
+          }
+        },
+        "types": [
+          "Government"
+        ],
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "https://www.csn.es/home"
+        ],
+        "relationships": [],
+        "addresses": [
+          {
+            "city": "Madrid",
+            "lat": 40.448238,
+            "lng": -3.713661,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 2510769,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 3117732,
+                "name": "Madrid",
+                "ascii_name": "Madrid",
+                "code": "ES.29"
+              },
+              "city": "Madrid",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": "ES30",
+                "name": "Comunidad de Madrid"
+              },
+              "nuts_level3": {
+                "code": "ES300",
+                "name": "Madrid"
+              },
+              "nuts_level1": {
+                "code": "ES3",
+                "name": "COMUNIDAD DE MADRID"
+              },
+              "id": 3117735,
+              "geonames_admin2": {
+                "id": 6355233,
+                "name": "Provincia de Madrid",
+                "ascii_name": "Provincia de Madrid",
+                "code": "ES.29.M"
+              }
+            },
+            "state": null
+          }
+        ]
+      },
+      {
+        "status": "active",
+        "established": 1982,
+        "name": "Instituto de Pesquisas Energéticas e Nucleares",
+        "acronyms": [
+          "IPEN"
+        ],
+        "id": "https://ror.org/01senny43",
+        "email_address": null,
+        "country": {
+          "country_code": "BR",
+          "country_name": "Brazil"
+        },
+        "labels": [
+          {
+            "iso639": "en",
+            "label": "Nuclear Energy Research Institute"
+          }
+        ],
+        "aliases": [],
+        "external_ids": {
+          "ISNI": {
+            "all": [
+              "0000 0001 2104 465X"
+            ],
+            "preferred": null
+          },
+          "GRID": {
+            "all": "grid.466806.a",
+            "preferred": "grid.466806.a"
+          }
+        },
+        "types": [
+          "Facility"
+        ],
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "https://www.ipen.br/portal_por/portal/default.php"
+        ],
+        "relationships": [
+          {
+            "id": "grid.418852.2",
+            "type": "Parent",
+            "label": "National Nuclear Energy Commission"
+          }
+        ],
+        "addresses": [
+          {
+            "city": "São Paulo",
+            "lat": -23.56636,
+            "lng": -46.738077,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 3469034,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 3448433,
+                "name": "São Paulo",
+                "ascii_name": "Sao Paulo",
+                "code": "BR.27"
+              },
+              "city": "São Paulo",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level3": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level1": {
+                "code": null,
+                "name": null
+              },
+              "id": 3448439,
+              "geonames_admin2": {
+                "id": null,
+                "name": null,
+                "ascii_name": null,
+                "code": null
+              }
+            },
+            "state": null
+          }
+        ]
+      },
+      {
+        "status": "active",
+        "established": 1962,
+        "name": "Nuclear Engineering Institute",
+        "acronyms": [
+          "IEN"
+        ],
+        "id": "https://ror.org/040bdaa45",
+        "email_address": null,
+        "country": {
+          "country_code": "BR",
+          "country_name": "Brazil"
+        },
+        "labels": [
+          {
+            "iso639": "pt",
+            "label": "Instituto de Engenharia Nuclear"
+          }
+        ],
+        "aliases": [],
+        "external_ids": {
+          "ISNI": {
+            "all": [
+              "0000 0001 0287 6514"
+            ],
+            "preferred": null
+          },
+          "GRID": {
+            "all": "grid.457037.2",
+            "preferred": "grid.457037.2"
+          }
+        },
+        "types": [
+          "Facility"
+        ],
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "http://www.ien.gov.br/ingles/index.php"
+        ],
+        "relationships": [
+          {
+            "id": "grid.418852.2",
+            "type": "Parent",
+            "label": "National Nuclear Energy Commission"
+          }
+        ],
+        "addresses": [
+          {
+            "city": "Rio de Janeiro",
+            "lat": -22.864328,
+            "lng": -43.285511,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "",
+            "country_geonames_id": 3469034,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 3451189,
+                "name": "Rio de Janeiro",
+                "ascii_name": "Rio de Janeiro",
+                "code": "BR.21"
+              },
+              "city": "Rio de Janeiro",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level3": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level1": {
+                "code": null,
+                "name": null
+              },
+              "id": 3451190,
+              "geonames_admin2": {
+                "id": 6322060,
+                "name": "Rio de Janeiro",
+                "ascii_name": "Rio de Janeiro",
+                "code": "BR.21.3304557"
+              }
+            },
+            "state": null
+          }
+        ]
+      },
+      {
+        "status": "active",
+        "established": 1958,
+        "name": "Starmet Corporation (United States)",
+        "acronyms": [
+          "NMI"
+        ],
+        "id": "https://ror.org/00e9s5n07",
+        "email_address": null,
+        "country": {
+          "country_code": "US",
+          "country_name": "United States"
+        },
+        "labels": [],
+        "aliases": [
+          "Nuclear Metals Inc"
+        ],
+        "external_ids": {
+          "GRID": {
+            "all": "grid.465214.0",
+            "preferred": "grid.465214.0"
+          }
+        },
+        "types": [
+          "Company"
+        ],
+        "wikipedia_url": "",
+        "ip_addresses": [],
+        "links": [
+          "http://www.nmisite.org/nmisite/"
+        ],
+        "relationships": [],
+        "addresses": [
+          {
+            "city": "Concord",
+            "lat": 42.451471,
+            "lng": -71.412189,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "US-MA",
+            "country_geonames_id": 6252001,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 6254926,
+                "name": "Massachusetts",
+                "ascii_name": "Massachusetts",
+                "code": "US.MA"
+              },
+              "city": "Concord",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level3": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level1": {
+                "code": null,
+                "name": null
+              },
+              "id": 4933743,
+              "geonames_admin2": {
+                "id": 4943909,
+                "name": "Middlesex County",
+                "ascii_name": "Middlesex County",
+                "code": "US.MA.017"
+              }
+            },
+            "state": "Massachusetts"
+          }
+        ]
+      },
+      {
+        "status": "active",
+        "established": 1953,
+        "name": "Society of Nuclear Medicine and Molecular Imaging",
+        "acronyms": [
+          "SNMMI"
+        ],
+        "id": "https://ror.org/02k5gcb44",
+        "email_address": null,
+        "country": {
+          "country_code": "US",
+          "country_name": "United States"
+        },
+        "labels": [],
+        "aliases": [
+          "Society of Nuclear Medicine"
+        ],
+        "external_ids": {
+          "Wikidata": {
+            "all": [
+              "Q7552575"
+            ],
+            "preferred": null
+          },
+          "ISNI": {
+            "all": [
+              "0000 0001 2154 8276"
+            ],
+            "preferred": null
+          },
+          "GRID": {
+            "all": "grid.437733.7",
+            "preferred": "grid.437733.7"
+          },
+          "FundRef": {
+            "all": [
+              "100006239"
+            ],
+            "preferred": null
+          }
+        },
+        "types": [
+          "Nonprofit"
+        ],
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Society_of_Nuclear_Medicine_and_Molecular_Imaging",
+        "ip_addresses": [],
+        "links": [
+          "https://www.snmmi.org/"
+        ],
+        "relationships": [],
+        "addresses": [
+          {
+            "city": "Reston",
+            "lat": 38.947396,
+            "lng": -77.331862,
+            "postcode": "",
+            "line": "",
+            "primary": false,
+            "state_code": "US-VA",
+            "country_geonames_id": 6252001,
+            "geonames_city": {
+              "geonames_admin1": {
+                "id": 6254928,
+                "name": "Virginia",
+                "ascii_name": "Virginia",
+                "code": "US.VA"
+              },
+              "city": "Reston",
+              "license": {
+                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
+                "license": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "nuts_level2": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level3": {
+                "code": null,
+                "name": null
+              },
+              "nuts_level1": {
+                "code": null,
+                "name": null
+              },
+              "id": 4781530,
+              "geonames_admin2": {
+                "id": 4758041,
+                "name": "Fairfax County",
+                "ascii_name": "Fairfax County",
+                "code": "US.VA.059"
+              }
+            },
+            "state": "Virginia"
+          }
+        ]
       }
-    ]
-  },
-  "aggregations": {
-    "types": {
-      "doc_count_error_upper_bound": 0,
-      "sum_other_doc_count": 0,
-      "buckets": [
-        {
-          "key": "Facility",
-          "doc_count": 59
-        },
-        {
-          "key": "Government",
-          "doc_count": 31
-        },
-        {
-          "key": "Nonprofit",
-          "doc_count": 15
-        },
-        {
-          "key": "Other",
-          "doc_count": 13
-        },
-        {
-          "key": "Company",
-          "doc_count": 10
-        },
-        {
-          "key": "Education",
-          "doc_count": 5
-        },
-        {
-          "key": "Healthcare",
-          "doc_count": 3
-        }
-      ]
-    },
-    "countries": {
-      "doc_count_error_upper_bound": 0,
-      "sum_other_doc_count": 57,
-      "buckets": [
-        {
-          "key": "US",
-          "doc_count": 19
-        },
-        {
-          "key": "CN",
-          "doc_count": 10
-        },
-        {
-          "key": "FR",
-          "doc_count": 10
-        },
-        {
-          "key": "RU",
-          "doc_count": 8
-        },
-        {
-          "key": "KR",
-          "doc_count": 7
-        },
-        {
-          "key": "BR",
-          "doc_count": 6
-        },
-        {
-          "key": "GB",
-          "doc_count": 6
-        },
-        {
-          "key": "PK",
-          "doc_count": 5
-        },
-        {
-          "key": "RO",
-          "doc_count": 5
-        },
-        {
-          "key": "BE",
-          "doc_count": 4
-        }
-      ]
+    ],
+    "aggregations": {
+      "types": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Company",
+            "doc_count": 27855
+          },
+          {
+            "key": "Education",
+            "doc_count": 19536
+          },
+          {
+            "key": "Nonprofit",
+            "doc_count": 13437
+          },
+          {
+            "key": "Healthcare",
+            "doc_count": 12594
+          },
+          {
+            "key": "Facility",
+            "doc_count": 8582
+          },
+          {
+            "key": "Other",
+            "doc_count": 7958
+          },
+          {
+            "key": "Government",
+            "doc_count": 5857
+          },
+          {
+            "key": "Archive",
+            "doc_count": 2755
+          }
+        ]
+      },
+      "countries": {
+        "doc_count_error_upper_bound": 575,
+        "sum_other_doc_count": 34222,
+        "buckets": [
+          {
+            "key": "US",
+            "doc_count": 29735
+          },
+          {
+            "key": "GB",
+            "doc_count": 7170
+          },
+          {
+            "key": "DE",
+            "doc_count": 4764
+          },
+          {
+            "key": "CN",
+            "doc_count": 4503
+          },
+          {
+            "key": "JP",
+            "doc_count": 3711
+          },
+          {
+            "key": "FR",
+            "doc_count": 3682
+          },
+          {
+            "key": "CA",
+            "doc_count": 3198
+          },
+          {
+            "key": "IN",
+            "doc_count": 2865
+          },
+          {
+            "key": "CZ",
+            "doc_count": 2739
+          },
+          {
+            "key": "RU",
+            "doc_count": 2009
+          }
+        ]
+      }
     }
   }
 }

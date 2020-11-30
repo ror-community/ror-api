@@ -103,6 +103,7 @@ def search_organizations(params):
         return error, None
 
     search = build_search_query(params)
+    print("result: ", search.execute())
     return None, ListResult(search.execute())
 
 
