@@ -74,11 +74,13 @@ class OrganizationTestCase(SimpleTestCase):
              'name': 'University of Gallifrey',
              'types': ['school', 'research centre'],
              'links': [],
+             'ip_addresses': [],
+             'email_address':None,
              'aliases': ['Gallifrey University',
                          'Timey-Wimey University of Gallifrey'],
              'acronyms': ['UG'],
              'addresses': [
-                {"lat": "49.198027","lng": "-123.007714","state_code": "CA-BC","city": "Burnaby","geonames_city": {"id": 5911606,"city": "Burnaby","geonames_admin1": {"name": "British Columbia","id": "5909050","ascii_name": "British Columbia","code": "CA.02"},
+                {"lat": "49.198027","lng": "-123.007714","state_code": "CA-BC","city": "Burnaby","primary":False,"geonames_city": {"id": 5911606,"city": "Burnaby","geonames_admin1": {"name": "British Columbia","id": "5909050","ascii_name": "British Columbia","code": "CA.02"},
                 "geonames_admin2": {"name": "Metro Vancouver Regional District","id": "5965814","ascii_name": "Metro Vancouver Regional District","code": "CA.02.5915"},"nuts_level1": {"name": "SLOVENIJA","code": "SI0"},"nuts_level2": {"name": "Vzhodna Slovenija","code": "SI03"},"nuts_level3": {"name": "TEST","code": "SI036"}},"postcode": "123456","line": "123 Somewhere Over A Rainbow","country_geonames_id": 6251999, "state":"British Columbia"}],
              'relationships': [
                  {'label': 'Calvary Hospital', 'type': 'Related', 'id':'grid.1234.6'}],
