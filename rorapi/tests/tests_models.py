@@ -102,14 +102,22 @@ class OrganizationTestCase(SimpleTestCase):
         self.assertEqual(organization.name, data['name'])
         self.assertEqual(organization.types, data['types'])
         self.assertEqual(organization.established, data['established'])
-        self.assertEqual(organization.addresses[0].lat, data['addresses'][0]['lat'])
-        self.assertEqual(organization.addresses[0].lng, data['addresses'][0]['lng'])
-        self.assertEqual(organization.addresses[0].state_code, data['addresses'][0]['state_code'])
-        self.assertEqual(organization.addresses[0].city, data['addresses'][0]['city'])
-        self.assertEqual(organization.addresses[0].geonames_city.id, data['addresses'][0]['geonames_city']['id'])
-        self.assertEqual(organization.addresses[0].postcode, data['addresses'][0]['postcode'])
-        self.assertEqual(organization.addresses[0].line, data['addresses'][0]['line'])
-        self.assertEqual(organization.addresses[0].country_geonames_id, data['addresses'][0]['country_geonames_id'])
+        self.assertEqual(organization.addresses[0].lat,
+                         data['addresses'][0]['lat'])
+        self.assertEqual(organization.addresses[0].lng,
+                         data['addresses'][0]['lng'])
+        self.assertEqual(organization.addresses[0].state_code,
+                         data['addresses'][0]['state_code'])
+        self.assertEqual(organization.addresses[0].city,
+                         data['addresses'][0]['city'])
+        self.assertEqual(organization.addresses[0].geonames_city.id,
+                         data['addresses'][0]['geonames_city']['id'])
+        self.assertEqual(organization.addresses[0].postcode,
+                         data['addresses'][0]['postcode'])
+        self.assertEqual(organization.addresses[0].line,
+                         data['addresses'][0]['line'])
+        self.assertEqual(organization.addresses[0].country_geonames_id,
+                         data['addresses'][0]['country_geonames_id'])
         self.assertEqual(organization.links, data['links'])
         self.assertEqual(organization.aliases, data['aliases'])
         self.assertEqual(organization.acronyms, data['acronyms'])

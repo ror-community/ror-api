@@ -40,33 +40,41 @@ def get_ror_id(grid_id, es):
         return s['hits']['hits'][0]['_id']
     return generate_ror_id()
 
+
 def geonames_city(geonames_city):
-    geonames = ["geonames_admin1","geonames_admin2"]
-    geonames_attributes = ["id","name","ascii_name","code"]
-    nuts = ["nuts_level1","nuts_level2","nuts_level3"]
-    nuts_attributes = ["code","name"]
+    geonames = ["geonames_admin1", "geonames_admin2"]
+    geonames_attributes = ["id", "name", "ascii_name", "code"]
+    nuts = ["nuts_level1", "nuts_level2", "nuts_level3"]
+    nuts_attributes = ["code", "name"]
     geonames_city_hsh = {}
-    for k,v in geonames_city.items():
+    for k, v in geonames_city.items():
         if (k in geonames):
-            if isinstance(v,dict):
-                geonames_city_hsh[k] = {i:v.get(i,None) for i in geonames_attributes}
+            if isinstance(v, dict):
+                geonames_city_hsh[k] = {
+                    i: v.get(i, None)
+                    for i in geonames_attributes
+                }
             elif v is None:
-                geonames_city_hsh[k] = {i:None for i in geonames_attributes}
+                geonames_city_hsh[k] = {i: None for i in geonames_attributes}
         elif (k in nuts):
-            if isinstance(v,dict):
-                geonames_city_hsh[k] = {i:v.get(i,None) for i in nuts_attributes}
+            if isinstance(v, dict):
+                geonames_city_hsh[k] = {
+                    i: v.get(i, None)
+                    for i in nuts_attributes
+                }
             elif v is None:
-                geonames_city_hsh[k] = {i:None for i in nuts_attributes}
+                geonames_city_hsh[k] = {i: None for i in nuts_attributes}
         else:
             geonames_city_hsh[k] = v
     return geonames_city_hsh
+
 
 def addresses(location):
     line = ""
     address = ["line_1", "line_2", "line_3"]
     combine_lines = address + ["country", "country_code"]
-    geonames_admin = ["id","code","name","ascii_name"]
-    nuts = ["code","name"]
+    geonames_admin = ["id", "code", "name", "ascii_name"]
+    nuts = ["code", "name"]
     new_addresses = []
     hsh = {}
     hsh["line"] = None
@@ -75,7 +83,7 @@ def addresses(location):
             if not (k in combine_lines) and (k != "geonames_city"):
                 hsh[k] = v
             elif k == "geonames_city":
-                if isinstance(v,dict):
+                if isinstance(v, dict):
                     hsh[k] = geonames_city(v)
                 elif v is None:
                     hsh[k] = {}
@@ -142,18 +150,21 @@ def getExternalIds(external_ids):
     if 'ROR' in external_ids: del external_ids['ROR']
     return external_ids
 
+
 def get_ids(data):
     ids = {}
     for d in data:
         ids[d['external_ids']['GRID']['all']] = d['id']
     return ids
 
-def get_grid(record,ids):
+
+def get_grid(record, ids):
     if record['relationships']:
         for r in record['relationships']:
             r['id'] = ids[r['id']]
 
     return record
+
 
 class Command(BaseCommand):
     help = 'Converts GRID dataset to ROR schema'
@@ -176,9 +187,7 @@ class Command(BaseCommand):
                 for org in grid_data['institutes'] if org['status'] == 'active'
             ]
             ids = get_ids(intermediate_ror_data)
-            ror_data = [
-                get_grid(rec,ids) for rec in intermediate_ror_data
-            ]
+            ror_data = [get_grid(rec, ids) for rec in intermediate_ror_data]
             with open(ROR_DUMP['ROR_JSON_PATH'], 'w') as outfile:
                 json.dump(ror_data, outfile, indent=4)
             self.stdout.write('ROR dataset created')
