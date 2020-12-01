@@ -15,12 +15,23 @@ class Entity:
 
 class GeoAdmin:
     def __init__(self, data):
-        self.id = getattr(data, 'id', None)
-        self.code = getattr(data, 'code', None)
-        self.name = getattr(data, 'name', None)
-        self.ascii_name = getattr(data, 'ascii_name', None)
-
-
+        if hasattr(data, 'id'):
+            self.id = data.id
+        else:
+            self.id = None
+        if hasattr(data, 'code'):
+            self.code = data.code
+        else:
+            self.code = None
+        if hasattr(data, 'name'):
+            self.name = data.name
+        else:
+            self.name = None
+        if hasattr(data, 'ascii_name'):
+            self.ascii_name = data.ascii_name
+        else:
+            self.ascii_name = None
+        
 class Nuts:
     """A model class for storing the NUTS metadata"""
     def __init__(self, data):
