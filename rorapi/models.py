@@ -31,7 +31,8 @@ class GeoAdmin:
             self.ascii_name = data.ascii_name
         else:
             self.ascii_name = None
-        
+
+
 class Nuts:
     """A model class for storing the NUTS metadata"""
     def __init__(self, data):
