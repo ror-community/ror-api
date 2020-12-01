@@ -74,7 +74,8 @@ class APITestCase(SimpleTestCase):
                 'filter': 'country.country_code:US',
                 'page': 3
         }]:
-            status_code = requests.get(BASE_URL, dict(q, query='university')).status_code
+            status_code = requests.get(BASE_URL,
+                                       dict(q, query='university')).status_code
             if status_code != 200:
                 print("failing query: ", dict(q, query='university'))
             output = requests.get(BASE_URL, dict(q, query='university')).json()
@@ -83,7 +84,6 @@ class APITestCase(SimpleTestCase):
                 BASE_URL, dict(q, **{'query.name': 'university'})).json()
             del output_deprecated['time_taken']
             self.assertEqual(output_deprecated, output)
-
 
     def verify_paging(self, query):
         total = self.get_total_from_query(query)
