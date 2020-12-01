@@ -142,6 +142,19 @@ def getExternalIds(external_ids):
     if 'ROR' in external_ids: del external_ids['ROR']
     return external_ids
 
+def get_ids(data):
+    ids = {}
+    for d in data:
+        ids[d['external_ids']['GRID']['all']] = d['id']
+    return ids
+
+def get_grid(record,ids):
+    print("Processing: ",record['external_ids']['GRID']['all'])
+    if record['relationships']:
+        for r in record['relationships']:
+            r['id'] = ids[r['id']]
+
+    return record
 
 class Command(BaseCommand):
     help = 'Converts GRID dataset to ROR schema'
@@ -159,9 +172,13 @@ class Command(BaseCommand):
                 grid_data = json.load(it)
 
             self.stdout.write('Converting GRID dataset to ROR schema')
-            ror_data = [
+            intermediate_ror_data = [
                 convert_organization(org, ES)
                 for org in grid_data['institutes'] if org['status'] == 'active'
+            ]
+            ids = get_ids(intermediate_ror_data)
+            ror_data = [
+                get_grid(rec,ids) for rec in intermediate_ror_data
             ]
             with open(ROR_DUMP['ROR_JSON_PATH'], 'w') as outfile:
                 json.dump(ror_data, outfile, indent=4)
