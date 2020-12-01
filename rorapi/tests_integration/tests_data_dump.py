@@ -14,10 +14,6 @@ BASE_URL = '{}/organizations'.format(
 
 class DataDumpTestCase(SimpleTestCase):
     def setUp(self):
-        with open(os.path.join(os.path.dirname(__file__), 'data/sample.json'),
-                  'r') as f:
-            data = f.read()
-            self.test_data = json.loads(data)
         with zipfile.ZipFile(ROR_DUMP['ROR_ZIP_PATH'], 'r') as z:
             with z.open('ror.json') as f:
                 data = f.read()
@@ -42,7 +38,7 @@ class DataDumpTestCase(SimpleTestCase):
 
     def test_compare_data_dump_and_index(self):
         data_index = requests.get(BASE_URL).json()
-        #self.assertEquals(data_index['number_of_results'], len(self.data_dump))
+        self.assertEquals(data_index['number_of_results'], len(self.data_dump))
 
         sample = random.sample(self.data_dump, 100)
         for item_dump in sample:
