@@ -149,7 +149,6 @@ def get_ids(data):
     return ids
 
 def get_grid(record,ids):
-    print("Processing: ",record['external_ids']['GRID']['all'])
     if record['relationships']:
         for r in record['relationships']:
             r['id'] = ids[r['id']]
