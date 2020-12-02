@@ -170,7 +170,7 @@ class MatchedOrganization:
         self.score = data.score
         self.matching_type = data.matching_type
         self.chosen = data.chosen
-        self.organization = data.organization
+        self.organization = Organization(data.organization)
 
 
 class MatchingResult:
