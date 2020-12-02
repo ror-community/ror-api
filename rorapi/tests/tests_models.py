@@ -236,7 +236,12 @@ class MatchedOrganizationTestCase(SimpleTestCase):
               'wikipedia_url': 'https://en.wikipedia.org/wiki/Gallifrey',
               'labels': [],
               'country': {'country_name': 'Gallifrey', 'country_code': 'GE'},
-              'external_ids': {}}}
+              'external_ids': {},
+              'status': 'active',
+              'established': 1979,
+              'relationships': [],
+              'addresses': [],
+              'ip_addresses': []}}
         organization = MatchedOrganization(AttrDict(data))
         self.assertEqual(organization.substring, data['substring'])
         self.assertEqual(organization.score, data['score'])
