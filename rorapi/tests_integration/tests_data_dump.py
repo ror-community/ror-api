@@ -49,7 +49,7 @@ class DataDumpTestCase(SimpleTestCase):
                 "types", "relationships", "links", "aliases", "status",
                 "wikipedia_url", "labels", "country", "external_ids"
             ]
-            addresses = ["lat", "lng", "state", "city","state_code"]
+            addresses = ["lat", "lng", "state", "city", "state_code"]
             geonames_city = item_dump['addresses'][0]["geonames_city"]
             # testing in a more granular way
             for a in attributes:
