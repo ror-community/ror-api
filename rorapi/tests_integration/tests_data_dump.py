@@ -49,7 +49,7 @@ class DataDumpTestCase(SimpleTestCase):
                 "types", "relationships", "links", "aliases", "status",
                 "wikipedia_url", "labels", "country", "external_ids"
             ]
-            addresses = ["lat", "lng", "state", "city"]
+            addresses = ["lat", "lng", "state", "city","state_code"]
             geonames_city = item_dump['addresses'][0]["geonames_city"]
             # testing in a more granular way
             for a in attributes:
@@ -61,7 +61,7 @@ class DataDumpTestCase(SimpleTestCase):
                 self.assertEquals(item_index["addresses"][0]["geonames_city"],
                                   item_dump["addresses"][0]["geonames_city"])
             elif not (geonames_city):
-                # if the geonames_city hashmap is null, making sure the value returned from the index is correspondinly null
+                # if the geonames_city hashmap is null, making sure the value returned from the index is also null
                 gc = item_index["addresses"][0]["geonames_city"]
                 filtered = {k: v for k, v in gc.items() if v is not None}
                 gc.clear()

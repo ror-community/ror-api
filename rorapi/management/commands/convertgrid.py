@@ -81,6 +81,7 @@ def addresses(location):
     for h in location:
         for k, v in h.items():
             if not (k in combine_lines) and (k != "geonames_city"):
+                v = v if v != "" else None
                 hsh[k] = v
             elif k == "geonames_city":
                 if isinstance(v, dict):
@@ -96,6 +97,7 @@ def addresses(location):
                 line = re.sub(' +', ' ', line)
                 if (len(line) == 1 and line == " "):
                     line = line.strip()
+                    line = line if len(line) > 0 else None
                 hsh["line"] = line
         new_addresses.append(hsh)
     return new_addresses
