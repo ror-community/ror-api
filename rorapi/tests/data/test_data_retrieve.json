@@ -70,9 +70,9 @@
               }
             },
             "lat": 38.88758,
-            "line": "",
+            "line": null,
             "lng": -77.025728,
-            "postcode": "",
+            "postcode": null,
             "primary": false,
             "state": "District of Columbia",
             "state_code": "US-DC"
