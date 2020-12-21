@@ -61,7 +61,7 @@ after_success:
       rm dockerize-linux-amd64-v0.6.0.tar.gz;
       export GIT_SHA=$(git rev-parse --short HEAD);
       export GIT_TAG=$(git describe --tags $(git rev-list --tags --max-count=1));
-      git clone "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git";
+      git clone "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/new-deployment.git";
 
       sentry-cli releases new ror-api:${GIT_TAG} --finalize --project ror-api;
 
@@ -90,7 +90,7 @@ after_success:
         git commit -m "Adding ror-api git variables for latest commit on branch $TRAVIS_BRANCH";
       fi
 
-      git push "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/deployment.git" master;
+      git push "https://${TRAVIS_SECURE_TOKEN}@github.com/ror-community/new-deployment.git" master;
     fi
 
 notifications:
