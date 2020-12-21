@@ -68,16 +68,16 @@ after_success:
       if [ "${TRAVIS_TAG?}" ]; then
         aws configure set preview.cloudfront true
         aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
-        ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api.auto.tfvars;
+        ./dockerize -template vendor/docker/_ror-api.auto.tfvars.tmpl:new-deployment/ror/services/api/_ror-api.auto.tfvars;
         sentry-cli releases deploys ror-ap:${GIT_TAG} new -e production;
       else
-        ./dockerize -template vendor/docker/_ror-api-dev.auto.tfvars.tmpl:deployment/ror/services/api/_ror-api-dev.auto.tfvars;
+        ./dockerize -template vendor/docker/_ror-api-dev.auto.tfvars.tmpl:new-deployment/ror/services/api/_ror-api-dev.auto.tfvars;
         sentry-cli releases deploys ror-api:${GIT_TAG} new -e dev;
       fi
 
       sentry-cli releases set-commits --auto ror-api:${GIT_TAG};
 
-      cd deployment;
+      cd new-deployment;
       git remote;
       git config user.email ${DOCKER_EMAIL};
       git config user.name ${DOCKER_USERNAME};
