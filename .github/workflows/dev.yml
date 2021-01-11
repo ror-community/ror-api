@@ -35,16 +35,16 @@ jobs:
           pip3 install --no-cache-dir --upgrade wheel
           pip3 install --no-cache-dir -r requirements.txt
           pip3 install yapf
-          ./python manage.py upgrade
-          ./python manage.py setup
+          python manage.py upgrade
+          python manage.py setup
       - name: Test
         env:
           ELASTIC_HOST: localhost:${{ job.services.elasticsearch.ports[9200] }}
           ELASTIC_PASSWORD: "changeme"
         run: |
-          ./python manage.py test rorapi.tests
-          ./python manage.py test rorapi.tests_integration
-          ./python manage.py test rorapi.tests_functional
+          python manage.py test rorapi.tests
+          python manage.py test rorapi.tests_integration
+          python manage.py test rorapi.tests_functional
           echo $?
       # - name: Publish code coverage
       #   uses: paambaati/codeclimate-action@v2.7.5
