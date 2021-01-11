@@ -33,13 +33,12 @@ if os.path.isfile(env_file):
 
 # load ENV variables from container environment if json file exists
 # see https://github.com/phusion/baseimage-docker#envvar_dumps
-try:
-    with open('/etc/container_environment.json') as f:
+filepath = '/etc/container_environment.json'
+if os.path.isfile(filepath):
+    with open(filepath) as f:
         env_vars = json.load(f)
         for k, v in env_vars.items():
             os.environ[k] = v
-except Exception as e:
-    print(e)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -157,10 +156,10 @@ ES = Elasticsearch([{
     'host': os.environ.get('ELASTIC_HOST', 'elasticsearch'),
     'port': int(os.environ.get('ELASTIC_PORT', '9200'))
 }],
-                   http_auth=http_auth,
-                   use_ssl=False,
-                   timeout=60,
-                   connection_class=RequestsHttpConnection)
+    http_auth=http_auth,
+    use_ssl=False,
+    timeout=60,
+    connection_class=RequestsHttpConnection)
 
 # GRID = {
 #     'VERSION': '2018-11-14',
@@ -172,10 +171,10 @@ ES = Elasticsearch([{
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
-#GRID = {
+# GRID = {
 #    'VERSION': '2019-05-06',
 #    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
-#}
+# }
 
 # GRID = {
 #     'VERSION': '2019-10-06',
