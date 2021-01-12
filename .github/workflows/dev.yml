@@ -30,11 +30,11 @@ jobs:
           python-version: '3.x'
       - name: Install
         run: |
-          cp .env.travis .env
           pip3 install --no-cache-dir --upgrade pip
           pip3 install --no-cache-dir --upgrade wheel
           pip3 install --no-cache-dir -r requirements.txt
           pip3 install yapf
+          python manage.py collectstatic --noinput
           python manage.py upgrade
           python manage.py setup
       - name: Test
