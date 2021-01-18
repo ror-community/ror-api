@@ -42,9 +42,6 @@ jobs:
           python manage.py upgrade
           python manage.py setup
       - name: Test
-        env:
-          ELASTIC_HOST: localhost:${{ job.services.elasticsearch.ports[9200] }}
-          ELASTIC_PASSWORD: "changeme"
         run: |
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
