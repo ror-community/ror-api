@@ -38,10 +38,10 @@ jobs:
           pip install wheel
           pip install -r requirements.txt
           pip install yapf
+          yapf -d -r .
           
-          python manage.py collectstatic --noinput
-          python manage.py setup
           python manage.py upgrade
+          python manage.py setup
       - name: Test
         run: |
           python manage.py test rorapi.tests
