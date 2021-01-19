@@ -40,8 +40,8 @@ jobs:
           pip install yapf
           
           python manage.py collectstatic --noinput
-          python manage.py upgrade
           python manage.py setup
+          python manage.py upgrade
       - name: Test
         run: |
           python manage.py test rorapi.tests
