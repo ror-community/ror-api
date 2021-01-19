@@ -45,7 +45,7 @@ jobs:
       - name: Test
         env:
           ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
-          ROR_BASE_URL: "http://localhost:8000"
+          ROR_BASE_URL: "http://localhost"
         run: |
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
