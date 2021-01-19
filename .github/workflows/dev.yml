@@ -7,10 +7,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      ELASTIC_HOST: "localhost"
+      ELASTIC_HOST: "elasticsearch"
       ELASTIC_PORT: "9200"
       ELASTIC_PASSWORD: "changeme"
-      ROR_BASE_URL: "http://localhost"
+      ROR_BASE_URL: "http://elasticsearch"
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
