@@ -6,14 +6,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      ELASTIC_HOST: "elasticsearch"
-      ELASTIC_PORT: "9200"
-      ELASTIC_PASSWORD: "changeme"
-      ROR_BASE_URL: "http://elasticsearch"
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
@@ -33,6 +25,13 @@ jobs:
         with:
           python-version: '3.7'
       - name: Install
+        env:
+          ELASTIC_HOST: "localhost"
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          ELASTIC_PASSWORD: "changeme"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           python -m pip install --upgrade pip
           pip install wheel
