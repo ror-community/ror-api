@@ -357,8 +357,12 @@ def get_output(chosen, all_matched):
     output = []
     all_matched = [m for m in all_matched if m.score > 0]
     all_matched = sorted(all_matched, key=lambda x: x.organization.id)
-    for _, g in groupby(all_matched, lambda x: x.organization.id):
-        g = list(g)
+    all_matched = groupby(all_matched, lambda x: x.organization.id)
+    all_matched_list = []
+    for org_id, g in all_matched:
+        all_matched_list.append((org_id, list(g)))
+    all_matched_list = sorted(all_matched_list, key=lambda x: x[0])
+    for _, g in all_matched_list:
         best = g[0]
         for c in g:
             if c in chosen:

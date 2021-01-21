@@ -332,7 +332,7 @@
     {
         "affiliation": "Mass\rSpectrometry Laboratory, Brazilian Biosciences National Laboratory- CNPEM, R. Giuseppe M\u00e1ximo Scolfaro 10000, 13083-970 Campinas, Brazil",
         "ror_ids": [
-            "https://ror.org/05m235j20"
+            "https://ror.org/04kjcjc51"
         ]
     },
     {
@@ -575,7 +575,6 @@
     {
         "affiliation": " Psychology Department, Indiana University\u2014Purdue University Columbus, Indiana, USA",
         "ror_ids": [
-            "https://ror.org/02dqehb95",
             "https://ror.org/00e0c0q64"
         ]
     },
@@ -652,7 +651,7 @@
     {
         "affiliation": "Division of General Pediatric and Adolescent Medicine, Department of Pediatric and Adolescent Medicine, Mayo Clinic, Rochester, Minnesota.",
         "ror_ids": [
-            "https://ror.org/03jp40720"
+            "https://ror.org/03zzw1w08"
         ]
     },
     {
@@ -907,8 +906,7 @@
     {
         "affiliation": "National Referral Center for Rare Systemic Autoimmune Diseases, H\u00f4pital Cochin, AP-HP, and Universit\u00e9 Paris Descartes; Paris France",
         "ror_ids": [
-            "https://ror.org/00ph8tk69",
-            "https://ror.org/0220k9r37"
+            "https://ror.org/00ph8tk69"
         ]
     },
     {
@@ -1106,7 +1104,7 @@
     {
         "affiliation": "Robert D. and Patricia E. Kern Center for the Science of Health Care Delivery (X.Y., P.A.N., N.D.S.), Mayo Clinic, Rochester, MN.",
         "ror_ids": [
-            "https://ror.org/03jp40720"
+            "https://ror.org/03zzw1w08"
         ]
     },
     {
@@ -1807,7 +1805,8 @@
         "affiliation": "Institute of Materials and Environmental Chemistry; Hungarian Academy of Sciences and; Department of Physics; Budapest University of Technology and Economics; Budafoki ut 8 1111 Budapest Hungary",
         "ror_ids": [
             "https://ror.org/00r71zw23",
-            "https://ror.org/02ks8qq67"
+            "https://ror.org/02ks8qq67",
+            "https://ror.org/02w42ss30"
         ]
     },
     {
@@ -1830,7 +1829,9 @@
     },
     {
         "affiliation": "Department of Microbiology, Usmanu Danfodiyo University, Sokoto 840001, Nigeria",
-        "ror_ids": []
+        "ror_ids": [
+            "https://ror.org/006er0w72"
+        ]
     },
     {
         "affiliation": "ZADCO, UAE",
@@ -2005,7 +2006,7 @@
     {
         "affiliation": "Mayo Clinic; Rochester Minnesota",
         "ror_ids": [
-            "https://ror.org/03jp40720"
+            "https://ror.org/03zzw1w08"
         ]
     },
     {
@@ -2737,6 +2738,7 @@
         "affiliation": " Microbial Genomics and Bioprocessing Research Unit, National Center for Agricultural Utilization Research, Agricultural Research Service, U.S. Department of Agriculture, 1815 North University Street, Peoria, Illinois 61604",
         "ror_ids": [
             "https://ror.org/02d2m2044",
+            "https://ror.org/02gbdhj19",
             "https://ror.org/01na82s61"
         ]
     },
@@ -3037,7 +3039,7 @@
     {
         "affiliation": "Plant Polymer Research, USDA, ARS, National Center for Agricultural Utilization Research, 1815 North University Street, Peoria, IL 61604, United States",
         "ror_ids": [
-            "https://ror.org/01na82s61"
+            "https://ror.org/02gbdhj19"
         ]
     },
     {
@@ -4000,7 +4002,8 @@
     {
         "affiliation": " Department of Obstetrics and Gynecology, Charles University in Prague, Faculty of Medicine Hradec Kralove, University Hospital Hradec Kralove, Hradec Kralove, Czech Republic, ",
         "ror_ids": [
-            "https://ror.org/024d6js02"
+            "https://ror.org/024d6js02",
+            "https://ror.org/04wckhb82"
         ]
     },
     {
@@ -4266,7 +4269,7 @@
     {
         "affiliation": "Department of Ophthalmology, Copenhagen University Hospital Rigshospitalet, Glostrup, Denmark",
         "ror_ids": [
-            "https://ror.org/05bpbnx46"
+            "https://ror.org/03mchdq19"
         ]
     },
     {
@@ -4459,7 +4462,9 @@
     },
     {
         "affiliation": "Head of School, School of Health Studies, Gibraltar Health Authority, Gibraltar",
-        "ror_ids": []
+        "ror_ids": [
+            "https://ror.org/02srfgm34"
+        ]
     },
     {
         "affiliation": "School of Chemistry and Chemical Engineering; Huazhong University of Science and Technology; 430074 Wuhan China",
@@ -4568,7 +4573,9 @@
     },
     {
         "affiliation": "Handan Polytechnic College",
-        "ror_ids": []
+        "ror_ids": [
+            "https://ror.org/00vna7491"
+        ]
     },
     {
         "affiliation": "Community Oncology and Prevention Trials Research Group, National Cancer Institute, National Institutes of Health, Bethesda, Maryland.",
@@ -4675,7 +4682,8 @@
     {
         "affiliation": "Transplantation and Liver Surgery Clinic; Helsinki University Hospital, Helsinki University; Helsinki Finland",
         "ror_ids": [
-            "https://ror.org/040af2s02"
+            "https://ror.org/040af2s02",
+            "https://ror.org/02e8hzf44"
         ]
     },
     {
@@ -5407,7 +5415,9 @@
     },
     {
         "affiliation": "CSIRO Manufacturing and Materials Technology",
-        "ror_ids": []
+        "ror_ids": [
+            "https://ror.org/04sx9wp33"
+        ]
     },
     {
         "affiliation": "University of Auckland, Auckland, New Zealand",
@@ -5430,7 +5440,9 @@
     },
     {
         "affiliation": "Australian National University Medical School; Canberra; Australian Capital Territory; Australia",
-        "ror_ids": []
+        "ror_ids": [
+            "https://ror.org/019wvm592"
+        ]
     },
     {
         "affiliation": "Department of Ecology, Lund University223 62 Lund, Sweden",
