@@ -48,9 +48,9 @@ jobs:
           ROR_BASE_URL: "http://localhost"
         run: |
           python manage.py test rorapi.tests
-          python manage.py test rorapi.tests_integration
-          python manage.py test rorapi.tests_functional
-          echo $?
+          # python manage.py test rorapi.tests_integration
+          # python manage.py test rorapi.tests_functional
+          # echo $?
       # - name: Publish code coverage
       #   uses: paambaati/codeclimate-action@v2.7.5
       #   env:
