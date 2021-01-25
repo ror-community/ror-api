@@ -47,9 +47,9 @@ WORKDIR /home/app/webapp
 RUN ln -s -f /usr/bin/python3.5 /usr/bin/python
 
 # install Python packages
-RUN pip3 install --no-cache-dir --upgrade pip
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN pip3 install yapf
+RUN python -m pip install --upgrade pip && \
+    pip install -r requirements.txt && \
+    pip install yapf
 
 # collect static files for Django
 RUN python manage.py collectstatic --noinput
