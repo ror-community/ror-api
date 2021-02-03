@@ -33,12 +33,13 @@ if os.path.isfile(env_file):
 
 # load ENV variables from container environment if json file exists
 # see https://github.com/phusion/baseimage-docker#envvar_dumps
-filepath = '/etc/container_environment.json'
-if os.path.isfile(filepath):
-    with open(filepath) as f:
+try:
+    with open('/etc/container_environment.json') as f:
         env_vars = json.load(f)
         for k, v in env_vars.items():
             os.environ[k] = v
+except Exception as e:
+    print(e)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
