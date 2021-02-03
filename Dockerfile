@@ -1,4 +1,4 @@
-FROM phusion/passenger-full:0.9.30
+FROM phusion/passenger-full:1.0.12
 MAINTAINER Martin Fenner "mfenner@datacite.org"
 
 # Set correct environment variables
@@ -44,12 +44,12 @@ COPY vendor/docker/10_ssh.sh /etc/my_init.d/10_ssh.sh
 WORKDIR /home/app/webapp
 
 # point /usr/bin/python to Python3
-RUN ln -s -f /usr/bin/python3.5 /usr/bin/python
+RUN ln -s -f /usr/bin/python3 /usr/bin/python
 
 # install Python packages
-RUN python -m pip install --upgrade pip && \
-    pip install -r requirements.txt && \
-    pip install yapf
+RUN pip3 install --no-cache-dir --upgrade pip
+RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install yapf
 
 # collect static files for Django
 RUN python manage.py collectstatic --noinput
