@@ -1,0 +1,147 @@
+name: Deploy Staging
+on:
+  push:
+    branches:
+      - "staging"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      ELASTIC_HOST: "localhost"
+      ELASTIC_PASSWORD: "changeme"
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+    services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        env:
+          discovery.type: single-node
+          ES_JAVA_OPTS: -Xms512m -Xmx512m
+          ELASTIC_PASSWORD: changeme
+          xpack.security.enabled: "false"
+          http.cors.enabled: "true"
+          http.cors.allow-origin: "*"
+        ports:
+          - 9200
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install
+        env:
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+        run: |
+          pip3 install --no-cache-dir --upgrade pip
+          pip3 install --no-cache-dir -r requirements.txt
+          pip3 install yapf
+          
+          python manage.py collectstatic --noinput
+          python manage.py upgrade
+          python manage.py setup
+      - name: Test
+        env:
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          ROR_BASE_URL: "http://localhost"
+        run: |
+          python manage.py test rorapi.tests
+          # python manage.py test rorapi.tests_integration
+          # python manage.py test rorapi.tests_functional
+          echo $?
+      # - name: Publish code coverage
+      #   uses: paambaati/codeclimate-action@v2.7.5
+      #   env:
+      #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push 
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: rorcommunity/ror-api:staging
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+  
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract variables
+        shell: bash
+        run: |
+          echo "::set-output name=BRANCH::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
+          echo "::set-output name=TAG::$(git tag --points-at HEAD)"
+          echo "::set-output name=GIT_SHA::$(git rev-parse HEAD)"
+          echo "::set-output name=GIT_SHA_SHORT::$(git rev-parse --short HEAD)"  
+        id: extract_variables
+
+      - name: Checkout terraform config repo
+        uses: actions/checkout@v2
+        with:
+          # public repo with terraform configuration
+          repository: 'ror-community/new-deployment'
+          persist-credentials: false
+      - name: Commit changes to terraform config repository
+        # use go template in terraform config repository to update git sha and tag
+        # commit and push changes to trigger terraform workflow
+        run: |
+          export GIT_SHA=${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}
+          export GIT_TAG=${{ steps.extract_variables.outputs.GIT_TAG }}
+          wget https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
+          tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
+          rm dockerize-linux-amd64-v0.6.0.tar.gz
+          ./dockerize -template ror/services/api/_ror-api-staging.auto.tfvars.tmpl:ror/services/api/_ror-api-staging.auto.tfvars
+          
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ror/services/api/_ror-api-staging.auto.tfvars
+          git commit -m "Adding ror-api git variables for commit ${{ steps.extract_variables.outputs.GIT_SHA }}"
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: 'ror-community/new-deployment'
+          branch: 'refs/heads/master'
+          tags: false
+
+      - name: Notify Slack
+        uses: edge/simple-slack-notify@master
+        with:
+          channel: '#deployment-updates'
+          color: 'good'
+          text: 'A new version of the <https://api.staging.ror.org|REST API> is deployed to staging.'
+          failure_text: '${env.GITHUB_WORKFLOW} (${env.GITHUB_RUN_NUMBER}) build failed'
+          fields: |
+            [{ "title": "Commit message", "value": "${{ github.event.head_commit.message }}" },
+             { "title": "Committed by", "value": "<https://github.com/${{ github.repository }}/commits?author=${{ github.actor }}|${{ github.actor }}>", "short": true },
+             { "title": "Commit SHA", "value": "<https://github.com/${{ github.repository }}/commit/${{ steps.extract_variables.outputs.GIT_SHA }}|${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}>", "short": true },
+             { "title": "Repository", "value": "<https://github.com/${{ github.repository }}|${{ github.repository }}>", "short": true },
+             { "title": "Branch", "value": "<https://github.com/${{ github.repository }}/tree/${{ steps.extract_variables.outputs.BRANCH }}|${{ steps.extract_variables.outputs.BRANCH }}>", "short": true }]
