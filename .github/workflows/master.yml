@@ -1,17 +1,11 @@
-name: Deploy Staging
+name: Deploy Master
 on:
   push:
     branches:
-      - "staging"
+      - "master"
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      ELASTIC_HOST: "localhost"
-      ELASTIC_PASSWORD: "changeme"
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
@@ -24,33 +18,32 @@ jobs:
           http.cors.allow-origin: "*"
         ports:
           - 9200
+    env:
+      ES_HOST: "localhost:9200"
+      ELASTIC_PASSWORD: "changeme"
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: '3.x'
       - name: Install
-        env:
-          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
+          cp .env.travis .env
           pip3 install --no-cache-dir --upgrade pip
           pip3 install --no-cache-dir -r requirements.txt
           pip3 install yapf
-          
-          python manage.py collectstatic --noinput
-          python manage.py upgrade
-          python manage.py setup
+          ./python manage.py upgrade
+          ./python manage.py setup
       - name: Test
         env:
           ELASTIC_HOST: localhost:${{ job.services.elasticsearch.ports[9200] }}
-          # ELASTIC_PASSWORD: "changeme"
-          # ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
-          # ROR_BASE_URL: "http://localhost"
+          ELASTIC_PASSWORD: "changeme"
         run: |
-          python manage.py test rorapi.tests
-          # python manage.py test rorapi.tests_integration
-          # python manage.py test rorapi.tests_functional
+          ./python manage.py test rorapi.tests
+          ./python manage.py test rorapi.tests_integration
+          ./python manage.py test rorapi.tests_functional
           echo $?
       # - name: Publish code coverage
       #   uses: paambaati/codeclimate-action@v2.7.5
@@ -83,7 +76,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: rorcommunity/ror-api:staging
+          tags: ${{ github.repository }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
   
@@ -120,11 +113,11 @@ jobs:
           wget https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
           tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
           rm dockerize-linux-amd64-v0.6.0.tar.gz
-          ./dockerize -template ror/services/api/_ror-api-staging.auto.tfvars.tmpl:ror/services/api/_ror-api-staging.auto.tfvars
+          ./dockerize -template ror/services/api/_ror-api.auto.tfvars.tmpl:ror/services/api/_ror-api.auto.tfvars
           
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ror/services/api/_ror-api-staging.auto.tfvars
+          git add ror/services/api/_ror-api.auto.tfvars
           git commit -m "Adding ror-api git variables for commit ${{ steps.extract_variables.outputs.GIT_SHA }}"
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
@@ -139,7 +132,7 @@ jobs:
         with:
           channel: '#deployment-updates'
           color: 'good'
-          text: 'A new version of the <https://api.staging.ror.org|REST API> is deployed to staging.'
+          text: 'A new version of the <https://api.ror.org|REST API> is deployed to production.'
           failure_text: '${env.GITHUB_WORKFLOW} (${env.GITHUB_RUN_NUMBER}) build failed'
           fields: |
             [{ "title": "Commit message", "value": "${{ github.event.head_commit.message }}" },
