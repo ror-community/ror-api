@@ -43,10 +43,8 @@ jobs:
           python manage.py setup
       - name: Test
         env:
-          ELASTIC_HOST: localhost:${{ job.services.elasticsearch.ports[9200] }}
-          # ELASTIC_PASSWORD: "changeme"
-          # ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
-          # ROR_BASE_URL: "http://localhost"
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          ROR_BASE_URL: "http://localhost"
         run: |
           python manage.py test rorapi.tests
           # python manage.py test rorapi.tests_integration
