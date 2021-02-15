@@ -34,10 +34,9 @@ jobs:
         env:
           ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-          pip install yapf
+          pip3 install --no-cache-dir --upgrade pip
+          pip3 install --no-cache-dir -r requirements.txt
+          pip3 install yapf
           
           python manage.py collectstatic --noinput
           python manage.py upgrade
