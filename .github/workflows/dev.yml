@@ -51,12 +51,9 @@ jobs:
       - name: Test
         run: |
           python manage.py test rorapi.tests
+          # TODO fix these tests running in GitHub Action
           # python manage.py test rorapi.tests_integration
           # python manage.py test rorapi.tests_functional
-      - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   build:
     needs: test
