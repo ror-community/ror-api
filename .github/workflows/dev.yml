@@ -37,12 +37,11 @@ jobs:
       - name: Set up Python environment
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: '3.8'
       - name: Install requirements
         env:
           ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
-          pip install --upgrade pip
           pip install -r requirements.txt
           pip install yapf
           
@@ -54,8 +53,8 @@ jobs:
           ROR_BASE_URL: "http://localhost"
         run: |
           python manage.py test rorapi.tests
-          # python manage.py test rorapi.tests_integration
-          # python manage.py test rorapi.tests_functional
+          python manage.py test rorapi.tests_integration
+          python manage.py test rorapi.tests_functional
           echo $?
       # - name: Publish code coverage
       #   uses: paambaati/codeclimate-action@v2.7.5
