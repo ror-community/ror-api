@@ -4,6 +4,18 @@ on:
     branches:
       - "dev"
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build docker image
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image_name: rorcommunity/ror-api
+          image_tag: dev
   test:
     runs-on: ubuntu-latest
     env:
@@ -27,21 +39,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build docker image
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          image_name: rorcommunity/ror-api
-          image_tag: dev
-      - name: Setup
-        run: |
-          docker-compose exec web python manage.py setup
-      - name: Test
-        run: |
-          docker-compose exec web python manage.py test rorapi.tests
-          docker-compose exec web python manage.py test rorapi.tests_integration
-          docker-compose exec web python manage.py test rorapi.tests_functional
+      # - name: Setup
+      #   run: |
+      #     docker exec web python manage.py setup
+      # - name: Test
+      #   run: |
+      #     docker exec web python manage.py test rorapi.tests
+      #     docker exec web python manage.py test rorapi.tests_integration
+      #     docker exec web python manage.py test rorapi.tests_functional
 
       # - name: Cache dependency
       #   uses: actions/cache@v2
@@ -75,7 +80,7 @@ jobs:
       #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
   
   deploy:
-    needs: [build]
+    needs: [build, test]
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
