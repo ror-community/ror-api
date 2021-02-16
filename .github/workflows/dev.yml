@@ -48,7 +48,10 @@ jobs:
       - name: Setup
         run: |
           python manage.py setup
+          python manage.py runserver
       - name: Test
+        env:
+          ROR_BASE_URL: "http://127.0.0.1:8000"
         run: |
           # sleep 5
           # curl http://localhost -v
