@@ -46,15 +46,10 @@ jobs:
           
           python manage.py collectstatic --noinput
       - name: Setup
-        env:
-          ELASTIC_PORT: 9200
         run: |
           python manage.py setup
       - name: Test
-        env:
-          ELASTIC_PORT: 9200
         run: |
-          curl http://localhost/organizations -v
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
           python manage.py test rorapi.tests_functional
