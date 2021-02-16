@@ -66,9 +66,9 @@ The route `/organizations` gives the list of all organizations.
 
 It is possible to filter the results by type, country code or country name using `filter` parameter:
 
-* `/organizations?filter=types:Facility`
-* `/organizations?filter=country.country_code:GB`
-* `/organizations?filter=country.country_name:France`
+- `/organizations?filter=types:Facility`
+- `/organizations?filter=country.country_code:GB`
+- `/organizations?filter=country.country_name:France`
 
 The filters can be combined like this: `/organizations?filter=types:Facility,country.country_code:GB`. Filters can be also combined with querying.
 
@@ -92,22 +92,22 @@ https://api.ror.org/organizations?affiliation=Department%20of%20Civil%20and%20In
 
 The output contains a list of items. An item represents an organization matched to a substring of the input affiliation. The items are sorted by the matching confidence. Each item contains the information about the substring, matched organization and the matching process applied in this case:
 
-* `organization`: matched ROR organization object
-* `substring`: substring of the affiliation field, to which organization was matched
-* `score`: matching confidence score, with values between 0 and 1 (inclusive)
-* `chosen`: binary indicator of whether the score is high enough to consider the organization correctly matched
-* `matching_type`: type of matching algorithm applied in this case, possible values:
-  * `PHRASE`: the entire phrase matched to a variant of the organization's name
-  * `COMMON TERMS`: the matching was done by comparing the words separately
-  * `FUZZY`: the matching was done by fuzzy-comparing the words separately
-  * `HEURISTICS`: "University of X" was matched to "X University"
-  * `ACRONYM`: matched by acronym
+- `organization`: matched ROR organization object
+- `substring`: substring of the affiliation field, to which organization was matched
+- `score`: matching confidence score, with values between 0 and 1 (inclusive)
+- `chosen`: binary indicator of whether the score is high enough to consider the organization correctly matched
+- `matching_type`: type of matching algorithm applied in this case, possible values:
+  - `PHRASE`: the entire phrase matched to a variant of the organization's name
+  - `COMMON TERMS`: the matching was done by comparing the words separately
+  - `FUZZY`: the matching was done by fuzzy-comparing the words separately
+  - `HEURISTICS`: "University of X" was matched to "X University"
+  - `ACRONYM`: matched by acronym
 
 If you require a hard decision about which organizations are mentioned in the given affiliation string, use `chosen` field. Otherwise, the resulting list can be examined in a similar manner as any search result list.
 
 ## Import GRID data
 
-To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g. 
+To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g.
 
 ```
 GRID = {
