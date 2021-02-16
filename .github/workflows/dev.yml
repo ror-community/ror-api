@@ -37,6 +37,7 @@ jobs:
           push_image_and_stages: false
       - name: Setup
         run: |
+          docker run -d --name web rorcommunity/ror-api
           docker exec web python manage.py setup
       - name: Test
         run: |
