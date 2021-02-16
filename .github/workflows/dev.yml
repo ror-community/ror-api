@@ -50,11 +50,7 @@ jobs:
           python manage.py setup
           nohup python manage.py runserver &
       - name: Test
-        env:
-          ROR_BASE_URL: "http://127.0.0.1:8000"
         run: |
-          sleep 5
-          curl http://127.0.0.1:8000 -v
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
           python manage.py test rorapi.tests_functional

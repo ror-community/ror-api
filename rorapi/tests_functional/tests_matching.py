@@ -10,14 +10,14 @@ ACCURACY_MIN = 0.885741
 PRECISION_MIN = 0.915426
 RECALL_MIN = 0.920048
 
-API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
+# API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 class AffiliationMatchingTestCase(SimpleTestCase):
     def match(self, affiliation):
         affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
                              lambda m: '\\' + m.group(), affiliation)
-        results = requests.get('{}/organizations'.format(API_URL), {
+        results = requests.get('{}/organizations', {
             'affiliation': affiliation
         }).json()
         return [
@@ -36,7 +36,8 @@ class AffiliationMatchingTestCase(SimpleTestCase):
             if i % 100 == 0:
                 print('Progress: {0:.2f}%'.format(100 * i / len(self.dataset)))
         with open('resresultsults.json', 'w') as f:
-            json.dump([[a, s] for a, s in zip(self.dataset, self.results)], f, indent=2)
+            json.dump([[a, s]
+                       for a, s in zip(self.dataset, self.results)], f, indent=2)
 
     def test_matching(self):
         correct = len([
