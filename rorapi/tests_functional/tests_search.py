@@ -14,7 +14,7 @@ RANK_MAX_QUERY_FUZZY = 2.619402
 R1_MIN_QUERY_FUZZY = 0.728343
 R5_MIN_QUERY_FUZZY = 0.902090
 
-API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
+# API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 def get_rank(ror_id, items):
@@ -42,7 +42,7 @@ class SearchTestCase(SimpleTestCase):
             data = json.load(names_file)
         data_query = []
         for i, d in enumerate(data):
-            data_query.append((d, search(API_URL, param, d['affiliation'])))
+            data_query.append((d, search(param, d['affiliation'])))
             if i % 100 == 0:
                 print('Progress: {0:.2f}%'.format(100 * i / len(data)))
         self.ranks = [
@@ -76,8 +76,7 @@ class QueryFuzzySearchTestCase(SearchTestCase):
         data_query = []
         for i, d in enumerate(data):
             data_query.append((d,
-                               search(API_URL,
-                                      'query',
+                               search('query',
                                       re.sub('([^ ])(?= |$)', r'\g<1>~',
                                              escape_query(d['affiliation'])),
                                       escape=False)))
