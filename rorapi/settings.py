@@ -138,7 +138,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
-    'INDEX': os.environ.get('INDEX', 'organizations'),
+    'INDEX': 'organizations',
     'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'BATCH_SIZE': 20,
     'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE

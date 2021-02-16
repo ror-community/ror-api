@@ -12,7 +12,6 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      INDEX: "staging-organizations"
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
