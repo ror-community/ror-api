@@ -39,18 +39,20 @@ jobs:
         with:
           python-version: '3.8'
       - name: Install requirements
-        env:
-          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
           pip install -r requirements.txt
           pip install yapf
           
           python manage.py collectstatic --noinput
+      - name: Setup
+        env:
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+        run: |
           python manage.py setup
       - name: Test
         env:
           ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
-          ROR_BASE_URL: "http://localhost"
+          ROR_BASE_URL: ""
         run: |
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
