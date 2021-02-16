@@ -53,7 +53,7 @@ jobs:
         env:
           ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
-          curl http://localhost/organizations -v
+          curl http://localhost:8000/organizations -v
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
           python manage.py test rorapi.tests_functional
