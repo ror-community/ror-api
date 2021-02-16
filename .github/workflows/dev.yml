@@ -48,7 +48,6 @@ jobs:
       - name: Setup
         run: |
           python manage.py setup
-          nohup python manage.py runserver &
       - name: Test
         run: |
           python manage.py test rorapi.tests
