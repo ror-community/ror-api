@@ -50,16 +50,16 @@ jobs:
           python manage.py setup
       - name: Test
         run: |
-          sleep 5
-          curl http://localhost/organizations -v
+          # sleep 5
+          # curl http://localhost -v
           python manage.py test rorapi.tests
-          python manage.py test rorapi.tests_integration
-          python manage.py test rorapi.tests_functional
+          # python manage.py test rorapi.tests_integration
+          # python manage.py test rorapi.tests_functional
           echo $?
-      # - name: Publish code coverage
-      #   uses: paambaati/codeclimate-action@v2.7.5
-      #   env:
-      #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   build:
     needs: test
