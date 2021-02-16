@@ -36,10 +36,15 @@ jobs:
           image_tag: dev
           push_image_and_stages: false
       - name: Setup
+        env:
+          ELASTIC_HOST: "localhost"
         run: |
+          ls -l
           docker run -d --name web rorcommunity/ror-api
           docker exec web python manage.py setup
       - name: Test
+        env:
+          ELASTIC_HOST: "localhost"
         run: |
           docker exec web python manage.py test rorapi.tests
           docker exec web python manage.py test rorapi.tests_integration
