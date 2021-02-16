@@ -25,21 +25,28 @@ jobs:
         ports:
           - 9200
     steps:
+      - name: Checkout code
       - uses: actions/checkout@v2
-      - name: Set up Python 3.x
+      - name: Cache dependency
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Set up Python environment
         uses: actions/setup-python@v2
         with:
           python-version: '3.7'
-      - name: Install
+      - name: Install requirements
         env:
           ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
-          pip3 install --no-cache-dir --upgrade pip
-          pip3 install --no-cache-dir -r requirements.txt
-          pip3 install yapf
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install yapf
           
           python manage.py collectstatic --noinput
-          python manage.py upgrade
           python manage.py setup
       - name: Test
         env:
