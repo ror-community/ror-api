@@ -8,9 +8,8 @@ import zipfile
 from django.test import SimpleTestCase
 from ..settings import GRID, ROR_DUMP
 
-# BASE_URL = '{}/organizations'.format(
-#     os.environ.get('ROR_BASE_URL', 'http://localhost'))
-BASE_URL = '{}/organizations'
+BASE_URL = '{}/organizations'.format(
+    os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
 class DataDumpTestCase(SimpleTestCase):

@@ -10,14 +10,14 @@ ACCURACY_MIN = 0.885741
 PRECISION_MIN = 0.915426
 RECALL_MIN = 0.920048
 
-# API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
+API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 
 
 class AffiliationMatchingTestCase(SimpleTestCase):
     def match(self, affiliation):
         affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
                              lambda m: '\\' + m.group(), affiliation)
-        results = requests.get('{}/organizations', {
+        results = requests.get('{}/organizations'.format(API_URL), {
             'affiliation': affiliation
         }).json()
         return [

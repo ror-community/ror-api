@@ -4,9 +4,8 @@ import requests
 
 from django.test import SimpleTestCase
 
-# BASE_URL = '{}/organizations'.format(
-#     os.environ.get('ROR_BASE_URL', 'http://localhost'))
-BASE_URL = '{}/organizations'
+BASE_URL = '{}/organizations'.format(
+    os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
 class APIMatchingTestCase(SimpleTestCase):

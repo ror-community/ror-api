@@ -7,9 +7,8 @@ import requests
 from django.test import SimpleTestCase
 from ..settings import ROR_API, ES_VARS
 
-# BASE_URL = '{}/organizations'.format(
-#     os.environ.get('ROR_BASE_URL', 'http://localhost'))
-BASE_URL = '{}/organizations'
+BASE_URL = '{}/organizations'.format(
+    os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
 class APITestCase(SimpleTestCase):
