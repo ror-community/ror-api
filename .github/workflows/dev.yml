@@ -23,7 +23,7 @@ jobs:
           http.cors.enabled: "true"
           http.cors.allow-origin: "*"
         ports:
-          - 9200
+          - 9200:9200
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -40,20 +40,21 @@ jobs:
           python-version: '3.8'
       - name: Install requirements
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install yapf
           
           python manage.py collectstatic --noinput
       - name: Setup
         env:
-          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          ELASTIC_PORT: 9200
         run: |
           python manage.py setup
       - name: Test
         env:
-          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          ELASTIC_PORT: 9200
         run: |
-          curl http://localhost:8000/organizations -v
+          curl http://localhost/organizations -v
           python manage.py test rorapi.tests
           python manage.py test rorapi.tests_integration
           python manage.py test rorapi.tests_functional
