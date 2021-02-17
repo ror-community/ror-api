@@ -1,11 +1,16 @@
-name: Deploy Master
+name: Release
 on:
-  push:
-    branches:
-      - "master"
+  release:
+    types: [published]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      ELASTIC_HOST: "localhost"
+      ELASTIC_PASSWORD: "changeme"
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
@@ -18,32 +23,31 @@ jobs:
           http.cors.allow-origin: "*"
         ports:
           - 9200
-    env:
-      ES_HOST: "localhost:9200"
-      ELASTIC_PASSWORD: "changeme"
-      AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.7'
       - name: Install
+        env:
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
         run: |
-          cp .env.travis .env
           pip3 install --no-cache-dir --upgrade pip
           pip3 install --no-cache-dir -r requirements.txt
           pip3 install yapf
-          ./python manage.py upgrade
-          ./python manage.py setup
+          
+          python manage.py collectstatic --noinput
+          python manage.py upgrade
+          python manage.py setup
       - name: Test
         env:
-          ELASTIC_HOST: localhost:${{ job.services.elasticsearch.ports[9200] }}
-          ELASTIC_PASSWORD: "changeme"
+          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          ROR_BASE_URL: "http://localhost"
         run: |
-          ./python manage.py test rorapi.tests
-          ./python manage.py test rorapi.tests_integration
-          ./python manage.py test rorapi.tests_functional
+          python manage.py test rorapi.tests
+          # python manage.py test rorapi.tests_integration
+          # python manage.py test rorapi.tests_functional
           echo $?
       # - name: Publish code coverage
       #   uses: paambaati/codeclimate-action@v2.7.5
@@ -70,13 +74,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get git tag
+        run: |
+          echo "::set-output name=GIT_TAG::$(git tag --points-at HEAD)"
+        id: set_git_vars
       - name: Build and push 
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ github.repository }}:latest
+          tags: rorcommunity/ror-api:${{ steps.set_git_vars.outputs.GIT_TAG }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
   
@@ -135,8 +143,7 @@ jobs:
           text: 'A new version of the <https://api.ror.org|REST API> is deployed to production.'
           failure_text: '${env.GITHUB_WORKFLOW} (${env.GITHUB_RUN_NUMBER}) build failed'
           fields: |
-            [{ "title": "Commit message", "value": "${{ github.event.head_commit.message }}" },
-             { "title": "Committed by", "value": "<https://github.com/${{ github.repository }}/commits?author=${{ github.actor }}|${{ github.actor }}>", "short": true },
+            [{ "title": "Committed by", "value": "<https://github.com/${{ github.repository }}/commits?author=${{ github.actor }}|${{ github.actor }}>", "short": true },
              { "title": "Commit SHA", "value": "<https://github.com/${{ github.repository }}/commit/${{ steps.extract_variables.outputs.GIT_SHA }}|${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}>", "short": true },
              { "title": "Repository", "value": "<https://github.com/${{ github.repository }}|${{ github.repository }}>", "short": true },
-             { "title": "Branch", "value": "<https://github.com/${{ github.repository }}/tree/${{ steps.extract_variables.outputs.BRANCH }}|${{ steps.extract_variables.outputs.BRANCH }}>", "short": true }]
+             { "title": "Release", "value": "<https://github.com/${{ github.repository }}/releases/tag/${{ steps.extract_variables.outputs.TAG }}|${{ steps.extract_variables.outputs.TAG }}>", "short": true }]
