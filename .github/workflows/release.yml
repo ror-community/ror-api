@@ -117,7 +117,7 @@ jobs:
         # commit and push changes to trigger terraform workflow
         run: |
           export GIT_SHA=${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}
-          export GIT_TAG=${{ steps.extract_variables.outputs.GIT_TAG }}
+          export GIT_TAG=${{ steps.extract_variables.outputs.TAG }}
           wget https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
           tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
           rm dockerize-linux-amd64-v0.6.0.tar.gz
