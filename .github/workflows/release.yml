@@ -22,37 +22,37 @@ jobs:
           http.cors.enabled: "true"
           http.cors.allow-origin: "*"
         ports:
-          - 9200
+          - 9200:9200
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.x
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Cache dependency
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Set up Python environment
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
-      - name: Install
-        env:
-          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
+          python-version: '3.8'
+      - name: Install requirements
         run: |
-          pip3 install --no-cache-dir --upgrade pip
-          pip3 install --no-cache-dir -r requirements.txt
-          pip3 install yapf
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install yapf
           
           python manage.py collectstatic --noinput
-          python manage.py upgrade
+      - name: Setup
+        run: |
           python manage.py setup
       - name: Test
-        env:
-          ELASTIC_PORT: ${{ job.services.elasticsearch.ports[9200] }}
-          ROR_BASE_URL: "http://localhost"
         run: |
           python manage.py test rorapi.tests
+          # TODO fix these tests running in GitHub Action
           # python manage.py test rorapi.tests_integration
           # python manage.py test rorapi.tests_functional
-          echo $?
-      # - name: Publish code coverage
-      #   uses: paambaati/codeclimate-action@v2.7.5
-      #   env:
-      #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   build:
     needs: test
