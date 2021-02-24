@@ -8,8 +8,8 @@
         "normalizer": {
           "keyword_lowercase": { "type": "custom", "filter": ["lowercase"] }
         },
-        "filter": { 
-          "ascii_folding": { "type": "asciifolding", "preserve_original": true } 
+        "filter": {
+          "ascii_folding": { "type": "asciifolding", "preserve_original": true }
         }
       }
     },
@@ -21,14 +21,14 @@
           },
           "name": {
             "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
               "norm": {
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
+                "type": "text",
+                "analyzer": "string_lowercase",
+                "fielddata": true
               }
             }
           },
@@ -40,27 +40,27 @@
           },
           "aliases": {
             "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
-              "norm": { 
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
+              "norm": {
+                "type": "text",
+                "analyzer": "string_lowercase",
+                "fielddata": true
               }
             }
           },
           "acronyms": {
             "type": "text",
-            "fields": { 
-              "keyword": { 
-                "type": "keyword" 
-              }, 
-              "norm": { 
-                "type": "text", 
-                "analyzer": "string_lowercase", 
-                "fielddata": true 
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              },
+              "norm": {
+                "type": "text",
+                "analyzer": "string_lowercase",
+                "fielddata": true
               }
             }
           },
@@ -71,19 +71,22 @@
             "properties": {
               "label": {
                 "type": "text",
-		"fields": {
-              	  "keyword": {
-                    "type": "keyword"
+		              "fields": {
+              	     "keyword": {
+                       "type": "keyword"
+                      },
+                      "norm": {
+                        "type": "text",
+                        "analyzer": "string_lowercase",
+                        "fielddata": true
+                      }
+                    }
                   },
-                  "norm": {
-                    "type": "text",
-                    "analyzer": "string_lowercase",
-                    "fielddata": true
+                  "iso639": {
+                    "type": "keyword"
                   }
                 }
-              }
-            }
-          },
+              },
 
           "country": {
             "properties": {
@@ -97,6 +100,132 @@
           },
           "types": {
             "type": "keyword"
+          },
+          "email_address": {
+            "type": "text"
+          },
+          "established": {
+            "type": "date"
+          },
+          "ip_addresses": {
+            "type": "text"
+          },
+          "addresses": {
+            "properties": {
+              "line":  {
+                "type": "text"
+                },
+              "lat": {
+                "type": "float"
+              },
+              "lng": {
+                "type": "float"
+              },
+              "postcode": {
+                "type": "keyword"
+              },
+              "primary": {
+                "type": "boolean"
+              },
+              "city": {
+                "type": "keyword"
+              },
+              "state": {
+                "type": "keyword"
+              },
+              "state_code": {
+                "type": "keyword"
+              },
+              "geonames_city": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "city": {
+                    "type": "keyword"
+                  },
+                  "nuts_level1": {
+                    "properties": {
+                      "name": {
+                        "type": "text"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "nuts_level2": {
+                    "properties": {
+                      "name": {
+                        "type": "text"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "nuts_level3": {
+                    "properties": {
+                      "name": {
+                        "type": "text"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "geonames_admin1": {
+                    "properties": {
+                      "ascii_name": {
+                        "type": "keyword"
+                      },
+                      "name": {
+                        "type": "keyword"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "geonames_admin2": {
+                    "properties": {
+                      "ascii_name": {
+                        "type": "keyword"
+                      },
+                      "name": {
+                        "type": "keyword"
+                      },
+                      "code": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "license": {
+                    "properties": {
+                      "attribution": {
+                        "type": "text"
+                      },
+                      "license": {
+                        "type": "text"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "relationships": {
+            "properties": {
+              "type":  {
+                "type": "keyword"
+                },
+              "label": {
+                "type": "keyword"
+              },
+              "id": {
+                "type": "keyword"
+                }
+              }
           },
           "external_ids": {
             "properties": {
@@ -140,7 +269,7 @@
                   }
                 }
               }
-            } 
+            }
           },
 
           "names_ids": {

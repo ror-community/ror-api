@@ -3,6 +3,7 @@ import json
 import os.path
 import random
 import zipfile
+import re
 from rorapi.settings import ES, ES_VARS, ROR_API, GRID, ROR_DUMP
 
 from django.core.management.base import BaseCommand
@@ -40,9 +41,70 @@ def get_ror_id(grid_id, es):
     return generate_ror_id()
 
 
+def geonames_city(geonames_city):
+    geonames = ["geonames_admin1", "geonames_admin2"]
+    geonames_attributes = ["id", "name", "ascii_name", "code"]
+    nuts = ["nuts_level1", "nuts_level2", "nuts_level3"]
+    nuts_attributes = ["code", "name"]
+    geonames_city_hsh = {}
+    for k, v in geonames_city.items():
+        if (k in geonames):
+            if isinstance(v, dict):
+                geonames_city_hsh[k] = {
+                    i: v.get(i, None)
+                    for i in geonames_attributes
+                }
+            elif v is None:
+                geonames_city_hsh[k] = {i: None for i in geonames_attributes}
+        elif (k in nuts):
+            if isinstance(v, dict):
+                geonames_city_hsh[k] = {
+                    i: v.get(i, None)
+                    for i in nuts_attributes
+                }
+            elif v is None:
+                geonames_city_hsh[k] = {i: None for i in nuts_attributes}
+        else:
+            geonames_city_hsh[k] = v
+    return geonames_city_hsh
+
+
+def addresses(location):
+    line = ""
+    address = ["line_1", "line_2", "line_3"]
+    combine_lines = address + ["country", "country_code"]
+    geonames_admin = ["id", "code", "name", "ascii_name"]
+    nuts = ["code", "name"]
+    new_addresses = []
+    hsh = {}
+    hsh["line"] = None
+    for h in location:
+        for k, v in h.items():
+            if not (k in combine_lines) and (k != "geonames_city"):
+                v = v if v != "" else None
+                hsh[k] = v
+            elif k == "geonames_city":
+                if isinstance(v, dict):
+                    hsh[k] = geonames_city(v)
+                elif v is None:
+                    hsh[k] = {}
+            elif (k in combine_lines):
+                n = []
+                for i in address:
+                    if not (h[i] is None):
+                        n.append(h[i])
+                line = " ".join(n)
+                line = re.sub(' +', ' ', line)
+                if (len(line) == 1 and line == " "):
+                    line = line.strip()
+                    line = line if len(line) > 0 else None
+                hsh["line"] = line
+        new_addresses.append(hsh)
+    return new_addresses
+
+
 def convert_organization(grid_org, es):
     """Converts the organization metadata from GRID schema to ROR schema."""
-
     return {
         'id':
         get_ror_id(grid_org['id'], ES),
@@ -62,10 +124,20 @@ def convert_organization(grid_org, es):
         grid_org['wikipedia_url'],
         'labels':
         grid_org['labels'],
+        'email_address':
+        grid_org['email_address'],
+        'ip_addresses':
+        grid_org['ip_addresses'],
+        'established':
+        grid_org['established'],
         'country': {
             'country_code': grid_org['addresses'][0]['country_code'],
             'country_name': grid_org['addresses'][0]['country']
         },
+        'relationships':
+        grid_org["relationships"],
+        'addresses':
+        addresses(grid_org["addresses"]),
         'external_ids':
         getExternalIds(
             dict(grid_org.get('external_ids', {}),
@@ -81,6 +153,21 @@ def getExternalIds(external_ids):
     return external_ids
 
 
+def get_ids(data):
+    ids = {}
+    for d in data:
+        ids[d['external_ids']['GRID']['all']] = d['id']
+    return ids
+
+
+def get_grid(record, ids):
+    if record['relationships']:
+        for r in record['relationships']:
+            r['id'] = ids[r['id']]
+
+    return record
+
+
 class Command(BaseCommand):
     help = 'Converts GRID dataset to ROR schema'
 
@@ -89,7 +176,7 @@ class Command(BaseCommand):
         # make sure we are not overwriting an existing ROR JSON file
         # with new ROR identifiers
         if zipfile.is_zipfile(ROR_DUMP['ROR_ZIP_PATH']):
-            self.stdout.write('ROR dataset already exist')
+            self.stdout.write('ROR dataset already exists')
             return
 
         if not os.path.isfile(ROR_DUMP['ROR_JSON_PATH']):
@@ -97,10 +184,12 @@ class Command(BaseCommand):
                 grid_data = json.load(it)
 
             self.stdout.write('Converting GRID dataset to ROR schema')
-            ror_data = [
+            intermediate_ror_data = [
                 convert_organization(org, ES)
                 for org in grid_data['institutes'] if org['status'] == 'active'
             ]
+            ids = get_ids(intermediate_ror_data)
+            ror_data = [get_grid(rec, ids) for rec in intermediate_ror_data]
             with open(ROR_DUMP['ROR_JSON_PATH'], 'w') as outfile:
                 json.dump(ror_data, outfile, indent=4)
             self.stdout.write('ROR dataset created')
