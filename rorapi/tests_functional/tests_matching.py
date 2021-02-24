@@ -35,6 +35,9 @@ class AffiliationMatchingTestCase(SimpleTestCase):
             self.results.append(self.match(d['affiliation']))
             if i % 100 == 0:
                 print('Progress: {0:.2f}%'.format(100 * i / len(self.dataset)))
+        with open('resresultsults.json', 'w') as f:
+            json.dump([[a, s]
+                       for a, s in zip(self.dataset, self.results)], f, indent=2)
 
     def test_matching(self):
         correct = len([
