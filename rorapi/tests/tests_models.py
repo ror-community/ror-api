@@ -74,9 +74,17 @@ class OrganizationTestCase(SimpleTestCase):
              'name': 'University of Gallifrey',
              'types': ['school', 'research centre'],
              'links': [],
+             'ip_addresses': [],
+             'email_address':None,
              'aliases': ['Gallifrey University',
                          'Timey-Wimey University of Gallifrey'],
              'acronyms': ['UG'],
+             'addresses': [
+                {"lat": "49.198027","lng": "-123.007714","state_code": "CA-BC","city": "Burnaby","primary":False,"geonames_city": {"id": 5911606,"city": "Burnaby","geonames_admin1": {"name": "British Columbia","id": "5909050","ascii_name": "British Columbia","code": "CA.02"},
+                "geonames_admin2": {"name": "Metro Vancouver Regional District","id": "5965814","ascii_name": "Metro Vancouver Regional District","code": "CA.02.5915"},"nuts_level1": {"name": "SLOVENIJA","code": "SI0"},"nuts_level2": {"name": "Vzhodna Slovenija","code": "SI03"},"nuts_level3": {"name": "TEST","code": "SI036"}},"postcode": "123456","line": "123 Somewhere Over A Rainbow","country_geonames_id": 6251999, "state":"British Columbia"}],
+             'relationships': [
+                 {'label': 'Calvary Hospital', 'type': 'Related', 'id':'grid.1234.6'}],
+             'established': 1946,
              'status': 'active',
              'wikipedia_url': 'https://en.wikipedia.org/wiki/Gallifrey',
              'labels': [
@@ -93,6 +101,23 @@ class OrganizationTestCase(SimpleTestCase):
         self.assertEqual(organization.id, data['id'])
         self.assertEqual(organization.name, data['name'])
         self.assertEqual(organization.types, data['types'])
+        self.assertEqual(organization.established, data['established'])
+        self.assertEqual(organization.addresses[0].lat,
+                         data['addresses'][0]['lat'])
+        self.assertEqual(organization.addresses[0].lng,
+                         data['addresses'][0]['lng'])
+        self.assertEqual(organization.addresses[0].state_code,
+                         data['addresses'][0]['state_code'])
+        self.assertEqual(organization.addresses[0].city,
+                         data['addresses'][0]['city'])
+        self.assertEqual(organization.addresses[0].geonames_city.id,
+                         data['addresses'][0]['geonames_city']['id'])
+        self.assertEqual(organization.addresses[0].postcode,
+                         data['addresses'][0]['postcode'])
+        self.assertEqual(organization.addresses[0].line,
+                         data['addresses'][0]['line'])
+        self.assertEqual(organization.addresses[0].country_geonames_id,
+                         data['addresses'][0]['country_geonames_id'])
         self.assertEqual(organization.links, data['links'])
         self.assertEqual(organization.aliases, data['aliases'])
         self.assertEqual(organization.acronyms, data['acronyms'])
@@ -211,7 +236,12 @@ class MatchedOrganizationTestCase(SimpleTestCase):
               'wikipedia_url': 'https://en.wikipedia.org/wiki/Gallifrey',
               'labels': [],
               'country': {'country_name': 'Gallifrey', 'country_code': 'GE'},
-              'external_ids': {}}}
+              'external_ids': {},
+              'status': 'active',
+              'established': 1979,
+              'relationships': [],
+              'addresses': [],
+              'ip_addresses': []}}
         organization = MatchedOrganization(AttrDict(data))
         self.assertEqual(organization.substring, data['substring'])
         self.assertEqual(organization.score, data['score'])
