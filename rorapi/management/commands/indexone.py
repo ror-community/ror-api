@@ -38,7 +38,8 @@ class Command(BaseCommand):
         ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                                        'ror-{}'.format(ROR_DUMP['VERSION']))
         ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.zip')
-
+        with zipfile.ZipFile(ROR_DUMP['ROR_ZIP_PATH'], 'r') as zip_ref:
+            zip_ref.extractall(ROR_DUMP['DIR'])
         ROR_DUMP['ROR_JSON_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.json')
         self.stdout.write(ROR_DUMP['ROR_JSON_PATH'])
         with open(ROR_DUMP['ROR_JSON_PATH'], 'r') as it:
