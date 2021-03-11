@@ -74,17 +74,14 @@ class APITestCase(SimpleTestCase):
                 'filter': 'country.country_code:US',
                 'page': 3
         }]:
+            status_code = requests.get(BASE_URL,
+                                       dict(q, query='university')).status_code
+            if status_code != 200:
+                print("failing query: ", dict(q, query='university'))
             output = requests.get(BASE_URL, dict(q, query='university')).json()
             del output['time_taken']
             output_deprecated = requests.get(
                 BASE_URL, dict(q, **{'query.name': 'university'})).json()
-            del output_deprecated['time_taken']
-            self.assertEqual(output_deprecated, output)
-
-            output = requests.get(BASE_URL, dict(q, query='university')).json()
-            del output['time_taken']
-            output_deprecated = requests.get(
-                BASE_URL, dict(q, **{'query.names': 'university'})).json()
             del output_deprecated['time_taken']
             self.assertEqual(output_deprecated, output)
 
@@ -120,6 +117,9 @@ class APITestCase(SimpleTestCase):
         total = 10000
         ids = []
         for page in range(1, ES_VARS['MAX_PAGE'] + 1):
+            request = requests.get(BASE_URL, {'page': page})
+            if request.status_code != 200:
+                print("failing query: ", {'page': page})
             output = requests.get(BASE_URL, {'page': page}).json()
             ids.extend([i['id'] for i in output['items']])
         self.assertEquals(len(ids), total)
@@ -158,8 +158,10 @@ class APITestCase(SimpleTestCase):
             filter_string = 'country.country_code:{},types:{}' \
                 .format(c_aggr['id'].upper(), t_aggr['title'])
             params = dict(query, filter=filter_string)
+            status_code = requests.get(BASE_URL, params).status_code
+            if status_code != 200:
+                print("failing params: ", params)
             output = requests.get(BASE_URL, params).json()
-
             if self.get_total(output) == 0:
                 self.verify_empty(output)
                 continue
