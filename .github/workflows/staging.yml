@@ -93,14 +93,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Extract variables
         shell: bash
         run: |
           echo "::set-output name=BRANCH::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
           echo "::set-output name=TAG::$(git tag --points-at HEAD)"
           echo "::set-output name=GIT_SHA::$(git rev-parse HEAD)"
-          echo "::set-output name=GIT_SHA_SHORT::$(git rev-parse --short HEAD)"  
+          echo "::set-output name=GIT_SHA_SHORT::$(git rev-parse --short HEAD)"
+          echo "::set-output name=MESSAGE::$(git log --format=%B -n 1 ${{ github.event.after }})" 
         id: extract_variables
 
       - name: Checkout terraform config repo
@@ -140,7 +142,7 @@ jobs:
           text: 'A new version of the <https://api.staging.ror.org|REST API> is deployed to staging.'
           failure_text: '${env.GITHUB_WORKFLOW} (${env.GITHUB_RUN_NUMBER}) build failed'
           fields: |
-            [{ "title": "Commit message", "value": "${{ github.event.head_commit.message }}" },
+            [{ "title": "Commit message", "value": "${{ steps.extract_variables.outputs.MESSAGE }}" },
              { "title": "Committed by", "value": "<https://github.com/${{ github.repository }}/commits?author=${{ github.actor }}|${{ github.actor }}>", "short": true },
              { "title": "Commit SHA", "value": "<https://github.com/${{ github.repository }}/commit/${{ steps.extract_variables.outputs.GIT_SHA }}|${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}>", "short": true },
              { "title": "Repository", "value": "<https://github.com/${{ github.repository }}|${{ github.repository }}>", "short": true },
