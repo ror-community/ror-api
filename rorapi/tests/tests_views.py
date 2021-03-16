@@ -33,8 +33,6 @@ class ViewListTestCase(SimpleTestCase):
         self.assertEquals(organizations['number_of_results'],
                           self.test_data['hits']['total'])
         self.assertEquals(organizations['time_taken'], self.test_data['took'])
-        self.assertEquals(organizations['items'],
-                          self.test_data['hits']['hits'])
         self.assertEquals(
             len(organizations['meta']['types']),
             len(self.test_data['aggregations']['types']['buckets']))
@@ -95,11 +93,11 @@ class ViewRetrievalTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('/organizations/https://ror.org/052gg0110')
-        response = view(request, pk='https://ror.org/052gg0110')
+        request = factory.get('/organizations/https://ror.org/02atag894')
+        response = view(request, pk='https://ror.org/02atag894')
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
-
+        # go through every attribute and check to see that they are equal
         self.assertEquals(organization, self.test_data['hits']['hits'][0])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
