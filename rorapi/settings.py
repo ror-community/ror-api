@@ -210,7 +210,7 @@ GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 
-ROR_DUMP = {'VERSION': '2020-12-23'}
+ROR_DUMP = {'VERSION': '2021-03-17'}
 
 ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                                'ror-{}'.format(ROR_DUMP['VERSION']))
