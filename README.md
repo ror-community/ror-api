@@ -8,121 +8,123 @@ A single organization record is represented by the following JSON structure:
 
 ```
 {
-   "name" : "PSL Research University",
-   "aliases" : [
-      "UniversitÃ© PSL"
+   "id":"https://ror.org/013cjyk83",
+   "name":"PSL Research University",
+   "email_address":null,
+   "ip_addresses":[
+      
    ],
-   "external_ids" : {
-      "GRID" : {
-         "preferred" : "grid.440907.e",
-         "all" : "grid.440907.e"
+   "established":2010,
+   "types":[
+      "Education"
+   ],
+   "relationships":[
+      {
+         "label":"ESPCI Paris",
+         "type":"Child",
+         "id":"https://ror.org/03zx86w41"
       },
-      "Wikidata" : {
-         "preferred" : null,
-         "all" : [
+      {
+         "label":"Subcellular Structure and Cellular Dynamics",
+         "type":"Child",
+         "id":"https://ror.org/04w11tv37"
+      },
+      {
+         "label":"École Pratique des Hautes Études",
+         "type":"Child",
+         "id":"https://ror.org/046b3cj80"
+      }
+   ],
+   "addresses":[
+      {
+         "lat":48.854692,
+         "lng":2.33781,
+         "state":null,
+         "state_code":null,
+         "city":"Paris",
+         "geonames_city":{
+            "id":2988507,
+            "city":"Paris",
+            "geonames_admin1":{
+               "name":"Île-de-France",
+               "id":3012874,
+               "ascii_name":"Ile-de-France",
+               "code":"FR.11"
+            },
+            "geonames_admin2":{
+               "name":"Paris",
+               "id":2968815,
+               "ascii_name":"Paris",
+               "code":"FR.11.75"
+            },
+            "license":{
+               "attribution":"Data from geonames.org under a CC-BY 3.0 license",
+               "license":"http://creativecommons.org/licenses/by/3.0/"
+            },
+            "nuts_level1":{
+               "name":"ÎLE DE FRANCE",
+               "code":"FR1"
+            },
+            "nuts_level2":{
+               "name":"Île de France",
+               "code":"FR10"
+            },
+            "nuts_level3":{
+               "name":"Paris",
+               "code":"FR101"
+            }
+         },
+         "postcode":null,
+         "primary":false,
+         "line":null,
+         "country_geonames_id":3017382
+      }
+   ],
+   "links":[
+      "https://www.psl.eu/en/university"
+   ],
+   "aliases":[
+      "Université PSL"
+   ],
+   "acronyms":[
+      "PSL"
+   ],
+   "status":"active",
+   "wikipedia_url":"https://en.wikipedia.org/wiki/PSL_Research_University",
+   "labels":[
+      {
+         "label":"Université de recherche Paris Sciences et Lettres",
+         "iso639":"fr"
+      }
+   ],
+   "country":{
+      "country_name":"France",
+      "country_code":"FR"
+   },
+   "external_ids":{
+      "ISNI":{
+         "preferred":null,
+         "all":[
+            "0000 0004 1784 3645"
+         ]
+      },
+      "OrgRef":{
+         "preferred":null,
+         "all":[
+            "31274670"
+         ]
+      },
+      "Wikidata":{
+         "preferred":null,
+         "all":[
             "Q1163431"
          ]
       },
-      "ISNI" : {
-         "all" : [
-            "0000 0004 1784 3645"
-         ],
-         "preferred" : null
-      },
-      "OrgRef" : {
-         "all" : [
-            "31274670"
-         ],
-         "preferred" : null
+      "GRID":{
+         "preferred":"grid.440907.e",
+         "all":"grid.440907.e"
       }
-   },
-   "wikipedia_url" : "https://en.wikipedia.org/wiki/PSL_Research_University",
-   "relationships" : [
-      {
-         "label" : "ESPCI Paris",
-         "type" : "Child",
-         "id" : "https://ror.org/03zx86w41"
-      },
-      {
-         "label" : "Subcellular Structure and Cellular Dynamics",
-         "id" : "https://ror.org/04w11tv37",
-         "type" : "Child"
-      },
-      {
-         "label" : "Ãcole Pratique des Hautes Ãtudes",
-         "id" : "https://ror.org/046b3cj80",
-         "type" : "Child"
-      }
-   ],
-   "status" : "active",
-   "established" : 2010,
-   "types" : [
-      "Education"
-   ],
-   "addresses" : [
-      {
-         "country_geonames_id" : 3017382,
-         "state" : null,
-         "state_code" : null,
-         "lat" : 48.854692,
-         "city" : "Paris",
-         "postcode" : null,
-         "line" : null,
-         "geonames_city" : {
-            "geonames_admin1" : {
-               "id" : 3012874,
-               "ascii_name" : "Ile-de-France",
-               "code" : "FR.11",
-               "name" : "Ãle-de-France"
-            },
-            "nuts_level2" : {
-               "name" : "Ãle de France",
-               "code" : "FR10"
-            },
-            "id" : 2988507,
-            "nuts_level3" : {
-               "code" : "FR101",
-               "name" : "Paris"
-            },
-            "nuts_level1" : {
-               "name" : "ÃLE DE FRANCE",
-               "code" : "FR1"
-            },
-            "geonames_admin2" : {
-               "name" : "Paris",
-               "code" : "FR.11.75",
-               "ascii_name" : "Paris",
-               "id" : 2968815
-            },
-            "city" : "Paris",
-            "license" : {
-               "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-               "license" : "http://creativecommons.org/licenses/by/3.0/"
-            }
-         },
-         "primary" : false,
-         "lng" : 2.33781
-      }
-   ],
-   "country" : {
-      "country_code" : "FR",
-      "country_name" : "France"
-   },
-   "ip_addresses" : [],
-   "labels" : [
-      {
-         "label" : "UniversitÃ© de recherche Paris Sciences et Lettres",
-         "iso639" : "fr"
-      }
-   ],
-   "id" : "https://ror.org/013cjyk83",
-   "email_address" : null,
-   "links" : [
-      "https://www.psl.eu/en/university"
-   ],
-   "acronyms" : [
-      "PSL"
-   ]
+   }
 }
 ```
 
