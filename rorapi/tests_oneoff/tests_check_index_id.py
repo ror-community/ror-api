@@ -10,7 +10,7 @@ from ..settings import BASE_DIR, ROR_DUMP, ES_VARS
 
 BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
-PREVIOUS_INDEX = "2020-12-21"
+PREVIOUS_INDEX = "2021-03-31"
 # this is currently only looking at active records
 # the data dump is presumed to only have active records
 # as is the index
@@ -30,8 +30,8 @@ class CheckIndexID(SimpleTestCase):
         data_index = requests.get(BASE_URL).json()
         self.assertEquals(data_index['number_of_results'], len(self.previous_data))
 
-        previous_sample = random.sample(self.previous_data, 400)
-        for record in previous_sample:
+        #previous_sample = random.sample(self.previous_data, 400)
+        for record in self.previous_data:
             query = requests.get(BASE_URL + '/' + record['id'])
             current_record = query.json()
             # if there are errors, this should fail as false and print out the error
