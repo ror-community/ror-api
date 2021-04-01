@@ -54,7 +54,7 @@ jobs:
         ports:
           - 9200:9200
       rorapi:
-        image: rorcommunity/ror-api:${{ github.sha }}
+        image: rorcommunity/ror-api:local-build
         env:
           ELASTIC_HOST: elasticsearch
           ELASTIC_PORT: 9200
