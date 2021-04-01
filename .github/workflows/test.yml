@@ -1,0 +1,74 @@
+name: Deploy ci
+on:
+  push:
+    branches:
+      - "feature/2021-03-31-data"
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: rorcommunity/ror-api:local-build
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+  test:
+    needs: docker
+    runs-on: ubuntu-latest
+    env:
+      ELASTIC_HOST: "localhost"
+      ELASTIC_PASSWORD: "changeme"
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+    services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        env:
+          discovery.type: single-node
+          ES_JAVA_OPTS: -Xms512m -Xmx512m
+          ELASTIC_PASSWORD: changeme
+          xpack.security.enabled: "false"
+          http.cors.enabled: "true"
+          http.cors.allow-origin: "*"
+        ports:
+          - 9200:9200
+      rorapi:
+        image: rorcommunity/ror-api:${{ github.sha }}
+        env:
+          ELASTIC_HOST: elasticsearch
+          ELASTIC_PORT: 9200
+          ELASTIC_PASSWORD: changeme
+          ROR_BASE_URL: http://localhost
+        ports:
+          - 9292:80
+          - 2222:22
+    steps:
+      - name: Run tests in docker container
+        run: |
+          rorapi=`docker ps --format "{{.Names}}" | grep ror`
+          echo $rorapi
+          docker exec $rorapi python manage.py setup
+          docker exec $rorapi python manage.py test rorapi.tests
+          docker exec $rorapi python manage.py test rorapi.tests_integration
+          docker exec $rorapi python manage.py test rorapi.tests_functional
