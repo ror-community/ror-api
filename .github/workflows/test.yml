@@ -70,6 +70,6 @@ jobs:
           echo $rorapi
           docker exec $rorapi python manage.py setup
           docker exec $rorapi python manage.py test rorapi.tests
-          docker exec $rorapi python manage.py test rorapi.tests_oneoff
           docker exec $rorapi python manage.py test rorapi.tests_integration
+          docker exec $rorapi python manage.py test rorapi.tests_oneoff
           docker exec $rorapi python manage.py test rorapi.tests_functional
