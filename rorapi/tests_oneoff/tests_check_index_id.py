@@ -10,7 +10,7 @@ from ..settings import BASE_DIR, ROR_DUMP, ES_VARS
 
 BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
-PREVIOUS_INDEX = "2021-03-31"
+PREVIOUS_INDEX = "2021-04-06"
 # this is currently only looking at active records
 # the data dump is presumed to only have active records
 # as is the index
@@ -30,10 +30,12 @@ class CheckIndexID(SimpleTestCase):
         data_index = requests.get(BASE_URL).json()
         self.assertEquals(data_index['number_of_results'], len(self.previous_data))
 
-        #previous_sample = random.sample(self.previous_data, 400)
         for record in self.previous_data:
             query = requests.get(BASE_URL + '/' + record['id'])
             current_record = query.json()
+            file_grid_id = record['external_ids']['GRID']['all']
+            indexed_grid_id = current_record['external_ids']['GRID']['all']
             # if there are errors, this should fail as false and print out the error
             self.assertTrue(bool(current_record.get('id')),current_record)
+            self.assertEqual(file_grid_id,indexed_grid_id,f"For file {record['id']} and indexed {current_record['id']}, file grid id: {file_grid_id} is not equal to indexed grid id: {indexed_grid_id}")
             self.assertEqual(record['name'],current_record['name'], f"{record['id']} is not the same as {current_record['id']}")
