@@ -25,6 +25,8 @@ services:
       ELASTIC_PORT: 9200
       ELASTIC_PASSWORD: changeme
       ROR_BASE_URL: http://localhost
+      ROUTE_USER: 'user'
+      TOKEN: 'mytoken'
     build: .
     image: rorcommunity/ror-api
     ports:
