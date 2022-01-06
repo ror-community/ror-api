@@ -5,15 +5,15 @@ import logging
 import requests 
 from csv import DictReader
 import re
+import sys
 
 logging.basicConfig(filename='errors.log',level=logging.ERROR)
-FILE = "relationships.csv"
 API_URL = "http://api.ror.org/organizations/"
-def read_relshp():
+def read_relshp(file):
     relation = []
     rel_dict = {}
     try:
-        with open(FILE, 'r') as rel:
+        with open(file, 'r') as rel:
             relationships = DictReader(rel)
             for row in relationships:
                 check_record_id = parse_record_id(row['Record ID'])
@@ -29,10 +29,10 @@ def read_relshp():
                     rel_dict['related_location'] = row['Current location of Related ID']
                     relation.append(rel_dict.copy())
     except IOError as e:
-        logging.error(f"Reading file {FILE}: {e}")
+        logging.error(f"Reading file {file}: {e}")
     return relation
 
-def check_file(file=FILE):
+def check_file(file):
     file_exists = True
     if not(exists(file)):
         file_exists = False 
@@ -107,6 +107,7 @@ def process_one_record(record):
             file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
             file_data['relationships'].append(relationship)
             f.seek(0)
+            print("FD: ", file_data)
             json.dump(file_data, f, indent=2)
     except Exception as e:
         logging.error(f"Writing {filename}: {e}")
@@ -115,21 +116,22 @@ def process_records(records):
     for r in records:
         process_one_record(r)
     
-def generate_relationships():
-    if check_file():
-        rel = read_relshp()
+def generate_relationships(file):
+    if check_file(file):
+        rel = read_relshp(file)
         if rel:
             download_record(rel)
             updated_recs = check_record_files(rel)
             process_records(updated_recs)
         else:
-            logging.error(f"No relationships found in {FILE}")
+            logging.error(f"No relationships found in {file}")
     else:
-        logging.error(f"{FILE} must exist to process relationship records")
+        logging.error(f"{file} must exist to process relationship records")
         
 
 def main():
-    generate_relationships()
+    file = sys.argv[1]
+    generate_relationships(file)
 
 if __name__ == "__main__":
     main()
