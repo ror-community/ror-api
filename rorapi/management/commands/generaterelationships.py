@@ -54,6 +54,7 @@ def get_record(id, filename):
     try:
         rsp = requests.get(download_url)
     except requests.exceptions.RequestException as e:
+        print("IN DOWNLOAD EXCEPTION: ", e)
         logging.error(f"Request for {download_url}: {e}")
     try:
         with open(filename, "w") as record:
@@ -66,7 +67,9 @@ def download_record(records):
     for r in records:
         if (r['related_location'] == "Production"):
             filename = r['short_related_id'] + ".json"
+            print("HERE: ", filename)
             if not(check_file(filename)):
+                print("HERE in CHECK FILES: ", filename)
                 get_record(r['short_related_id'], filename)
 
 def remove_bad_records(records, bad_records):
