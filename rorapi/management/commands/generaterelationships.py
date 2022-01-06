@@ -53,8 +53,6 @@ def get_record(id, filename):
     download_url=API_URL + id
     try:
         rsp = requests.get(download_url)
-    except requests.exceptions.RequestException as e:
-        print("IN DOWNLOAD EXCEPTION: ", e)
         logging.error(f"Request for {download_url}: {e}")
     try:
         with open(filename, "w") as record:
@@ -64,13 +62,10 @@ def get_record(id, filename):
 
 def download_record(records):
     # download all records that are labeled as in production
-    print("In download, all records: ", records)
     for r in records:
         if (r['related_location'] == "Production"):
             filename = r['short_related_id'] + ".json"
-            print("\n\nIn DOWNLOAD: ", filename)
             if not(check_file(filename)):
-                print("HERE in CHECK FILES: ", filename)
                 get_record(r['short_related_id'], filename)
 
 def remove_bad_records(records, bad_records):
@@ -111,6 +106,7 @@ def process_one_record(record):
             file_data = json.load(f)
             file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
             file_data['relationships'].append(relationship.copy())
+            print("FILE DATA: ", file_data)
             f.seek(0)
             json.dump(file_data, f, indent=2)
     except Exception as e:
