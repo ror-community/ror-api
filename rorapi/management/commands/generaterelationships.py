@@ -53,6 +53,7 @@ def get_record(id, filename):
     download_url=API_URL + id
     try:
         rsp = requests.get(download_url)
+    except requests.exceptions.RequestException as e:
         logging.error(f"Request for {download_url}: {e}")
     try:
         with open(filename, "w") as record:
