@@ -7,7 +7,8 @@ from csv import DictReader
 import re
 import sys
 
-logging.basicConfig(filename='errors.log',level=logging.ERROR)
+ERROR_LOG = "relationship_errors.log"
+logging.basicConfig(filename=ERROR_LOG,level=logging.ERROR, filemode='w')
 API_URL = "http://api.ror.org/organizations/"
 def read_relshp(file):
     relation = []
@@ -105,9 +106,8 @@ def process_one_record(record):
         with open(filename, 'r+') as f:
             file_data = json.load(f)
             file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
-            file_data['relationships'].append(relationship)
+            file_data['relationships'].append(relationship.copy())
             f.seek(0)
-            print("FD: ", file_data)
             json.dump(file_data, f, indent=2)
     except Exception as e:
         logging.error(f"Writing {filename}: {e}")
@@ -123,6 +123,7 @@ def generate_relationships(file):
             download_record(rel)
             updated_recs = check_record_files(rel)
             process_records(updated_recs)
+
         else:
             logging.error(f"No relationships found in {file}")
     else:
@@ -132,6 +133,11 @@ def generate_relationships(file):
 def main():
     file = sys.argv[1]
     generate_relationships(file)
+    file_size = os.path.getsize(ERROR_LOG)
+    if (file_size == 0):
+        os.remove(ERROR_LOG)
+    elif (file_size != 0):
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
