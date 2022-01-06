@@ -7,7 +7,7 @@ from csv import DictReader
 import re
 
 logging.basicConfig(filename='errors.log',level=logging.ERROR)
-FILE = "test_file.csv"
+FILE = "relationships.csv"
 API_URL = "http://api.ror.org/organizations/"
 def read_relshp():
     relation = []
@@ -35,7 +35,6 @@ def read_relshp():
 def check_file(file=FILE):
     file_exists = True
     if not(exists(file)):
-        logging.error(f"{file} must exist")
         file_exists = False 
     return file_exists 
 
@@ -46,7 +45,7 @@ def parse_record_id(id):
     if ror_id:
         parsed_id = ror_id.group(1)
     else:
-        logging.error(f"ROR ID: {id} does not match format: {pattern}")
+        logging.error(f"ROR ID: {id} does not match format: {pattern}. Record will not be processed")
     return parsed_id
 
 def get_record(id, filename):
@@ -96,9 +95,12 @@ def generate_relationships():
     if check_file():
         rel = read_relshp()
         if rel:
-            process_records(rel)
+            download_record(rel)
+            updated_recs = check_record_files(rel)
         else:
-            print("womp! womp!")
+            logging.error(f"No relationships found in {FILE}")
+    else:
+        logging.error(f"{FILE} must exist to process relationship records")
         
 
 def main():
