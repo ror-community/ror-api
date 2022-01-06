@@ -141,6 +141,8 @@ def main():
     if (file_size == 0):
         os.remove(ERROR_LOG)
     elif (file_size != 0):
+        with open(ERROR_LOG, 'r') as f:
+            print(f.read())
         sys.exit(1)
 
 if __name__ == "__main__":
