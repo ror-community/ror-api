@@ -107,9 +107,9 @@ def process_one_record(record):
             file_data = json.load(f)
             file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
             file_data['relationships'].append(relationship.copy())
-            print("FILE DATA: ", file_data)
             f.seek(0)
             json.dump(file_data, f, indent=2)
+            f.truncate()
     except Exception as e:
         logging.error(f"Writing {filename}: {e}")
 
