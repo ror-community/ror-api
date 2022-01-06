@@ -64,10 +64,11 @@ def get_record(id, filename):
 
 def download_record(records):
     # download all records that are labeled as in production
+    print("In download, all records: ", records)
     for r in records:
         if (r['related_location'] == "Production"):
             filename = r['short_related_id'] + ".json"
-            print("HERE: ", filename)
+            print("\n\nIn DOWNLOAD: ", filename)
             if not(check_file(filename)):
                 print("HERE in CHECK FILES: ", filename)
                 get_record(r['short_related_id'], filename)
