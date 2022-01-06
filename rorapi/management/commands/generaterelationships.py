@@ -80,23 +80,48 @@ def check_record_files(records):
             bad_records.append(r['short_record_id'])
             logging.error(f"Record: {r['record_id']} will not be processed because {filename} does not exist.")
 
+    for i in range(len(records)):
+        if records[i]['short_related_id'] in bad_records:
+            logging.error(f"Record {records[i]['short_record_id']} will not contain a relationship for {records[i]['short_related_id']} because {records[i]['short_related_id']}.json does not exist")
+
     if len(bad_records) > 0:
         #remove dupes
         bad_records = list(dict.fromkeys(bad_records))
         records = remove_bad_records(records, bad_records)
-
     return records
 
-def process_records(records):
-    download_record(records)
-    recs = check_record_files(records)
+def check_relationship(former_relationship, current_relationship_id):
+    return [r for r in former_relationship if not(r['id'] == current_relationship_id)]
 
+
+def process_one_record(record):
+    filename = record['short_record_id'] + ".json"
+    relationship = {
+        "label": record['related_name'],
+        "type": record['record_relationship'],
+        "id": record['related_id']
+    }
+    try:
+        with open(filename, 'r+') as f:
+            file_data = json.load(f)
+            file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
+            file_data['relationships'].append(relationship)
+            f.seek(0)
+            json.dump(file_data, f, indent=2)
+    except Exception as e:
+        logging.error(f"Writing {filename}: {e}")
+
+def process_records(records):
+    for r in records:
+        process_one_record(r)
+    
 def generate_relationships():
     if check_file():
         rel = read_relshp()
         if rel:
             download_record(rel)
             updated_recs = check_record_files(rel)
+            process_records(updated_recs)
         else:
             logging.error(f"No relationships found in {FILE}")
     else:
