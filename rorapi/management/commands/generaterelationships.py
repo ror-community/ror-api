@@ -94,11 +94,21 @@ def check_record_files(records):
 def check_relationship(former_relationship, current_relationship_id):
     return [r for r in former_relationship if not(r['id'] == current_relationship_id)]
 
+def get_related_name(related_id):
+    filename = related_id + ".json"
+    name = None
+    try:
+        with open(filename, 'r') as f:
+            file_data = json.load(f)
+            name = file_data['name']
+    except Exception as e:
+        logging.error(f"Reading {filename}: {e}")
+    return name
 
 def process_one_record(record):
     filename = record['short_record_id'] + ".json"
     relationship = {
-        "label": record['related_name'],
+        "label": get_related_name(record['short_related_id']),
         "type": record['record_relationship'],
         "id": record['related_id']
     }
