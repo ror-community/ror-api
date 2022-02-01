@@ -41,7 +41,7 @@ def check_file(file):
 
 def parse_record_id(id):
     parsed_id = None
-    pattern = '^https:\/\/ror.org\/(0[a-x|0-9]{8})$'
+    pattern = '^https:\/\/ror.org\/(0[a-z|0-9]{8})$'
     ror_id = re.search(pattern, id)
     if ror_id:
         parsed_id = ror_id.group(1)
