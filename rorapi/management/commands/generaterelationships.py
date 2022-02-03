@@ -6,6 +6,7 @@ import requests
 from csv import DictReader
 import re
 import sys
+import update_address as ua
 
 ERROR_LOG = "relationship_errors.log"
 logging.basicConfig(filename=ERROR_LOG,level=logging.ERROR, filemode='w')
@@ -55,11 +56,14 @@ def get_record(id, filename):
         rsp = requests.get(download_url)
     except requests.exceptions.RequestException as e:
         logging.error(f"Request for {download_url}: {e}")
+
     try:
-        with open(filename, "w") as record:
-            record.write(rsp.text)
+        response = json.loads(rsp.text)
+        updated_record = ua.update_geonames(response)
+        with open(filename, "w") as f:
+            json.dump(updated_record, f)
     except Exception as e:
-        logging.error(f"Writing {filename}: e")
+        logging.error(f"Writing {filename}: {e}")
 
 def download_record(records):
     # download all records that are labeled as in production
