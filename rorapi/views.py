@@ -86,3 +86,8 @@ class GenerateId(APIView):
     def get(self, request):
         id = generate_ror_id()
         return Response({'id': id})
+
+class IndexData(APIView):
+    permission_classes = [OurTokenPermission]
+    def get(self, request):
+        return Response({'status': "indexing data OK"})
