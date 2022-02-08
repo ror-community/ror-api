@@ -13,7 +13,7 @@ from .models import OrganizationSerializer, ListResultSerializer, \
 from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 import os
-from rorapi.management.commands.convertgrid import generate_ror_id
+from rorapi.management.commands.generaterorid import get_ror_id
 
 
 class OrganizationViewSet(viewsets.ViewSet):
@@ -84,7 +84,7 @@ class OurTokenPermission(BasePermission):
 class GenerateId(APIView):
     permission_classes = [OurTokenPermission]
     def get(self, request):
-        id = generate_ror_id()
+        id = get_ror_id()
         return Response({'id': id})
 
 class IndexData(APIView):
