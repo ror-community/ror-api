@@ -157,13 +157,13 @@ DATA['DATA_STORE'] = os.environ.get('DATA_STORE', None)
 
 if DATA['DATA_STORE']:
     if DATA['DATA_STORE'] != 'localbucket':
-        DATA['CREDENTIALS'] = {'aws_access_key_id': os.environ.get('AWS_ACCESS_KEY_ID'), 'aws_secret_access_key': os.environ.get('AWS_SECRET_ACCESS_KEY')}
-        DATA['CLIENT'] = boto3.client('s3', DATA['CREDENTIALS'])
+        DATA['CREDENTIALS'] = {'aws_access_key_id': os.environ.get('AWS_ACCESS_KEY_ID'), 'aws_secret_access_key': os.environ.get('AWS_SECRET_ACCESS_KEY'), 'aws_secret_access_key': os.environ.get('AWS_SECRET_ACCESS_KEY'), 'region_name': 'us-west-1'}
+        DATA['CLIENT'] = boto3.client('s3', region_name='us-west-1', aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
     #elif DATA['DATA_STORE'] == 'localbucket':
         #DATA['CLIENT'] = localboto3.client('s3')
         #DATA['OBJECT'] = DATA['CLIENT'].list_objects_v2(Bucket = DATA['DATA_STORE'])
 else:
     print("Please set the DATA_STORE environment variable or run this codebase through docker compose")
-    
+
 DATA['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data')
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}

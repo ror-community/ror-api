@@ -16,5 +16,7 @@ unidecode==1.1.1
 fuzzywuzzy==0.17.0
 python-Levenshtein==0.12.1
 statsmodels==0.10.2
-boto3==1.20.49
+boto3
+localstack
+localstack_client
 update_address @ git+https://github.com/ror-community/update_address.git
