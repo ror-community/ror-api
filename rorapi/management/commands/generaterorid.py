@@ -18,7 +18,7 @@ def generate_ror_id():
     return '{}0{}{}'.format(ROR_API['ID_PREFIX'], n_encoded, checksum)
 
 
-def get_ror_id():
+def check_ror_id():
     """Checks if generated ror id exists in the index. If so, it generates a new id, otherwise it returns the generated ror id
     """
     
