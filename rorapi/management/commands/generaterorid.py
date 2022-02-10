@@ -1,8 +1,9 @@
 import base32_crockford
+import json
+import os.path
 import random
+from .createindex import Command as CreateIndexCommand
 from rorapi.settings import ES, ES_VARS, ROR_API
-
-
 
 def generate_ror_id():
     """Generates random ROR ID.
@@ -21,8 +22,13 @@ def generate_ror_id():
 def check_ror_id():
     """Checks if generated ror id exists in the index. If so, it generates a new id, otherwise it returns the generated ror id
     """
-    
     ror_id = generate_ror_id()
-    
+    s = ES.search(ES_VARS['INDEX'],
+                    body={'query': {
+                        'term': {
+                            '_id': ror_id
+                            }}})
+    if s['hits']['total'] == 1:
+        check_ror_id()
     return ror_id
 

@@ -51,7 +51,8 @@ def prepare_files(path, local_file):
             with open(file) as f:
                 data.append(json.load(f))
         except Exception as e:
-            ERR_MSG[file] =  f"ERROR: {e}"
+            key = f"In {prepare_files.__name__}_{file}"
+            ERR_MSG[key] =  f"ERROR: {e}"
     # clean this up so that it fails if there is any error with any file, maybe do a raise 
     return data
    
@@ -70,7 +71,8 @@ def get_rc_data(dir, contents):
         try:
             DATA['CLIENT'].download_file(DATA['DATA_STORE'],s3_file, local_file)
         except Exception as e:
-            ERR_MSG["downloading_files"] = f"ERROR: {e}"
+            key = f"In {get_rc_data.__name__}_downloading files"
+            ERR_MSG[key] = f"ERROR: {e}"
     else:
        ERR_MSG[get_rc_data.__name__] = f"ERROR: {dir} not found in S3 bucket"
     return local_path, local_file
@@ -85,8 +87,6 @@ def get_data():
         ERR_MSG[get_data.__name__] = f"ERROR: Could not get objects from {DATA['DATA_STORE']}: {e}"
     return contents
 
-def msg(dir):
-    return dir
     
 def process_files(dir):
     # delete existing files in dir, if exists before starting over ?
@@ -103,7 +103,9 @@ def process_files(dir):
     else:
         ERR_MSG[process_files.__name__] = "Need S3 directory argument"
     if ERR_MSG:
-        print(ERR_MSG)
+        return {"status": "ERROR", "msg": ERR_MSG}
+    else:
+        return {"status": "indexed"}
     
 
 def index(dataset):
@@ -138,7 +140,7 @@ def index(dataset):
                 body.append(org)
             ES.bulk(body)
     except TransportError:
-        print(TransportError)
+        ERR_MSG[index.__name__] = f"Indexing error, reverted index back to previous state"
         ES.reindex(body={
             'source': {
                 'index': backup_index
