@@ -1,4 +1,5 @@
-from rest_framework import viewsets, routers
+from concurrent.futures import process
+from rest_framework import viewsets, routers, status
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
@@ -14,6 +15,7 @@ from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 import os
 from rorapi.management.commands.generaterorid import check_ror_id
+from rorapi.management.commands.indexror import process_files
 
 
 class OrganizationViewSet(viewsets.ViewSet):
@@ -89,5 +91,9 @@ class GenerateId(APIView):
 
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
-    def get(self, request):
-        return Response({'status': "indexing data OK"})
+    def get(self, request, branch):
+        st = 200
+        msg = process_files(branch)
+        if msg['status'] == "ERROR":
+            st = 400
+        return Response({'status': msg['status'], 'msg': msg['msg']}, status=st)

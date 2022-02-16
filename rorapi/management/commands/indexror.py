@@ -13,7 +13,7 @@ from elasticsearch import TransportError
 
 
 # figure out how to return errors. Have an errors hash that is then returned as a response?
-ERR_MSG = {}
+
 def get_nested_names(org):
     yield org['name']
     for label in org['labels']:
@@ -37,12 +37,13 @@ def get_nested_ids(org):
 
 def prepare_files(path, local_file):
     data = []
+    err = {}
     try:
         if exists(local_file):
             with zipfile.ZipFile(local_file, 'r') as zip_ref:
                 zip_ref.extractall(path) 
     except Exception as e:
-        ERR_MSG[prepare_files.__name__] = f"ERROR: {e}"
+        err[prepare_files.__name__] = f"ERROR: {e}"
 
     json_files = os.path.join(path, "*.json")
     file_list = glob.glob(json_files)
@@ -52,12 +53,13 @@ def prepare_files(path, local_file):
                 data.append(json.load(f))
         except Exception as e:
             key = f"In {prepare_files.__name__}_{file}"
-            ERR_MSG[key] =  f"ERROR: {e}"
+            err[key] =  f"ERROR: {e}"
     # clean this up so that it fails if there is any error with any file, maybe do a raise 
-    return data
+    return data, err
    
 
 def get_rc_data(dir, contents):
+    err = {}
     # clarify this function to report errors on creating files, download files, and if the branch is not found in the S3 bucket
     find_branch = re.compile(rf'^wip\/\b{dir}\b\/.*?.zip')
     branch_objects = [i for i in contents if find_branch.search(i['Key'])]
@@ -72,43 +74,55 @@ def get_rc_data(dir, contents):
             DATA['CLIENT'].download_file(DATA['DATA_STORE'],s3_file, local_file)
         except Exception as e:
             key = f"In {get_rc_data.__name__}_downloading files"
-            ERR_MSG[key] = f"ERROR: {e}"
+            err[key] = f"ERROR: {e}"
     else:
-       ERR_MSG[get_rc_data.__name__] = f"ERROR: {dir} not found in S3 bucket"
-    return local_path, local_file
+       err[get_rc_data.__name__] = f"ERROR: {dir} not found in S3 bucket"
+    return local_path, local_file, err
 
 def get_data():
+    err = {}
     # return contents or None
     contents = None
     try:
         objects = DATA['CLIENT'].list_objects_v2(Bucket = DATA['DATA_STORE'])
         contents = objects['Contents']
     except Exception as e:
-        ERR_MSG[get_data.__name__] = f"ERROR: Could not get objects from {DATA['DATA_STORE']}: {e}"
-    return contents
+        err[get_data.__name__] = f"ERROR: Could not get objects from {DATA['DATA_STORE']}: {e}"
+    return contents, err
 
     
 def process_files(dir):
+    err = []
     # delete existing files in dir, if exists before starting over ?
     if dir:
-        objects = get_data()
-        if objects:
+        objects, e = get_data()
+        err.append(e)
+        if objects and not(e):
             # check if objects exist, otherwise error
-            path, file = get_rc_data(dir, objects)
-            if path and file: 
-                data = prepare_files(path, file)
-                index(data)
+            path, file, e = get_rc_data(dir, objects)
+            err.append(e)
+            if path and file and not(e): 
+                data, e = prepare_files(path, file)
+                if not(e):
+                    index_error = index(data)
+                    err.append(index_error)
+                else:
+                    err.append(e)
         else:
-            ERR_MSG[process_files.__name__] = f"No objects found in {dir}"
+            err.append({process_files.__name__: f"No objects found in {dir}"})
     else:
-        ERR_MSG[process_files.__name__] = "Need S3 directory argument"
-    if ERR_MSG:
-        return {"status": "ERROR", "msg": ERR_MSG}
+        err.append({process_files.__name__: "Need S3 directory argument"})
+    err = [i for i in err if i]
+    if err:
+        msg = {"status": "ERROR", "msg": err}
     else:
-        return {"status": "indexed"}
+        msg = {"status": "OK", "msg": f"{dir} indexed"}
+    
+    return msg
     
 
 def index(dataset):
+    err = {}
     index = ES_VARS['INDEX']
     backup_index = '{}-tmp'.format(index)
     ES.reindex(body={
@@ -140,7 +154,7 @@ def index(dataset):
                 body.append(org)
             ES.bulk(body)
     except TransportError:
-        ERR_MSG[index.__name__] = f"Indexing error, reverted index back to previous state"
+        err[index.__name__] = f"Indexing error, reverted index back to previous state"
         ES.reindex(body={
             'source': {
                 'index': backup_index
@@ -152,6 +166,7 @@ def index(dataset):
 
     if ES.indices.exists(backup_index):
         ES.indices.delete(backup_index)
+    return err
 
 class Command(BaseCommand):
     help = 'Indexes ROR dataset'
