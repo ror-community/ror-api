@@ -20,14 +20,6 @@ services:
   web:
     container_name: rorapiweb
     env_file: .env
-    environment:
-      ELASTIC_HOST: elasticsearch
-      ELASTIC_PORT: 9200
-      ELASTIC_PASSWORD: changeme
-      ROR_BASE_URL: http://localhost
-      ROUTE_USER: 'user'
-      TOKEN: 'mytoken'
-      DATA_STORE: 'localbucket'
     build: .
     #image: rorcommunity/ror-api
     ports:

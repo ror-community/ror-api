@@ -6,6 +6,8 @@ import zipfile
 import os
 import glob
 from os.path import exists
+import pathlib
+import shutil
 from rorapi.settings import ES, ES_VARS, DATA
 
 from django.core.management.base import BaseCommand
@@ -95,6 +97,10 @@ def process_files(dir):
     err = []
     # delete existing files in dir, if exists before starting over ?
     if dir:
+        path = os.path.join("rorapi/data", dir)
+        if os.path.isdir(path):
+            p = pathlib.Path(path)
+            shutil.rmtree(p)
         objects, e = get_data()
         err.append(e)
         if objects and not(e):
