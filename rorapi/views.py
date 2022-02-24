@@ -1,4 +1,4 @@
-from rest_framework import viewsets, routers
+from rest_framework import viewsets, routers, status
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
@@ -13,7 +13,8 @@ from .models import OrganizationSerializer, ListResultSerializer, \
 from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 import os
-from rorapi.management.commands.convertgrid import generate_ror_id
+from rorapi.management.commands.generaterorid import check_ror_id
+from rorapi.management.commands.indexror import process_files
 
 
 class OrganizationViewSet(viewsets.ViewSet):
@@ -84,10 +85,14 @@ class OurTokenPermission(BasePermission):
 class GenerateId(APIView):
     permission_classes = [OurTokenPermission]
     def get(self, request):
-        id = generate_ror_id()
+        id = check_ror_id()
         return Response({'id': id})
 
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
-    def get(self, request):
-        return Response({'status': "indexing data OK"})
+    def get(self, request, branch):
+        st = 200
+        msg = process_files(branch)
+        if msg['status'] == "ERROR":
+            st = 400
+        return Response({'status': msg['status'], 'msg': msg['msg']}, status=st)

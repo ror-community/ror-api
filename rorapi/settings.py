@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import json
 import sentry_sdk
-
+import boto3
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
@@ -30,16 +30,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env_file = os.path.join(BASE_DIR, '.env')
 if os.path.isfile(env_file):
     load_dotenv()
-
-# load ENV variables from container environment if json file exists
-# see https://github.com/phusion/baseimage-docker#envvar_dumps
-# try:
-#     with open('/etc/container_environment.json') as f:
-#         env_vars = json.load(f)
-#         for k, v in env_vars.items():
-#             os.environ[k] = v
-# except Exception as e:
-#     print(e)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -161,7 +151,7 @@ ES = Elasticsearch([{
     use_ssl=False,
     timeout=60,
     connection_class=RequestsHttpConnection)
-
+    
 # GRID = {
 #     'VERSION': '2018-11-14',
 #     'URL': 'https://ndownloader.figshare.com/files/13575374'
@@ -225,6 +215,18 @@ ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                                'ror-{}'.format(ROR_DUMP['VERSION']))
 ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.zip')
 ROR_DUMP['ROR_JSON_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.json')
+DATA = {}
+DATA['DATA_STORE'] = os.environ.get('DATA_STORE', None)
 
+if DATA['DATA_STORE']:
+    if DATA['DATA_STORE'] != 'localbucket':
+        DATA['CREDENTIALS'] = {'aws_access_key_id': os.environ.get('AWS_ACCESS_KEY_ID'), 'aws_secret_access_key': os.environ.get('AWS_SECRET_ACCESS_KEY'), 'aws_secret_access_key': os.environ.get('AWS_SECRET_ACCESS_KEY'), 'region_name': 'us-west-1'}
+        DATA['CLIENT'] = boto3.client('s3', region_name='us-west-1', aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
+    #elif DATA['DATA_STORE'] == 'localbucket':
+        #DATA['CLIENT'] = localboto3.client('s3')
+        #DATA['OBJECT'] = DATA['CLIENT'].list_objects_v2(Bucket = DATA['DATA_STORE'])
+else:
+    print("Please set the DATA_STORE environment variable or run this codebase through docker compose")
 
+DATA['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data')
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
