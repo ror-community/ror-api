@@ -151,7 +151,70 @@ ES = Elasticsearch([{
     use_ssl=False,
     timeout=60,
     connection_class=RequestsHttpConnection)
+    
+# GRID = {
+#     'VERSION': '2018-11-14',
+#     'URL': 'https://ndownloader.figshare.com/files/13575374'
+# }
 
+# GRID = {
+#     'VERSION': '2019-02-17',
+#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
+# }
+
+# GRID = {
+#    'VERSION': '2019-05-06',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
+# }
+
+# GRID = {
+#     'VERSION': '2019-10-06',
+#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/17948195'
+# }
+
+# GRID = {
+#     'VERSION': '2019-12-10',
+#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/20151785'
+# }
+
+# GRID = {
+#     'VERSION': '2020-03-15',
+#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/22091379'
+# }
+
+# GRID = {
+#    'VERSION': '2020-06-29',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/23552738'
+# }
+
+#GRID = {
+#    'VERSION': '2020-10-06',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25039403'
+# }
+#GRID = {
+#    'VERSION': '2020-12-09',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25791104'
+
+#GRID = {
+#    'VERSION': '2021-03-25',
+#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/27251693'
+#}
+GRID = {
+    'VERSION': '2021-09-16',
+    'URL': 'no url'
+}
+# The latest GRID update, 2021-09-16, was shared via google drive. 
+GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
+                           'grid-{}'.format(GRID['VERSION']))
+GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
+GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
+
+ROR_DUMP = {'VERSION': '2021-09-23'}
+ROR_IDS = os.path.join(BASE_DIR, 'rorapi','ids.json')
+ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
+                               'ror-{}'.format(ROR_DUMP['VERSION']))
+ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.zip')
+ROR_DUMP['ROR_JSON_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.json')
 DATA = {}
 DATA['DATA_STORE'] = os.environ.get('DATA_STORE', None)
 
