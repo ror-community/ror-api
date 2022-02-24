@@ -14,8 +14,6 @@ from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
 
-# figure out how to return errors. Have an errors hash that is then returned as a response?
-
 def get_nested_names(org):
     yield org['name']
     for label in org['labels']:
@@ -56,15 +54,13 @@ def prepare_files(path, local_file):
         except Exception as e:
             key = f"In {prepare_files.__name__}_{file}"
             err[key] =  f"ERROR: {e}"
-    # clean this up so that it fails if there is any error with any file, maybe do a raise 
     return data, err
    
 
 def get_rc_data(dir, contents):
     err = {}
-    # clarify this function to report errors on creating files, download files, and if the branch is not found in the S3 bucket
-    find_branch = re.compile(rf'^wip\/\b{dir}\b\/.*?.zip')
-    branch_objects = [i for i in contents if find_branch.search(i['Key'])]
+    path = f"{dir}/files.zip"
+    branch_objects = [i for i in contents if path == i['Key']]
     local_file = None
     local_path = None
     if branch_objects:
@@ -95,7 +91,6 @@ def get_data():
     
 def process_files(dir):
     err = []
-    # delete existing files in dir, if exists before starting over ?
     if dir:
         path = os.path.join("rorapi/data", dir)
         if os.path.isdir(path):
