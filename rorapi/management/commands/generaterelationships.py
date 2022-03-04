@@ -2,7 +2,7 @@ import json
 import os
 from os.path import exists
 import logging
-import requests 
+import requests
 from csv import DictReader
 import re
 import sys
@@ -20,7 +20,7 @@ def read_relshp(file):
             for row in relationships:
                 check_record_id = parse_record_id(row['Record ID'])
                 check_related_id = parse_record_id(row['Related ID'])
-                if (check_record_id and check_related_id): 
+                if (check_record_id and check_related_id):
                     rel_dict['short_record_id'] = check_record_id
                     rel_dict['short_related_id'] = check_related_id
                     rel_dict['record_name'] = row['Name of org in Record ID']
@@ -37,8 +37,8 @@ def read_relshp(file):
 def check_file(file):
     file_exists = True
     if not(exists(file)):
-        file_exists = False 
-    return file_exists 
+        file_exists = False
+    return file_exists
 
 def parse_record_id(id):
     parsed_id = None
@@ -58,10 +58,10 @@ def get_record(id, filename):
         logging.error(f"Request for {download_url}: {e}")
 
     try:
-        response = json.loads(rsp.text)
+        response = rsp.json()
         updated_record = ua.update_geonames(response)
-        with open(filename, "w") as f:
-            json.dump(updated_record, f)
+        with open(filename, "w", encoding='utf8') as f:
+            json.dump(updated_record, f,  ensure_ascii=False)
     except Exception as e:
         logging.error(f"Writing {filename}: {e}")
 
@@ -76,7 +76,7 @@ def download_record(records):
 def remove_bad_records(records, bad_records):
     updated_records = [r for r in records if not(r['short_record_id'] in bad_records or r['short_related_id'] in bad_records)]
     return updated_records
-   
+
 def check_record_files(records):
     bad_records = []
     for r in records:
@@ -122,7 +122,7 @@ def process_one_record(record):
             file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
             file_data['relationships'].append(relationship.copy())
             f.seek(0)
-            json.dump(file_data, f, indent=2)
+            json.dump(file_data, f, ensure_ascii=False, indent=2)
             f.truncate()
     except Exception as e:
         logging.error(f"Writing {filename}: {e}")
@@ -130,7 +130,7 @@ def process_one_record(record):
 def process_records(records):
     for r in records:
         process_one_record(r)
-    
+
 def generate_relationships(file):
     if check_file(file):
         rel = read_relshp(file)
@@ -143,7 +143,7 @@ def generate_relationships(file):
             logging.error(f"No relationships found in {file}")
     else:
         logging.error(f"{file} must exist to process relationship records")
-        
+
 
 def main():
     file = sys.argv[1]
