@@ -12,7 +12,7 @@ INPUT_PATH = "./"
 OUTPUT_PATH = "./"
 TEMP_NEW_UPDATED_RECORDS_CONCAT = "temp-updated-records.json"
 TEMP_DUMP_UPDATED_RECORDS_REMOVED = "temp-dump-updated-records-removed.json"
-NEW_DUMP_SUFFIX = NOW.strftime("%Y-%m-%d") + "-ror-data"
+NEW_DUMP_SUFFIX = "-" + NOW.strftime("%Y-%m-%d") + "-ror-data"
 
 logging.basicConfig(filename=ERROR_LOG,level=logging.ERROR, filemode='w')
 
