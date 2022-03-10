@@ -11,7 +11,6 @@ RUN usermod -a -G docker_env app
 CMD ["/sbin/my_init"]
 
 # Update installed APT packages, clean up when done
-
 RUN mv /etc/apt/sources.list.d /etc/apt/sources.list.d.bak && \
     apt update && apt install -y ca-certificates && \
     mv /etc/apt/sources.list.d.bak /etc/apt/sources.list.d && \
