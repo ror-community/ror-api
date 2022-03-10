@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - "dev"
+    paths-ignore:
+      - '**/README.md'
+      - '**docker-compose.yml'
 jobs:
   test:
     runs-on: ubuntu-latest
