@@ -42,7 +42,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install yapf
-          
+
           python manage.py collectstatic --noinput
       - name: Setup
         run: |
@@ -70,15 +70,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       - name: Login to DockerHub
-        uses: docker/login-action@v1 
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_RORAPI_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RORAPI_TOKEN }}
       - name: Get git tag
         run: |
           echo "::set-output name=GIT_TAG::$(git tag --points-at HEAD)"
         id: set_git_vars
-      - name: Build and push 
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -87,7 +87,7 @@ jobs:
           tags: rorcommunity/ror-api:${{ steps.set_git_vars.outputs.GIT_TAG }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-  
+
   deploy:
     needs: [test, build]
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
           echo "::set-output name=BRANCH::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
           echo "::set-output name=TAG::$(git tag --points-at HEAD)"
           echo "::set-output name=GIT_SHA::$(git rev-parse HEAD)"
-          echo "::set-output name=GIT_SHA_SHORT::$(git rev-parse --short HEAD)"  
+          echo "::set-output name=GIT_SHA_SHORT::$(git rev-parse --short HEAD)"
         id: extract_variables
 
       - name: Checkout terraform config repo
@@ -122,7 +122,7 @@ jobs:
           tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
           rm dockerize-linux-amd64-v0.6.0.tar.gz
           ./dockerize -template ror/services/api/_ror-api.auto.tfvars.tmpl:ror/services/api/_ror-api.auto.tfvars
-          
+
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ror/services/api/_ror-api.auto.tfvars
