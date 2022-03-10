@@ -4,7 +4,6 @@ on:
     branches:
       - "dev"
     paths-ignore:
-      - '**/README.md'
       - '**docker-compose.yml'
 jobs:
   test:
