@@ -1,14 +1,20 @@
-from rest_framework import viewsets, routers
+from rest_framework import viewsets, routers, status
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import redirect
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import BasePermission
+from rest_framework.views import APIView
 
 from .matching import match_organizations
 from .models import OrganizationSerializer, ListResultSerializer, \
     MatchingResultSerializer, ErrorsSerializer
 from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
+import os
+from rorapi.management.commands.generaterorid import check_ror_id
+from rorapi.management.commands.indexror import process_files
 
 
 class OrganizationViewSet(viewsets.ViewSet):
@@ -63,3 +69,30 @@ class HeartbeatView(View):
         except:
             pass
         return HttpResponse(status=500)
+
+class OurTokenPermission(BasePermission):
+    """
+    Allows access only to using our token and user name.
+    """
+
+    def has_permission(self, request, view):
+        header_token = request.headers.get('Token',None)
+        header_user = request.headers.get('Route-User',None)
+        user = os.environ.get('ROUTE_USER')
+        token = os.environ.get('TOKEN')
+        return (header_token == token and header_user == user)
+
+class GenerateId(APIView):
+    permission_classes = [OurTokenPermission]
+    def get(self, request):
+        id = check_ror_id()
+        return Response({'id': id})
+
+class IndexData(APIView):
+    permission_classes = [OurTokenPermission]
+    def get(self, request, branch):
+        st = 200
+        msg = process_files(branch)
+        if msg['status'] == "ERROR":
+            st = 400
+        return Response({'status': msg['status'], 'msg': msg['msg']}, status=st)
