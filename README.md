@@ -189,7 +189,30 @@ The output contains a list of items. An item represents an organization matched 
 
 If you require a hard decision about which organizations are mentioned in the given affiliation string, use `chosen` field. Otherwise, the resulting list can be examined in a similar manner as any search result list.
 
-## Import GRID data
+## Index ROR data locally
+
+To work with the S3 buckets, please enter the name of the S3 bucket, the secured route credentials, and the AWS credentials as env vars for the web service in docker compose. This can also be done as a `.env` file.
+
+Start up the local elasticsearch and ror-api containers with:
+`docker-compose up -d`
+
+To work with ROR data, check to make sure that the elasticsearch service is healthy, and then create the index:
+
+`docker-compose exec web python manage.py createindex`
+
+
+Optionally, index ROR data into elasticsearch in two ways:
+
+Through the route:
+`curl -H "Token: <<token value>>" -H "Route-User: <<value>>" http://localhost:9292/indexdata/<<directory on S3 bucket>>`
+
+
+Through the CLI:
+`docker-compose exec web python manage.py indexror <<directory on S3>>`
+
+visit <http://localhost:9292/organizations> to see the results
+
+## LEGACY: Import GRID data
 
 To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g.
 
@@ -233,7 +256,7 @@ In the project directory, run docker-compose to start all services:
 docker-compose up -d
 ```
 
-Index the data:
+Index GRID data:
 
 ```
 docker-compose exec web python manage.py setup
