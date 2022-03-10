@@ -2,7 +2,7 @@
 
 # Research Organization Registry (ROR) API
 
-The ROR API allows to retrieve, search and filter the organizations indexed in ROR. The results are returned in JSON.
+The ROR API allows retrieving, searching and filtering the organizations indexed in ROR. The results are returned in JSON.
 
 A single organization record is represented by the following JSON structure:
 
@@ -12,7 +12,7 @@ A single organization record is represented by the following JSON structure:
    "name":"PSL Research University",
    "email_address":null,
    "ip_addresses":[
-      
+
    ],
    "established":2010,
    "types":[
