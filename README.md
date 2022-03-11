@@ -246,7 +246,7 @@ To install the updated ROR data, run `./manage.py setup`.
 
 ## Data dumps
 
-It is possible to download the whole ROR dataset. ROR data downloads are stored here: <https://github.com/ror-community/ror-api/tree/master/rorapi/data>.
+It is possible to download the whole ROR dataset. ROR data downloads are stored here: <https://zenodo.org/communities/ror-data>.
 
 ## Development
 
