@@ -11,7 +11,9 @@ RUN usermod -a -G docker_env app
 CMD ["/sbin/my_init"]
 
 # Update installed APT packages, clean up when done
-RUN apt-get update && \
+RUN mv /etc/apt/sources.list.d /etc/apt/sources.list.d.bak && \
+    apt update && apt install -y ca-certificates && \
+    mv /etc/apt/sources.list.d.bak /etc/apt/sources.list.d && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get clean && \
     apt-get install ntp wget unzip tzdata python3-pip -y && \
