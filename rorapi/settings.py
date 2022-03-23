@@ -151,7 +151,7 @@ ES = Elasticsearch([{
     use_ssl=False,
     timeout=60,
     connection_class=RequestsHttpConnection)
-    
+
 # GRID = {
 #     'VERSION': '2018-11-14',
 #     'URL': 'https://ndownloader.figshare.com/files/13575374'
@@ -203,20 +203,36 @@ GRID = {
     'VERSION': '2021-09-16',
     'URL': 'no url'
 }
-# The latest GRID update, 2021-09-16, was shared via google drive. 
+# The latest GRID update, 2021-09-16, was shared via google drive.
+
+# GRID and LEGACY_ROR_DUMP vars were previously used to
+# generate ROR dataset based on the latest GRID dataset
+# Directories and files that these vars point to have been moved
+# to https://github.com/ror-community/ror-data
+# Scripts preprended with 'legacy' no longer work
+# As of Mar 2022 ROR is no longer based on GRID
+# New records are now created in https://github.com/ror-community/ror-records and pushed to S3
+# Individual record files in S3 are indexed with indexror.py
+# Entire dataset zip files in https://github.com/ror-community/ror-data
+# can be indexed with setup.py, which uses indexrordump.py
+
 GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
                            'grid-{}'.format(GRID['VERSION']))
 GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
 GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
 
-ROR_DUMP = {'VERSION': '2021-09-23'}
-ROR_IDS = os.path.join(BASE_DIR, 'rorapi','ids.json')
-ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
-                               'ror-{}'.format(ROR_DUMP['VERSION']))
-ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.zip')
-ROR_DUMP['ROR_JSON_PATH'] = os.path.join(ROR_DUMP['DIR'], 'ror.json')
+LEGACY_ROR_DUMP = {'VERSION': '2021-09-23'}
+LEGACY_ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
+                               'ror-{}'.format(LEGACY_ROR_DUMP['VERSION']))
+LEGACY_ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.zip')
+LEGACY_ROR_DUMP['ROR_JSON_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.json')
+
+ROR_DUMP = {}
+ROR_DUMP['URL'] = 'https://github.com/ror-community/ror-data/raw/main/'
+
 DATA = {}
 DATA['DATA_STORE'] = os.environ.get('DATA_STORE', None)
+DATA['WORKING_DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data', '')
 
 if DATA['DATA_STORE']:
     if DATA['DATA_STORE'] != 'localbucket':
