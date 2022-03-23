@@ -152,53 +152,66 @@ ES = Elasticsearch([{
     timeout=60,
     connection_class=RequestsHttpConnection)
 
+# ROR DUMP grid-2018-11-14
 # GRID = {
 #     'VERSION': '2018-11-14',
 #     'URL': 'https://ndownloader.figshare.com/files/13575374'
 # }
 
+# ROR DUMP grid-2019-02-17
 # GRID = {
 #     'VERSION': '2019-02-17',
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
 # }
 
+# ROR DUMP ror-2019-09-19
 # GRID = {
 #    'VERSION': '2019-05-06',
 #    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
 # }
 
+# ROR DUMP ror-2019-11-07
 # GRID = {
 #     'VERSION': '2019-10-06',
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/17948195'
 # }
 
+# ROR DUMP ror-2019-12-18
 # GRID = {
 #     'VERSION': '2019-12-10',
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/20151785'
 # }
 
+# ROR DUMP ror-2020-03-15
 # GRID = {
 #     'VERSION': '2020-03-15',
 #     'URL': 'https://digitalscience.figshare.com/ndownloader/files/22091379'
 # }
 
+# ROR DUMP ror-2020-07-06
 # GRID = {
 #    'VERSION': '2020-06-29',
 #    'URL': 'https://digitalscience.figshare.com/ndownloader/files/23552738'
 # }
 
+# ROR DUMP ror-2020-10-19
 #GRID = {
 #    'VERSION': '2020-10-06',
 #    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25039403'
 # }
+
+# ROR DUMP 2020-12-21 and 2021-03-17
 #GRID = {
 #    'VERSION': '2020-12-09',
 #    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25791104'
 
+# ROR DUMP 2021-04-06
 #GRID = {
 #    'VERSION': '2021-03-25',
 #    'URL': 'https://digitalscience.figshare.com/ndownloader/files/27251693'
 #}
+
+# ROR DUMP 2021-09-23
 GRID = {
     'VERSION': '2021-09-16',
     'URL': 'no url'
