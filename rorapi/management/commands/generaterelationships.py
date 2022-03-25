@@ -27,8 +27,8 @@ def read_relshp(file):
                     rel_dict['record_id'] = row['Record ID']
                     rel_dict['related_id'] = row['Related ID']
                     rel_dict['related_name'] = row['Name of org in Related ID']
-                    rel_dict['record_relationship'] = row['Relationship of Related ID to Record ID']
-                    rel_dict['related_location'] = row['Current location of Related ID']
+                    rel_dict['record_relationship'] = row['Relationship of Related ID to Record ID'].title()
+                    rel_dict['related_location'] = row['Current location of Related ID'].title()
                     relation.append(rel_dict.copy())
     except IOError as e:
         logging.error(f"Reading file {file}: {e}")
