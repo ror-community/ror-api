@@ -42,7 +42,6 @@ jobs:
           FILE="$(ls -Art *.zip | tail -n 1)"
           echo "latest_dump_file=${FILE%.*}" >> $GITHUB_ENV
       - name: Cache dependency
-        working-directory: ./ror-api
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
