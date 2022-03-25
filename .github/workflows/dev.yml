@@ -40,7 +40,8 @@ jobs:
         working-directory: ./ror-data
         run: |
           FILE="$(ls -Art *.zip | tail -n 1)"
-          echo "latest_dump_file=${FILE%.*}" >> $GITHUB_ENV
+          echo ${FILE%.*}
+          echo "LATEST_DUMP_FILE=${FILE%.*}" >> $GITHUB_ENV
       - name: Cache dependency
         uses: actions/cache@v2
         with:
@@ -62,10 +63,8 @@ jobs:
           python manage.py collectstatic --noinput
       - name: Setup
         working-directory: ./ror-api
-        env:
-          DUMP_FILE: ${{ env.latest_dump_file }}
         run: |
-          python manage.py setup ${env.DUMP_FILE}
+          python manage.py setup $LATEST_DUMP_FILE
       - name: Test
         working-directory: ./ror-api
         run: |
