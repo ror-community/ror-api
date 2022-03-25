@@ -49,7 +49,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Set up Python environment
-        working-directory: ./ror-api
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
