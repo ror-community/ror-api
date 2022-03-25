@@ -27,9 +27,22 @@ jobs:
         ports:
           - 9200:9200
     steps:
-      - name: Checkout code
+      - name: Checkout ror-api code
         uses: actions/checkout@v2
+        with:
+          path: ror-api
+      - name: Checkout ror-data
+        uses: actions/checkout@v2
+        with:
+          repository: ror-community/ror-data
+          path: ror-data
+      - name: Get last data dump name
+        working-directory: ./ror-data
+        run: |
+          FILE="$(ls -Art *.zip | tail -n 1)"
+          echo "latest_dump_file=${FILE%.*}" >> $GITHUB_ENV
       - name: Cache dependency
+        working-directory: ./ror-api
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -37,10 +50,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Set up Python environment
+        working-directory: ./ror-api
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
       - name: Install requirements
+        working-directory: ./ror-api
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -48,9 +63,13 @@ jobs:
 
           python manage.py collectstatic --noinput
       - name: Setup
+        working-directory: ./ror-api
+        env:
+          DUMP_FILE: ${{ env.latest_dump_file }}
         run: |
-          python manage.py setup
+          python manage.py setup ${env.DUMP_FILE}
       - name: Test
+        working-directory: ./ror-api
         run: |
           python manage.py test rorapi.tests
           # TODO fix these tests running in GitHub Action
