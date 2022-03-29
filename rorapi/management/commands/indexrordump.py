@@ -41,13 +41,18 @@ class Command(BaseCommand):
     help = 'Indexes ROR dataset from a full dump file in ror-data repo'
 
     def handle(self, *args, **options):
+        json_file = ''
         filename = options['filename']
         ror_dump_zip = get_ror_dump_zip(filename)
         if not os.path.exists(DATA['WORKING_DIR']):
             os.makedirs(DATA['WORKING_DIR'])
         with zipfile.ZipFile(BytesIO(ror_dump_zip), 'r') as zip_ref:
             zip_ref.extractall(DATA['WORKING_DIR'] + filename)
-        json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + filename + '.json'
+        unzipped_files = os.listdir(DATA['WORKING_DIR'] + filename)
+        for file in unzipped_files:
+            if file.endswith(".json"):
+                json_file = file
+        json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
         with open(json_path, 'r') as it:
             dataset = json.load(it)
 
