@@ -1,6 +1,5 @@
 import json
 import os
-from os.path import exists
 import logging
 import requests
 from csv import DictReader
@@ -11,6 +10,8 @@ import update_address as ua
 ERROR_LOG = "relationship_errors.log"
 logging.basicConfig(filename=ERROR_LOG,level=logging.ERROR, filemode='w')
 API_URL = "http://api.ror.org/organizations/"
+UPDATED_RECORDS_PATH = "updates/"
+
 def read_relshp(file):
     relation = []
     rel_dict = {}
@@ -35,10 +36,11 @@ def read_relshp(file):
     return relation
 
 def check_file(file):
-    file_exists = True
-    if not(exists(file)):
-        file_exists = False
-    return file_exists
+    filepath = ''
+    for root, dirs, files in os.walk(".", topdown=True):
+        if file in files:
+            filepath = (os.path.join(root, file))
+    return filepath
 
 def parse_record_id(id):
     parsed_id = None
@@ -60,12 +62,14 @@ def get_record(id, filename):
     try:
         response = rsp.json()
         updated_record = ua.update_geonames(response)
-        with open(filename, "w", encoding='utf8') as f:
+        with open(UPDATED_RECORDS_PATH + filename, "w", encoding='utf8') as f:
             json.dump(updated_record, f,  ensure_ascii=False)
     except Exception as e:
         logging.error(f"Writing {filename}: {e}")
 
 def download_record(records):
+    if not os.path.exists(UPDATED_RECORDS_PATH):
+        os.makedirs(UPDATED_RECORDS_PATH)
     # download all records that are labeled as in production
     for r in records:
         if (r['related_location'] == "Production"):
@@ -81,7 +85,7 @@ def check_record_files(records):
     bad_records = []
     for r in records:
         filename = r['short_record_id'] + ".json"
-        if not(check_file(filename)):
+        if not check_file(filename):
             bad_records.append(r['short_record_id'])
             logging.error(f"Record: {r['record_id']} will not be processed because {filename} does not exist.")
 
@@ -100,24 +104,26 @@ def check_relationship(former_relationship, current_relationship_id):
 
 def get_related_name(related_id):
     filename = related_id + ".json"
+    filepath = check_file(filename)
     name = None
     try:
-        with open(filename, 'r') as f:
+        with open(filepath, 'r') as f:
             file_data = json.load(f)
             name = file_data['name']
     except Exception as e:
-        logging.error(f"Reading {filename}: {e}")
+        logging.error(f"Reading {filepath}: {e}")
     return name
 
 def process_one_record(record):
     filename = record['short_record_id'] + ".json"
+    filepath = check_file(filename)
     relationship = {
         "label": get_related_name(record['short_related_id']),
         "type": record['record_relationship'],
         "id": record['related_id']
     }
     try:
-        with open(filename, 'r+') as f:
+        with open(filepath, 'r+') as f:
             file_data = json.load(f)
             file_data['relationships'] = check_relationship(file_data['relationships'], record['related_id'])
             file_data['relationships'].append(relationship.copy())
@@ -125,7 +131,7 @@ def process_one_record(record):
             json.dump(file_data, f, ensure_ascii=False, indent=2)
             f.truncate()
     except Exception as e:
-        logging.error(f"Writing {filename}: {e}")
+        logging.error(f"Writing {filepath}: {e}")
 
 def process_records(records):
     for r in records:
@@ -137,24 +143,24 @@ def generate_relationships(file):
         if rel:
             download_record(rel)
             updated_recs = check_record_files(rel)
-            process_records(updated_recs)
-
+            # process_records(updated_recs)
+            print (updated_recs)
         else:
             logging.error(f"No relationships found in {file}")
     else:
         logging.error(f"{file} must exist to process relationship records")
 
-
 def main():
     file = sys.argv[1]
+    print (file)
     generate_relationships(file)
-    file_size = os.path.getsize(ERROR_LOG)
-    if (file_size == 0):
-        os.remove(ERROR_LOG)
-    elif (file_size != 0):
-        with open(ERROR_LOG, 'r') as f:
-            print(f.read())
-        sys.exit(1)
+    #file_size = os.path.getsize(ERROR_LOG)
+    #if (file_size == 0):
+    #    os.remove(ERROR_LOG)
+    #elif (file_size != 0):
+    #    with open(ERROR_LOG, 'r') as f:
+    #        print(f.read())
+    #    sys.exit(1)
 
 if __name__ == "__main__":
     main()
