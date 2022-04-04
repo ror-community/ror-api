@@ -13,8 +13,11 @@ API_URL = "http://api.ror.org/organizations/"
 UPDATED_RECORDS_PATH = "updates/"
 
 def read_relshp(file):
+    print("PROCESSING CSV")
     relation = []
     rel_dict = {}
+    row_count = 0
+    relationship_count = 0
     try:
         with open(file, 'r') as rel:
             relationships = DictReader(rel)
@@ -31,6 +34,10 @@ def read_relshp(file):
                     rel_dict['record_relationship'] = row['Relationship of Related ID to Record ID'].title()
                     rel_dict['related_location'] = row['Current location of Related ID'].title()
                     relation.append(rel_dict.copy())
+                    relationship_count += 1
+                row_count += 1
+        print(str(row_count)+ " rows found")
+        print(str(relationship_count)+ " valid relationships found")
     except IOError as e:
         logging.error(f"Reading file {file}: {e}")
     return relation
@@ -68,6 +75,8 @@ def get_record(id, filename):
         logging.error(f"Writing {filename}: {e}")
 
 def download_record(records):
+    print("DOWNLOADING PRODUCTION RECORDS")
+    downloaded_records_count = 0
     if not os.path.exists(UPDATED_RECORDS_PATH):
         os.makedirs(UPDATED_RECORDS_PATH)
     # download all records that are labeled as in production
@@ -76,12 +85,16 @@ def download_record(records):
             filename = r['short_related_id'] + ".json"
             if not(check_file(filename)):
                 get_record(r['short_related_id'], filename)
+                downloaded_records_count += 1
+    print(str(downloaded_records_count) + " records downloaded")
 
 def remove_bad_records(records, bad_records):
     updated_records = [r for r in records if not(r['short_record_id'] in bad_records or r['short_related_id'] in bad_records)]
+    print (str(len(bad_records)) + " bad records removed")
     return updated_records
 
 def check_record_files(records):
+    print ("CHECKING FOR MISSING RECORDS")
     bad_records = []
     for r in records:
         filename = r['short_record_id'] + ".json"
@@ -134,8 +147,12 @@ def process_one_record(record):
         logging.error(f"Writing {filepath}: {e}")
 
 def process_records(records):
+    print("PROCESSING RECORDS")
+    processed_records_count = 0
     for r in records:
         process_one_record(r)
+        processed_records_count += 1
+    print(str(processed_records_count) + " records updated")
 
 def generate_relationships(file):
     if check_file(file):
@@ -143,8 +160,7 @@ def generate_relationships(file):
         if rel:
             download_record(rel)
             updated_recs = check_record_files(rel)
-            # process_records(updated_recs)
-            print (updated_recs)
+            process_records(updated_recs)
         else:
             logging.error(f"No relationships found in {file}")
     else:
@@ -152,15 +168,15 @@ def generate_relationships(file):
 
 def main():
     file = sys.argv[1]
-    print (file)
     generate_relationships(file)
-    #file_size = os.path.getsize(ERROR_LOG)
-    #if (file_size == 0):
-    #    os.remove(ERROR_LOG)
-    #elif (file_size != 0):
-    #    with open(ERROR_LOG, 'r') as f:
-    #        print(f.read())
-    #    sys.exit(1)
+    file_size = os.path.getsize(ERROR_LOG)
+    if (file_size == 0):
+        os.remove(ERROR_LOG)
+    elif (file_size != 0):
+        print("ERRORS RECORDED IN relationship_errors.log")
+        with open(ERROR_LOG, 'r') as f:
+            print(f.read())
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
