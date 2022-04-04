@@ -147,7 +147,7 @@ def process_one_record(record):
         logging.error(f"Writing {filepath}: {e}")
 
 def process_records(records):
-    print("PROCESSING RECORDS")
+    print("UPDATING RECORDS")
     processed_records_count = 0
     for r in records:
         process_one_record(r)
