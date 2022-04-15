@@ -75,7 +75,6 @@ class OurTokenPermission(BasePermission):
     """
     Allows access only to using our token and user name.
     """
-
     def has_permission(self, request, view):
         header_token = request.headers.get('Token',None)
         header_user = request.headers.get('Route-User',None)
