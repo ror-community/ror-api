@@ -5,8 +5,25 @@ from django.core.management.base import BaseCommand
 from .deleteindex import Command as DeleteIndexCommand
 from .createindex import Command as CreateIndexCommand
 from .indexrordump import Command as IndexRorDumpCommand
-from rorapi.settings import GRID, ROR_DUMP
+from rorapi.settings import ROR_DUMP
 
+HEADERS = {'Authorization': 'token {}'.format(ROR_DUMP['GITHUB_TOKEN']), 'Accept': 'application/vnd.github.v3+json'}
+
+def get_ror_dump_sha(filename):
+    sha = ''
+    contents_url = ROR_DUMP['REPO_URL'] + '/contents'
+    try:
+        response = requests.get(contents_url, headers=HEADERS)
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(f"{contents_url}: is Not reachable \nErr: {e}")
+    try:
+        repo_contents = response.json()
+        for file in repo_contents:
+            if filename in file['name']:
+                sha = file['sha']
+        return sha
+    except:
+        return None
 
 class Command(BaseCommand):
     help = 'Setup ROR API'
@@ -17,11 +34,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # make sure ROR dump file exists
         filename = options['filename']
-        url = ROR_DUMP['URL'] + filename + '.zip'
-        print(url)
-        ror_dump_zip = requests.get(url)
+        sha = get_ror_dump_sha(filename)
 
-        if ror_dump_zip.status_code == 200:
+        if sha:
             DeleteIndexCommand().handle(*args, **options)
             CreateIndexCommand().handle(*args, **options)
             IndexRorDumpCommand().handle(*args, **options)
