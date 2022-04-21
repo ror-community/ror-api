@@ -5,7 +5,4 @@
 docker-compose.override.yml
 __pycache__/
 *.pyc
-rorapi/data/**/*.json
-rorapi/data/**/*.csv
-rorapi/data/**/*.ttl
-rorapi/data/**/grid.zip
+rorapi/data/**

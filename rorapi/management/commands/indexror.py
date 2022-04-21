@@ -13,7 +13,6 @@ from rorapi.settings import ES, ES_VARS, DATA
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
-
 def get_nested_names(org):
     yield org['name']
     for label in org['labels']:
@@ -41,7 +40,7 @@ def prepare_files(path, local_file):
     try:
         if exists(local_file):
             with zipfile.ZipFile(local_file, 'r') as zip_ref:
-                zip_ref.extractall(path) 
+                zip_ref.extractall(path)
     except Exception as e:
         err[prepare_files.__name__] = f"ERROR: {e}"
 
@@ -55,7 +54,7 @@ def prepare_files(path, local_file):
             key = f"In {prepare_files.__name__}_{file}"
             err[key] =  f"ERROR: {e}"
     return data, err
-   
+
 
 def get_rc_data(dir, contents):
     err = {}
@@ -88,11 +87,11 @@ def get_data():
         err[get_data.__name__] = f"ERROR: Could not get objects from {DATA['DATA_STORE']}: {e}"
     return contents, err
 
-    
+
 def process_files(dir):
     err = []
     if dir:
-        path = os.path.join("rorapi/data", dir)
+        path = os.path.join(DATA['WORKING_DIR'], dir)
         if os.path.isdir(path):
             p = pathlib.Path(path)
             shutil.rmtree(p)
@@ -102,7 +101,7 @@ def process_files(dir):
             # check if objects exist, otherwise error
             path, file, e = get_rc_data(dir, objects)
             err.append(e)
-            if path and file and not(e): 
+            if path and file and not(e):
                 data, e = prepare_files(path, file)
                 if not(e):
                     index_error = index(data)
@@ -118,9 +117,9 @@ def process_files(dir):
         msg = {"status": "ERROR", "msg": err}
     else:
         msg = {"status": "OK", "msg": f"{dir} indexed"}
-    
+
     return msg
-    
+
 
 def index(dataset):
     err = {}
@@ -179,4 +178,4 @@ class Command(BaseCommand):
         dir = options['dir']
         process_files(dir)
 
-  
+
