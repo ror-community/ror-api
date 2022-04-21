@@ -12,6 +12,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
+      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
@@ -25,8 +26,22 @@ jobs:
         ports:
           - 9200:9200
     steps:
-      - name: Checkout code
+      - name: Checkout ror-api code
         uses: actions/checkout@v2
+        with:
+          path: ror-api
+      - name: Checkout ror-data
+        uses: actions/checkout@v2
+        with:
+          repository: ror-community/ror-data
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: ror-data
+      - name: Get last data dump name
+        working-directory: ./ror-data
+        run: |
+          FILE="$(ls -Art *.zip | tail -n 1)"
+          echo ${FILE%.*}
+          echo "LATEST_DUMP_FILE=${FILE%.*}" >> $GITHUB_ENV
       - name: Cache dependency
         uses: actions/cache@v2
         with:
@@ -37,8 +52,9 @@ jobs:
       - name: Set up Python environment
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: "3.8"
       - name: Install requirements
+        working-directory: ./ror-api
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -46,9 +62,11 @@ jobs:
 
           python manage.py collectstatic --noinput
       - name: Setup
+        working-directory: ./ror-api
         run: |
-          python manage.py setup
+          python manage.py setup $LATEST_DUMP_FILE
       - name: Test
+        working-directory: ./ror-api
         run: |
           python manage.py test rorapi.tests
           # TODO fix these tests running in GitHub Action

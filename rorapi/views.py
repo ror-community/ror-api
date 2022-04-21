@@ -13,6 +13,7 @@ from .models import OrganizationSerializer, ListResultSerializer, \
 from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 import os
+import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
 
@@ -74,13 +75,18 @@ class OurTokenPermission(BasePermission):
     """
     Allows access only to using our token and user name.
     """
-
     def has_permission(self, request, view):
         header_token = request.headers.get('Token',None)
         header_user = request.headers.get('Route-User',None)
         user = os.environ.get('ROUTE_USER')
         token = os.environ.get('TOKEN')
         return (header_token == token and header_user == user)
+
+class GenerateAddress(APIView):
+    permission_classes = [OurTokenPermission]
+    def get(self, request, geonamesid):
+        address = ua.new_geonames(geonamesid)
+        return Response(address)
 
 class GenerateId(APIView):
     permission_classes = [OurTokenPermission]

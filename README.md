@@ -189,30 +189,103 @@ The output contains a list of items. An item represents an organization matched 
 
 If you require a hard decision about which organizations are mentioned in the given affiliation string, use `chosen` field. Otherwise, the resulting list can be examined in a similar manner as any search result list.
 
-## Index ROR data locally
+## Data dumps
 
-To work with the S3 buckets, please enter the name of the S3 bucket, the secured route credentials, and the AWS credentials as env vars for the web service in docker compose. This can also be done as a `.env` file.
+It is possible to download the whole ROR dataset. ROR data downloads are stored here: <https://zenodo.org/communities/ror-data>.
 
-Start up the local elasticsearch and ror-api containers with:
-`docker-compose up -d`
+# Development
 
-To work with ROR data, check to make sure that the elasticsearch service is healthy, and then create the index:
+## Local setup
 
-`docker-compose exec web python manage.py createindex`
+### Pre-requisites
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Clone this project locally
+
+## Start ror-api locally
+1. Start Docker Desktop
+2. In the project directory, run docker-compose to start all services:
+
+      docker-compose up -d
+
+3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
+
+      docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+
+*Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
+
+4. <http://localhost:9292/organizations>.
+
+5. Optionally, start other services, such as [ror-app](https://github.com/ror-community/ror-app) (the search UI) or [generate-id](https://github.com/ror-community/generate-id) (middleware microservice)
+
+6. Optionally, run tests
+
+      docker-compose exec web python manage.py test rorapi.tests
+      docker-compose exec web python manage.py test rorapi.tests_integration
+      docker-compose exec web python manage.py test rorapi.tests_functional
 
 
-Optionally, index ROR data into elasticsearch in two ways:
+## Indexing ROR data (Mar 2022 onward)
+
+### Incremental index from S3 release
+
+Management command ```indexror``` downloads new/updated records from a specified AWS S3 bucket/directory and indexes them into an existing index.
+
+Used in the data deployment process managed in [ror-records](https://github.com/ror-community/ror-records). Command is triggered by Github actions, but can also be run manually. See [ror-records/readme](https://github.com/ror-community/ror-records/blob/main/README.md) for complete deployment process details.
+
+## Manual/local indexing from S3
+
+1. Create a .env file with values for DATA_STORE, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+2. In the project directory, run docker-compose to start all services:
+
+      docker-compose up -d
+
+3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
+
+      docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+
+*Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
+
+4. Add new/updated record files to a directory in the S3 bucket as files.zip. Github actions in [dev-ror-records](https://github.com/ror-community/dev-ror-records) can be used to automatically push files to the DEV S3 bucket.
+
+5. Index files for new/updated records from a directory in an S3 bucket
 
 Through the route:
-`curl -H "Token: <<token value>>" -H "Route-User: <<value>>" http://localhost:9292/indexdata/<<directory on S3 bucket>>`
-
+`curl -H "Token: <<token value>>" -H "Route-User: <<value>>" http://localhost:9292/indexdata/<<directory in S3 bucket>>`
 
 Through the CLI:
-`docker-compose exec web python manage.py indexror <<directory on S3>>`
+`docker-compose exec web python manage.py indexror <<directory in S3 bucket>>`
 
-visit <http://localhost:9292/organizations> to see the results
+### Full index from data dump
 
-## LEGACY: Import GRID data
+Management command ```indexrordump``` downloads and indexes and full ROR data dump.
+
+Not used as part of the normal data deployment process. Used when developing locally or restoring a remote environment to a specific data dump.
+
+To delete the existing index, create a new index and index a data dump:
+
+**LOCALHOST:** Run
+
+          docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+
+**DEV/STAGING/PROD:** Access the running ror-api container and run:
+
+         python manage.py setup v1.0-2022-03-17-ror-data
+
+*Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
+
+## LEGACY: Converting GRID data to ROR  (process used prior to Mar 2022)
+
+Steps used prior to Mar 2022:
+- Convert latest GRID dataset to ROR (including assigning ROR IDs)
+- Generate ROR data dump
+- Index ROR data dump into Elastic Search
+
+As of Mar 2022 ROR is no longer based on GRID. Record additions/updates and data deployment is now managed in https://github.com/ror-community/ror-records using the ```indexror``` command described above.
+
+Steps below no longer work, as data files have been moved to [ror-data](https://github.com/ror-community/ror-data). This information is being maintained for historical purposes.
+
+Management commands used in this process no longer work and are pre-pended with "legacy".
+
 
 To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g.
 
@@ -243,31 +316,3 @@ ROR dataset ZIP archive created
 This will create a new `data/ror-2020-03-15` folder, containing a `ror.json` and `ror.zip`. To finish the process, add the new folder to git and push to the GitHub repo.
 
 To install the updated ROR data, run `./manage.py setup`.
-
-## Data dumps
-
-It is possible to download the whole ROR dataset. ROR data downloads are stored here: <https://zenodo.org/communities/ror-data>.
-
-## Development
-
-In the project directory, run docker-compose to start all services:
-
-```
-docker-compose up -d
-```
-
-Index GRID data:
-
-```
-docker-compose exec web python manage.py setup
-```
-
-and visit <http://localhost:9292/organizations>.
-
-Optionally, run the tests:
-
-```
-docker-compose exec web python manage.py test rorapi.tests
-docker-compose exec web python manage.py test rorapi.tests_integration
-docker-compose exec web python manage.py test rorapi.tests_functional
-```
