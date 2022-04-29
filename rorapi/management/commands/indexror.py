@@ -65,7 +65,7 @@ def get_rc_data(dir, contents):
     if branch_objects:
         s3_file = branch_objects[0]['Key']
         local_path = os.path.join(DATA['DIR'], dir)
-        os.mkdirs(local_path)
+        os.makedirs(local_path)
         local_file = local_path + "/files.zip"
         try:
             DATA['CLIENT'].download_file(DATA['DATA_STORE'],s3_file, local_file)
