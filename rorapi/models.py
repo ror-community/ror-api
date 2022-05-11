@@ -1,6 +1,5 @@
-import pycountry
-
 from rest_framework import serializers
+from geonamescache.mappers import country
 
 #####################################################################
 # Models                                                            #
@@ -138,11 +137,12 @@ class CountryBucket:
     """A model class for country aggregation bucket"""
     def __init__(self, data):
         self.id = data.key.lower()
-        country = pycountry.countries.get(alpha_2=data.key)
+        mapper = country(from_key='iso', to_key='name')
         try:
-            self.title = country.official_name
+            self.title = mapper(data.key)
         except AttributeError:
-            self.title = country.name
+            # if we have a country code with no name mapping, skip it to prevent 500
+            pass
         self.count = data.doc_count
 
 
