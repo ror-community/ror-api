@@ -207,15 +207,15 @@ class AggregationsTestCase(SimpleTestCase):
         self.assertEqual(aggr.countries[0].title, 'Ireland')
         self.assertEqual(aggr.countries[0].count, 48212)
         self.assertEqual(aggr.countries[1].id, 'fr')
-        self.assertEqual(aggr.countries[1].title, 'French Republic')
+        self.assertEqual(aggr.countries[1].title, 'France')
         self.assertEqual(aggr.countries[1].count, 4821)
         self.assertEqual(aggr.countries[2].id, 'gb')
         self.assertEqual(
             aggr.countries[2].title,
-            'United Kingdom of Great Britain and Northern Ireland')
+            'United Kingdom')
         self.assertEqual(aggr.countries[2].count, 482)
         self.assertEqual(aggr.countries[3].id, 'us')
-        self.assertEqual(aggr.countries[3].title, 'United States of America')
+        self.assertEqual(aggr.countries[3].title, 'United States')
         self.assertEqual(aggr.countries[3].count, 48)
 
 
