@@ -22,29 +22,22 @@ def get_ror_id(string):
 
 def filter_string_to_list(filter_string):
     filter_list = []
-    for f in ALLOWED_FILTERS:
-        if f in filter_string:
-            key = f
-            value = ''
-            # some country names contain , chars
-            # so can't split filters using ,
-            # need to check between filter names for values
-            for y in ALLOWED_FILTERS:
-                search_between_filter_names = re.search(f + '(.*)' + y, filter_string)
-                if search_between_filter_names:
-                    value = search_between_filter_names.group(1).rstrip(",")
-            if not value:
-                search_between_filter_name_end = re.search(f + '(.*$)', filter_string)
-                value = search_between_filter_name_end.group(1).rstrip(",")
-            # normalize filter values based on casing conventions used in ROR records
-            if value:
-                if f == 'types':
-                    value = value.title()
-                if f == 'country.country_code':
-                    value =  value.upper()
-                if f == 'country.country_name':
-                    value = titlecase(value)
-            filter_list.append(key + value)
+    # some country names contain comma chars
+    # allow comma chars in country_name filter values only
+    if 'country.country_name' in filter_string:
+        country_name_filters = []
+        search = re.findall('country.country_name:([^:]*)', filter_string)
+        if search:
+            for s in search:
+                if len(re.findall(",", s)) > 1:
+                    s = s.rsplit(",", 1)[0]
+                country_name_filter = 'country.country_name:' + s
+                country_name_filters.append(country_name_filter)
+                filter_string = filter_string.replace(country_name_filter, '')
+        filter_list = [f for f in filter_string.split(',') if f]
+        filter_list = filter_list + country_name_filters
+    else:
+        filter_list = [f for f in filter_string.split(',') if f]
     return filter_list
 
 def validate(params):
@@ -104,6 +97,14 @@ def build_search_query(params):
         filters = [
             f.split(':') for f in filter_string_to_list(params.get('filter', '')) if f
         ]
+        # normalize filter values based on casing conventions used in ROR records
+        for f in filters:
+            if f[0] ==  'types':
+                f[1] = f[1].title()
+            if f[0] == 'country.country_code':
+                f[1] = f[1].upper()
+            if f[0] == 'country.country_name':
+                f[1] = titlecase(f[1])
         filters = [(f[0], f[1]) for f in filters]
         qb.add_filters(filters)
 
