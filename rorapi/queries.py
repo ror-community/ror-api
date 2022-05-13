@@ -1,4 +1,5 @@
 import re
+from titlecase import titlecase
 
 from .matching import match_affiliation
 from .models import Organization, ListResult, MatchingResult, Errors
@@ -6,6 +7,8 @@ from .settings import ROR_API, ES_VARS
 from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
+
+ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name']
 
 
 def get_ror_id(string):
@@ -17,6 +20,32 @@ def get_ror_id(string):
         return ROR_API['ID_PREFIX'] + m.group(1)
     return None
 
+def filter_string_to_list(filter_string):
+    filter_list = []
+    for f in ALLOWED_FILTERS:
+        if f in filter_string:
+            key = f
+            value = ''
+            # some country names contain , chars
+            # so can't split filters using ,
+            # need to check between filter names for values
+            for y in ALLOWED_FILTERS:
+                search_between_filter_names = re.search(f + '(.*)' + y, filter_string)
+                if search_between_filter_names:
+                    value = search_between_filter_names.group(1).rstrip(",")
+            if not value:
+                search_between_filter_name_end = re.search(f + '(.*$)', filter_string)
+                value = search_between_filter_name_end.group(1).rstrip(",")
+            # normalize filter values based on casing conventions used in ROR records
+            if value:
+                if f == 'types':
+                    value = value.title()
+                if f == 'country.country_code':
+                    value =  value.upper()
+                if f == 'country.country_name':
+                    value = titlecase(value)
+            filter_list.append(key + value)
+    return filter_list
 
 def validate(params):
     """Validates API GET parameters. Returns an error object
@@ -28,8 +57,7 @@ def validate(params):
     errors = [
         'query parameter \'{}\' is illegal'.format(n) for n in illegal_names
     ]
-
-    filters = [f for f in params.get('filter', '').split(',') if f]
+    filters = filter_string_to_list(params.get('filter', ''))
     invalid_filters = [f for f in filters if ':' not in f]
     errors.extend([
         'filter \'{}\' is not in the key:value form'.format(n)
@@ -40,7 +68,7 @@ def validate(params):
     filter_keys = [f.split(':')[0] for f in valid_filters]
     illegal_keys = [
         v for v in filter_keys
-        if v not in ['country.country_code', 'types', 'country.country_name']
+        if v not in ALLOWED_FILTERS
     ]
     errors.extend(
         ['filter key \'{}\' is illegal'.format(k) for k in illegal_keys])
@@ -74,7 +102,7 @@ def build_search_query(params):
 
     if 'filter' in params:
         filters = [
-            f.split(':') for f in params.get('filter', '').split(',') if f
+            f.split(':') for f in filter_string_to_list(params.get('filter', '')) if f
         ]
         filters = [(f[0], f[1]) for f in filters]
         qb.add_filters(filters)
