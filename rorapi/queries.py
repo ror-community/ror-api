@@ -1,4 +1,5 @@
 import re
+from titlecase import titlecase
 
 from .matching import match_affiliation
 from .models import Organization, ListResult, MatchingResult, Errors
@@ -6,6 +7,8 @@ from .settings import ROR_API, ES_VARS
 from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
+
+ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name']
 
 
 def get_ror_id(string):
@@ -17,6 +20,25 @@ def get_ror_id(string):
         return ROR_API['ID_PREFIX'] + m.group(1)
     return None
 
+def filter_string_to_list(filter_string):
+    filter_list = []
+    # some country names contain comma chars
+    # allow comma chars in country_name filter values only
+    if 'country.country_name' in filter_string:
+        country_name_filters = []
+        search = re.findall('country.country_name:([^:]*)', filter_string)
+        if search:
+            for s in search:
+                if len(re.findall(",", s)) > 1:
+                    s = s.rsplit(",", 1)[0]
+                country_name_filter = 'country.country_name:' + s
+                country_name_filters.append(country_name_filter)
+                filter_string = filter_string.replace(country_name_filter, '')
+        filter_list = [f for f in filter_string.split(',') if f]
+        filter_list = filter_list + country_name_filters
+    else:
+        filter_list = [f for f in filter_string.split(',') if f]
+    return filter_list
 
 def validate(params):
     """Validates API GET parameters. Returns an error object
@@ -28,8 +50,7 @@ def validate(params):
     errors = [
         'query parameter \'{}\' is illegal'.format(n) for n in illegal_names
     ]
-
-    filters = [f for f in params.get('filter', '').split(',') if f]
+    filters = filter_string_to_list(params.get('filter', ''))
     invalid_filters = [f for f in filters if ':' not in f]
     errors.extend([
         'filter \'{}\' is not in the key:value form'.format(n)
@@ -40,7 +61,7 @@ def validate(params):
     filter_keys = [f.split(':')[0] for f in valid_filters]
     illegal_keys = [
         v for v in filter_keys
-        if v not in ['country.country_code', 'types', 'country.country_name']
+        if v not in ALLOWED_FILTERS
     ]
     errors.extend(
         ['filter key \'{}\' is illegal'.format(k) for k in illegal_keys])
@@ -74,8 +95,16 @@ def build_search_query(params):
 
     if 'filter' in params:
         filters = [
-            f.split(':') for f in params.get('filter', '').split(',') if f
+            f.split(':') for f in filter_string_to_list(params.get('filter', '')) if f
         ]
+        # normalize filter values based on casing conventions used in ROR records
+        for f in filters:
+            if f[0] ==  'types':
+                f[1] = f[1].title()
+            if f[0] == 'country.country_code':
+                f[1] = f[1].upper()
+            if f[0] == 'country.country_name':
+                f[1] = titlecase(f[1])
         filters = [(f[0], f[1]) for f in filters]
         qb.add_filters(filters)
 
