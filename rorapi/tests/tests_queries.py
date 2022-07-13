@@ -145,6 +145,24 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                      }
                  }))
 
+    def test_query_advanced(self):
+        query = build_search_query({'query.advanced': 'query terms'})
+        self.assertEquals(
+            query.to_dict(),
+            dict(self.default_query,
+                 query={
+                    'bool': {
+                        'must': [{
+                            'query_string': {
+                                'query': 'query terms',
+                                'default_field': '*',
+                                'default_operator':'and',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }]
+                    }
+                 }))
+
     def test_filter(self):
         f = 'key1:val1,k2:value2'
         e = [{'term': {'key1': 'val1'}}, {'term': {'k2': 'value2'}}]
@@ -232,6 +250,7 @@ class SearchOrganizationsTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         error, organizations = search_organizations({})
+        print(organizations.number_of_results)
         self.assertIsNone(error)
 
         search_mock.assert_called_once()

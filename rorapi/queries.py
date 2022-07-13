@@ -45,7 +45,7 @@ def validate(params):
     that can be serialized into JSON or None."""
 
     illegal_names = [
-        k for k in params.keys() if k not in ['query', 'page', 'filter']
+        k for k in params.keys() if k not in ['query', 'page', 'filter', 'query.advanced']
     ]
     errors = [
         'query parameter \'{}\' is illegal'.format(n) for n in illegal_names
@@ -84,7 +84,9 @@ def build_search_query(params):
 
     qb = ESQueryBuilder()
 
-    if 'query' in params:
+    if 'query.advanced' in params:
+        qb.add_string_query_advanced(params.get('query.advanced'))
+    elif 'query' in params:
         ror_id = get_ror_id(params.get('query'))
         if ror_id is not None:
             qb.add_id_query(ror_id)
