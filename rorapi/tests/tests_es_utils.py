@@ -46,6 +46,25 @@ class QueryBuilderTestCase(SimpleTestCase):
                     }
                 }
             })
+    def test_string_query_advanced(self):
+        qb = ESQueryBuilder()
+        qb.add_string_query_advanced('query terms')
+
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'bool': {
+                        'must': [{
+                            'query_string': {
+                                'query': 'query terms',
+                                'default_field': '*',
+                                'default_operator':'and',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }]
+                    }
+                }
+            })
 
     def test_phrase_query(self):
         qb = ESQueryBuilder()

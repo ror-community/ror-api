@@ -27,6 +27,14 @@ class ESQueryBuilder():
                                                 query=terms,
                                                 fuzzy_max_expansions=1))
 
+    def add_string_query_advanced(self, terms):
+        self.search = self.search.query('bool',
+                                        must=Q('query_string',
+                                                query=terms,
+                                                default_field='*',
+                                                default_operator='and',
+                                                fuzzy_max_expansions=1))
+
     def add_phrase_query(self, fields, terms):
         self.search.query = Q(
             'dis_max',

@@ -145,6 +145,24 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                      }
                  }))
 
+    def test_query_advanced(self):
+        query = build_search_query({'query.advanced': 'query terms'})
+        self.assertEquals(
+            query.to_dict(),
+            dict(self.default_query,
+                 query={
+                    'bool': {
+                        'must': [{
+                            'query_string': {
+                                'query': 'query terms',
+                                'default_field': '*',
+                                'default_operator':'and',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }]
+                    }
+                 }))
+
     def test_filter(self):
         f = 'key1:val1,k2:value2'
         e = [{'term': {'key1': 'val1'}}, {'term': {'k2': 'value2'}}]
