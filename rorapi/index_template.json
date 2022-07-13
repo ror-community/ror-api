@@ -3,13 +3,12 @@
     "settings": {
       "analysis": {
         "analyzer": {
-          "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
-        },
-        "normalizer": {
-          "keyword_lowercase": { "type": "custom", "filter": ["lowercase"] }
+          "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] },
+          "keyword_strip_whitespace": { "tokenizer": "keyword", "filter": ["strip_whitespace"] }
         },
         "filter": {
-          "ascii_folding": { "type": "asciifolding", "preserve_original": true }
+          "ascii_folding": { "type": "asciifolding", "preserve_original": true },
+          "strip_whitespace": { "type": "pattern_replace", "pattern": " ", "replacement": ""}
         }
       }
     },
@@ -33,10 +32,12 @@
             }
           },
           "links": {
-            "type": "keyword"
+            "type": "text",
+            "analyzer": "simple"
           },
           "wikipedia_url": {
-            "type": "keyword"
+            "type": "text",
+            "analyzer": "simple"
           },
           "aliases": {
             "type": "text",
@@ -242,10 +243,12 @@
               "ISNI": {
                 "properties": {
                   "preferred": {
-                    "type": "keyword"
+                    "type": "text",
+                    "analyzer": "keyword_strip_whitespace"
                   },
                   "all": {
-                    "type": "keyword"
+                    "type": "text",
+                    "analyzer": "keyword_strip_whitespace"
                   }
                 }
               },
