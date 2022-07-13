@@ -250,7 +250,6 @@ class SearchOrganizationsTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         error, organizations = search_organizations({})
-        print(organizations.number_of_results)
         self.assertIsNone(error)
 
         search_mock.assert_called_once()
