@@ -42,6 +42,21 @@ class ValidationTestCase(SimpleTestCase):
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
 
+    def test_too_many_parameters(self):
+        error = validate({
+            'query': 'query',
+            'query.advanced': 'query'
+        })
+        self.assertEquals(len(error.errors), 1)
+        self.assertTrue(any(['combined' in e for e in error.errors]))
+
+    def test_illegal_field(self):
+        error = validate({
+            'query.advanced': 'foo:bar'
+        })
+        self.assertEquals(len(error.errors), 1)
+        self.assertTrue(any(['illegal' in e for e in error.errors]))
+
     def test_invalid_filter(self):
         error = validate({
             'query': 'query',
@@ -82,6 +97,30 @@ class ValidationTestCase(SimpleTestCase):
             'query': 'query',
             'page': 4,
             'filter': 'country.country_code:DE,types:s'
+        })
+        self.assertIsNone(error)
+
+    def test_query_adv_no_fields(self):
+        error = validate({
+            'query.advanced': 'query'
+        })
+        self.assertIsNone(error)
+
+    def test_query_adv_wildcard(self):
+        error = validate({
+            'query.advanced': 'addresses.\*:bar'
+        })
+        self.assertIsNone(error)
+
+    def test_query_adv_exists(self):
+        error = validate({
+            'query.advanced': '_exists_:id'
+        })
+        self.assertIsNone(error)
+
+    def test_query_adv_esc(self):
+        error = validate({
+            'query.advanced': 'query\:query'
         })
         self.assertIsNone(error)
 
