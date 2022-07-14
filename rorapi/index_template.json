@@ -221,7 +221,17 @@
                 "type": "keyword"
                 },
               "label": {
-                "type": "keyword"
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  },
+                  "norm": {
+                    "type": "text",
+                    "analyzer": "string_lowercase",
+                    "fielddata": true
+                  }
+                }
               },
               "id": {
                 "type": "keyword"
