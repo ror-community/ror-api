@@ -6,7 +6,7 @@
           "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
         },
         "filter": {
-          "ascii_folding": { "type": "asciifolding", "preserve_original": true },
+          "ascii_folding": { "type": "asciifolding", "preserve_original": true }
         }
       }
     },
