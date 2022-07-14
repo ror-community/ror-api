@@ -9,7 +9,27 @@ from .es_utils import ESQueryBuilder
 from urllib.parse import unquote
 
 ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name']
-
+ALLOWED_PARAM_KEYS = ['query', 'page', 'filter', 'query.advanced']
+ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
+    'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
+    'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',
+    'addresses.geonames_city.geonames_admin2.ascii_name', 'addresses.geonames_city.geonames_admin2.code',
+    'addresses.geonames_city.geonames_admin2.name', 'addresses.geonames_city.id', 'addresses.geonames_city.license.attribution',
+    'addresses.geonames_city.license.license', 'addresses.geonames_city.nuts_level1.code',
+    'addresses.geonames_city.nuts_level1.name', 'addresses.geonames_city.nuts_level2.code',
+    'addresses.geonames_city.nuts_level2.name', 'addresses.geonames_city.nuts_level3.code',
+    'addresses.geonames_city.nuts_level3.name', 'addresses.lat', 'addresses.line', 'addresses.lng',
+    'addresses.postcode', 'addresses.primary', 'addresses.state', 'addresses.state_code', 'aliases',
+    'country.country_code', 'country.country_name', 'email_address', 'established', 'external_ids.Fundref.all',
+    'external_ids.Fundref.preferred', 'external_ids.GRID.all', 'external_ids.GRID.preferred', 'external_ids.ISNI.all',
+    'external_ids.ISNI.preferred', 'external_ids.Wikidata.all', 'external_ids.Wikidata.preferred', 'id', 'ip_addresses',
+    'labels.iso639', 'labels.label', 'links', 'name', 'relationships.id', 'relationships.label', 'relationships.type',
+    'status', 'types', 'wikipedia_url']
+# Values that are not valid field names that can precede : char
+# \: escaped :
+# \*: match subfields, ex addresses.\*:
+# _exists_: check if field has non-null value, ex _exists_:wikipedia_url
+ALLOWED_ENDINGS = ['_exists_', '\\', '\\*']
 
 def get_ror_id(string):
     """Extracts ROR id from a string and transforms it into canonical form"""
@@ -19,6 +39,16 @@ def get_ror_id(string):
     if m is not None:
         return ROR_API['ID_PREFIX'] + m.group(1)
     return None
+
+def adv_query_string_to_list(query_string):
+    field_list = []
+    if ':' in query_string:
+        query_string = query_string.replace(':', ':SPLIT_HERE')
+        query_split = query_string.split('SPLIT_HERE')
+        for substr in query_split:
+            if substr.endswith(':'):
+                field_list.append(substr.rstrip(':'))
+    return field_list
 
 def filter_string_to_list(filter_string):
     filter_list = []
@@ -45,17 +75,30 @@ def validate(params):
     that can be serialized into JSON or None."""
 
     illegal_names = [
-        k for k in params.keys() if k not in ['query', 'page', 'filter', 'query.advanced']
+        k for k in params.keys() if k not in ALLOWED_PARAM_KEYS
     ]
     errors = [
         'query parameter \'{}\' is illegal'.format(n) for n in illegal_names
     ]
+
+    if not illegal_names:
+        if len(params.keys()) > 1:
+            if 'query' in  params.keys() and 'query.advanced' in  params.keys():
+                errors.extend([
+                    'query and query.advanced parameters cannot be combined. please use either query OR query.advanced'
+                ])
+
+    adv_query_fields = adv_query_string_to_list(params.get('query.advanced', ''))
+    illegal_fields = [
+        f for f in adv_query_fields if (not f.endswith(tuple(ALLOWED_FIELDS)) and not f.endswith(tuple(ALLOWED_ENDINGS)))
+    ]
+    errors.extend([
+        'string \'{}\' contains an illegal field name'.format(f) for f in illegal_fields])
+
     filters = filter_string_to_list(params.get('filter', ''))
     invalid_filters = [f for f in filters if ':' not in f]
     errors.extend([
-        'filter \'{}\' is not in the key:value form'.format(n)
-        for n in invalid_filters
-    ])
+        'filter \'{}\' is not in the key:value form'.format(n) for n in invalid_filters])
 
     valid_filters = [f for f in filters if ':' in f]
     filter_keys = [f.split(':')[0] for f in valid_filters]
@@ -63,8 +106,8 @@ def validate(params):
         v for v in filter_keys
         if v not in ALLOWED_FILTERS
     ]
-    errors.extend(
-        ['filter key \'{}\' is illegal'.format(k) for k in illegal_keys])
+    errors.extend([
+        'filter key \'{}\' is illegal'.format(k) for k in illegal_keys])
 
     if 'page' in params:
         page = params.get('page')
