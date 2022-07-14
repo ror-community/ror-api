@@ -4,11 +4,9 @@
       "analysis": {
         "analyzer": {
           "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] },
-          "keyword_strip_whitespace": { "tokenizer": "keyword", "filter": ["strip_whitespace"] }
         },
         "filter": {
           "ascii_folding": { "type": "asciifolding", "preserve_original": true },
-          "strip_whitespace": { "type": "pattern_replace", "pattern": " ", "replacement": ""}
         }
       }
     },
@@ -253,12 +251,10 @@
               "ISNI": {
                 "properties": {
                   "preferred": {
-                    "type": "text",
-                    "analyzer": "keyword_strip_whitespace"
+                    "type": "keyword"
                   },
                   "all": {
-                    "type": "text",
-                    "analyzer": "keyword_strip_whitespace"
+                    "type": "keyword"
                   }
                 }
               },
