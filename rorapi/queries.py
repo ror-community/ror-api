@@ -20,11 +20,13 @@ ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.nuts_level2.name', 'addresses.geonames_city.nuts_level3.code',
     'addresses.geonames_city.nuts_level3.name', 'addresses.lat', 'addresses.line', 'addresses.lng',
     'addresses.postcode', 'addresses.primary', 'addresses.state', 'addresses.state_code', 'aliases',
-    'country.country_code', 'country.country_name', 'email_address', 'established', 'external_ids.Fundref.all',
-    'external_ids.Fundref.preferred', 'external_ids.GRID.all', 'external_ids.GRID.preferred', 'external_ids.ISNI.all',
-    'external_ids.ISNI.preferred', 'external_ids.Wikidata.all', 'external_ids.Wikidata.preferred', 'id', 'ip_addresses',
-    'labels.iso639', 'labels.label', 'links', 'name', 'relationships.id', 'relationships.label', 'relationships.type',
-    'status', 'types', 'wikipedia_url']
+    'country.country_code', 'country.country_name', 'email_address', 'established', 'external_ids.CNRS.all',
+    'external_ids.CNRS.preferred', 'external_ids.Fundref.all', 'external_ids.Fundref.preferred', 'external_ids.HESA.all',
+    'external_ids.HESA.preferred', 'external_ids.GRID.all', 'external_ids.GRID.preferred', 'external_ids.ISNI.all',
+    'external_ids.ISNI.preferred', 'external_ids.OrgRef.all', 'external_ids.OrgRef.preferred', 'external_ids.UCAS.all',
+    'external_ids.UCAS.preferred', 'external_ids.UKPRNS.all', 'external_ids.UKPRNS.preferred', 'external_ids.Wikidata.all',
+    'external_ids.Wikidata.preferred', 'id', 'ip_addresses', 'labels.iso639', 'labels.label', 'links', 'name',
+    'relationships.id', 'relationships.label', 'relationships.type', 'status', 'types', 'wikipedia_url']
 # Values that are not valid field names that can precede : char
 # \: escaped :
 # \*: match subfields, ex addresses.\*:
