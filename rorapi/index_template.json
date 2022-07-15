@@ -5,9 +5,6 @@
         "analyzer": {
           "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
         },
-        "normalizer": {
-          "keyword_lowercase": { "type": "custom", "filter": ["lowercase"] }
-        },
         "filter": {
           "ascii_folding": { "type": "asciifolding", "preserve_original": true }
         }
@@ -33,10 +30,12 @@
             }
           },
           "links": {
-            "type": "keyword"
+            "type": "text",
+            "analyzer": "simple"
           },
           "wikipedia_url": {
-            "type": "keyword"
+            "type": "text",
+            "analyzer": "simple"
           },
           "aliases": {
             "type": "text",
@@ -220,7 +219,17 @@
                 "type": "keyword"
                 },
               "label": {
-                "type": "keyword"
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  },
+                  "norm": {
+                    "type": "text",
+                    "analyzer": "string_lowercase",
+                    "fielddata": true
+                  }
+                }
               },
               "id": {
                 "type": "keyword"
