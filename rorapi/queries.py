@@ -3,7 +3,7 @@ from titlecase import titlecase
 
 from .matching import match_affiliation
 from .models import Organization, ListResult, MatchingResult, Errors
-from .settings import ROR_API, ES_VARS
+from .settings import GRID_REMOVED_IDS, ROR_API, ES_VARS
 from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
@@ -184,7 +184,10 @@ def search_organizations(params):
 
 def retrieve_organization(ror_id):
     """Retrieves the organization of the given ROR ID"""
-
+    if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
+        return Errors(["ROR ID \'{}\' was removed by GRID during time period (Jan 2019-Mar 2022)"
+        "that ROR was synced with GRID. We are currently working the ROR Curation Advisory Board "
+        "to restore these records and expect to complete this work in 2022".format(ror_id)]), None
     search = build_retrieve_query(ror_id)
     results = search.execute()
     if results.hits.total > 0:
