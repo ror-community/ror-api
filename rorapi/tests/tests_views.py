@@ -10,7 +10,6 @@ from .utils import IterableAttrDict
 
 factory = APIRequestFactory()
 
-
 class ViewListTestCase(SimpleTestCase):
     def setUp(self):
         with open(
@@ -98,6 +97,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
         # go through every attribute and check to see that they are equal
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(organization, self.test_data['hits']['hits'][0])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
@@ -112,15 +112,14 @@ class ViewRetrievalTestCase(SimpleTestCase):
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
 
+        self.assertEquals(response.status_code, 404)
         self.assertEquals(list(organization.keys()), ['errors'])
         self.assertEquals(len(organization['errors']), 1)
-
 
 class MetricsPageViewTestCase(SimpleTestCase):
     def test_request_home_page(self):
         response = self.client.get('/metrics')
         self.assertEquals(response.status_code, 200)
-
 
 class MetricsPageCountTestCase(SimpleTestCase):
     def setUp(self):
