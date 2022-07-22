@@ -185,8 +185,8 @@ def search_organizations(params):
 def retrieve_organization(ror_id):
     """Retrieves the organization of the given ROR ID"""
     if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
-        return Errors(["ROR ID \'{}\' was removed by GRID during time period (Jan 2019-Mar 2022)"
-        "that ROR was synced with GRID. We are currently working the ROR Curation Advisory Board "
+        return Errors(["ROR ID \'{}\' was removed by GRID during the time period (Jan 2019-Mar 2022) "
+        "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
         "to restore these records and expect to complete this work in 2022".format(ror_id)]), None
     search = build_retrieve_query(ror_id)
     results = search.execute()
