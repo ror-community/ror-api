@@ -50,7 +50,7 @@ class OrganizationViewSet(viewsets.ViewSet):
         ror_id = get_ror_id(pk)
         errors, organization = retrieve_organization(ror_id)
         if errors is not None:
-            return Response(ErrorsSerializer(errors).data)
+            return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
         serializer = OrganizationSerializer(organization)
         return Response(serializer.data)
 
