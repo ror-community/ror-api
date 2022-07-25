@@ -4,6 +4,8 @@
 
 The ROR API allows retrieving, searching and filtering the organizations indexed in ROR. The results are returned in JSON. See https://ror.readme.io for documentation.
 
+Commands for indexing ROR data, generating new ROR IDs and other internal operations are also included in this API.
+
 # Development
 
 ## Local setup
@@ -29,12 +31,11 @@ Replace values in [] with valid credential values. GITHUB_TOKEN is needed in ord
 ## Start ror-api locally
 1. Start Docker Desktop
 2. In the project directory, run docker-compose to start all services:
-
-      docker-compose up -d
+        docker-compose up -d
 
 3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
 
-      docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
@@ -44,10 +45,9 @@ Replace values in [] with valid credential values. GITHUB_TOKEN is needed in ord
 
 6. Optionally, run tests
 
-      docker-compose exec web python manage.py test rorapi.tests
-      docker-compose exec web python manage.py test rorapi.tests_integration
-      docker-compose exec web python manage.py test rorapi.tests_functional
-
+        docker-compose exec web python manage.py test rorapi.tests
+        docker-compose exec web python manage.py test rorapi.tests_integration
+        docker-compose exec web python manage.py test rorapi.tests_functional
 
 ## Indexing ROR data (Mar 2022 onward)
 
@@ -62,11 +62,11 @@ Used in the data deployment process managed in [ror-records](https://github.com/
 1. Create a .env file with values for DATA_STORE, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
 2. In the project directory, run docker-compose to start all services:
 
-      docker-compose up -d
+        docker-compose up -d
 
 3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
 
-      docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
@@ -75,10 +75,12 @@ Used in the data deployment process managed in [ror-records](https://github.com/
 5. Index files for new/updated records from a directory in an S3 bucket
 
 Through the route:
-`curl -H "Token: <<token value>>" -H "Route-User: <<value>>" http://localhost:9292/indexdata/<<directory in S3 bucket>>`
+
+        curl -H "Token: <<token value>>" -H "Route-User: <<value>>" http://localhost:9292/indexdata/<<directory in S3 bucket>>
 
 Through the CLI:
-`docker-compose exec web python manage.py indexror <<directory in S3 bucket>>`
+
+        docker-compose exec web python manage.py indexror <<directory in S3 bucket>>`
 
 ### Full index from data dump
 
