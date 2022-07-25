@@ -115,6 +115,41 @@ class ViewRetrievalTestCase(SimpleTestCase):
         self.assertEquals(response.status_code, 404)
         self.assertEquals(list(organization.keys()), ['errors'])
         self.assertEquals(len(organization['errors']), 1)
+        self.assertTrue(any(['does not exist' in e for e in organization['errors']]))
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_retrieve_invalid_id(self, search_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
+
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
+        request = factory.get('/organizations/https://ror.org/abc123')
+        response = view(request, pk='https://ror.org/abc123')
+        response.render()
+        organization = json.loads(response.content.decode('utf-8'))
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(list(organization.keys()), ['errors'])
+        self.assertEquals(len(organization['errors']), 1)
+        self.assertTrue(any(['not a valid' in e for e in organization['errors']]))
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_retrieve_grid_removed_id(self, search_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
+
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
+        request = factory.get('/organizations/https://ror.org/02339jp70')
+        response = view(request, pk='https://ror.org/02339jp70')
+        response.render()
+        organization = json.loads(response.content.decode('utf-8'))
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(list(organization.keys()), ['errors'])
+        self.assertEquals(len(organization['errors']), 1)
+        self.assertTrue(any(['removed by GRID' in e for e in organization['errors']]))
 
 class MetricsPageViewTestCase(SimpleTestCase):
     def test_request_home_page(self):
