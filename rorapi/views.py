@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from .matching import match_organizations
 from .models import OrganizationSerializer, ListResultSerializer, \
-    MatchingResultSerializer, ErrorsSerializer
+    MatchingResultSerializer, Errors, ErrorsSerializer
 from .queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 import os
@@ -21,7 +21,7 @@ from rorapi.management.commands.indexror import process_files
 class OrganizationViewSet(viewsets.ViewSet):
 
     lookup_value_regex = \
-        r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?0\w{6}\d{2}'
+        r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*'
 
     def list(self, request):
         params = request.GET.dict()
@@ -48,9 +48,12 @@ class OrganizationViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         ror_id = get_ror_id(pk)
+        if ror_id is None:
+            errors = Errors(['\'{}\' is not a valid ROR ID'.format(pk)])
+            return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
         errors, organization = retrieve_organization(ror_id)
         if errors is not None:
-            return Response(ErrorsSerializer(errors).data)
+            return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
         serializer = OrganizationSerializer(organization)
         return Response(serializer.data)
 
