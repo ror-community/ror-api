@@ -3,7 +3,7 @@ import json
 import os.path
 import random
 from .createindex import Command as CreateIndexCommand
-from rorapi.settings import ES, ES_VARS, ROR_API
+from rorapi.settings import ES, ES_VARS, ROR_API, GRID_REMOVED_IDS
 
 def generate_ror_id():
     """Generates random ROR ID.
@@ -28,7 +28,7 @@ def check_ror_id():
                         'term': {
                             '_id': ror_id
                             }}})
-    if s['hits']['total'] == 1:
+    if s['hits']['total'] == 1 or s in GRID_REMOVED_IDS:
         check_ror_id()
     return ror_id
 
