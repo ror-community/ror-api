@@ -1,6 +1,7 @@
 ad andorra
 ae al imarat al arabiyah al muttahidah
 ae arab emirates
+ae uae
 ae united arab emirates
 af afghanestan
 af afghanistan
@@ -436,6 +437,7 @@ ua ukr
 ua ukraine
 ua ukrayina
 ug uganda
+uk gb
 uk gbr
 uk great britain
 uk northern ireland
