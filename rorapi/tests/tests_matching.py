@@ -359,15 +359,6 @@ class TestMatchingNode(SimpleTestCase):
         self.assertEqual(empty.text, 'text')
         self.assertTrue(empty.matched is None)
 
-    def test_get_matching_types(self):
-        empty = MatchingNode('text')
-        self.assertEqual(len(empty.get_matching_types()), 4)
-
-    def test_get_matching_types(self):
-        empty = MatchingNode('text')
-        self.assertEqual(len(empty.get_matching_types()), 4)
-
-
 class TestCleanSearchString(SimpleTestCase):
     def test_init(self):
         self.assertEqual(clean_search_string('university of excellence'),

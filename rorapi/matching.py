@@ -21,8 +21,11 @@ MATCHING_TYPE_HEURISTICS = 'HEURISTICS'
 MATCHING_TYPE_ACRONYM = 'ACRONYM'
 MATCHING_TYPE_EXACT = 'EXACT'
 
+NODE_MATCHING_TYPES = (MATCHING_TYPE_PHRASE, MATCHING_TYPE_COMMON, \
+    MATCHING_TYPE_FUZZY, MATCHING_TYPE_HEURISTICS)
+
 SPECIAL_CHARS_REGEX = '[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]'
-DO_NOT_MATCH = ['university hospital']
+DO_NOT_MATCH = ('university hospital')
 
 #####################################################################
 # Country extraction                                                #
@@ -249,13 +252,8 @@ class MatchingNode:
         self.matched = None
         self.all_matched = []
 
-    def get_matching_types(self):
-        return [
-                MATCHING_TYPE_PHRASE, MATCHING_TYPE_COMMON, MATCHING_TYPE_FUZZY, MATCHING_TYPE_HEURISTICS
-            ]
-
     def match(self, countries, min_score):
-        for matching_type in self.get_matching_types():
+        for matching_type in NODE_MATCHING_TYPES:
             chosen, all_matched = match_by_type(self.text, matching_type,
                                                 countries)
             self.all_matched.extend(all_matched)
@@ -337,18 +335,10 @@ class MatchingGraph:
         all_matched.extend(acr_all_matched)
         return chosen, all_matched
 
-def get_chosen_larger_substr(chosen):
-    perfect_scores = [c for c in chosen if c.score == 1.0]
-    if len(perfect_scores) == len(chosen):
-        return([])
-    else:
-        return(chosen)
-
 def get_output(chosen, all_matched):
     # don't allow multiple results with chosen=True
     if isinstance(chosen, list) and len(chosen) > 1:
         chosen = []
-
     type_map = {
         MATCHING_TYPE_EXACT: 5,
         MATCHING_TYPE_PHRASE: 4,
