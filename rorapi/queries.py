@@ -8,7 +8,7 @@ from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
 
-ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name']
+ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name', 'status']
 ALLOWED_PARAM_KEYS = ['query', 'page', 'filter', 'query.advanced']
 ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
@@ -146,17 +146,19 @@ def build_search_query(params):
         ]
         # normalize filter values based on casing conventions used in ROR records
         for f in filters:
-            if f[0] ==  'types':
+            if f[0] == 'types':
                 f[1] = f[1].title()
             if f[0] == 'country.country_code':
                 f[1] = f[1].upper()
             if f[0] == 'country.country_name':
                 f[1] = titlecase(f[1])
+            if f[0] == 'status':
+                f[1] = f[1].lower()
         filters = [(f[0], f[1]) for f in filters]
         qb.add_filters(filters)
 
     qb.add_aggregations([('types', 'types'),
-                         ('countries', 'country.country_code')])
+                         ('countries', 'country.country_code'), ('status', 'status')])
 
     qb.paginate(int(params.get('page', 1)))
 
