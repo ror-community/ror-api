@@ -8,9 +8,9 @@ from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
 
-ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name', 'status']
-ALLOWED_PARAM_KEYS = ['query', 'page', 'filter', 'query.advanced', 'all_status']
-ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
+ALLOWED_FILTERS = ('country.country_code', 'types', 'country.country_name', 'status')
+ALLOWED_PARAM_KEYS = ('query', 'page', 'filter', 'query.advanced', 'all_status')
+ALLOWED_FIELDS = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
     'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',
     'addresses.geonames_city.geonames_admin2.ascii_name', 'addresses.geonames_city.geonames_admin2.code',
@@ -26,12 +26,12 @@ ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'external_ids.ISNI.preferred', 'external_ids.OrgRef.all', 'external_ids.OrgRef.preferred', 'external_ids.UCAS.all',
     'external_ids.UCAS.preferred', 'external_ids.UKPRNS.all', 'external_ids.UKPRNS.preferred', 'external_ids.Wikidata.all',
     'external_ids.Wikidata.preferred', 'id', 'ip_addresses', 'labels.iso639', 'labels.label', 'links', 'name',
-    'relationships.id', 'relationships.label', 'relationships.type', 'status', 'types', 'wikipedia_url']
+    'relationships.id', 'relationships.label', 'relationships.type', 'status', 'types', 'wikipedia_url')
 # Values that are not valid field names that can precede : char
 # \: escaped :
 # \*: match subfields, ex addresses.\*:
 # _exists_: check if field has non-null value, ex _exists_:wikipedia_url
-ALLOWED_ENDINGS = ['_exists_', '\\', '\\*']
+ALLOWED_ENDINGS = ('_exists_', '\\', '\\*')
 
 def get_ror_id(string):
     """Extracts ROR id from a string and transforms it into canonical form"""
@@ -51,6 +51,16 @@ def adv_query_string_to_list(query_string):
             if substr.endswith(':'):
                 field_list.append(substr.rstrip(':'))
     return field_list
+
+def check_status_adv_q(adv_q_string):
+    status_in_q = False
+    adv_query_fields = adv_query_string_to_list(adv_q_string)
+    status_fields = [
+        f for f in adv_query_fields if f.endswith('status')
+    ]
+    if len(status_fields) > 0:
+        status_in_q = True
+    return status_in_q
 
 def filter_string_to_list(filter_string):
     filter_list = []
@@ -158,7 +168,11 @@ def build_search_query(params):
         filters = [(f[0], f[1]) for f in filters]
         statusFilter = [f for f in filters if 'status' in f]
         if len(statusFilter) == 0 and (not 'all_status' in params):
-            filters.append(('status', 'active'))
+            status_in_adv_q = False
+            if 'query.advanced' in params:
+                status_in_adv_q = check_status_adv_q(params.get('query.advanced'))
+            if not status_in_adv_q:
+                filters.append(('status', 'active'))
         qb.add_filters(filters)
 
     qb.add_aggregations([('types', 'types'),
