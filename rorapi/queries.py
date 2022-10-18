@@ -9,7 +9,7 @@ from .es_utils import ESQueryBuilder
 from urllib.parse import unquote
 
 ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name', 'status']
-ALLOWED_PARAM_KEYS = ['query', 'page', 'filter', 'query.advanced']
+ALLOWED_PARAM_KEYS = ['query', 'page', 'filter', 'query.advanced', 'all_status']
 ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
     'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',
@@ -140,7 +140,8 @@ def build_search_query(params):
     else:
         qb.add_match_all_query()
 
-    if 'filter' in params:
+
+    if 'filter' in params or (not 'all_status' in params):
         filters = [
             f.split(':') for f in filter_string_to_list(params.get('filter', '')) if f
         ]
@@ -155,6 +156,9 @@ def build_search_query(params):
             if f[0] == 'status':
                 f[1] = f[1].lower()
         filters = [(f[0], f[1]) for f in filters]
+        statusFilter = [f for f in filters if 'status' in f]
+        if len(statusFilter) == 0 and (not 'all_status' in params):
+            filters.append(('status', 'active'))
         qb.add_filters(filters)
 
     qb.add_aggregations([('types', 'types'),
