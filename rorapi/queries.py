@@ -210,7 +210,6 @@ def search_organizations(params):
         return error, None
 
     search = build_search_query(params)
-    print(search.to_dict())
     return None, ListResult(search.execute())
 
 

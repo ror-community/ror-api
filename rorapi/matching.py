@@ -405,6 +405,10 @@ def match_affiliation(affiliation, active_only):
 
 def match_organizations(params):
     if 'affiliation' in params:
-        matched = match_affiliation(params.get('affiliation'), not('all_status' in params))
+        active_only = True
+        if 'all_status' in params:
+            if params['all_status'] == '' or params['all_status'].lower() == "true":
+                active_only = False
+        matched = match_affiliation(params.get('affiliation'), active_only)
         return None, MatchingResult(matched)
     return Errors('"affiliation" parameter missing'), None
