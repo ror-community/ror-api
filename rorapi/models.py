@@ -145,12 +145,20 @@ class CountryBucket:
             pass
         self.count = data.doc_count
 
+class StatusBucket:
+    """A model class for status aggregation bucket"""
+    def __init__(self, data):
+        self.id = data.key.lower()
+        self.title = data.key
+        self.count = data.doc_count
+
 
 class Aggregations:
     """Aggregations model class"""
     def __init__(self, data):
         self.types = [TypeBucket(b) for b in data.types.buckets]
         self.countries = [CountryBucket(b) for b in data.countries.buckets]
+        self.statuses = [StatusBucket(b) for b in data.statuses.buckets]
 
 
 class ListResult:
@@ -302,6 +310,7 @@ class BucketSerializer(serializers.Serializer):
 class AggregationsSerializer(serializers.Serializer):
     types = BucketSerializer(many=True)
     countries = BucketSerializer(many=True)
+    statuses = BucketSerializer(many=True)
 
 
 class ListResultSerializer(serializers.Serializer):
