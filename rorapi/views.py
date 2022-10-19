@@ -33,7 +33,6 @@ class OrganizationViewSet(viewsets.ViewSet):
             return redirect('{}?{}'.format(request.path, urlencode(params)))
         if 'format' in params:
             del params['format']
-
         if 'affiliation' in params:
             errors, organizations = match_organizations(params)
         else:
