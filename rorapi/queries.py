@@ -10,6 +10,7 @@ from urllib.parse import unquote
 
 ALLOWED_FILTERS = ('country.country_code', 'types', 'country.country_name', 'status')
 ALLOWED_PARAM_KEYS = ('query', 'page', 'filter', 'query.advanced', 'all_status')
+ALLOWED_ALL_STATUS_VALUES = ('', 'true', 'false')
 ALLOWED_FIELDS = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
     'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',
@@ -94,6 +95,11 @@ def validate(params):
     ]
 
     if not illegal_names:
+        if 'all_status' in params.keys():
+            if str(params.get('all_status')).lower() not in ALLOWED_ALL_STATUS_VALUES:
+                errors.extend([
+                'allowed values for all_status parameter are empty (no value), true or false'
+            ])
         if len(params.keys()) > 1:
             if 'query' in  params.keys() and 'query.advanced' in  params.keys():
                 errors.extend([
@@ -138,6 +144,11 @@ def build_search_query(params):
     """Builds search query from API parameters"""
 
     qb = ESQueryBuilder()
+    ror_id = None
+
+    if 'all_status' in params:
+        if params['all_status'].lower() == "false":
+            del params['all_status']
 
     if 'query.advanced' in params:
         qb.add_string_query_advanced(params.get('query.advanced'))
@@ -167,7 +178,7 @@ def build_search_query(params):
                 f[1] = f[1].lower()
         filters = [(f[0], f[1]) for f in filters]
         statusFilter = [f for f in filters if 'status' in f]
-        if len(statusFilter) == 0 and (not 'all_status' in params):
+        if len(statusFilter) == 0 and (not 'all_status' in params) and ror_id is None:
             status_in_adv_q = False
             if 'query.advanced' in params:
                 status_in_adv_q = check_status_adv_q(params.get('query.advanced'))
@@ -176,7 +187,7 @@ def build_search_query(params):
         qb.add_filters(filters)
 
     qb.add_aggregations([('types', 'types'),
-                         ('countries', 'country.country_code'), ('status', 'status')])
+                         ('countries', 'country.country_code'), ('statuses', 'status')])
 
     qb.paginate(int(params.get('page', 1)))
 
@@ -199,6 +210,7 @@ def search_organizations(params):
         return error, None
 
     search = build_search_query(params)
+    print(search.to_dict())
     return None, ListResult(search.execute())
 
 

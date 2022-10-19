@@ -158,7 +158,7 @@ class Aggregations:
     def __init__(self, data):
         self.types = [TypeBucket(b) for b in data.types.buckets]
         self.countries = [CountryBucket(b) for b in data.countries.buckets]
-        self.statuses = [StatusBucket(b) for b in data.status.buckets]
+        self.statuses = [StatusBucket(b) for b in data.statuses.buckets]
 
 
 class ListResult:
