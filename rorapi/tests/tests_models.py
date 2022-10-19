@@ -193,6 +193,18 @@ class AggregationsTestCase(SimpleTestCase):
                         'key': 'US',
                         'doc_count': 48
                     }]
+                },
+                'statuses': {
+                    'buckets': [{
+                        'key': 'active',
+                        'doc_count': 102927
+                    }, {
+                        'key': 'inactive',
+                        'doc_count': 3
+                    }, {
+                        'key': 'withdrawn',
+                        'doc_count': 2
+                    }]
                 }
             }))
         self.assertEqual(len(aggr.types), 2)
@@ -217,6 +229,15 @@ class AggregationsTestCase(SimpleTestCase):
         self.assertEqual(aggr.countries[3].id, 'us')
         self.assertEqual(aggr.countries[3].title, 'United States')
         self.assertEqual(aggr.countries[3].count, 48)
+        self.assertEqual(aggr.statuses[0].id, 'active')
+        self.assertEqual(aggr.statuses[0].title, 'active')
+        self.assertEqual(aggr.statuses[0].count, 102927)
+        self.assertEqual(aggr.statuses[1].id, 'inactive')
+        self.assertEqual(aggr.statuses[1].title, 'inactive')
+        self.assertEqual(aggr.statuses[1].count, 3)
+        self.assertEqual(aggr.statuses[2].id, 'withdrawn')
+        self.assertEqual(aggr.statuses[2].title, 'withdrawn')
+        self.assertEqual(aggr.statuses[2].count, 2)
 
 
 class MatchedOrganizationTestCase(SimpleTestCase):

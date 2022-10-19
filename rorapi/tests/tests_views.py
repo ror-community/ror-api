@@ -74,7 +74,6 @@ class ViewListTestCase(SimpleTestCase):
         response = client.get('/organizations?query.names=query')
         self.assertRedirects(response, '/organizations?query=query')
 
-
 class ViewRetrievalTestCase(SimpleTestCase):
     def setUp(self):
         with open(
