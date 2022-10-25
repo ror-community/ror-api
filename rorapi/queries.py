@@ -1,5 +1,6 @@
 import re
 from titlecase import titlecase
+from collections import defaultdict
 
 from .matching import match_affiliation
 from .models import Organization, ListResult, MatchingResult, Errors
@@ -177,14 +178,20 @@ def build_search_query(params):
             if f[0] == 'status':
                 f[1] = f[1].lower()
         filters = [(f[0], f[1]) for f in filters]
-        statusFilter = [f for f in filters if 'status' in f]
-        if len(statusFilter) == 0 and (not 'all_status' in params) and ror_id is None:
+
+        filter_dict = {}
+        temp = defaultdict(list)
+        for k,v in filters:
+            temp[k].append(v)
+        filter_dict = dict((k, tuple(v)) for k, v in temp.items())
+
+        if (not 'status' in filter_dict) and (not 'all_status' in params) and ror_id is None:
             status_in_adv_q = False
             if 'query.advanced' in params:
                 status_in_adv_q = check_status_adv_q(params.get('query.advanced'))
             if not status_in_adv_q:
-                filters.append(('status', 'active'))
-        qb.add_filters(filters)
+                filter_dict.update({'status': ['active']})
+        qb.add_filters(filter_dict)
 
     qb.add_aggregations([('types', 'types'),
                          ('countries', 'country.country_code'), ('statuses', 'status')])
