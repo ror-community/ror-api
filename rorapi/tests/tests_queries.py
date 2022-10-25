@@ -164,7 +164,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
     def test_empty_query_default(self):
         expected = {'query': {
             'bool': {
-                'filter': [{'term': {'status': 'active'}}]
+                'filter': [{'terms': {'status': ['active']}}]
             }
         }}
         expected.update(self.default_query)
@@ -180,7 +180,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
     def test_empty_query_all_status_false(self):
         expected = {'query': {
             'bool': {
-                'filter': [{'term': {'status': 'active'}}]
+                'filter': [{'terms': {'status': ['active']}}]
             }
         }}
         expected.update(self.default_query)
@@ -219,7 +219,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
     def test_query_default(self):
         expected = {'query': {
             'bool': {
-                'filter': [{'term': {'status': 'active'}}],
+                'filter': [{'terms': {'status': ['active']}}],
                 'must': [{'nested': {
                     'path': 'names_ids',
                     'score_mode': 'max',
@@ -256,7 +256,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
     def test_query_advanced(self):
         expected = {'query': {
             'bool': {
-                'filter': [{'term': {'status': 'active'}}],
+                'filter': [{'terms': {'status': ['active']}}],
                 'must': [{
                     'query_string': {
                         'query': 'query terms',
@@ -291,7 +291,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
     def test_query_advanced_status_filter(self):
         expected = {'query': {
             'bool': {
-                'filter': [{'term': {'status': 'inactive'}}],
+                'filter': [{'terms': {'status': ('inactive',)}}],
                 'must': [{
                     'query_string': {
                         'query': 'query terms',
@@ -329,9 +329,9 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected = {'query': {
             'bool': {
                 'filter': [
-                    {'term': {'key1': 'val1'}},
-                    {'term': {'k2': 'value2'}},
-                    {'term': {'status': 'active'}}
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                    {'terms': {'status': ['active']}}
                 ],
             }
         }}
@@ -344,9 +344,9 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected = {'query': {
             'bool': {
                 'filter': [
-                    {'term': {'key1': 'val1'}},
-                    {'term': {'k2': 'value2'}},
-                    {'term': {'status': 'inactive'}}
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                    {'terms': {'status': ('inactive',)}}
                 ],
             }
         }}
@@ -359,8 +359,8 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected = {'query': {
             'bool': {
                 'filter': [
-                    {'term': {'key1': 'val1'}},
-                    {'term': {'k2': 'value2'}},
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
                 ],
             }
         }}
@@ -373,9 +373,9 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected = {'query': {
             'bool': {
                 'filter': [
-                    {'term': {'key1': 'val1'}},
-                    {'term': {'k2': 'value2'}},
-                    {'term': {'status': 'active'}}
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                    {'terms': {'status': ['active']}}
                 ],
                 'must': [{
                     'nested': {
@@ -400,8 +400,8 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected = {'query': {
             'bool': {
                 'filter': [
-                    {'term': {'key1': 'val1'}},
-                    {'term': {'k2': 'value2'}},
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
                 ],
                 'must': [{
                     'nested': {
@@ -422,7 +422,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination(self):
-        expected = {'query': {'bool': {'filter': [{'term': {'status': 'active'}}]}}}
+        expected = {'query': {'bool': {'filter': [{'terms': {'status': ['active']}}]}}}
         expected.update(self.default_query)
         expected['from'] = 80
         query = build_search_query({'page': '5'})
@@ -438,7 +438,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
     def test_pagination_query(self):
         expected = {'query': {
             'bool': {
-                'filter': [{'term': {'status': 'active'}}],
+                'filter': [{'terms': {'status': ['active']}}],
                 'must': [{
                     'nested': {
                         'path': 'names_ids',
