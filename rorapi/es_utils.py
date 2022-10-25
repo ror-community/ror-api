@@ -64,8 +64,8 @@ class ESQueryBuilder():
             ])
 
     def add_filters(self, filters):
-        for f, v in filters:
-            self.search = self.search.filter('term', **{f: v})
+        for f, v in filters.items():
+            self.search = self.search.filter('terms', **{f:v})
 
     def add_aggregations(self, names):
         for name in names:
