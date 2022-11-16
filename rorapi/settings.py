@@ -241,7 +241,9 @@ LEGACY_ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.zip'
 LEGACY_ROR_DUMP['ROR_JSON_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.json')
 
 ROR_DUMP = {}
-ROR_DUMP['REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data'
+# ROR_DUMP['REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data'
+# temp for testing inactive records
+ROR_DUMP['REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data-test'
 ROR_DUMP['GITHUB_TOKEN'] = os.environ.get('GITHUB_TOKEN')
 
 DATA = {}
@@ -297,7 +299,7 @@ GRID_REMOVED_IDS = [
     'https://ror.org/049a1qr95', 'https://ror.org/03n77bh09', 'https://ror.org/0143q4j07', 'https://ror.org/03szcgb58', 'https://ror.org/05hjd9j98', 'https://ror.org/02gg2r095', 'https://ror.org/00fddr776', 'https://ror.org/00m9xjt25', 'https://ror.org/033x7ew36',
     'https://ror.org/01x7wtx19', 'https://ror.org/01523w440', 'https://ror.org/00490gx53', 'https://ror.org/01zh3r972', 'https://ror.org/01dtkgy62', 'https://ror.org/03r3n3715', 'https://ror.org/01mzmgj80', 'https://ror.org/01peqkm92', 'https://ror.org/017q0zk30',
     'https://ror.org/04s9vpv90', 'https://ror.org/04rg6e566', 'https://ror.org/03brv5m83', 'https://ror.org/01aqwfr65', 'https://ror.org/006hksj32', 'https://ror.org/05qsz8q55', 'https://ror.org/05hxv9903', 'https://ror.org/05f5tv017', 'https://ror.org/05a6fcq16',
-    'https://ror.org/00csfmq14', 'https://ror.org/04t7jhw56', 'https://ror.org/036rmcm53', 'https://ror.org/05fdfws23', 'https://ror.org/04cxcey34', 'https://ror.org/05r3a8v08', 'https://ror.org/03mpv7q97', 'https://ror.org/02kbr0451', 'https://ror.org/02r109517',
+    'https://ror.org/00csfmq14', 'https://ror.org/04t7jhw56', 'https://ror.org/036rmcm53', 'https://ror.org/05fdfws23', 'https://ror.org/04cxcey34', 'https://ror.org/05r3a8v08', 'https://ror.org/03mpv7q97', 'https://ror.org/02kbr0451',
     'https://ror.org/01dgq1c77', 'https://ror.org/00wmr0278', 'https://ror.org/021vavd15', 'https://ror.org/03mag3520', 'https://ror.org/04pchzt95', 'https://ror.org/024850w61', 'https://ror.org/03dpaea16', 'https://ror.org/02tmb4981', 'https://ror.org/02rz8v083',
     'https://ror.org/01de9k933', 'https://ror.org/03qhf8m78', 'https://ror.org/02x889y98', 'https://ror.org/031j63392', 'https://ror.org/03my53j30', 'https://ror.org/015r29q53', 'https://ror.org/033p30a55', 'https://ror.org/05ntpq911', 'https://ror.org/02p80s268',
     'https://ror.org/003e62v40', 'https://ror.org/03ypwcv39', 'https://ror.org/03hy9rs18', 'https://ror.org/02bj0at40', 'https://ror.org/0064a4q73', 'https://ror.org/00t9de449', 'https://ror.org/02k4h1r69', 'https://ror.org/01cb6vs44', 'https://ror.org/02mfrg180',

@@ -335,7 +335,7 @@ class MatchingGraph:
         all_matched.extend(acr_all_matched)
         return chosen, all_matched
 
-def get_output(chosen, all_matched):
+def get_output(chosen, all_matched, active_only):
     # don't allow multiple results with chosen=True
     if isinstance(chosen, list) and len(chosen) > 1:
         chosen = []
@@ -349,6 +349,8 @@ def get_output(chosen, all_matched):
     }
     output = []
     all_matched = [m for m in all_matched if m.score > MIN_MATCHING_SCORE]
+    if active_only:
+        all_matched = [m for m in all_matched if m.organization.status == 'active']
     all_matched = sorted(all_matched, key=lambda x: x.organization.id)
     all_matched = groupby(all_matched, lambda x: x.organization.id)
     all_matched_list = []
@@ -391,18 +393,22 @@ def check_exact_match(affiliation, countries):
     qb.add_string_query('"' + affiliation + '"')
     return match_by_query(affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries)
 
-def match_affiliation(affiliation):
+def match_affiliation(affiliation, active_only):
     countries = get_countries(affiliation)
     exact_chosen, exact_all_matched = check_exact_match(affiliation, countries)
     if exact_chosen.score == 1.0:
-        return get_output(exact_chosen, exact_all_matched)
+        return get_output(exact_chosen, exact_all_matched, active_only)
     else:
         graph = MatchingGraph(affiliation)
         chosen, all_matched = graph.match(countries, MIN_CHOSEN_SCORE)
-        return get_output(chosen, all_matched)
+        return get_output(chosen, all_matched, active_only)
 
 def match_organizations(params):
     if 'affiliation' in params:
-        matched = match_affiliation(params.get('affiliation'))
+        active_only = True
+        if 'all_status' in params:
+            if params['all_status'] == '' or params['all_status'].lower() == "true":
+                active_only = False
+        matched = match_affiliation(params.get('affiliation'), active_only)
         return None, MatchingResult(matched)
     return Errors('"affiliation" parameter missing'), None

@@ -948,6 +948,24 @@
           "doc_count" : 2009
         }
       ]
+    },
+    "statuses" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 0,
+      "buckets" : [
+        {
+          "key" : "active",
+          "doc_count" : 27855
+        },
+        {
+          "key" : "inactive",
+          "doc_count" : 3
+        },
+        {
+          "key" : "withdrawn",
+          "doc_count" : 2
+        }
+      ]
     }
   }
 }

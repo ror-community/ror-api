@@ -42,6 +42,13 @@ class ValidationTestCase(SimpleTestCase):
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
 
+    def test_invalid_all_status_value(self):
+        error = validate({
+            'all_status': 'foo'
+        })
+        self.assertEquals(len(error.errors), 1)
+        self.assertTrue(any(['allowed values' in e for e in error.errors]))
+
     def test_too_many_parameters(self):
         error = validate({
             'query': 'query',
@@ -56,6 +63,7 @@ class ValidationTestCase(SimpleTestCase):
         })
         self.assertEquals(len(error.errors), 1)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
+
 
     def test_invalid_filter(self):
         error = validate({
@@ -96,7 +104,8 @@ class ValidationTestCase(SimpleTestCase):
         error = validate({
             'query': 'query',
             'page': 4,
-            'filter': 'country.country_code:DE,types:s'
+            'filter': 'country.country_code:DE,types:s,status:inactive',
+            'all_status': ''
         })
         self.assertIsNone(error)
 
@@ -124,30 +133,71 @@ class ValidationTestCase(SimpleTestCase):
         })
         self.assertIsNone(error)
 
+    def test_query__all_status(self):
+        error = validate({
+            'query': 'query',
+            'all_status': ''
+        })
+        self.assertIsNone(error)
+
+    def test_query_adv_no_fields_all_status(self):
+        error = validate({
+            'query.advanced': 'query',
+            'all_status': ''
+        })
+        self.assertIsNone(error)
+
+    def test_no_query_all_status(self):
+        error = validate({
+            'all_status': ''
+        })
+        self.assertIsNone(error)
+
 
 class BuildSearchQueryTestCase(SimpleTestCase):
     def setUp(self):
         self.default_query = \
-            {'aggs': {'countries': {'terms': {'field': 'country.country_code',
-                                              'min_doc_count': 1, 'size': 10}},
-                      'types': {'terms': {'field': 'types', 'min_doc_count': 1,
-                                          'size': 10}}}, 'from': 0, 'size': 20}
+                {'aggs': {'types': {'terms': {'field': 'types', 'size': 10, 'min_doc_count': 1}},
+                'countries': {'terms': {'field': 'country.country_code', 'size': 10, 'min_doc_count': 1}},
+                'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}}, 'from': 0, 'size': 20}
 
-    def test_empty_query(self):
+    def test_empty_query_default(self):
+        expected = {'query': {
+            'bool': {
+                'filter': [{'terms': {'status': ['active']}}]
+            }
+        }}
+        expected.update(self.default_query)
         query = build_search_query({})
-        self.assertEquals(query.to_dict(),
-                          dict(self.default_query, query={'match_all': {}}))
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_empty_query_all_status(self):
+        expected = {'query': {'match_all': {}}}
+        expected.update(self.default_query)
+        query = build_search_query({'all_status':''})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_empty_query_all_status_false(self):
+        expected = {'query': {
+            'bool': {
+                'filter': [{'terms': {'status': ['active']}}]
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'all_status':'false'})
+        self.assertEquals(query.to_dict(), expected)
 
     def test_query_id(self):
-        expected = dict(self.default_query,
-                        query={
-                            'match': {
-                                'id': {
-                                    'query': 'https://ror.org/0w7hudk23',
-                                    'operator': 'and'
-                                }
+        expected = {'query': {
+                        'match': {
+                            'id': {
+                                'query': 'https://ror.org/0w7hudk23',
+                                'operator': 'and'
                             }
-                        })
+                        }
+                    }}
+
+        expected.update(self.default_query)
 
         query = build_search_query({'query': '0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
@@ -166,99 +216,265 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
 
-    def test_query(self):
+    def test_query_default(self):
+        expected = {'query': {
+            'bool': {
+                'filter': [{'terms': {'status': ['active']}}],
+                'must': [{'nested': {
+                    'path': 'names_ids',
+                    'score_mode': 'max',
+                    'query': {
+                        'query_string': {
+                            'query': 'query terms',
+                            'fuzzy_max_expansions': 1
+                        }
+                    }
+                }}]
+            }
+        }}
+        expected.update(self.default_query)
         query = build_search_query({'query': 'query terms'})
-        self.assertEquals(
-            query.to_dict(),
-            dict(self.default_query,
-                 query={
-                     'nested': {
-                         'path': 'names_ids',
-                         'score_mode': 'max',
-                         'query': {
-                             'query_string': {
-                                 'query': 'query terms',
-                                 'fuzzy_max_expansions': 1
-                             }
-                         }
-                     }
-                 }))
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_query_all_status(self):
+        expected = {'query': {
+            'nested': {
+                    'path': 'names_ids',
+                    'score_mode': 'max',
+                    'query': {
+                        'query_string': {
+                            'query': 'query terms',
+                            'fuzzy_max_expansions': 1
+                        }
+                    }
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'query': 'query terms', 'all_status': ''})
+        self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced(self):
-        query = build_search_query({'query.advanced': 'query terms'})
-        self.assertEquals(
-            query.to_dict(),
-            dict(self.default_query,
-                 query={
-                    'bool': {
-                        'must': [{
-                            'query_string': {
-                                'query': 'query terms',
-                                'default_field': '*',
-                                'default_operator':'and',
-                                'fuzzy_max_expansions': 1
-                            }
-                        }]
+        expected = {'query': {
+            'bool': {
+                'filter': [{'terms': {'status': ['active']}}],
+                'must': [{
+                    'query_string': {
+                        'query': 'query terms',
+                        'default_field': '*',
+                        'default_operator':'and',
+                        'fuzzy_max_expansions': 1
                     }
-                 }))
+                }]
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'query.advanced': 'query terms'})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_query_advanced_all_status(self):
+        expected = {'query': {
+            'bool': {
+                'must': [{
+                    'query_string': {
+                        'query': 'query terms',
+                        'default_field': '*',
+                        'default_operator':'and',
+                        'fuzzy_max_expansions': 1
+                    }
+                }]
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'query.advanced': 'query terms', 'all_status': ''})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_query_advanced_status_filter(self):
+        expected = {'query': {
+            'bool': {
+                'filter': [{'terms': {'status': ('inactive',)}}],
+                'must': [{
+                    'query_string': {
+                        'query': 'query terms',
+                        'default_field': '*',
+                        'default_operator':'and',
+                        'fuzzy_max_expansions': 1
+                    }
+                }]
+            }
+        }}
+        expected.update(self.default_query)
+        f = 'status:inactive'
+        query = build_search_query({'query.advanced': 'query terms', 'filter': f})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_query_advanced_status_field(self):
+        expected = {'query': {
+            'bool': {
+                'must': [{
+                    'query_string': {
+                        'query': 'status:inactive',
+                        'default_field': '*',
+                        'default_operator':'and',
+                        'fuzzy_max_expansions': 1
+                    }
+                }]
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'query.advanced': 'status:inactive'})
+        self.assertEquals(query.to_dict(), expected)
 
     def test_filter(self):
         f = 'key1:val1,k2:value2'
-        e = [{'term': {'key1': 'val1'}}, {'term': {'k2': 'value2'}}]
-
+        expected = {'query': {
+            'bool': {
+                'filter': [
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                    {'terms': {'status': ['active']}}
+                ],
+            }
+        }}
+        expected.update(self.default_query)
         query = build_search_query({'filter': f})
-        self.assertEquals(
-            query.to_dict(),
-            dict(self.default_query, query={'bool': {
-                'filter': e
-            }}))
+        self.assertEquals(query.to_dict(), expected)
 
+    def test_filter_status_filter(self):
+        f = 'key1:val1,k2:value2,status:inactive'
+        expected = {'query': {
+            'bool': {
+                'filter': [
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                    {'terms': {'status': ('inactive',)}}
+                ],
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'filter': f})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_filter_all_status(self):
+        f = 'key1:val1,k2:value2'
+        expected = {'query': {
+            'bool': {
+                'filter': [
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                ],
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'filter': f, 'all_status': ''})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_filter_query(self):
+        f = 'key1:val1,k2:value2'
+        expected = {'query': {
+            'bool': {
+                'filter': [
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                    {'terms': {'status': ['active']}}
+                ],
+                'must': [{
+                    'nested': {
+                        'path': 'names_ids',
+                        'score_mode': 'max',
+                        'query': {
+                            'query_string': {
+                                'query': 'query terms',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }
+                    }
+                }]
+            }
+        }}
+        expected.update(self.default_query)
         query = build_search_query({'query': 'query terms', 'filter': f})
-        self.assertEquals(
-            query.to_dict(),
-            dict(self.default_query,
-                 query={
-                     'bool': {
-                         'filter':
-                         e,
-                         'must': [{
-                             'nested': {
-                                 'path': 'names_ids',
-                                 'score_mode': 'max',
-                                 'query': {
-                                     'query_string': {
-                                         'query': 'query terms',
-                                         'fuzzy_max_expansions': 1
-                                     }
-                                 }
-                             }
-                         }]
-                     }
-                 }))
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_filter_query_all_status(self):
+        f = 'key1:val1,k2:value2'
+        expected = {'query': {
+            'bool': {
+                'filter': [
+                    {'terms': {'key1': ('val1',)}},
+                    {'terms': {'k2': ('value2',)}},
+                ],
+                'must': [{
+                    'nested': {
+                        'path': 'names_ids',
+                        'score_mode': 'max',
+                        'query': {
+                            'query_string': {
+                                'query': 'query terms',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }
+                    }
+                }]
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''})
+        self.assertEquals(query.to_dict(), expected)
 
     def test_pagination(self):
-        base = self.default_query
-        base['from'] = 80
-
+        expected = {'query': {'bool': {'filter': [{'terms': {'status': ['active']}}]}}}
+        expected.update(self.default_query)
+        expected['from'] = 80
         query = build_search_query({'page': '5'})
-        self.assertEquals(query.to_dict(), dict(base, query={'match_all': {}}))
+        self.assertEquals(query.to_dict(), expected)
 
+    def test_pagination_all_status(self):
+        expected = {'query': {'match_all': {}}}
+        expected.update(self.default_query)
+        expected['from'] = 80
+        query = build_search_query({'page': '5', 'all_status': ''})
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_pagination_query(self):
+        expected = {'query': {
+            'bool': {
+                'filter': [{'terms': {'status': ['active']}}],
+                'must': [{
+                    'nested': {
+                        'path': 'names_ids',
+                        'score_mode': 'max',
+                        'query': {
+                            'query_string': {
+                                'query': 'query terms',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }
+                    }
+                }]
+            }
+        }}
+        expected.update(self.default_query)
+        expected['from'] = 80
         query = build_search_query({'page': '5', 'query': 'query terms'})
-        self.assertEquals(
-            query.to_dict(),
-            dict(base,
-                 query={
-                     'nested': {
-                         'path': 'names_ids',
-                         'score_mode': 'max',
-                         'query': {
-                             'query_string': {
-                                 'query': 'query terms',
-                                 'fuzzy_max_expansions': 1
-                             }
-                         }
-                     }
-                 }))
+        self.assertEquals(query.to_dict(), expected)
+
+    def test_pagination_query_all_status(self):
+        expected = {'query': {
+            'nested': {
+                        'path': 'names_ids',
+                        'score_mode': 'max',
+                        'query': {
+                            'query_string': {
+                                'query': 'query terms',
+                                'fuzzy_max_expansions': 1
+                            }
+                        }
+                    }
+            }}
+        expected.update(self.default_query)
+        expected['from'] = 80
+        query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''})
+        self.assertEquals(query.to_dict(), expected)
 
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
@@ -315,6 +531,14 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         for ret, exp in \
                 zip(organizations.meta.countries,
                     self.test_data['aggregations']['countries']['buckets']):
+            self.assertEquals(ret.id, exp['key'].lower())
+            self.assertEquals(ret.count, exp['doc_count'])
+        self.assertEquals(
+            len(organizations.meta.statuses),
+            len(self.test_data['aggregations']['statuses']['buckets']))
+        for ret, exp in \
+                zip(organizations.meta.statuses,
+                    self.test_data['aggregations']['statuses']['buckets']):
             self.assertEquals(ret.id, exp['key'].lower())
             self.assertEquals(ret.count, exp['doc_count'])
 
