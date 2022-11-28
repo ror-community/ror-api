@@ -1,5 +1,6 @@
 import re
 from titlecase import titlecase
+from collections import defaultdict
 
 from .matching import match_affiliation
 from .models import Organization, ListResult, MatchingResult, Errors
@@ -8,9 +9,10 @@ from .es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
 
-ALLOWED_FILTERS = ['country.country_code', 'types', 'country.country_name']
-ALLOWED_PARAM_KEYS = ['query', 'page', 'filter', 'query.advanced']
-ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
+ALLOWED_FILTERS = ('country.country_code', 'types', 'country.country_name', 'status')
+ALLOWED_PARAM_KEYS = ('query', 'page', 'filter', 'query.advanced', 'all_status')
+ALLOWED_ALL_STATUS_VALUES = ('', 'true', 'false')
+ALLOWED_FIELDS = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
     'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',
     'addresses.geonames_city.geonames_admin2.ascii_name', 'addresses.geonames_city.geonames_admin2.code',
@@ -26,12 +28,12 @@ ALLOWED_FIELDS = ['acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'external_ids.ISNI.preferred', 'external_ids.OrgRef.all', 'external_ids.OrgRef.preferred', 'external_ids.UCAS.all',
     'external_ids.UCAS.preferred', 'external_ids.UKPRNS.all', 'external_ids.UKPRNS.preferred', 'external_ids.Wikidata.all',
     'external_ids.Wikidata.preferred', 'id', 'ip_addresses', 'labels.iso639', 'labels.label', 'links', 'name',
-    'relationships.id', 'relationships.label', 'relationships.type', 'status', 'types', 'wikipedia_url']
+    'relationships.id', 'relationships.label', 'relationships.type', 'status', 'types', 'wikipedia_url')
 # Values that are not valid field names that can precede : char
 # \: escaped :
 # \*: match subfields, ex addresses.\*:
 # _exists_: check if field has non-null value, ex _exists_:wikipedia_url
-ALLOWED_ENDINGS = ['_exists_', '\\', '\\*']
+ALLOWED_ENDINGS = ('_exists_', '\\', '\\*')
 
 def get_ror_id(string):
     """Extracts ROR id from a string and transforms it into canonical form"""
@@ -51,6 +53,16 @@ def adv_query_string_to_list(query_string):
             if substr.endswith(':'):
                 field_list.append(substr.rstrip(':'))
     return field_list
+
+def check_status_adv_q(adv_q_string):
+    status_in_q = False
+    adv_query_fields = adv_query_string_to_list(adv_q_string)
+    status_fields = [
+        f for f in adv_query_fields if f.endswith('status')
+    ]
+    if len(status_fields) > 0:
+        status_in_q = True
+    return status_in_q
 
 def filter_string_to_list(filter_string):
     filter_list = []
@@ -84,6 +96,11 @@ def validate(params):
     ]
 
     if not illegal_names:
+        if 'all_status' in params.keys():
+            if str(params.get('all_status')).lower() not in ALLOWED_ALL_STATUS_VALUES:
+                errors.extend([
+                'allowed values for all_status parameter are empty (no value), true or false'
+            ])
         if len(params.keys()) > 1:
             if 'query' in  params.keys() and 'query.advanced' in  params.keys():
                 errors.extend([
@@ -128,6 +145,11 @@ def build_search_query(params):
     """Builds search query from API parameters"""
 
     qb = ESQueryBuilder()
+    ror_id = None
+
+    if 'all_status' in params:
+        if params['all_status'].lower() == "false":
+            del params['all_status']
 
     if 'query.advanced' in params:
         qb.add_string_query_advanced(params.get('query.advanced'))
@@ -140,23 +162,39 @@ def build_search_query(params):
     else:
         qb.add_match_all_query()
 
-    if 'filter' in params:
+
+    if 'filter' in params or (not 'all_status' in params):
         filters = [
             f.split(':') for f in filter_string_to_list(params.get('filter', '')) if f
         ]
         # normalize filter values based on casing conventions used in ROR records
         for f in filters:
-            if f[0] ==  'types':
+            if f[0] == 'types':
                 f[1] = f[1].title()
             if f[0] == 'country.country_code':
                 f[1] = f[1].upper()
             if f[0] == 'country.country_name':
                 f[1] = titlecase(f[1])
+            if f[0] == 'status':
+                f[1] = f[1].lower()
         filters = [(f[0], f[1]) for f in filters]
-        qb.add_filters(filters)
+
+        filter_dict = {}
+        temp = defaultdict(list)
+        for k,v in filters:
+            temp[k].append(v)
+        filter_dict = dict((k, tuple(v)) for k, v in temp.items())
+
+        if (not 'status' in filter_dict) and (not 'all_status' in params) and ror_id is None:
+            status_in_adv_q = False
+            if 'query.advanced' in params:
+                status_in_adv_q = check_status_adv_q(params.get('query.advanced'))
+            if not status_in_adv_q:
+                filter_dict.update({'status': ['active']})
+        qb.add_filters(filter_dict)
 
     qb.add_aggregations([('types', 'types'),
-                         ('countries', 'country.country_code')])
+                         ('countries', 'country.country_code'), ('statuses', 'status')])
 
     qb.paginate(int(params.get('page', 1)))
 
