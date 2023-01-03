@@ -155,7 +155,7 @@ class NormalizeTestCase(SimpleTestCase):
         self.assertEqual(normalize('関西光科学研究所'),
                          '関西光科学研究所')
         self.assertEqual(normalize('Московский государственный университет  Russia '),
-                 'Московский государственный университет russia')
+                 'московский государственный университет russia')
 
 
 class MatchedOrganizationTestCase(SimpleTestCase):
