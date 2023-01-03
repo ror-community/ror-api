@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
+import json
 
 from .matching import match_organizations
 from .models import OrganizationSerializer, ListResultSerializer, \
@@ -16,10 +17,13 @@ import os
 import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
+from .features import launch_darkly_client
 
 
 class OrganizationViewSet(viewsets.ViewSet):
-
+    print("Launch darkly initialized:")
+    print(launch_darkly_client.is_initialized())
+    print(json.dumps(launch_darkly_client.all_flags_state({ "key":"user-key-123abc", "anonymous": True }).__dict__))
     lookup_value_regex = \
         r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*'
 
