@@ -10,7 +10,7 @@ from rorapi.settings import ES, ES_VARS, ROR_DUMP, DATA
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
-HEADERS = {'Authorization': 'token {}'.format(ROR_DUMP['GITHUB_TOKEN']), 'Accept': 'application/vnd.github.v3+json'}
+HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
 def get_nested_names(org):
     yield org['name']
