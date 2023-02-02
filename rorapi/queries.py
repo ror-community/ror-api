@@ -68,6 +68,7 @@ def filter_string_to_list(filter_string):
     filter_list = []
     # some country names contain comma chars
     # allow comma chars in country_name filter values only
+    # country.country_name:Germany,types:Company
     if 'country.country_name' in filter_string:
         country_name_filters = []
         search = re.findall('country.country_name:([^:]*)', filter_string)
@@ -75,6 +76,9 @@ def filter_string_to_list(filter_string):
             for s in search:
                 if len(re.findall(",", s)) > 1:
                     s = s.rsplit(",", 1)[0]
+                for allowed_filter in ALLOWED_FILTERS:
+                    if allowed_filter in s:
+                        s = s.rsplit("," + allowed_filter, 1)[0]
                 country_name_filter = 'country.country_name:' + s
                 country_name_filters.append(country_name_filter)
                 filter_string = filter_string.replace(country_name_filter, '')
