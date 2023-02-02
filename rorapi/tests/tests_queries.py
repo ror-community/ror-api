@@ -109,6 +109,15 @@ class ValidationTestCase(SimpleTestCase):
         })
         self.assertIsNone(error)
 
+    def test_all_good_country_name(self):
+        error = validate({
+            'query': 'query',
+            'page': 4,
+            'filter': 'country.country_name:Germany,types:s,status:inactive',
+            'all_status': ''
+        })
+        self.assertIsNone(error)
+
     def test_query_adv_no_fields(self):
         error = validate({
             'query.advanced': 'query'
