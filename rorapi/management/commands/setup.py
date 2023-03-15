@@ -7,7 +7,7 @@ from .createindex import Command as CreateIndexCommand
 from .indexrordump import Command as IndexRorDumpCommand
 from rorapi.settings import ROR_DUMP
 
-HEADERS = {'Authorization': 'token {}'.format(ROR_DUMP['GITHUB_TOKEN']), 'Accept': 'application/vnd.github.v3+json'}
+HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
 def get_ror_dump_sha(filename):
     sha = ''
