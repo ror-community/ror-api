@@ -1,6 +1,7 @@
 import geonamescache
 import os
 import re
+import unicodedata
 import unidecode
 
 from .es_utils import ESQueryBuilder
@@ -109,10 +110,20 @@ def get_countries(string):
 # Similarity                                                        #
 #####################################################################
 
+def check_latin_chars(s):
+    for ch in s:
+        if ch.isalpha():
+            if 'LATIN' not in unicodedata.name(ch):
+                return False
+    return True
+
 def normalize(s):
     '''Normalize string for matching.'''
 
-    s = re.sub(r'\s+', ' ', unidecode.unidecode(s).strip().lower())
+    if check_latin_chars(s):
+        s = re.sub(r'\s+', ' ', unidecode.unidecode(s).strip().lower())
+    else:
+        s = re.sub(r'\s+', ' ', s.strip().lower())
     s = re.sub(
         '(?<![a-z])univ$', 'university',
         re.sub(r'(?<![a-z])univ[\. ]', 'university ',
