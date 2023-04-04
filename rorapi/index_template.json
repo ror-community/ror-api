@@ -1,6 +1,7 @@
 {
     "template": "org-id-*",
     "settings": {
+      "number_of_shards":1,
       "analysis": {
         "analyzer": {
           "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
