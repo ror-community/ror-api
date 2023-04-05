@@ -149,7 +149,7 @@ ES = Elasticsearch([{
 }],
     http_auth=http_auth,
     use_ssl=False,
-    timeout=120,
+    timeout=240,
     connection_class=RequestsHttpConnection)
 
 # ROR DUMP grid-2018-11-14
