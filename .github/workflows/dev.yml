@@ -18,39 +18,39 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     services:
       elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
-        ports:
-          - "9200:9200"
-          - "9300:9300"
-        environment:
-          discovery.type: single-node
-          ES_JAVA_OPTS: -Xmx256m -Xms256m
-          ELASTIC_PASSWORD: changeme
-          xpack.security.enabled: "false"
-          http.cors.enabled: "true"
-          http.cors.allow-origin: "*"
-        healthcheck:
-          test: curl -f http://elastic:changeme@elasticsearch:9200
-          interval: 10s
-          timeout: 1s
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+          ports:
+            - "9200:9200"
+            - "9300:9300"
+          environment:
+            discovery.type: single-node
+            ES_JAVA_OPTS: -Xmx256m -Xms256m
+            ELASTIC_PASSWORD: changeme
+            xpack.security.enabled: "false"
+            http.cors.enabled: "true"
+            http.cors.allow-origin: "*"
+          healthcheck:
+            test: curl -f http://elastic:changeme@elasticsearch:9200
+            interval: 10s
+            timeout: 1s
       elasticsearch7:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
-        ports:
-          - "9201:9201"
-          - "9301:9301"
-        environment:
-          discovery.type: single-node
-          ES_JAVA_OPTS: -Xmx256m -Xms256m
-          ELASTIC_PASSWORD: changeme
-          xpack.security.enabled: "false"
-          http.cors.enabled: "true"
-          http.cors.allow-origin: "*"
-          http.port: 9201
-        healthcheck:
-          test: curl -f http://elastic:changeme@elasticsearch:9201
-          interval: 10s
-          timeout: 1s
-    steps:
+          ports:
+            - "9201:9201"
+            - "9301:9301"
+          environment:
+            discovery.type: single-node
+            ES_JAVA_OPTS: -Xmx256m -Xms256m
+            ELASTIC_PASSWORD: changeme
+            xpack.security.enabled: "false"
+            http.cors.enabled: "true"
+            http.cors.allow-origin: "*"
+            http.port: 9201
+          healthcheck:
+            test: curl -f http://elastic:changeme@elasticsearch:9201
+            interval: 10s
+            timeout: 1s
+      steps:
       - name: Checkout ror-api code
         uses: actions/checkout@v2
         with:
