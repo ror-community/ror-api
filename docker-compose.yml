@@ -17,6 +17,23 @@ services:
       test: curl -f http://elastic:changeme@elasticsearch:9200
       interval: 10s
       timeout: 1s
+  elasticsearch7:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    ports:
+      - "9201:9201"
+      - "9301:9301"
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xmx256m -Xms256m
+      ELASTIC_PASSWORD: changeme
+      xpack.security.enabled: "false"
+      http.cors.enabled: "true"
+      http.cors.allow-origin: "*"
+      http.port: 9201
+    healthcheck:
+      test: curl -f http://elastic:changeme@elasticsearch:8200
+      interval: 10s
+      timeout: 1s
   web:
     container_name: rorapiweb
     env_file: .env
