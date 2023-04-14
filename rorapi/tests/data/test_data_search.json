@@ -1,867 +1,3633 @@
 {
-  "took" : 24,
+  "took" : 34,
   "timed_out" : false,
   "_shards" : {
-    "total" : 5,
-    "successful" : 5,
+    "total" : 1,
+    "successful" : 1,
     "skipped" : 0,
     "failed" : 0
   },
   "hits" : {
-    "total" : 98598,
-    "max_score" : 1.0,
+    "total" : {
+      "value" : 103515,
+      "relation" : "eq"
+    },
+    "max_score" : 0.0,
     "hits" : [
       {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432721.1",
-              "preferred" : "grid.432721.1"
-            },
-            "ISNI" : {
-              "all" : [
-                "0000 0004 5913 2673"
-              ],
-              "preferred" : null
-            },
-            "Wikidata" : {
-              "all" : [
-                "Q30255409"
-              ],
-              "preferred" : null
-            }
-          },
-          "acronyms" : [ ],
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/019wvm592",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/019wvm592",
+          "name" : "Australian National University",
           "types" : [
-            "Company"
+            "Education"
           ],
-          "addresses" : [
-            {
-              "state_code" : "US-WA",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "King County",
-                  "code" : "US.WA.033",
-                  "name" : "King County",
-                  "id" : 5799783
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Seattle",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Washington",
-                  "code" : "US.WA",
-                  "name" : "Washington",
-                  "id" : 5815135
-                },
-                "id" : 5809844
-              },
-              "country_geonames_id" : 6252001,
-              "line" : null,
-              "lat" : 47.675521,
-              "city" : "Seattle",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -122.40079,
-              "state" : "Washington"
-            }
-          ],
-          "labels" : [ ],
-          "established" : 1990,
-          "relationships" : [ ],
           "links" : [
-            "https://www.bruxton.com/"
+            "http://www.anu.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [
+            "ANU"
           ],
           "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "US",
-            "country_name" : "United States"
-          },
-          "name" : "Bruxton (United States)",
-          "id" : "https://ror.org/02n226v23",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Australian_National_University",
+          "labels" : [ ],
           "email_address" : null,
           "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432722.2",
-              "preferred" : "grid.432722.2"
-            },
-            "ISNI" : {
-              "all" : [
-                "0000 0000 9543 5066"
-              ],
-              "preferred" : null
-            }
+          "established" : 1946,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
           },
-          "acronyms" : [
-            "BRO"
-          ],
-          "types" : [
-            "Archive"
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Calvary Hospital",
+              "id" : "https://ror.org/041c7s516"
+            },
+            {
+              "type" : "Related",
+              "label" : "Canberra Hospital",
+              "id" : "https://ror.org/04h7nbn38"
+            },
+            {
+              "type" : "Related",
+              "label" : "Goulburn Base Hospital",
+              "id" : "https://ror.org/030jpqj15"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Transformative Meta-Optical Systems",
+              "id" : "https://ror.org/05sh7tb37"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence in Plant Energy Biology",
+              "id" : "https://ror.org/01a1mq059"
+            },
+            {
+              "type" : "Child",
+              "label" : "Mount Stromlo Observatory",
+              "id" : "https://ror.org/006a4jj40"
+            }
           ],
           "addresses" : [
             {
-              "state_code" : null,
+              "line" : null,
+              "lat" : -35.2778,
+              "lng" : 149.1205,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Canberra",
+              "state" : "Australian Capital Territory",
+              "state_code" : "AU-ACT",
+              "country_geonames_id" : 2077456,
               "geonames_city" : {
+                "id" : 2172517,
+                "city" : "Canberra",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
                 "nuts_level2" : {
-                  "code" : "UKI3",
-                  "name" : "Inner London - West"
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2177478,
+                  "name" : "ACT",
+                  "ascii_name" : "ACT",
+                  "code" : "AU.01"
                 },
                 "geonames_admin2" : {
-                  "ascii_name" : "Greater London",
-                  "code" : "GB.ENG.GLA",
-                  "name" : "Greater London",
-                  "id" : 2648110
+                  "id" : null,
+                  "name" : null,
+                  "ascii_name" : null,
+                  "code" : null
                 },
                 "license" : {
                   "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
                   "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "London",
-                "nuts_level1" : {
-                  "code" : "UKI",
-                  "name" : "LONDON"
-                },
-                "nuts_level3" : {
-                  "code" : "UKI32",
-                  "name" : "Westminster"
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "England",
-                  "code" : "GB.ENG",
-                  "name" : "England",
-                  "id" : 6269131
-                },
-                "id" : 2643743
-              },
-              "country_geonames_id" : 2635167,
-              "line" : null,
-              "lat" : 51.450283,
-              "city" : "London",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -0.981739,
-              "state" : null
+                }
+              }
             }
           ],
-          "labels" : [ ],
-          "established" : 1948,
-          "relationships" : [ ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 2180 7477"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100000995",
+              "all" : [
+                "501100000995",
+                "501100001151",
+                "100009020"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "285106"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q127990"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1001.0",
+              "all" : "grid.1001.0"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Australian National University"
+            },
+            {
+              "name" : "ANU"
+            },
+            {
+              "id" : "https://ror.org/019wvm592"
+            },
+            {
+              "id" : "ror.org/019wvm592"
+            },
+            {
+              "id" : "019wvm592"
+            },
+            {
+              "id" : "0000 0001 2180 7477"
+            },
+            {
+              "id" : "501100000995"
+            },
+            {
+              "id" : "501100001151"
+            },
+            {
+              "id" : "100009020"
+            },
+            {
+              "id" : "285106"
+            },
+            {
+              "id" : "Q127990"
+            },
+            {
+              "id" : "grid.1001.0"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/02bfwt286",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/02bfwt286",
+          "name" : "Monash University",
+          "types" : [
+            "Education"
+          ],
           "links" : [
-            "http://www.berkshirerecordoffice.org.uk/"
+            "http://www.monash.edu/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Monash_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1958,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Box Hill Hospital",
+              "id" : "https://ror.org/0484pjq71"
+            },
+            {
+              "type" : "Related",
+              "label" : "Burnet Institute",
+              "id" : "https://ror.org/05ktbsm52"
+            },
+            {
+              "type" : "Related",
+              "label" : "Frankston Hospital",
+              "id" : "https://ror.org/051b68e86"
+            },
+            {
+              "type" : "Related",
+              "label" : "Jessie McPherson Private Hospital",
+              "id" : "https://ror.org/00aeqjw83"
+            },
+            {
+              "type" : "Related",
+              "label" : "Monash Institute of Medical Research",
+              "id" : "https://ror.org/05p96ba03"
+            },
+            {
+              "type" : "Related",
+              "label" : "Monash Medical Centre",
+              "id" : "https://ror.org/036s9kg65"
+            },
+            {
+              "type" : "Related",
+              "label" : "Monash South Africa",
+              "id" : "https://ror.org/013m0ac37"
+            },
+            {
+              "type" : "Related",
+              "label" : "The Alfred Hospital",
+              "id" : "https://ror.org/01wddqe20"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Integrative Brain Function",
+              "id" : "https://ror.org/02yasb727"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence in Advanced Molecular Imaging",
+              "id" : "https://ror.org/051e7s436"
+            },
+            {
+              "type" : "Child",
+              "label" : "Australian Regenerative Medicine Institute",
+              "id" : "https://ror.org/02qa5kg76"
+            },
+            {
+              "type" : "Child",
+              "label" : "IITB-Monash Research Academy",
+              "id" : "https://ror.org/02r3nf527"
+            },
+            {
+              "type" : "Child",
+              "label" : "National Trauma Research Institute",
+              "id" : "https://ror.org/048t93218"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.9083,
+              "lng" : 145.138,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Melbourne",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2158177,
+                "city" : "Melbourne",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839805,
+                  "name" : "Melbourne",
+                  "ascii_name" : "Melbourne",
+                  "code" : "AU.07.24600"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 1936 7857"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001779",
+              "all" : [
+                "501100001779",
+                "501100001144",
+                "501100007917",
+                "501100000991",
+                "501100001198",
+                "501100006532"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "149620"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q598841"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1002.3",
+              "all" : "grid.1002.3"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Monash University"
+            },
+            {
+              "id" : "https://ror.org/02bfwt286"
+            },
+            {
+              "id" : "ror.org/02bfwt286"
+            },
+            {
+              "id" : "02bfwt286"
+            },
+            {
+              "id" : "0000 0004 1936 7857"
+            },
+            {
+              "id" : "501100001779"
+            },
+            {
+              "id" : "501100001144"
+            },
+            {
+              "id" : "501100007917"
+            },
+            {
+              "id" : "501100000991"
+            },
+            {
+              "id" : "501100001198"
+            },
+            {
+              "id" : "501100006532"
+            },
+            {
+              "id" : "149620"
+            },
+            {
+              "id" : "Q598841"
+            },
+            {
+              "id" : "grid.1002.3"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/00rqy9422",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/00rqy9422",
+          "name" : "University of Queensland",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.uq.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [
+            "UQ"
           ],
           "status" : "active",
-          "wikipedia_url" : "https://en.wikipedia.org/wiki/Berkshire_Record_Office",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_Queensland",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1909,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Ipswich Hospital",
+              "id" : "https://ror.org/010g47133"
+            },
+            {
+              "type" : "Related",
+              "label" : "Ochsner Medical Center",
+              "id" : "https://ror.org/0290qyp66"
+            },
+            {
+              "type" : "Related",
+              "label" : "Princess Alexandra Hospital",
+              "id" : "https://ror.org/04mqb0968"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Brisbane and Women's Hospital",
+              "id" : "https://ror.org/05p52kj31"
+            },
+            {
+              "type" : "Related",
+              "label" : "Terrestrial Ecosystem Research Network",
+              "id" : "https://ror.org/03wxseg04"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Children and Families over the Life Course",
+              "id" : "https://ror.org/053mfxd72"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Engineered Quantum Systems",
+              "id" : "https://ror.org/03rtykw43"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Environmental Decisions",
+              "id" : "https://ror.org/01k8nkc73"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Innovations in Peptide and Protein Science",
+              "id" : "https://ror.org/04dxv8v14"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Plant Success in Nature and Agriculture",
+              "id" : "https://ror.org/058xdtn86"
+            },
+            {
+              "type" : "Child",
+              "label" : "Centre for Quantum Computation and Communication Technology",
+              "id" : "https://ror.org/00rnbty21"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -27.495964,
+              "lng" : 153.009627,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Brisbane",
+              "state" : "Queensland",
+              "state_code" : "AU-QLD",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2174003,
+                "city" : "Brisbane",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2152274,
+                  "name" : "Queensland",
+                  "ascii_name" : "Queensland",
+                  "code" : "AU.04"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839562,
+                  "name" : "Brisbane",
+                  "ascii_name" : "Brisbane",
+                  "code" : "AU.04.31000"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0000 9320 7537"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001794",
+              "all" : [
+                "501100001794",
+                "501100008407",
+                "501100005268"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "192819"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q866012"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1003.2",
+              "all" : "grid.1003.2"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of Queensland"
+            },
+            {
+              "name" : "UQ"
+            },
+            {
+              "id" : "https://ror.org/00rqy9422"
+            },
+            {
+              "id" : "ror.org/00rqy9422"
+            },
+            {
+              "id" : "00rqy9422"
+            },
+            {
+              "id" : "0000 0000 9320 7537"
+            },
+            {
+              "id" : "501100001794"
+            },
+            {
+              "id" : "501100008407"
+            },
+            {
+              "id" : "501100005268"
+            },
+            {
+              "id" : "192819"
+            },
+            {
+              "id" : "Q866012"
+            },
+            {
+              "id" : "grid.1003.2"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01sf06y89",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01sf06y89",
+          "name" : "Macquarie University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://mq.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Macquarie_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1964,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Sydney Hospital",
+              "id" : "https://ror.org/0402tt118"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Core to Crust Fluid Systems",
+              "id" : "https://ror.org/03nk9pp38"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence in Cognition and its Disorders",
+              "id" : "https://ror.org/044b7p696"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence in Synthetic Biology",
+              "id" : "https://ror.org/01p2zg436"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -33.775259,
+              "lng" : 151.112915,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Sydney",
+              "state" : "New South Wales",
+              "state_code" : "AU-NSW",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2147714,
+                "city" : "Sydney",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2155400,
+                  "name" : "New South Wales",
+                  "ascii_name" : "New South Wales",
+                  "code" : "AU.02"
+                },
+                "geonames_admin2" : {
+                  "id" : null,
+                  "name" : null,
+                  "ascii_name" : null,
+                  "code" : null
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 2158 5405"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001230"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "19735"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q741082"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1004.5",
+              "all" : "grid.1004.5"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Macquarie University"
+            },
+            {
+              "id" : "https://ror.org/01sf06y89"
+            },
+            {
+              "id" : "ror.org/01sf06y89"
+            },
+            {
+              "id" : "01sf06y89"
+            },
+            {
+              "id" : "0000 0001 2158 5405"
+            },
+            {
+              "id" : "501100001230"
+            },
+            {
+              "id" : "19735"
+            },
+            {
+              "id" : "Q741082"
+            },
+            {
+              "id" : "grid.1004.5"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/03r8z3t63",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/03r8z3t63",
+          "name" : "UNSW Sydney",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "https://www.unsw.edu.au/"
+          ],
+          "aliases" : [
+            "University of New South Wales"
+          ],
+          "acronyms" : [
+            "UNSW"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_New_South_Wales",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1949,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Bankstown Lidcombe Hospital",
+              "id" : "https://ror.org/00qrpt643"
+            },
+            {
+              "type" : "Related",
+              "label" : "Black Dog Institute",
+              "id" : "https://ror.org/04rfr1008"
+            },
+            {
+              "type" : "Related",
+              "label" : "Children's Cancer Institute Australia",
+              "id" : "https://ror.org/01x784220"
+            },
+            {
+              "type" : "Related",
+              "label" : "Fairfield Hospital",
+              "id" : "https://ror.org/04xx5ce35"
+            },
+            {
+              "type" : "Related",
+              "label" : "George Institute for Global Health",
+              "id" : "https://ror.org/023331s46"
+            },
+            {
+              "type" : "Related",
+              "label" : "Ingham Institute",
+              "id" : "https://ror.org/03y4rnb63"
+            },
+            {
+              "type" : "Related",
+              "label" : "Kenvale College",
+              "id" : "https://ror.org/01gn4gb91"
+            },
+            {
+              "type" : "Related",
+              "label" : "Neuroscience Research Australia",
+              "id" : "https://ror.org/01g7s6g79"
+            },
+            {
+              "type" : "Related",
+              "label" : "Prince of Wales Hospital",
+              "id" : "https://ror.org/022arq532"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Hospital for Women",
+              "id" : "https://ror.org/021cxfs56"
+            },
+            {
+              "type" : "Related",
+              "label" : "Shellharbour Hospital",
+              "id" : "https://ror.org/01dvjey82"
+            },
+            {
+              "type" : "Related",
+              "label" : "Shoalhaven District Memorial Hospital",
+              "id" : "https://ror.org/04p6jw654"
+            },
+            {
+              "type" : "Related",
+              "label" : "St George Hospital",
+              "id" : "https://ror.org/02pk13h45"
+            },
+            {
+              "type" : "Related",
+              "label" : "Sutherland Hospital",
+              "id" : "https://ror.org/01xcx0382"
+            },
+            {
+              "type" : "Related",
+              "label" : "Sydney Children's Hospital",
+              "id" : "https://ror.org/02tj04e91"
+            },
+            {
+              "type" : "Related",
+              "label" : "Sydney Hospital",
+              "id" : "https://ror.org/0402tt118"
+            },
+            {
+              "type" : "Related",
+              "label" : "Victor Chang Cardiac Research Institute",
+              "id" : "https://ror.org/03trvqr13"
+            },
+            {
+              "type" : "Related",
+              "label" : "Wagga Wagga Base Hospital",
+              "id" : "https://ror.org/05newpx76"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Climate System Science",
+              "id" : "https://ror.org/0288wcg94"
+            },
+            {
+              "type" : "Child",
+              "label" : "Australian Defence Force Academy",
+              "id" : "https://ror.org/02j5s7g39"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -33.917731,
+              "lng" : 151.230964,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Sydney",
+              "state" : "New South Wales",
+              "state_code" : "AU-NSW",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2147714,
+                "city" : "Sydney",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2155400,
+                  "name" : "New South Wales",
+                  "ascii_name" : "New South Wales",
+                  "code" : "AU.02"
+                },
+                "geonames_admin2" : {
+                  "id" : null,
+                  "name" : null,
+                  "ascii_name" : null,
+                  "code" : null
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 4902 0432"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001773",
+              "all" : [
+                "501100001773",
+                "501100001143",
+                "501100007281",
+                "501100002204",
+                "501100001156"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : "146078",
+              "all" : [
+                "146078",
+                "16766976"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q734764"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1005.4",
+              "all" : "grid.1005.4"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "UNSW Sydney"
+            },
+            {
+              "name" : "University of New South Wales"
+            },
+            {
+              "name" : "UNSW"
+            },
+            {
+              "id" : "https://ror.org/03r8z3t63"
+            },
+            {
+              "id" : "ror.org/03r8z3t63"
+            },
+            {
+              "id" : "03r8z3t63"
+            },
+            {
+              "id" : "0000 0004 4902 0432"
+            },
+            {
+              "id" : "501100001773"
+            },
+            {
+              "id" : "501100001143"
+            },
+            {
+              "id" : "501100007281"
+            },
+            {
+              "id" : "501100002204"
+            },
+            {
+              "id" : "501100001156"
+            },
+            {
+              "id" : "146078"
+            },
+            {
+              "id" : "16766976"
+            },
+            {
+              "id" : "Q734764"
+            },
+            {
+              "id" : "grid.1005.4"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01kj2bm70",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01kj2bm70",
+          "name" : "Newcastle University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.ncl.ac.uk/"
+          ],
+          "aliases" : [
+            "University of Newcastle upon Tyne"
+          ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Newcastle_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1834,
           "country" : {
             "country_code" : "GB",
             "country_name" : "United Kingdom"
           },
-          "name" : "Berkshire Record Office",
-          "id" : "https://ror.org/05eazss97",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432723.3",
-              "preferred" : "grid.432723.3"
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Freeman Hospital",
+              "id" : "https://ror.org/00cdwy346"
             },
-            "ISNI" : {
-              "all" : [
-                "0000 0004 5909 3141"
-              ],
-              "preferred" : null
+            {
+              "type" : "Related",
+              "label" : "NIHR Newcastle Biomedical Research Centre",
+              "id" : "https://ror.org/044m9mw93"
             },
-            "Wikidata" : {
-              "all" : [
-                "Q30255410"
-              ],
-              "preferred" : null
+            {
+              "type" : "Related",
+              "label" : "Newcastle Hospitals - Campus for Ageing and Vitality",
+              "id" : "https://ror.org/051qy7v07"
+            },
+            {
+              "type" : "Related",
+              "label" : "Newcastle University Medicine Malaysia",
+              "id" : "https://ror.org/009e9eq52"
+            },
+            {
+              "type" : "Related",
+              "label" : "Newcastle University Singapore",
+              "id" : "https://ror.org/00mbfhq81"
+            },
+            {
+              "type" : "Related",
+              "label" : "Queen Elizabeth Hospital",
+              "id" : "https://ror.org/015dyrs73"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Victoria Infirmary",
+              "id" : "https://ror.org/01p19k166"
+            },
+            {
+              "type" : "Related",
+              "label" : "University Hospital of North Durham",
+              "id" : "https://ror.org/04qgcgz06"
+            },
+            {
+              "type" : "Child",
+              "label" : "Centre for the Observation and Modelling of Earthquakes, Volcanoes and Tectonics",
+              "id" : "https://ror.org/047d2d387"
+            },
+            {
+              "type" : "Child",
+              "label" : "Wellcome Centre for Mitochondrial Research",
+              "id" : "https://ror.org/03myjph80"
             }
-          },
-          "acronyms" : [ ],
-          "types" : [
-            "Company"
           ],
           "addresses" : [
             {
-              "state_code" : "US-MA",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "Berkshire County",
-                  "code" : "US.MA.003",
-                  "name" : "Berkshire County",
-                  "id" : 4930396
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Pittsfield",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Massachusetts",
-                  "code" : "US.MA",
-                  "name" : "Massachusetts",
-                  "id" : 6254926
-                },
-                "id" : 4947459
-              },
-              "country_geonames_id" : 6252001,
               "line" : null,
-              "lat" : 42.4454,
-              "city" : "Pittsfield",
+              "lat" : 54.978,
+              "lng" : -1.615,
               "postcode" : null,
               "primary" : false,
-              "lng" : -73.244808,
-              "state" : "Massachusetts"
-            }
-          ],
-          "labels" : [ ],
-          "established" : null,
-          "relationships" : [ ],
-          "links" : [ ],
-          "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "US",
-            "country_name" : "United States"
-          },
-          "name" : "Nuclea Biotechnologies (United States)",
-          "id" : "https://ror.org/04dhhgk48",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432735.4",
-              "preferred" : "grid.432735.4"
-            },
-            "ISNI" : {
-              "all" : [
-                "0000 0000 9119 4760"
-              ],
-              "preferred" : null
-            },
-            "Wikidata" : {
-              "all" : [
-                "Q3488607"
-              ],
-              "preferred" : null
-            }
-          },
-          "acronyms" : [
-            "CPAWS",
-            "SNAP"
-          ],
-          "types" : [
-            "Other"
-          ],
-          "addresses" : [
-            {
-              "state_code" : "CA-ON",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "Ottawa",
-                  "code" : "CA.08.3506",
-                  "name" : "Ottawa",
-                  "id" : 8581623
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Ottawa",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Ontario",
-                  "code" : "CA.08",
-                  "name" : "Ontario",
-                  "id" : 6093943
-                },
-                "id" : 6094817
-              },
-              "country_geonames_id" : 6251999,
-              "line" : null,
-              "lat" : 45.40827,
-              "city" : "Ottawa",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -75.718457,
-              "state" : "Ontario"
-            }
-          ],
-          "labels" : [
-            {
-              "iso639" : "fr",
-              "label" : "la Société pour la nature et les parcs du Canada"
-            }
-          ],
-          "established" : 1963,
-          "relationships" : [ ],
-          "links" : [
-            "http://www.cpaws.org/"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "https://en.wikipedia.org/wiki/Canadian_Parks_and_Wilderness_Society",
-          "country" : {
-            "country_code" : "CA",
-            "country_name" : "Canada"
-          },
-          "name" : "Canadian Parks and Wilderness Society",
-          "id" : "https://ror.org/03jr3a030",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432736.7",
-              "preferred" : "grid.432736.7"
-            },
-            "ISNI" : {
-              "all" : [
-                "0000 0004 0464 6909"
-              ],
-              "preferred" : null
-            },
-            "Wikidata" : {
-              "all" : [
-                "Q19876770"
-              ],
-              "preferred" : null
-            }
-          },
-          "acronyms" : [
-            "CPHA"
-          ],
-          "types" : [
-            "Nonprofit"
-          ],
-          "addresses" : [
-            {
-              "state_code" : "CA-ON",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "Ottawa",
-                  "code" : "CA.08.3506",
-                  "name" : "Ottawa",
-                  "id" : 8581623
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Ottawa",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Ontario",
-                  "code" : "CA.08",
-                  "name" : "Ontario",
-                  "id" : 6093943
-                },
-                "id" : 6094817
-              },
-              "country_geonames_id" : 6251999,
-              "line" : null,
-              "lat" : 45.382276,
-              "city" : "Ottawa",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -75.743893,
-              "state" : "Ontario"
-            }
-          ],
-          "labels" : [ ],
-          "established" : 1910,
-          "relationships" : [ ],
-          "links" : [
-            "http://www.cpha.ca/en/default.aspx"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "https://en.wikipedia.org/wiki/Canadian_Public_Health_Association",
-          "country" : {
-            "country_code" : "CA",
-            "country_name" : "Canada"
-          },
-          "name" : "Canadian Public Health Association",
-          "id" : "https://ror.org/038n5s612",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432739.8",
-              "preferred" : "grid.432739.8"
-            }
-          },
-          "acronyms" : [
-            "AMPEU"
-          ],
-          "types" : [
-            "Government"
-          ],
-          "addresses" : [
-            {
+              "city" : "Newcastle upon Tyne",
+              "state" : null,
               "state_code" : null,
+              "country_geonames_id" : 2635167,
               "geonames_city" : {
+                "id" : 2641673,
+                "city" : "Newcastle upon Tyne",
+                "nuts_level1" : {
+                  "code" : "UKC",
+                  "name" : "NORTH EAST (ENGLAND)"
+                },
                 "nuts_level2" : {
-                  "code" : "HR04",
-                  "name" : "Kontinentalna Hrvatska"
+                  "code" : "UKC2",
+                  "name" : "Northumberland and Tyne and Wear"
+                },
+                "nuts_level3" : {
+                  "code" : "UKC22",
+                  "name" : "Tyneside"
+                },
+                "geonames_admin1" : {
+                  "id" : 6269131,
+                  "name" : "England",
+                  "ascii_name" : "England",
+                  "code" : "GB.ENG"
                 },
                 "geonames_admin2" : {
-                  "ascii_name" : null,
-                  "code" : null,
-                  "name" : null,
-                  "id" : null
+                  "id" : 3333174,
+                  "name" : "Newcastle upon Tyne",
+                  "ascii_name" : "Newcastle upon Tyne",
+                  "code" : "GB.ENG.I7"
                 },
                 "license" : {
                   "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
                   "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Zagreb",
-                "nuts_level1" : {
-                  "code" : "HR0",
-                  "name" : "HRVATSKA"
-                },
-                "nuts_level3" : {
-                  "code" : "HR041",
-                  "name" : "Grad Zagreb"
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "City of Zagreb",
-                  "code" : "HR.21",
-                  "name" : "City of Zagreb",
-                  "id" : 3337532
-                },
-                "id" : 3186886
-              },
-              "country_geonames_id" : 3202326,
-              "line" : null,
-              "lat" : 45.816031,
-              "city" : "Zagreb",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : 15.974829,
-              "state" : null
+                }
+              }
             }
           ],
-          "labels" : [ ],
-          "established" : null,
-          "relationships" : [ ],
-          "links" : [
-            "http://www.mobilnost.hr"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "HR",
-            "country_name" : "Croatia"
-          },
-          "name" : "Agency for Mobility and EU Programmes",
-          "id" : "https://ror.org/00xp3pa76",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [
-            "Agencija za mobilnost i programe EU"
-          ]
-      },
-      {
           "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432740.6",
-              "preferred" : "grid.432740.6"
-            },
             "ISNI" : {
+              "preferred" : null,
               "all" : [
-                "0000 0001 2230 533X"
-              ],
-              "preferred" : null
+                "0000 0001 0462 7212"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100008406",
+                "501100000774"
+              ]
+            },
+            "HESA" : {
+              "preferred" : null,
+              "all" : [
+                "0154"
+              ]
+            },
+            "UCAS" : {
+              "preferred" : null,
+              "all" : [
+                "N21"
+              ]
+            },
+            "UKPRN" : {
+              "preferred" : null,
+              "all" : [
+                "10007799"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : "203338",
+              "all" : [
+                "203338",
+                "4329975"
+              ]
             },
             "Wikidata" : {
+              "preferred" : null,
               "all" : [
-                "Q30255419"
-              ],
-              "preferred" : null
-            }
-          },
-          "acronyms" : [
-            "EMZ"
-          ],
-          "types" : [
-            "Facility"
-          ],
-          "addresses" : [
-            {
-              "state_code" : null,
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : "DE30",
-                  "name" : "Berlin"
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : null,
-                  "code" : null,
-                  "name" : null,
-                  "id" : null
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Berlin",
-                "nuts_level1" : {
-                  "code" : "DE3",
-                  "name" : "BERLIN"
-                },
-                "nuts_level3" : {
-                  "code" : "DE300",
-                  "name" : "Berlin"
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Berlin",
-                  "code" : "DE.16",
-                  "name" : "Berlin",
-                  "id" : 2950157
-                },
-                "id" : 2950159
-              },
-              "country_geonames_id" : 2921044,
-              "line" : null,
-              "lat" : 52.544874,
-              "city" : "Berlin",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : 13.420945,
-              "state" : null
-            }
-          ],
-          "labels" : [
-            {
-              "iso639" : "de",
-              "label" : "Europäisches Migrationszentrum"
-            }
-          ],
-          "established" : 1978,
-          "relationships" : [ ],
-          "links" : [
-            "http://www.emz-berlin.de"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "DE",
-            "country_name" : "Germany"
-          },
-          "name" : "European Migration Centre",
-          "id" : "https://ror.org/01dxs6p42",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
+                "Q837164"
+              ]
+            },
             "GRID" : {
-              "all" : "grid.432744.2",
-              "preferred" : "grid.432744.2"
-            },
-            "Wikidata" : {
-              "all" : [
-                "Q30255423"
-              ],
-              "preferred" : null
+              "preferred" : "grid.1006.7",
+              "all" : "grid.1006.7"
             }
           },
-          "acronyms" : [
-            "BSDM"
-          ],
-          "types" : [
-            "Company"
-          ],
-          "addresses" : [
+          "names_ids" : [
             {
-              "state_code" : "US-UT",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "Salt Lake County",
-                  "code" : "US.UT.035",
-                  "name" : "Salt Lake County",
-                  "id" : 5781004
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Salt Lake City",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Utah",
-                  "code" : "US.UT",
-                  "name" : "Utah",
-                  "id" : 5549030
-                },
-                "id" : 5780993
-              },
-              "country_geonames_id" : 6252001,
-              "line" : null,
-              "lat" : 40.710342,
-              "city" : "Salt Lake City",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -111.94042,
-              "state" : "Utah"
+              "name" : "Newcastle University"
+            },
+            {
+              "name" : "University of Newcastle upon Tyne"
+            },
+            {
+              "id" : "https://ror.org/01kj2bm70"
+            },
+            {
+              "id" : "ror.org/01kj2bm70"
+            },
+            {
+              "id" : "01kj2bm70"
+            },
+            {
+              "id" : "0000 0001 0462 7212"
+            },
+            {
+              "id" : "501100008406"
+            },
+            {
+              "id" : "501100000774"
+            },
+            {
+              "id" : "0154"
+            },
+            {
+              "id" : "N21"
+            },
+            {
+              "id" : "10007799"
+            },
+            {
+              "id" : "203338"
+            },
+            {
+              "id" : "4329975"
+            },
+            {
+              "id" : "Q837164"
+            },
+            {
+              "id" : "grid.1006.7"
             }
-          ],
-          "labels" : [ ],
-          "established" : 1986,
-          "relationships" : [ ],
-          "links" : [
-            "https://www.pyrexar.com/"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "US",
-            "country_name" : "United States"
-          },
-          "name" : "Pyrexar Medical (United States)",
-          "id" : "https://ror.org/05x1fc249",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [
-            "BSD Medical"
           ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432749.f",
-              "preferred" : "grid.432749.f"
-            },
-            "Wikidata" : {
-              "all" : [
-                "Q30255426"
-              ],
-              "preferred" : null
-            }
-          },
-          "acronyms" : [
-            "BA"
-          ],
-          "types" : [
-            "Company"
-          ],
-          "addresses" : [
-            {
-              "state_code" : "US-MI",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "Washtenaw County",
-                  "code" : "US.MI.161",
-                  "name" : "Washtenaw County",
-                  "id" : 5014120
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Dexter",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Michigan",
-                  "code" : "US.MI",
-                  "name" : "Michigan",
-                  "id" : 5001836
-                },
-                "id" : 4990797
-              },
-              "country_geonames_id" : 6252001,
-              "line" : null,
-              "lat" : 33.829785,
-              "city" : "Dexter",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -84.344517,
-              "state" : "Michigan"
-            }
-          ],
-          "labels" : [ ],
-          "established" : 1989,
-          "relationships" : [ ],
-          "links" : [
-            "https://www.georgiabankruptcyfiling.com/"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "US",
-            "country_name" : "United States"
-          },
-          "name" : "Berry & Associates (United States)",
-          "id" : "https://ror.org/01a5r1q21",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
-      },
-      {
-          "external_ids" : {
-            "GRID" : {
-              "all" : "grid.432757.0",
-              "preferred" : "grid.432757.0"
-            },
-            "Wikidata" : {
-              "all" : [
-                "Q30255434"
-              ],
-              "preferred" : null
-            }
-          },
-          "acronyms" : [ ],
-          "types" : [
-            "Company"
-          ],
-          "addresses" : [
-            {
-              "state_code" : "US-OH",
-              "geonames_city" : {
-                "nuts_level2" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin2" : {
-                  "ascii_name" : "Franklin County",
-                  "code" : "US.OH.049",
-                  "name" : "Franklin County",
-                  "id" : 4512214
-                },
-                "license" : {
-                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
-                  "license" : "http://creativecommons.org/licenses/by/3.0/"
-                },
-                "city" : "Columbus",
-                "nuts_level1" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "nuts_level3" : {
-                  "code" : null,
-                  "name" : null
-                },
-                "geonames_admin1" : {
-                  "ascii_name" : "Ohio",
-                  "code" : "US.OH",
-                  "name" : "Ohio",
-                  "id" : 5165418
-                },
-                "id" : 4509177
-              },
-              "country_geonames_id" : 6252001,
-              "line" : null,
-              "lat" : 40.020101,
-              "city" : "Columbus",
-              "postcode" : null,
-              "primary" : false,
-              "lng" : -82.920746,
-              "state" : "Ohio"
-            }
-          ],
-          "labels" : [ ],
-          "established" : 1987,
-          "relationships" : [ ],
-          "links" : [
-            "http://www.bertec.com/"
-          ],
-          "status" : "active",
-          "wikipedia_url" : "",
-          "country" : {
-            "country_code" : "US",
-            "country_name" : "United States"
-          },
-          "name" : "Bertec (United States)",
-          "id" : "https://ror.org/05kyb8602",
-          "email_address" : null,
-          "ip_addresses" : [ ],
-          "aliases" : [ ]
         }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/00jtmb277",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/00jtmb277",
+          "name" : "University of Wollongong",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "https://www.uow.edu.au/index.html"
+          ],
+          "aliases" : [
+            "Wollongong University"
+          ],
+          "acronyms" : [
+            "UOW"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_Wollongong",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1951,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Shellharbour Hospital",
+              "id" : "https://ror.org/01dvjey82"
+            },
+            {
+              "type" : "Related",
+              "label" : "Shoalhaven District Memorial Hospital",
+              "id" : "https://ror.org/04p6jw654"
+            },
+            {
+              "type" : "Related",
+              "label" : "Wollongong Hospital",
+              "id" : "https://ror.org/02d0e3p67"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Electromaterials Science",
+              "id" : "https://ror.org/020g3wn65"
+            },
+            {
+              "type" : "Child",
+              "label" : "University of Wollongong in Dubai",
+              "id" : "https://ror.org/0447ajy94"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -34.405147,
+              "lng" : 150.878387,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Wollongong",
+              "state" : "New South Wales",
+              "state_code" : "AU-NSW",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2171507,
+                "city" : "Wollongong",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2155400,
+                  "name" : "New South Wales",
+                  "ascii_name" : "New South Wales",
+                  "code" : "AU.02"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839791,
+                  "name" : "Wollongong",
+                  "ascii_name" : "Wollongong",
+                  "code" : "AU.02.18450"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 0486 528X"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001777"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "461935"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q1350021"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1007.6",
+              "all" : "grid.1007.6"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of Wollongong"
+            },
+            {
+              "name" : "Wollongong University"
+            },
+            {
+              "name" : "UOW"
+            },
+            {
+              "id" : "https://ror.org/00jtmb277"
+            },
+            {
+              "id" : "ror.org/00jtmb277"
+            },
+            {
+              "id" : "00jtmb277"
+            },
+            {
+              "id" : "0000 0004 0486 528X"
+            },
+            {
+              "id" : "501100001777"
+            },
+            {
+              "id" : "461935"
+            },
+            {
+              "id" : "Q1350021"
+            },
+            {
+              "id" : "grid.1007.6"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01ej9dk98",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01ej9dk98",
+          "name" : "University of Melbourne",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.unimelb.edu.au/"
+          ],
+          "aliases" : [
+            "Melbourne University"
+          ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_Melbourne",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1853,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "AuScope",
+              "id" : "https://ror.org/04s1m4564"
+            },
+            {
+              "type" : "Related",
+              "label" : "Austin Health",
+              "id" : "https://ror.org/05dbj6g52"
+            },
+            {
+              "type" : "Related",
+              "label" : "Austin Hospital",
+              "id" : "https://ror.org/010mv7n52"
+            },
+            {
+              "type" : "Related",
+              "label" : "Australian Urban Research Infrastructure Network",
+              "id" : "https://ror.org/02c3nzd41"
+            },
+            {
+              "type" : "Related",
+              "label" : "Bionics Institute",
+              "id" : "https://ror.org/05e4f1b55"
+            },
+            {
+              "type" : "Related",
+              "label" : "Burnet Institute",
+              "id" : "https://ror.org/05ktbsm52"
+            },
+            {
+              "type" : "Related",
+              "label" : "Centre for Eye Research Australia",
+              "id" : "https://ror.org/01sqdef20"
+            },
+            {
+              "type" : "Related",
+              "label" : "Epworth Hospital",
+              "id" : "https://ror.org/02ett6548"
+            },
+            {
+              "type" : "Related",
+              "label" : "Geelong Hospital",
+              "id" : "https://ror.org/00jrpxe15"
+            },
+            {
+              "type" : "Related",
+              "label" : "Melbourne Health",
+              "id" : "https://ror.org/04z4kmw33"
+            },
+            {
+              "type" : "Related",
+              "label" : "Mental Health Research Institute",
+              "id" : "https://ror.org/041684t28"
+            },
+            {
+              "type" : "Related",
+              "label" : "Murdoch Children's Research Institute",
+              "id" : "https://ror.org/048fyec77"
+            },
+            {
+              "type" : "Related",
+              "label" : "Northern Hospital",
+              "id" : "https://ror.org/05mjmsc11"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Children's Hospital",
+              "id" : "https://ror.org/02rktxt32"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Women's Hospital",
+              "id" : "https://ror.org/03grnna41"
+            },
+            {
+              "type" : "Related",
+              "label" : "St Vincent's Hospital",
+              "id" : "https://ror.org/001kjn539"
+            },
+            {
+              "type" : "Related",
+              "label" : "St Vincents Institute of Medical Research",
+              "id" : "https://ror.org/02k3cxs74"
+            },
+            {
+              "type" : "Related",
+              "label" : "The Royal Victorian Eye & Ear Hospital",
+              "id" : "https://ror.org/008q4kt04"
+            },
+            {
+              "type" : "Related",
+              "label" : "Victorian Comprehensive Cancer Centre",
+              "id" : "https://ror.org/00st91468"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Coherent X-ray Science",
+              "id" : "https://ror.org/02gs3vg83"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Dark Matter Particle Physics",
+              "id" : "https://ror.org/00cybsr61"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Mathematical and Statistical Frontiers",
+              "id" : "https://ror.org/02vcqg248"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Particle Physics at the Terascale",
+              "id" : "https://ror.org/01h06nz15"
+            },
+            {
+              "type" : "Child",
+              "label" : "Florey Institute of Neuroscience and Mental Health",
+              "id" : "https://ror.org/03a2tac74"
+            },
+            {
+              "type" : "Child",
+              "label" : "Peter Doherty Institute",
+              "id" : "https://ror.org/016899r71"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.797115,
+              "lng" : 144.959972,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Melbourne",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2158177,
+                "city" : "Melbourne",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839805,
+                  "name" : "Melbourne",
+                  "ascii_name" : "Melbourne",
+                  "code" : "AU.07.24600"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 2179 088X"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001782",
+              "all" : [
+                "501100001782",
+                "501100007961",
+                "100008758",
+                "501100000986",
+                "501100000987",
+                "501100001052"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : "363594",
+              "all" : [
+                "363594",
+                "47000931",
+                "3917352",
+                "1007776",
+                "6839809",
+                "6954088"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q319078"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1008.9",
+              "all" : "grid.1008.9"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of Melbourne"
+            },
+            {
+              "name" : "Melbourne University"
+            },
+            {
+              "id" : "https://ror.org/01ej9dk98"
+            },
+            {
+              "id" : "ror.org/01ej9dk98"
+            },
+            {
+              "id" : "01ej9dk98"
+            },
+            {
+              "id" : "0000 0001 2179 088X"
+            },
+            {
+              "id" : "501100001782"
+            },
+            {
+              "id" : "501100007961"
+            },
+            {
+              "id" : "100008758"
+            },
+            {
+              "id" : "501100000986"
+            },
+            {
+              "id" : "501100000987"
+            },
+            {
+              "id" : "501100001052"
+            },
+            {
+              "id" : "363594"
+            },
+            {
+              "id" : "47000931"
+            },
+            {
+              "id" : "3917352"
+            },
+            {
+              "id" : "1007776"
+            },
+            {
+              "id" : "6839809"
+            },
+            {
+              "id" : "6954088"
+            },
+            {
+              "id" : "Q319078"
+            },
+            {
+              "id" : "grid.1008.9"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01nfmeh72",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01nfmeh72",
+          "name" : "University of Tasmania",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.utas.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [
+            "UTAS"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_Tasmania",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1890,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Australian Maritime College",
+              "id" : "https://ror.org/05fv9c840"
+            },
+            {
+              "type" : "Related",
+              "label" : "Integrated Marine Observing System",
+              "id" : "https://ror.org/010x3gp67"
+            },
+            {
+              "type" : "Related",
+              "label" : "Launceston General Hospital",
+              "id" : "https://ror.org/04ymr6s03"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Hobart Hospital",
+              "id" : "https://ror.org/031382m70"
+            },
+            {
+              "type" : "Child",
+              "label" : "Centre for Marine Socioecology",
+              "id" : "https://ror.org/02xhx4j26"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -42.902093,
+              "lng" : 147.332497,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Hobart",
+              "state" : "Tasmania",
+              "state_code" : "AU-TAS",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2163355,
+                "city" : "Hobart",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2147291,
+                  "name" : "Tasmania",
+                  "ascii_name" : "Tasmania",
+                  "code" : "AU.06"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839672,
+                  "name" : "Hobart",
+                  "ascii_name" : "Hobart",
+                  "code" : "AU.06.62810"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 1936 826X"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001249",
+              "all" : [
+                "501100001249",
+                "501100001038"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "601288"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q962011"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1009.8",
+              "all" : "grid.1009.8"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of Tasmania"
+            },
+            {
+              "name" : "UTAS"
+            },
+            {
+              "id" : "https://ror.org/01nfmeh72"
+            },
+            {
+              "id" : "ror.org/01nfmeh72"
+            },
+            {
+              "id" : "01nfmeh72"
+            },
+            {
+              "id" : "0000 0004 1936 826X"
+            },
+            {
+              "id" : "501100001249"
+            },
+            {
+              "id" : "501100001038"
+            },
+            {
+              "id" : "601288"
+            },
+            {
+              "id" : "Q962011"
+            },
+            {
+              "id" : "grid.1009.8"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/00892tw58",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/00892tw58",
+          "name" : "University of Adelaide",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.adelaide.edu.au/"
+          ],
+          "aliases" : [
+            "Adelaide Uni"
+          ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_Adelaide",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1874,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Hanson Institute",
+              "id" : "https://ror.org/047kx5j58"
+            },
+            {
+              "type" : "Related",
+              "label" : "Lyell McEwin Hospital",
+              "id" : "https://ror.org/00pjm1054"
+            },
+            {
+              "type" : "Related",
+              "label" : "Modbury Hospital",
+              "id" : "https://ror.org/03pa4y709"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Adelaide Hospital",
+              "id" : "https://ror.org/00carf720"
+            },
+            {
+              "type" : "Related",
+              "label" : "Women's and Children's Hospital",
+              "id" : "https://ror.org/03kwrfk72"
+            },
+            {
+              "type" : "Child",
+              "label" : "Freemasons Foundation Centre for Men's Health",
+              "id" : "https://ror.org/043t7b640"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -34.920656,
+              "lng" : 138.605756,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Adelaide",
+              "state" : "South Australia",
+              "state_code" : "AU-SA",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2078025,
+                "city" : "Adelaide",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2061327,
+                  "name" : "South Australia",
+                  "ascii_name" : "South Australia",
+                  "code" : "AU.05"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839644,
+                  "name" : "Adelaide",
+                  "ascii_name" : "Adelaide",
+                  "code" : "AU.05.40070"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 1936 7304"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001786",
+              "all" : [
+                "501100001786",
+                "501100002678",
+                "501100005887",
+                "501100007197"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "206748"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q15574"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1010.0",
+              "all" : "grid.1010.0"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of Adelaide"
+            },
+            {
+              "name" : "Adelaide Uni"
+            },
+            {
+              "id" : "https://ror.org/00892tw58"
+            },
+            {
+              "id" : "ror.org/00892tw58"
+            },
+            {
+              "id" : "00892tw58"
+            },
+            {
+              "id" : "0000 0004 1936 7304"
+            },
+            {
+              "id" : "501100001786"
+            },
+            {
+              "id" : "501100002678"
+            },
+            {
+              "id" : "501100005887"
+            },
+            {
+              "id" : "501100007197"
+            },
+            {
+              "id" : "206748"
+            },
+            {
+              "id" : "Q15574"
+            },
+            {
+              "id" : "grid.1010.0"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01kpzv902",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01kpzv902",
+          "name" : "Flinders University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.flinders.edu.au/"
+          ],
+          "aliases" : [
+            "Flinders University of South Australia"
+          ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Flinders_University",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1966,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Centre for Remote Health",
+              "id" : "https://ror.org/04tn8zp39"
+            },
+            {
+              "type" : "Related",
+              "label" : "Flinders Medical Centre",
+              "id" : "https://ror.org/020aczd56"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Darwin Hospital",
+              "id" : "https://ror.org/04jq72f57"
+            },
+            {
+              "type" : "Related",
+              "label" : "Women's and Children's Hospital",
+              "id" : "https://ror.org/03kwrfk72"
+            },
+            {
+              "type" : "Child",
+              "label" : "National Centre for Groundwater Research and Training",
+              "id" : "https://ror.org/0087v5134"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -35.024038,
+              "lng" : 138.572615,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Adelaide",
+              "state" : "South Australia",
+              "state_code" : "AU-SA",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2078025,
+                "city" : "Adelaide",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2061327,
+                  "name" : "South Australia",
+                  "ascii_name" : "South Australia",
+                  "code" : "AU.05"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839644,
+                  "name" : "Adelaide",
+                  "ascii_name" : "Adelaide",
+                  "code" : "AU.05.40070"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 0367 2697"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001785",
+              "all" : [
+                "501100001785",
+                "501100003133"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "172537"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q15575"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1014.4",
+              "all" : "grid.1014.4"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Flinders University"
+            },
+            {
+              "name" : "Flinders University of South Australia"
+            },
+            {
+              "id" : "https://ror.org/01kpzv902"
+            },
+            {
+              "id" : "ror.org/01kpzv902"
+            },
+            {
+              "id" : "01kpzv902"
+            },
+            {
+              "id" : "0000 0004 0367 2697"
+            },
+            {
+              "id" : "501100001785"
+            },
+            {
+              "id" : "501100003133"
+            },
+            {
+              "id" : "172537"
+            },
+            {
+              "id" : "Q15575"
+            },
+            {
+              "id" : "grid.1014.4"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/04ttjf776",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/04ttjf776",
+          "name" : "RMIT University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "https://www.rmit.edu.au/"
+          ],
+          "aliases" : [
+            "Royal Melbourne Institute of Technology University"
+          ],
+          "acronyms" : [
+            "RMIT"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/RMIT_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1887,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Austin Hospital",
+              "id" : "https://ror.org/010mv7n52"
+            },
+            {
+              "type" : "Child",
+              "label" : "ARC Centre of Excellence for Automated Decision-Making and Society",
+              "id" : "https://ror.org/039p7nx39"
+            },
+            {
+              "type" : "Child",
+              "label" : "RMIT Europe",
+              "id" : "https://ror.org/03m3ca021"
+            },
+            {
+              "type" : "Child",
+              "label" : "RMIT Vietnam",
+              "id" : "https://ror.org/004axh929"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.806748,
+              "lng" : 144.962573,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Melbourne",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2158177,
+                "city" : "Melbourne",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839805,
+                  "name" : "Melbourne",
+                  "ascii_name" : "Melbourne",
+                  "code" : "AU.07.24600"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 2163 3550"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001780",
+              "all" : [
+                "501100001780",
+                "100008690",
+                "100010552"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "509851"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q1057890"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1017.7",
+              "all" : "grid.1017.7"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "RMIT University"
+            },
+            {
+              "name" : "Royal Melbourne Institute of Technology University"
+            },
+            {
+              "name" : "RMIT"
+            },
+            {
+              "id" : "https://ror.org/04ttjf776"
+            },
+            {
+              "id" : "ror.org/04ttjf776"
+            },
+            {
+              "id" : "04ttjf776"
+            },
+            {
+              "id" : "0000 0001 2163 3550"
+            },
+            {
+              "id" : "501100001780"
+            },
+            {
+              "id" : "100008690"
+            },
+            {
+              "id" : "100010552"
+            },
+            {
+              "id" : "509851"
+            },
+            {
+              "id" : "Q1057890"
+            },
+            {
+              "id" : "grid.1017.7"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01rxfrp27",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01rxfrp27",
+          "name" : "La Trobe University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.latrobe.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/La_Trobe_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1964,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Austin Hospital",
+              "id" : "https://ror.org/010mv7n52"
+            },
+            {
+              "type" : "Related",
+              "label" : "Box Hill Hospital",
+              "id" : "https://ror.org/0484pjq71"
+            },
+            {
+              "type" : "Related",
+              "label" : "Royal Women's Hospital",
+              "id" : "https://ror.org/03grnna41"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.72179,
+              "lng" : 145.047909,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Melbourne",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2158177,
+                "city" : "Melbourne",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839805,
+                  "name" : "Melbourne",
+                  "ascii_name" : "Melbourne",
+                  "code" : "AU.07.24600"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 2342 0938"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001215"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "191584"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q1478723"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1018.8",
+              "all" : "grid.1018.8"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "La Trobe University"
+            },
+            {
+              "id" : "https://ror.org/01rxfrp27"
+            },
+            {
+              "id" : "ror.org/01rxfrp27"
+            },
+            {
+              "id" : "01rxfrp27"
+            },
+            {
+              "id" : "0000 0001 2342 0938"
+            },
+            {
+              "id" : "501100001215"
+            },
+            {
+              "id" : "191584"
+            },
+            {
+              "id" : "Q1478723"
+            },
+            {
+              "id" : "grid.1018.8"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/04j757h98",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/04j757h98",
+          "name" : "Victoria University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.vu.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [
+            "VU"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Victoria_University,_Australia",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1916,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [ ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.794167,
+              "lng" : 144.9,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Melbourne",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2158177,
+                "city" : "Melbourne",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839805,
+                  "name" : "Melbourne",
+                  "ascii_name" : "Melbourne",
+                  "code" : "AU.07.24600"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 0396 9544"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001784"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "32775"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q180514"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1019.9",
+              "all" : "grid.1019.9"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Victoria University"
+            },
+            {
+              "name" : "VU"
+            },
+            {
+              "id" : "https://ror.org/04j757h98"
+            },
+            {
+              "id" : "ror.org/04j757h98"
+            },
+            {
+              "id" : "04j757h98"
+            },
+            {
+              "id" : "0000 0001 0396 9544"
+            },
+            {
+              "id" : "501100001784"
+            },
+            {
+              "id" : "32775"
+            },
+            {
+              "id" : "Q180514"
+            },
+            {
+              "id" : "grid.1019.9"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/04r659a56",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/04r659a56",
+          "name" : "University of New England",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.une.edu.au/"
+          ],
+          "aliases" : [
+            "New England University College of the University of Sydney"
+          ],
+          "acronyms" : [
+            "UNE"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_New_England_(Australia)",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1938,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Gosford Hospital",
+              "id" : "https://ror.org/01jg3a168"
+            },
+            {
+              "type" : "Child",
+              "label" : "UNE Partnerships (Australia)",
+              "id" : "https://ror.org/0238awh09"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -30.489949,
+              "lng" : 151.641018,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Armidale",
+              "state" : "New South Wales",
+              "state_code" : "AU-NSW",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2177671,
+                "city" : "Armidale",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2155400,
+                  "name" : "New South Wales",
+                  "ascii_name" : "New South Wales",
+                  "code" : "AU.02"
+                },
+                "geonames_admin2" : {
+                  "id" : 12047270,
+                  "name" : "Armidale Regional",
+                  "ascii_name" : "Armidale Regional",
+                  "code" : "AU.02.10130"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 1936 7371"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001772"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "197047"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q1814435"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1020.3",
+              "all" : "grid.1020.3"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of New England"
+            },
+            {
+              "name" : "New England University College of the University of Sydney"
+            },
+            {
+              "name" : "UNE"
+            },
+            {
+              "id" : "https://ror.org/04r659a56"
+            },
+            {
+              "id" : "ror.org/04r659a56"
+            },
+            {
+              "id" : "04r659a56"
+            },
+            {
+              "id" : "0000 0004 1936 7371"
+            },
+            {
+              "id" : "501100001772"
+            },
+            {
+              "id" : "197047"
+            },
+            {
+              "id" : "Q1814435"
+            },
+            {
+              "id" : "grid.1020.3"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/02czsnj07",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/02czsnj07",
+          "name" : "Deakin University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.deakin.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Deakin_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1974,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Box Hill Hospital",
+              "id" : "https://ror.org/0484pjq71"
+            },
+            {
+              "type" : "Related",
+              "label" : "Geelong Hospital",
+              "id" : "https://ror.org/00jrpxe15"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.8493578,
+              "lng" : 145.1127097,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Burwood",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 7932622,
+                "city" : "Burwood",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839833,
+                  "name" : "Whitehorse",
+                  "ascii_name" : "Whitehorse",
+                  "code" : "AU.07.26980"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 0526 7079"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001778",
+              "all" : [
+                "501100001778",
+                "501100003028"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "619887"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : "Q1180978",
+              "all" : [
+                "Q1180978",
+                "Q21973208"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1021.2",
+              "all" : "grid.1021.2"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Deakin University"
+            },
+            {
+              "id" : "https://ror.org/02czsnj07"
+            },
+            {
+              "id" : "ror.org/02czsnj07"
+            },
+            {
+              "id" : "02czsnj07"
+            },
+            {
+              "id" : "0000 0001 0526 7079"
+            },
+            {
+              "id" : "501100001778"
+            },
+            {
+              "id" : "501100003028"
+            },
+            {
+              "id" : "619887"
+            },
+            {
+              "id" : "Q1180978"
+            },
+            {
+              "id" : "Q21973208"
+            },
+            {
+              "id" : "grid.1021.2"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/02sc3r913",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/02sc3r913",
+          "name" : "Griffith University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.griffith.edu.au/"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Griffith_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1971,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Gold Coast Hospital",
+              "id" : "https://ror.org/05eq01d13"
+            },
+            {
+              "type" : "Related",
+              "label" : "Robina Hospital",
+              "id" : "https://ror.org/0257s2812"
+            },
+            {
+              "type" : "Related",
+              "label" : "Sunshine Coast University Hospital",
+              "id" : "https://ror.org/017ay4a94"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -27.470609,
+              "lng" : 153.022851,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Brisbane",
+              "state" : "Queensland",
+              "state_code" : "AU-QLD",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2174003,
+                "city" : "Brisbane",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2152274,
+                  "name" : "Queensland",
+                  "ascii_name" : "Queensland",
+                  "code" : "AU.04"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839562,
+                  "name" : "Brisbane",
+                  "ascii_name" : "Brisbane",
+                  "code" : "AU.04.31000"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 0437 5432"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001791",
+              "all" : [
+                "501100001791",
+                "100008763",
+                "501100003450"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : "409093",
+              "all" : [
+                "409093",
+                "4600223",
+                "3644262"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q1202292"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1022.1",
+              "all" : "grid.1022.1"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Griffith University"
+            },
+            {
+              "id" : "https://ror.org/02sc3r913"
+            },
+            {
+              "id" : "ror.org/02sc3r913"
+            },
+            {
+              "id" : "02sc3r913"
+            },
+            {
+              "id" : "0000 0004 0437 5432"
+            },
+            {
+              "id" : "501100001791"
+            },
+            {
+              "id" : "100008763"
+            },
+            {
+              "id" : "501100003450"
+            },
+            {
+              "id" : "409093"
+            },
+            {
+              "id" : "4600223"
+            },
+            {
+              "id" : "3644262"
+            },
+            {
+              "id" : "Q1202292"
+            },
+            {
+              "id" : "grid.1022.1"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/023q4bk22",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/023q4bk22",
+          "name" : "Central Queensland University",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "https://www.cqu.edu.au/"
+          ],
+          "aliases" : [
+            "CQUniversity"
+          ],
+          "acronyms" : [
+            "CQU"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Central_Queensland_University",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1967,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [ ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -23.322705,
+              "lng" : 150.520802,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Rockhampton",
+              "state" : "Queensland",
+              "state_code" : "AU-QLD",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2151437,
+                "city" : "Rockhampton",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2152274,
+                  "name" : "Queensland",
+                  "ascii_name" : "Queensland",
+                  "code" : "AU.04"
+                },
+                "geonames_admin2" : {
+                  "id" : 12047268,
+                  "name" : "Rockhampton",
+                  "ascii_name" : "Rockhampton",
+                  "code" : "AU.04.36370"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0001 2193 0854"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001790"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "972842"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q1053985"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1023.0",
+              "all" : "grid.1023.0"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Central Queensland University"
+            },
+            {
+              "name" : "CQUniversity"
+            },
+            {
+              "name" : "CQU"
+            },
+            {
+              "id" : "https://ror.org/023q4bk22"
+            },
+            {
+              "id" : "ror.org/023q4bk22"
+            },
+            {
+              "id" : "023q4bk22"
+            },
+            {
+              "id" : "0000 0001 2193 0854"
+            },
+            {
+              "id" : "501100001790"
+            },
+            {
+              "id" : "972842"
+            },
+            {
+              "id" : "Q1053985"
+            },
+            {
+              "id" : "grid.1023.0"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/01p93h210",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/01p93h210",
+          "name" : "University of South Australia",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "https://www.unisa.edu.au/"
+          ],
+          "aliases" : [
+            "UniSA"
+          ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/University_of_South_Australia",
+          "labels" : [ ],
+          "email_address" : "",
+          "ip_addresses" : [ ],
+          "established" : 1991,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Related",
+              "label" : "Hanson Institute",
+              "id" : "https://ror.org/047kx5j58"
+            },
+            {
+              "type" : "Related",
+              "label" : "Lyell McEwin Hospital",
+              "id" : "https://ror.org/00pjm1054"
+            },
+            {
+              "type" : "Related",
+              "label" : "Women's and Children's Hospital",
+              "id" : "https://ror.org/03kwrfk72"
+            },
+            {
+              "type" : "Child",
+              "label" : "Centre for Cancer Biology",
+              "id" : "https://ror.org/03yg7hz06"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -34.92049,
+              "lng" : 138.60678,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Adelaide",
+              "state" : "South Australia",
+              "state_code" : "AU-SA",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2078025,
+                "city" : "Adelaide",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2061327,
+                  "name" : "South Australia",
+                  "ascii_name" : "South Australia",
+                  "code" : "AU.05"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839644,
+                  "name" : "Adelaide",
+                  "ascii_name" : "Adelaide",
+                  "code" : "AU.05.40070"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0000 8994 5086"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "501100001787"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "335415"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q15576"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1026.5",
+              "all" : "grid.1026.5"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "University of South Australia"
+            },
+            {
+              "name" : "UniSA"
+            },
+            {
+              "id" : "https://ror.org/01p93h210"
+            },
+            {
+              "id" : "ror.org/01p93h210"
+            },
+            {
+              "id" : "01p93h210"
+            },
+            {
+              "id" : "0000 0000 8994 5086"
+            },
+            {
+              "id" : "501100001787"
+            },
+            {
+              "id" : "335415"
+            },
+            {
+              "id" : "Q15576"
+            },
+            {
+              "id" : "grid.1026.5"
+            }
+          ]
+        }
+      },
+      {
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/031rekg67",
+        "_score" : 0.0,
+        "_source" : {
+          "id" : "https://ror.org/031rekg67",
+          "name" : "Swinburne University of Technology",
+          "types" : [
+            "Education"
+          ],
+          "links" : [
+            "http://www.swinburne.edu.au/"
+          ],
+          "aliases" : [
+            "Swinburne"
+          ],
+          "acronyms" : [ ],
+          "status" : "active",
+          "wikipedia_url" : "http://en.wikipedia.org/wiki/Swinburne_University_of_Technology",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1908,
+          "country" : {
+            "country_code" : "AU",
+            "country_name" : "Australia"
+          },
+          "relationships" : [
+            {
+              "type" : "Child",
+              "label" : "Swinburne University of Technology Sarawak Campus",
+              "id" : "https://ror.org/014cjmc76"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : -37.821111,
+              "lng" : 145.038333,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Melbourne",
+              "state" : "Victoria",
+              "state_code" : "AU-VIC",
+              "country_geonames_id" : 2077456,
+              "geonames_city" : {
+                "id" : 2158177,
+                "city" : "Melbourne",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 2145234,
+                  "name" : "Victoria",
+                  "ascii_name" : "Victoria",
+                  "code" : "AU.07"
+                },
+                "geonames_admin2" : {
+                  "id" : 7839805,
+                  "name" : "Melbourne",
+                  "ascii_name" : "Melbourne",
+                  "code" : "AU.07.24600"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
+              }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 0409 2862"
+              ]
+            },
+            "FundRef" : {
+              "preferred" : "501100001781",
+              "all" : [
+                "501100001781",
+                "501100007916",
+                "501100001135"
+              ]
+            },
+            "OrgRef" : {
+              "preferred" : null,
+              "all" : [
+                "247041"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q787234"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.1027.4",
+              "all" : "grid.1027.4"
+            }
+          },
+          "names_ids" : [
+            {
+              "name" : "Swinburne University of Technology"
+            },
+            {
+              "name" : "Swinburne"
+            },
+            {
+              "id" : "https://ror.org/031rekg67"
+            },
+            {
+              "id" : "ror.org/031rekg67"
+            },
+            {
+              "id" : "031rekg67"
+            },
+            {
+              "id" : "0000 0004 0409 2862"
+            },
+            {
+              "id" : "501100001781"
+            },
+            {
+              "id" : "501100007916"
+            },
+            {
+              "id" : "501100001135"
+            },
+            {
+              "id" : "247041"
+            },
+            {
+              "id" : "Q787234"
+            },
+            {
+              "id" : "grid.1027.4"
+            }
+          ]
+        }
+      }
     ]
   },
   "aggregations" : {
@@ -871,81 +3637,35 @@
       "buckets" : [
         {
           "key" : "Company",
-          "doc_count" : 27855
+          "doc_count" : 29621
         },
         {
           "key" : "Education",
-          "doc_count" : 19536
+          "doc_count" : 20080
         },
         {
           "key" : "Nonprofit",
-          "doc_count" : 13437
+          "doc_count" : 13926
         },
         {
           "key" : "Healthcare",
-          "doc_count" : 12594
+          "doc_count" : 13045
         },
         {
           "key" : "Facility",
-          "doc_count" : 8582
+          "doc_count" : 9547
         },
         {
           "key" : "Other",
-          "doc_count" : 7958
+          "doc_count" : 8197
         },
         {
           "key" : "Government",
-          "doc_count" : 5857
+          "doc_count" : 6232
         },
         {
           "key" : "Archive",
-          "doc_count" : 2755
-        }
-      ]
-    },
-    "countries" : {
-      "doc_count_error_upper_bound" : 575,
-      "sum_other_doc_count" : 34222,
-      "buckets" : [
-        {
-          "key" : "US",
-          "doc_count" : 29735
-        },
-        {
-          "key" : "GB",
-          "doc_count" : 7170
-        },
-        {
-          "key" : "DE",
-          "doc_count" : 4764
-        },
-        {
-          "key" : "CN",
-          "doc_count" : 4503
-        },
-        {
-          "key" : "JP",
-          "doc_count" : 3711
-        },
-        {
-          "key" : "FR",
-          "doc_count" : 3682
-        },
-        {
-          "key" : "CA",
-          "doc_count" : 3198
-        },
-        {
-          "key" : "IN",
-          "doc_count" : 2865
-        },
-        {
-          "key" : "CZ",
-          "doc_count" : 2739
-        },
-        {
-          "key" : "RU",
-          "doc_count" : 2009
+          "doc_count" : 2867
         }
       ]
     },
@@ -955,15 +3675,53 @@
       "buckets" : [
         {
           "key" : "active",
-          "doc_count" : 27855
+          "doc_count" : 103515
+        }
+      ]
+    },
+    "countries" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 36408,
+      "buckets" : [
+        {
+          "key" : "US",
+          "doc_count" : 30863
         },
         {
-          "key" : "inactive",
-          "doc_count" : 3
+          "key" : "GB",
+          "doc_count" : 7360
         },
         {
-          "key" : "withdrawn",
-          "doc_count" : 2
+          "key" : "DE",
+          "doc_count" : 5012
+        },
+        {
+          "key" : "CN",
+          "doc_count" : 4804
+        },
+        {
+          "key" : "FR",
+          "doc_count" : 3915
+        },
+        {
+          "key" : "JP",
+          "doc_count" : 3915
+        },
+        {
+          "key" : "CA",
+          "doc_count" : 3308
+        },
+        {
+          "key" : "IN",
+          "doc_count" : 3046
+        },
+        {
+          "key" : "CZ",
+          "doc_count" : 2780
+        },
+        {
+          "key" : "RU",
+          "doc_count" : 2104
         }
       ]
     }

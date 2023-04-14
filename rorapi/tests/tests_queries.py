@@ -168,7 +168,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.default_query = \
                 {'aggs': {'types': {'terms': {'field': 'types', 'size': 10, 'min_doc_count': 1}},
                 'countries': {'terms': {'field': 'country.country_code', 'size': 10, 'min_doc_count': 1}},
-                'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}}, 'from': 0, 'size': 20}
+                'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}}, 'track_total_hits': True, 'from': 0, 'size': 20}
 
     def test_empty_query_default(self):
         expected = {'query': {
@@ -181,7 +181,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEquals(query.to_dict(), expected)
 
     def test_empty_query_all_status(self):
-        expected = {'query': {'match_all': {}}}
+        expected = {'query': {'match_all': {}}, 'track_total_hits': True}
         expected.update(self.default_query)
         query = build_search_query({'all_status':''})
         self.assertEquals(query.to_dict(), expected)
@@ -497,7 +497,8 @@ class BuildRetrieveQueryTestCase(SimpleTestCase):
                         'query': 'ror-id'
                     }
                 }
-            }
+            },
+            'track_total_hits': True
         })
 
 
@@ -518,14 +519,14 @@ class SearchOrganizationsTestCase(SimpleTestCase):
 
         search_mock.assert_called_once()
         self.assertEquals(organizations.number_of_results,
-                          self.test_data['hits']['total'])
+                          self.test_data['hits']['total']['value'])
         self.assertEquals(organizations.time_taken, self.test_data['took'])
         self.assertEquals(len(organizations.items),
                           len(self.test_data['hits']['hits']))
         for ret, exp in zip(organizations.items,
                             self.test_data['hits']['hits']):
-            self.assertEquals(ret.id, exp['id'])
-            self.assertEquals(ret.name, exp['name'])
+            self.assertEquals(ret.id, exp['_source']['id'])
+            self.assertEquals(ret.name, exp['_source']['name'])
         self.assertEquals(
             len(organizations.meta.types),
             len(self.test_data['aggregations']['types']['buckets']))
@@ -586,10 +587,12 @@ class RetrieveOrganizationsTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         error, organization = retrieve_organization('ror-id')
+        print(error)
+        print(organization)
         self.assertIsNone(error)
 
         search_mock.assert_called_once()
-        expected = self.test_data['hits']['hits'][0]
+        expected = self.test_data['hits']['hits'][0]['_source']
         self.assertEquals(organization.id, expected['id'])
         self.assertEquals(organization.name, expected['name'])
 

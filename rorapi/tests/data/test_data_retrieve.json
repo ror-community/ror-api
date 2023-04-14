@@ -1,151 +1,125 @@
 {
-  "_shards": {
-    "failed": 0,
-    "skipped": 0,
-    "successful": 5,
-    "total": 5
+  "took" : 7,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
   },
-  "aggregations": {
-    "countries": {
-      "buckets": [
-        {
-          "doc_count": 1,
-          "key": "US"
-        }
-      ],
-      "doc_count_error_upper_bound": 0,
-      "sum_other_doc_count": 0
+  "hits" : {
+    "total" : {
+      "value" : 1,
+      "relation" : "eq"
     },
-    "types": {
-      "buckets": [
-        {
-          "doc_count": 1,
-          "key": "Facility"
-        }
-      ],
-      "doc_count_error_upper_bound": 0,
-      "sum_other_doc_count": 0
-    },
-    "statuses": {
-      "buckets": [
-        {
-          "doc_count": 1,
-          "key": "active"
-        }
-      ],
-      "doc_count_error_upper_bound": 0,
-      "sum_other_doc_count": 0
-    }
-  },
-  "hits": {
-    "hits": [
+    "max_score" : 11.155889,
+    "hits" : [
       {
-        "acronyms": [
-          "NP"
-        ],
-        "addresses": [
-          {
-            "city": "Washington D.C.",
-            "country_geonames_id": 6252001,
-            "geonames_city": {
-              "city": "Washington, D.C.",
-              "geonames_admin1": {
-                "ascii_name": "Washington, D.C.",
-                "code": "US.DC",
-                "id": 4138106,
-                "name": "Washington, D.C."
-              },
-              "geonames_admin2": {
-                "ascii_name": "Washington County",
-                "code": "US.DC.001",
-                "id": 4140987,
-                "name": "Washington County"
-              },
-              "id": 4140963,
-              "license": {
-                "attribution": "Data from geonames.org under a CC-BY 3.0 license",
-                "license": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "nuts_level1": {
-                "code": null,
-                "name": null
-              },
-              "nuts_level2": {
-                "code": null,
-                "name": null
-              },
-              "nuts_level3": {
-                "code": null,
-                "name": null
+        "_index" : "organizations",
+        "_type" : "_doc",
+        "_id" : "https://ror.org/02atag894",
+        "_score" : 11.155889,
+        "_source" : {
+          "id" : "https://ror.org/02atag894",
+          "name" : "Office of Nuclear Physics",
+          "types" : [
+            "Government"
+          ],
+          "links" : [
+            "https://science.osti.gov/np"
+          ],
+          "aliases" : [ ],
+          "acronyms" : [
+            "NP"
+          ],
+          "status" : "active",
+          "wikipedia_url" : "",
+          "labels" : [ ],
+          "email_address" : null,
+          "ip_addresses" : [ ],
+          "established" : 1996,
+          "country" : {
+            "country_code" : "US",
+            "country_name" : "United States"
+          },
+          "relationships" : [
+            {
+              "type" : "Parent",
+              "label" : "Office of Science",
+              "id" : "https://ror.org/00mmn6b08"
+            }
+          ],
+          "addresses" : [
+            {
+              "line" : null,
+              "lat" : 38.88758,
+              "lng" : -77.025728,
+              "postcode" : null,
+              "primary" : false,
+              "city" : "Washington D.C.",
+              "state" : "District of Columbia",
+              "state_code" : "US-DC",
+              "country_geonames_id" : 6252001,
+              "geonames_city" : {
+                "id" : 4140963,
+                "city" : "Washington, D.C.",
+                "nuts_level1" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level2" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "nuts_level3" : {
+                  "code" : null,
+                  "name" : null
+                },
+                "geonames_admin1" : {
+                  "id" : 4138106,
+                  "name" : "Washington, D.C.",
+                  "ascii_name" : "Washington, D.C.",
+                  "code" : "US.DC"
+                },
+                "geonames_admin2" : {
+                  "id" : 4140987,
+                  "name" : "Washington County",
+                  "ascii_name" : "Washington County",
+                  "code" : "US.DC.001"
+                },
+                "license" : {
+                  "attribution" : "Data from geonames.org under a CC-BY 3.0 license",
+                  "license" : "http://creativecommons.org/licenses/by/3.0/"
+                }
               }
+            }
+          ],
+          "external_ids" : {
+            "ISNI" : {
+              "preferred" : null,
+              "all" : [
+                "0000 0004 5897 7463"
+              ]
             },
-            "lat": 38.88758,
-            "line": null,
-            "lng": -77.025728,
-            "postcode": null,
-            "primary": false,
-            "state": "District of Columbia",
-            "state_code": "US-DC"
+            "FundRef" : {
+              "preferred" : null,
+              "all" : [
+                "100006209"
+              ]
+            },
+            "Wikidata" : {
+              "preferred" : null,
+              "all" : [
+                "Q30296535"
+              ]
+            },
+            "GRID" : {
+              "preferred" : "grid.453025.5",
+              "all" : "grid.453025.5"
+            }
           }
-        ],
-        "aliases": [
-        ],
-        "country": {
-          "country_code": "US",
-          "country_name": "United States"
-        },
-        "email_address": null,
-        "established": 1996,
-        "external_ids": {
-          "FundRef": {
-            "all": [
-              "100006209"
-            ],
-            "preferred": null
-          },
-          "GRID": {
-            "all": "grid.453025.5",
-            "preferred": "grid.453025.5"
-          },
-          "ISNI": {
-            "all": [
-              "0000 0004 5897 7463"
-            ],
-            "preferred": null
-          },
-          "Wikidata": {
-            "all": [
-              "Q30296535"
-            ],
-            "preferred": null
-          }
-        },
-        "id": "https://ror.org/02atag894",
-        "ip_addresses": [
-        ],
-        "labels": [
-        ],
-        "links": [
-          "https://science.osti.gov/np"
-        ],
-        "name": "Office of Nuclear Physics",
-        "relationships": [
-          {
-            "id": "grid.453216.7",
-            "label": "Office of Science",
-            "type": "Parent"
-          }
-        ],
-        "status": "active",
-        "types": [
-          "Government"
-        ],
-        "wikipedia_url": ""
+        }
       }
-    ],
-    "max_score": 9.676415,
-    "total": 1
-  },
-  "timed_out": false,
-  "took": 7
+    ]
+  }
 }

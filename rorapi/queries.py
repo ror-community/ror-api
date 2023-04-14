@@ -1,4 +1,5 @@
 import re
+import json
 from titlecase import titlecase
 from collections import defaultdict
 
@@ -201,7 +202,7 @@ def build_search_query(params):
                          ('countries', 'country.country_code'), ('statuses', 'status')])
 
     qb.paginate(int(params.get('page', 1)))
-
+    print(qb.get_query().to_dict())
     return qb.get_query()
 
 
@@ -210,6 +211,7 @@ def build_retrieve_query(ror_id):
 
     qb = ESQueryBuilder()
     qb.add_id_query(ror_id)
+    print(qb.get_query().to_dict())
     return qb.get_query()
 
 
@@ -232,6 +234,6 @@ def retrieve_organization(ror_id):
         "to restore these records and expect to complete this work in 2022".format(ror_id)]), None
     search = build_retrieve_query(ror_id)
     results = search.execute()
-    if results.hits.total > 0:
+    if results.hits.total.value > 0:
         return None, Organization(results[0])
     return Errors(['ROR ID \'{}\' does not exist'.format(ror_id)]), None

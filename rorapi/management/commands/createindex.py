@@ -14,5 +14,7 @@ class Command(BaseCommand):
         else:
             with open(ES_VARS['INDEX_TEMPLATE'], 'r') as it:
                 template = json.load(it)
-            ES.indices.create(index=index, body=template)
+            ES.indices.put_template(index, template)
+            self.stdout.write('Updated index template for {}'.format(index))
+            ES.indices.create(index=index)
             self.stdout.write('Created index {}'.format(index))

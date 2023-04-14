@@ -9,6 +9,10 @@ from geonamescache.mappers import country
 class Entity:
     """Generic model class"""
     def __init__(self, base_object, attributes):
+        print("BASE_OBJ")
+        print(base_object)
+        #print("ATTRS")
+        #print(attributes)
         [setattr(self, a, getattr(base_object, a)) for a in attributes]
 
 
@@ -109,6 +113,8 @@ class ExternalIds:
 class Organization(Entity):
     """Organization model class"""
     def __init__(self, data):
+        if "_source" in data:
+            data = data["_source"]
         super(Organization, self).__init__(data, [
             'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
             'wikipedia_url', 'established', 'relationships', 'addresses'
@@ -164,7 +170,9 @@ class Aggregations:
 class ListResult:
     """A model class for the list of organizations returned from the search"""
     def __init__(self, data):
-        self.number_of_results = data.hits.total
+        for x in data:
+            print(x)
+        self.number_of_results = data.hits.total.value
         self.time_taken = data.took
         self.items = [Organization(x) for x in data]
         self.meta = Aggregations(data.aggregations)
