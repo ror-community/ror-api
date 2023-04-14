@@ -105,7 +105,6 @@ class Command(BaseCommand):
                         body.append({
                             'index': {
                                 '_index': index,
-                                '_type': 'org',
                                 '_id': org['id']
                             }
                         })

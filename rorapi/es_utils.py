@@ -8,6 +8,7 @@ class ESQueryBuilder():
     def __init__(self):
         self.search = Search(using=ES, index=ES_VARS['INDEX'])
         self.search = self.search.params(search_type='dfs_query_then_fetch')
+        self.search = self.search.extra(track_total_hits=True)
 
     def add_id_query(self, id):
         self.search = self.search.query('match',

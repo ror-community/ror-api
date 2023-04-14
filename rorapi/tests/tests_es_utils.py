@@ -15,7 +15,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                         'operator': 'and'
                     }
                 }
-            }
+            },
+            'track_total_hits': True
         })
 
     def test_match_all_query(self):
@@ -25,7 +26,9 @@ class QueryBuilderTestCase(SimpleTestCase):
         self.assertEqual(qb.get_query().to_dict(),
                          {'query': {
                              'match_all': {}
-                         }})
+                         },
+                         'track_total_hits': True
+                         })
 
     def test_string_query(self):
         qb = ESQueryBuilder()
@@ -44,7 +47,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                             }
                         }
                     }
-                }
+                },
+                'track_total_hits': True
             })
     def test_string_query_advanced(self):
         qb = ESQueryBuilder()
@@ -63,7 +67,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                             }
                         }]
                     }
-                }
+                },
+                'track_total_hits': True
             })
 
     def test_phrase_query(self):
@@ -84,7 +89,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                             }
                         }]
                     }
-                }
+                },
+                'track_total_hits': True
             })
 
     def test_common_query(self):
@@ -111,7 +117,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                             }
                         }]
                     }
-                }
+                },
+                'track_total_hits': True
             })
 
     def test_match_query(self):
@@ -123,7 +130,9 @@ class QueryBuilderTestCase(SimpleTestCase):
                              'match': {
                                  'acronyms': 'query terms'
                              }
-                         }})
+                         },
+                         'track_total_hits': True
+                         })
 
     def test_fuzzy_query(self):
         qb = ESQueryBuilder()
@@ -149,7 +158,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                             }
                         }]
                     }
-                }
+                },
+                'track_total_hits': True
             })
 
     def test_add_filters(self):
@@ -171,7 +181,8 @@ class QueryBuilderTestCase(SimpleTestCase):
                             }
                         }]
                     }
-                }
+                },
+                'track_total_hits': True
             })
 
     def test_add_aggregations(self):
@@ -184,6 +195,7 @@ class QueryBuilderTestCase(SimpleTestCase):
                 'query': {
                     'match_all': {}
                 },
+                'track_total_hits': True,
                 'aggs': {
                     'countries': {
                         'terms': {
@@ -212,5 +224,6 @@ class QueryBuilderTestCase(SimpleTestCase):
                 'match_all': {}
             },
             'from': 180,
-            'size': 20
+            'size': 20,
+            'track_total_hits': True
         })

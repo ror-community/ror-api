@@ -30,7 +30,7 @@ class ViewListTestCase(SimpleTestCase):
 
         search_mock.assert_called_once()
         self.assertEquals(organizations['number_of_results'],
-                          self.test_data['hits']['total'])
+                          self.test_data['hits']['total']['value'])
         self.assertEquals(organizations['time_taken'], self.test_data['took'])
         self.assertEquals(
             len(organizations['meta']['types']),
@@ -85,6 +85,8 @@ class ViewRetrievalTestCase(SimpleTestCase):
                              'data/test_data_empty.json'), 'r') as f:
             self.test_data_empty = json.load(f)
 
+        self.maxDiff = None
+
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_organization(self, search_mock):
         search_mock.return_value = \
@@ -95,9 +97,10 @@ class ViewRetrievalTestCase(SimpleTestCase):
         response = view(request, pk='https://ror.org/02atag894')
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
+        print(organization)
         # go through every attribute and check to see that they are equal
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(organization, self.test_data['hits']['hits'][0])
+        self.assertEquals(organization, self.test_data['hits']['hits'][0]['_source'])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_non_existing_organization(self, search_mock):

@@ -1,5 +1,5 @@
 {
-    "template": "org-id-*",
+    "index_patterns": ["organizations"],
     "settings": {
       "number_of_shards":1,
       "analysis": {
@@ -12,7 +12,6 @@
       }
     },
     "mappings": {
-      "org": {
         "properties": {
           "id": {
             "type": "keyword"
@@ -295,6 +294,5 @@
             }
           }
         }
-      }
     }
 }
