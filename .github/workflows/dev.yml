@@ -50,7 +50,7 @@ jobs:
           test: curl -f http://elastic:changeme@elasticsearch:9201
           interval: 10s
           timeout: 1s
-      steps:
+    steps:
       - name: Checkout ror-api code
         uses: actions/checkout@v2
         with:
