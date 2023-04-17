@@ -19,15 +19,15 @@ from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
 from .features import launch_darkly_client
 
-
 class OrganizationViewSet(viewsets.ViewSet):
-    print("Launch darkly initialized:")
-    print(launch_darkly_client.is_initialized())
-    print(json.dumps(launch_darkly_client.all_flags_state({ "key":"user-key-123abc", "anonymous": True }).__dict__))
     lookup_value_regex = \
         r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*'
 
     def list(self, request):
+        # print(json.dumps(launch_darkly_client.all_flags_state({ "key":"user-key-123abc", "anonymous": True }).__dict__))
+        enable_es_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
+        print("Elasticsearch 7 feature status:")
+        print(enable_es_7)
         params = request.GET.dict()
         if 'query.name' in params or 'query.names' in params:
             param_name = \
@@ -40,7 +40,7 @@ class OrganizationViewSet(viewsets.ViewSet):
         if 'affiliation' in params:
             errors, organizations = match_organizations(params)
         else:
-            errors, organizations = search_organizations(params)
+            errors, organizations = search_organizations(params, enable_es_7)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         if 'affiliation' in params:

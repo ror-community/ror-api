@@ -145,10 +145,10 @@ def validate(params):
     return Errors(errors) if errors else None
 
 
-def build_search_query(params):
+def build_search_query(params, enable_es_7):
     """Builds search query from API parameters"""
 
-    qb = ESQueryBuilder()
+    qb = ESQueryBuilder(enable_es_7)
     ror_id = None
 
     if 'all_status' in params:
@@ -213,14 +213,14 @@ def build_retrieve_query(ror_id):
     return qb.get_query()
 
 
-def search_organizations(params):
+def search_organizations(params, enable_es_7):
     """Searches for organizations according to the parameters"""
 
     error = validate(params)
     if error is not None:
         return error, None
 
-    search = build_search_query(params)
+    search = build_search_query(params, enable_es_7)
     return None, ListResult(search.execute())
 
 
