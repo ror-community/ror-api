@@ -19,3 +19,4 @@ statsmodels==0.10.2
 boto3
 titlecase==2.3
 update_address @ git+https://github.com/ror-community/update_address.git
+launchdarkly-server-sdk
