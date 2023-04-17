@@ -1,12 +1,16 @@
-from .settings import ES, ES_VARS
+from .settings import ES, ES7, ES_VARS
 
 from elasticsearch_dsl import Search, Q
 
 
 class ESQueryBuilder():
     """Elasticsearch query builder class"""
-    def __init__(self):
-        self.search = Search(using=ES, index=ES_VARS['INDEX'])
+    def __init__(self, enable_es_7):
+        if enable_es_7:
+            self.search = Search(using=ES7, index=ES_VARS['INDEX'])
+        else:
+            self.search = Search(using=ES, index=ES_VARS['INDEX'])
+
         self.search = self.search.params(search_type='dfs_query_then_fetch')
         self.search = self.search.extra(track_total_hits=True)
 
