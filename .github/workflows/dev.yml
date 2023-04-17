@@ -1,3 +1,40 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Codespaces
+Marketplace
+Explore
+
+@lizkrznarich
+ror-community
+/
+ror-api
+Public
+Fork your own copy of ror-community/ror-api
+Code
+Issues
+18
+Pull requests
+1
+Discussions
+Actions
+Projects
+Wiki
+Security
+12
+Insights
+Settings
+ror-api/.github/workflows/dev.yml
+@lizkrznarich
+lizkrznarich add cred vars to workflow file
+Latest commit 68cbdd4 on Apr 20, 2022
+ History
+ 2 contributors
+@lizkrznarich@eshadatta-crossref
+169 lines (163 sloc)  6.66 KB
+
+
 name: Deploy Dev
 on:
   push:
@@ -9,8 +46,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      ELASTIC_HOST: "elasticsearch"
-      ELASTIC7_HOST: "elasticsearch7"
+      ELASTIC_HOST: "localhost"
       ELASTIC_PASSWORD: "changeme"
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -19,37 +55,15 @@ jobs:
     services:
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
-        ports:
-          - "9200:9200"
-          - "9300:9300"
-        environment:
+        env:
           discovery.type: single-node
-          ES_JAVA_OPTS: -Xmx256m -Xms256m
+          ES_JAVA_OPTS: -Xms512m -Xmx512m
           ELASTIC_PASSWORD: changeme
           xpack.security.enabled: "false"
           http.cors.enabled: "true"
           http.cors.allow-origin: "*"
-        healthcheck:
-          test: curl -f http://elastic:changeme@elasticsearch:9200
-          interval: 10s
-          timeout: 1s
-      elasticsearch7:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
         ports:
-          - "9201:9201"
-          - "9301:9301"
-        environment:
-          discovery.type: single-node
-          ES_JAVA_OPTS: -Xmx256m -Xms256m
-          ELASTIC_PASSWORD: changeme
-          xpack.security.enabled: "false"
-          http.cors.enabled: "true"
-          http.cors.allow-origin: "*"
-          http.port: 9201
-        healthcheck:
-          test: curl -f http://elastic:changeme@elasticsearch:9201
-          interval: 10s
-          timeout: 1s
+          - 9200:9200
     steps:
       - name: Checkout ror-api code
         uses: actions/checkout@v2
@@ -84,7 +98,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install yapf
-
           python manage.py collectstatic --noinput
       - name: Setup
         working-directory: ./ror-api
@@ -97,7 +110,6 @@ jobs:
           # TODO fix these tests running in GitHub Action
           # python manage.py test rorapi.tests_integration
           # python manage.py test rorapi.tests_functional
-
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -164,7 +176,6 @@ jobs:
           tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
           rm dockerize-linux-amd64-v0.6.0.tar.gz
           ./dockerize -template ror/services/api/_ror-api-dev.auto.tfvars.tmpl:ror/services/api/_ror-api-dev.auto.tfvars
-
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ror/services/api/_ror-api-dev.auto.tfvars
@@ -190,3 +201,4 @@ jobs:
              { "title": "Commit SHA", "value": "<https://github.com/${{ github.repository }}/commit/${{ steps.extract_variables.outputs.GIT_SHA }}|${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}>", "short": true },
              { "title": "Repository", "value": "<https://github.com/${{ github.repository }}|${{ github.repository }}>", "short": true },
              { "title": "Branch", "value": "<https://github.com/${{ github.repository }}/tree/${{ steps.extract_variables.outputs.BRANCH }}|${{ steps.extract_variables.outputs.BRANCH }}>", "short": true }]
+ror-api/dev.yml at master · ror-community/ror-api

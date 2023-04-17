@@ -1,33 +1,32 @@
 {
-    "template": "org-id-*",
-    "settings": {
-      "number_of_shards":1,
-      "analysis": {
-        "analyzer": {
-          "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
-        },
-        "filter": {
-          "ascii_folding": { "type": "asciifolding", "preserve_original": true }
-        }
+  "template": "org-id-*",
+  "settings": {
+    "number_of_shards":1,
+    "analysis": {
+      "analyzer": {
+        "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
+      },
+      "filter": {
+        "ascii_folding": { "type": "asciifolding", "preserve_original": true }
       }
-    },
-    "mappings": {
-      "org": {
-        "properties": {
-          "id": {
-            "type": "keyword"
-          },
-          "name": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword"
-              },
-              "norm": {
-                "type": "text",
-                "analyzer": "string_lowercase",
-                "fielddata": true
-              }
+    }
+  },
+  "mappings": {
+    "org": {
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            },
+            "norm": {
+              "type": "text",
+              "analyzer": "string_lowercase",
+              "fielddata": true
             }
           }
         },
@@ -297,4 +296,5 @@
         }
       }
     }
+  }
 }
