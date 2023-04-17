@@ -7,7 +7,7 @@ from .createindex import Command as CreateIndexCommand
 from .indexrordump import Command as IndexRorDumpCommand
 from rorapi.settings import ROR_DUMP
 
-HEADERS = {'Authorization': 'token {}'.format(ROR_DUMP['GITHUB_TOKEN']), 'Accept': 'application/vnd.github.v3+json'}
+HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
 def get_ror_dump_sha(filename):
     sha = ''
@@ -30,6 +30,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('filename', type=str, help='Name of data dump zip file to index without extension')
+        parser.add_argument('esversion', type=int, help='ES instance version')
 
     def handle(self, *args, **options):
         # make sure ROR dump file exists

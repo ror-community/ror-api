@@ -1,0 +1,2 @@
+# Override core.autocrlf and set line endings to *nix
+* text eol=lf

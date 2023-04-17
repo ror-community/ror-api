@@ -17,7 +17,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     services:
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
         env:
           discovery.type: single-node
           ES_JAVA_OPTS: -Xms512m -Xmx512m
@@ -66,7 +66,7 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
-          python manage.py setup $LATEST_DUMP_FILE
+          python manage.py setup $LATEST_DUMP_FILE 6
       - name: Test
         working-directory: ./ror-api
         run: |
