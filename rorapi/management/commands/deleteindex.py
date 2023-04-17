@@ -11,8 +11,8 @@ class Command(BaseCommand):
         index = ES_VARS['INDEX']
         if es_version == 7:
             print("deleting index on ES7")
-            if ES.indices.exists(index):
-                ES.indices.delete(index=index)
+            if ES7.indices.exists(index):
+                ES7.indices.delete(index=index)
                 self.stdout.write('Deleted index {}'.format(index))
             else:
                 self.stdout.write('Index {} does not exist'.format(index))
