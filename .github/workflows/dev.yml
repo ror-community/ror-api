@@ -1,40 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
-
-@lizkrznarich
-ror-community
-/
-ror-api
-Public
-Fork your own copy of ror-community/ror-api
-Code
-Issues
-18
-Pull requests
-1
-Discussions
-Actions
-Projects
-Wiki
-Security
-12
-Insights
-Settings
-ror-api/.github/workflows/dev.yml
-@lizkrznarich
-lizkrznarich add cred vars to workflow file
-Latest commit 68cbdd4 on Apr 20, 2022
- History
- 2 contributors
-@lizkrznarich@eshadatta-crossref
-169 lines (163 sloc)  6.66 KB
-
-
 name: Deploy Dev
 on:
   push:
@@ -98,6 +61,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install yapf
+
           python manage.py collectstatic --noinput
       - name: Setup
         working-directory: ./ror-api
@@ -110,6 +74,7 @@ jobs:
           # TODO fix these tests running in GitHub Action
           # python manage.py test rorapi.tests_integration
           # python manage.py test rorapi.tests_functional
+
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -176,6 +141,7 @@ jobs:
           tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
           rm dockerize-linux-amd64-v0.6.0.tar.gz
           ./dockerize -template ror/services/api/_ror-api-dev.auto.tfvars.tmpl:ror/services/api/_ror-api-dev.auto.tfvars
+
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ror/services/api/_ror-api-dev.auto.tfvars
@@ -201,4 +167,3 @@ jobs:
              { "title": "Commit SHA", "value": "<https://github.com/${{ github.repository }}/commit/${{ steps.extract_variables.outputs.GIT_SHA }}|${{ steps.extract_variables.outputs.GIT_SHA_SHORT }}>", "short": true },
              { "title": "Repository", "value": "<https://github.com/${{ github.repository }}|${{ github.repository }}>", "short": true },
              { "title": "Branch", "value": "<https://github.com/${{ github.repository }}/tree/${{ steps.extract_variables.outputs.BRANCH }}|${{ steps.extract_variables.outputs.BRANCH }}>", "short": true }]
-ror-api/dev.yml at master · ror-community/ror-api
