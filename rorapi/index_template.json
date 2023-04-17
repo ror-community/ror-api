@@ -1,298 +1,299 @@
 {
-    "index_patterns": ["organizations"],
-    "settings": {
-      "number_of_shards":1,
-      "analysis": {
-        "analyzer": {
-          "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
-        },
-        "filter": {
-          "ascii_folding": { "type": "asciifolding", "preserve_original": true }
-        }
+  "template": "org-id-*",
+  "settings": {
+    "number_of_shards":1,
+    "analysis": {
+      "analyzer": {
+        "string_lowercase": { "tokenizer": "standard", "filter": ["lowercase", "ascii_folding"] }
+      },
+      "filter": {
+        "ascii_folding": { "type": "asciifolding", "preserve_original": true }
       }
-    },
-    "mappings": {
-        "properties": {
-          "id": {
-            "type": "keyword"
-          },
-          "name": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword"
-              },
-              "norm": {
-                "type": "text",
-                "analyzer": "string_lowercase",
-                "fielddata": true
-              }
+    }
+  },
+  "mappings": {
+    "org": {
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            },
+            "norm": {
+              "type": "text",
+              "analyzer": "string_lowercase",
+              "fielddata": true
             }
-          },
-          "links": {
-            "type": "text",
-            "analyzer": "simple"
-          },
-          "wikipedia_url": {
-            "type": "text",
-            "analyzer": "simple"
-          },
-          "aliases": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword"
-              },
-              "norm": {
-                "type": "text",
-                "analyzer": "string_lowercase",
-                "fielddata": true
-              }
+          }
+        },
+        "links": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "wikipedia_url": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "aliases": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            },
+            "norm": {
+              "type": "text",
+              "analyzer": "string_lowercase",
+              "fielddata": true
             }
-          },
-          "acronyms": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword"
-              },
-              "norm": {
-                "type": "text",
-                "analyzer": "string_lowercase",
-                "fielddata": true
-              }
+          }
+        },
+        "acronyms": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            },
+            "norm": {
+              "type": "text",
+              "analyzer": "string_lowercase",
+              "fielddata": true
             }
-          },
-          "status": {
-            "type": "keyword"
-          },
-          "labels": {
-            "properties": {
-              "label": {
-                "type": "text",
-		              "fields": {
-              	     "keyword": {
-                       "type": "keyword"
-                      },
-                      "norm": {
-                        "type": "text",
-                        "analyzer": "string_lowercase",
-                        "fielddata": true
-                      }
-                    }
-                  },
-                  "iso639": {
-                    "type": "keyword"
-                  }
-                }
-              },
-
-          "country": {
-            "properties": {
-              "country_code": {
-                "type": "keyword"
-              },
-              "country_name": {
-                "type": "keyword"
-              }
-            }
-          },
-          "types": {
-            "type": "keyword"
-          },
-          "email_address": {
-            "type": "text"
-          },
-          "established": {
-            "type": "date"
-          },
-          "ip_addresses": {
-            "type": "text"
-          },
-          "addresses": {
-            "properties": {
-              "line":  {
-                "type": "text"
-                },
-              "lat": {
-                "type": "float"
-              },
-              "lng": {
-                "type": "float"
-              },
-              "postcode": {
-                "type": "keyword"
-              },
-              "primary": {
-                "type": "boolean"
-              },
-              "city": {
-                "type": "keyword"
-              },
-              "state": {
-                "type": "keyword"
-              },
-              "state_code": {
-                "type": "keyword"
-              },
-              "geonames_city": {
-                "properties": {
-                  "id": {
-                    "type": "integer"
-                  },
-                  "city": {
-                    "type": "keyword"
-                  },
-                  "nuts_level1": {
-                    "properties": {
-                      "name": {
-                        "type": "text"
-                      },
-                      "code": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "nuts_level2": {
-                    "properties": {
-                      "name": {
-                        "type": "text"
-                      },
-                      "code": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "nuts_level3": {
-                    "properties": {
-                      "name": {
-                        "type": "text"
-                      },
-                      "code": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "geonames_admin1": {
-                    "properties": {
-                      "ascii_name": {
-                        "type": "keyword"
-                      },
-                      "name": {
-                        "type": "keyword"
-                      },
-                      "code": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "geonames_admin2": {
-                    "properties": {
-                      "ascii_name": {
-                        "type": "keyword"
-                      },
-                      "name": {
-                        "type": "keyword"
-                      },
-                      "code": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "license": {
-                    "properties": {
-                      "attribution": {
-                        "type": "text"
-                      },
-                      "license": {
-                        "type": "text"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "relationships": {
-            "properties": {
-              "type":  {
-                "type": "keyword"
-                },
-              "label": {
-                "type": "text",
+          }
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "labels": {
+          "properties": {
+            "label": {
+              "type": "text",
                 "fields": {
-                  "keyword": {
-                    "type": "keyword"
-                  },
-                  "norm": {
-                    "type": "text",
-                    "analyzer": "string_lowercase",
-                    "fielddata": true
+                   "keyword": {
+                     "type": "keyword"
+                    },
+                    "norm": {
+                      "type": "text",
+                      "analyzer": "string_lowercase",
+                      "fielddata": true
+                    }
                   }
-                }
-              },
-              "id": {
-                "type": "keyword"
+                },
+                "iso639": {
+                  "type": "keyword"
                 }
               }
-          },
-          "external_ids": {
-            "properties": {
-              "GRID": {
-                "properties": {
-                  "preferred": {
-                    "type": "keyword"
-                  },
-                  "all": {
-                    "type": "keyword"
-                  }
-                }
+            },
+
+        "country": {
+          "properties": {
+            "country_code": {
+              "type": "keyword"
+            },
+            "country_name": {
+              "type": "keyword"
+            }
+          }
+        },
+        "types": {
+          "type": "keyword"
+        },
+        "email_address": {
+          "type": "text"
+        },
+        "established": {
+          "type": "date"
+        },
+        "ip_addresses": {
+          "type": "text"
+        },
+        "addresses": {
+          "properties": {
+            "line":  {
+              "type": "text"
               },
-              "ISNI": {
-                "properties": {
-                  "preferred": {
-                    "type": "keyword"
-                  },
-                  "all": {
-                    "type": "keyword"
+            "lat": {
+              "type": "float"
+            },
+            "lng": {
+              "type": "float"
+            },
+            "postcode": {
+              "type": "keyword"
+            },
+            "primary": {
+              "type": "boolean"
+            },
+            "city": {
+              "type": "keyword"
+            },
+            "state": {
+              "type": "keyword"
+            },
+            "state_code": {
+              "type": "keyword"
+            },
+            "geonames_city": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "city": {
+                  "type": "keyword"
+                },
+                "nuts_level1": {
+                  "properties": {
+                    "name": {
+                      "type": "text"
+                    },
+                    "code": {
+                      "type": "keyword"
+                    }
                   }
-                }
-              },
-              "Fundref": {
-                "properties": {
-                  "preferred": {
-                    "type": "keyword"
-                  },
-                  "all": {
-                    "type": "keyword"
+                },
+                "nuts_level2": {
+                  "properties": {
+                    "name": {
+                      "type": "text"
+                    },
+                    "code": {
+                      "type": "keyword"
+                    }
                   }
-                }
-              },
-              "Wikidata": {
-                "properties": {
-                  "preferred": {
-                    "type": "keyword"
-                  },
-                  "all": {
-                    "type": "keyword"
+                },
+                "nuts_level3": {
+                  "properties": {
+                    "name": {
+                      "type": "text"
+                    },
+                    "code": {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "geonames_admin1": {
+                  "properties": {
+                    "ascii_name": {
+                      "type": "keyword"
+                    },
+                    "name": {
+                      "type": "keyword"
+                    },
+                    "code": {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "geonames_admin2": {
+                  "properties": {
+                    "ascii_name": {
+                      "type": "keyword"
+                    },
+                    "name": {
+                      "type": "keyword"
+                    },
+                    "code": {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "license": {
+                  "properties": {
+                    "attribution": {
+                      "type": "text"
+                    },
+                    "license": {
+                      "type": "text"
+                    }
                   }
                 }
               }
             }
-          },
-
-          "names_ids": {
-            "type": "nested",
-            "properties": {
-              "id": {
-                "type": "keyword"
+          }
+        },
+        "relationships": {
+          "properties": {
+            "type":  {
+              "type": "keyword"
               },
-              "name": {
-                "type": "text",
-                "analyzer": "string_lowercase"
+            "label": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                },
+                "norm": {
+                  "type": "text",
+                  "analyzer": "string_lowercase",
+                  "fielddata": true
+                }
               }
+            },
+            "id": {
+              "type": "keyword"
+              }
+            }
+        },
+        "external_ids": {
+          "properties": {
+            "GRID": {
+              "properties": {
+                "preferred": {
+                  "type": "keyword"
+                },
+                "all": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "ISNI": {
+              "properties": {
+                "preferred": {
+                  "type": "keyword"
+                },
+                "all": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "Fundref": {
+              "properties": {
+                "preferred": {
+                  "type": "keyword"
+                },
+                "all": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "Wikidata": {
+              "properties": {
+                "preferred": {
+                  "type": "keyword"
+                },
+                "all": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+
+        "names_ids": {
+          "type": "nested",
+          "properties": {
+            "id": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "text",
+              "analyzer": "string_lowercase"
             }
           }
         }
     }
+  }
 }
