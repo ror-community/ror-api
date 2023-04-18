@@ -82,6 +82,7 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
+          python manage.py setup $LATEST_DUMP_FILE 6
           python manage.py setup $LATEST_DUMP_FILE 7
       - name: Test
         working-directory: ./ror-api
