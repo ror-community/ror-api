@@ -22,12 +22,12 @@ from .features import launch_darkly_client
 class OrganizationViewSet(viewsets.ViewSet):
     lookup_value_regex = \
         r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*'
+    ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
 
     def list(self, request):
         # print(json.dumps(launch_darkly_client.all_flags_state({ "key":"user-key-123abc", "anonymous": True }).__dict__))
-        enable_es_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
         print("Elasticsearch 7 feature status:")
-        print(enable_es_7)
+        print(self.ENABLE_ES_7)
         params = request.GET.dict()
         if 'query.name' in params or 'query.names' in params:
             param_name = \
@@ -38,9 +38,9 @@ class OrganizationViewSet(viewsets.ViewSet):
         if 'format' in params:
             del params['format']
         if 'affiliation' in params:
-            errors, organizations = match_organizations(params, enable_es_7)
+            errors, organizations = match_organizations(params, self.ENABLE_ES_7)
         else:
-            errors, organizations = search_organizations(params, enable_es_7)
+            errors, organizations = search_organizations(params, self.ENABLE_ES_7)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         if 'affiliation' in params:
@@ -50,12 +50,11 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        enable_es_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
         ror_id = get_ror_id(pk)
         if ror_id is None:
             errors = Errors(['\'{}\' is not a valid ROR ID'.format(pk)])
             return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
-        errors, organization = retrieve_organization(ror_id, enable_es_7)
+        errors, organization = retrieve_organization(ror_id, self.ENABLE_ES_7)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
         serializer = OrganizationSerializer(organization)
