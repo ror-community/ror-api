@@ -6,6 +6,7 @@ from django.test import SimpleTestCase, Client
 from rest_framework.test import APIRequestFactory
 
 from .. import views
+
 from .utils import IterableAttrDict
 
 factory = APIRequestFactory()
@@ -17,12 +18,13 @@ class ViewListTestCaseEs6(SimpleTestCase):
                              'data/test_data_search_es6.json'), 'r') as f:
             self.test_data = json.load(f)
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', False)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_search_organizations(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'list'}, ENABLE_ES_7=False)
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
         request = factory.get('/organizations')
         response = view(request)
         response.render()
@@ -50,12 +52,13 @@ class ViewListTestCaseEs6(SimpleTestCase):
             self.assertEquals(ret['id'], exp['key'].lower())
             self.assertEquals(ret['count'], exp['doc_count'])
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', False)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_invalid_search_organizations(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'list'}, ENABLE_ES_7=False)
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
         request = factory.get('/organizations?query=query&illegal=whatever&' +
                               'filter=fi1:e,types:F,f3,field2:44&another=3&' +
                               'page=third')
@@ -66,6 +69,7 @@ class ViewListTestCaseEs6(SimpleTestCase):
         self.assertEquals(list(organizations.keys()), ['errors'])
         self.assertEquals(len(organizations['errors']), 6)
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', False)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_query_redirect(self, search_mock):
         client = Client()
@@ -85,12 +89,13 @@ class ViewListTestCaseEs7(SimpleTestCase):
                              'data/test_data_search_es7.json'), 'r') as f:
             self.test_data = json.load(f)
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', True)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_search_organizations(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'list'}, ENABLE_ES_7=True)
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
         request = factory.get('/organizations')
         response = view(request)
         response.render()
@@ -118,12 +123,13 @@ class ViewListTestCaseEs7(SimpleTestCase):
             self.assertEquals(ret['id'], exp['key'].lower())
             self.assertEquals(ret['count'], exp['doc_count'])
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', True)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_invalid_search_organizations(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'list'}, ENABLE_ES_7=True)
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
         request = factory.get('/organizations?query=query&illegal=whatever&' +
                               'filter=fi1:e,types:F,f3,field2:44&another=3&' +
                               'page=third')
@@ -134,6 +140,7 @@ class ViewListTestCaseEs7(SimpleTestCase):
         self.assertEquals(list(organizations.keys()), ['errors'])
         self.assertEquals(len(organizations['errors']), 6)
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', True)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_query_redirect(self, search_mock):
         client = Client()
@@ -159,12 +166,13 @@ class ViewRetrievalTestCaseEs6(SimpleTestCase):
 
         self.maxDiff = None
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', False)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_organization(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'retrieve'}, ENABLE_ES_7=False)
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
         request = factory.get('/organizations/https://ror.org/02atag894')
         response = view(request, pk='https://ror.org/02atag894')
         response.render()
@@ -173,13 +181,14 @@ class ViewRetrievalTestCaseEs6(SimpleTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(organization, self.test_data['hits']['hits'][0])
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', False)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_non_existing_organization(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data_empty,
                              self.test_data_empty['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'retrieve'}, ENABLE_ES_7=False)
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
         request = factory.get('/organizations/https://ror.org/052gg0110')
         response = view(request, pk='https://ror.org/052gg0110')
         response.render()
@@ -190,13 +199,14 @@ class ViewRetrievalTestCaseEs6(SimpleTestCase):
         self.assertEquals(len(organization['errors']), 1)
         self.assertTrue(any(['does not exist' in e for e in organization['errors']]))
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', False)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_invalid_id(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data_empty,
                              self.test_data_empty['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'retrieve'}, ENABLE_ES_7=False)
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
         request = factory.get('/organizations/https://ror.org/abc123')
         response = view(request, pk='https://ror.org/abc123')
         response.render()
@@ -220,12 +230,13 @@ class ViewRetrievalTestCaseEs7(SimpleTestCase):
 
         self.maxDiff = None
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', True)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_organization(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'retrieve'}, ENABLE_ES_7=True)
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
         request = factory.get('/organizations/https://ror.org/02atag894')
         response = view(request, pk='https://ror.org/02atag894')
         response.render()
@@ -234,13 +245,14 @@ class ViewRetrievalTestCaseEs7(SimpleTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(organization, self.test_data['hits']['hits'][0]['_source'])
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', True)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_non_existing_organization(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data_empty,
                              self.test_data_empty['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'retrieve'}, ENABLE_ES_7=True)
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
         request = factory.get('/organizations/https://ror.org/052gg0110')
         response = view(request, pk='https://ror.org/052gg0110')
         response.render()
@@ -251,13 +263,14 @@ class ViewRetrievalTestCaseEs7(SimpleTestCase):
         self.assertEquals(len(organization['errors']), 1)
         self.assertTrue(any(['does not exist' in e for e in organization['errors']]))
 
+    @mock.patch('rorapi.views.OrganizationViewSet.ENABLE_ES_7', True)
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_invalid_id(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data_empty,
                              self.test_data_empty['hits']['hits'])
 
-        view = views.OrganizationViewSet.as_view({'get': 'retrieve'}, ENABLE_ES_7=True)
+        view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
         request = factory.get('/organizations/https://ror.org/abc123')
         response = view(request, pk='https://ror.org/abc123')
         response.render()
