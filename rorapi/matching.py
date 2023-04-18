@@ -202,7 +202,7 @@ def match_by_query(text, matching_type, query, countries):
     ]
     return chosen, all_matched
 
-def match_by_type(text, matching_type, countries):
+def match_by_type(text, matching_type, countries, enable_es_7):
     '''Match affiliation text using specific matching mode/type.'''
 
     fields = ['name.norm', 'aliases.norm', 'labels.label.norm']
@@ -228,7 +228,7 @@ def match_by_type(text, matching_type, countries):
     else:
         substrings.append(text)
 
-    queries = [ESQueryBuilder() for _ in substrings]
+    queries = [ESQueryBuilder(enable_es_7) for _ in substrings]
 
     for s, q in zip(substrings, queries):
         if matching_type == MATCHING_TYPE_PHRASE:
@@ -263,10 +263,10 @@ class MatchingNode:
         self.matched = None
         self.all_matched = []
 
-    def match(self, countries, min_score):
+    def match(self, countries, min_score, enable_es_7):
         for matching_type in NODE_MATCHING_TYPES:
             chosen, all_matched = match_by_type(self.text, matching_type,
-                                                countries)
+                                                countries, enable_es_7)
             self.all_matched.extend(all_matched)
             if self.matched is None:
                 self.matched = chosen
@@ -328,9 +328,9 @@ class MatchingGraph:
             if node.matched is not None and node.matched.score < min_score:
                 node.matched = None
 
-    def match(self, countries, min_score):
+    def match(self, countries, min_score, enable_es_7):
         for node in self.nodes:
-            node.match(countries, min_score)
+            node.match(countries, min_score, enable_es_7)
         self.remove_low_scores(min_score)
         chosen = []
         all_matched = []
@@ -342,7 +342,7 @@ class MatchingGraph:
                 chosen.append(node.matched)
         acr_chosen, acr_all_matched = match_by_type(self.affiliation,
                                                     MATCHING_TYPE_ACRONYM,
-                                                    countries)
+                                                    countries, enable_es_7)
         all_matched.extend(acr_all_matched)
         return chosen, all_matched
 
@@ -399,27 +399,27 @@ def get_output(chosen, all_matched, active_only):
         output.append(best)
     return sorted(output, key=lambda x: x.score, reverse=True)[:100]
 
-def check_exact_match(affiliation, countries):
-    qb = ESQueryBuilder()
+def check_exact_match(affiliation, countries, enable_es_7):
+    qb = ESQueryBuilder(enable_es_7)
     qb.add_string_query('"' + affiliation + '"')
     return match_by_query(affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries)
 
-def match_affiliation(affiliation, active_only):
+def match_affiliation(affiliation, active_only, enable_es_7):
     countries = get_countries(affiliation)
-    exact_chosen, exact_all_matched = check_exact_match(affiliation, countries)
+    exact_chosen, exact_all_matched = check_exact_match(affiliation, countries, enable_es_7)
     if exact_chosen.score == 1.0:
         return get_output(exact_chosen, exact_all_matched, active_only)
     else:
         graph = MatchingGraph(affiliation)
-        chosen, all_matched = graph.match(countries, MIN_CHOSEN_SCORE)
+        chosen, all_matched = graph.match(countries, MIN_CHOSEN_SCORE, enable_es_7)
         return get_output(chosen, all_matched, active_only)
 
-def match_organizations(params):
+def match_organizations(params, enable_es_7):
     if 'affiliation' in params:
         active_only = True
         if 'all_status' in params:
             if params['all_status'] == '' or params['all_status'].lower() == "true":
                 active_only = False
-        matched = match_affiliation(params.get('affiliation'), active_only)
+        matched = match_affiliation(params.get('affiliation'), active_only, enable_es_7)
         return None, MatchingResult(matched)
     return Errors('"affiliation" parameter missing'), None

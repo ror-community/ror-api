@@ -1,4 +1,5 @@
 import re
+import json
 from titlecase import titlecase
 from collections import defaultdict
 
@@ -145,10 +146,10 @@ def validate(params):
     return Errors(errors) if errors else None
 
 
-def build_search_query(params):
+def build_search_query(params, enable_es_7):
     """Builds search query from API parameters"""
 
-    qb = ESQueryBuilder()
+    qb = ESQueryBuilder(enable_es_7)
     ror_id = None
 
     if 'all_status' in params:
@@ -201,37 +202,41 @@ def build_search_query(params):
                          ('countries', 'country.country_code'), ('statuses', 'status')])
 
     qb.paginate(int(params.get('page', 1)))
-
     return qb.get_query()
 
 
-def build_retrieve_query(ror_id):
+def build_retrieve_query(ror_id, enable_es_7):
     """Builds retrieval query"""
 
-    qb = ESQueryBuilder()
+    qb = ESQueryBuilder(enable_es_7)
     qb.add_id_query(ror_id)
     return qb.get_query()
 
 
-def search_organizations(params):
+def search_organizations(params, enable_es_7):
     """Searches for organizations according to the parameters"""
 
     error = validate(params)
     if error is not None:
         return error, None
 
-    search = build_search_query(params)
-    return None, ListResult(search.execute())
+    search = build_search_query(params, enable_es_7)
+    return None, ListResult(search.execute(), enable_es_7)
 
 
-def retrieve_organization(ror_id):
+def retrieve_organization(ror_id, enable_es_7):
     """Retrieves the organization of the given ROR ID"""
     if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
         return Errors(["ROR ID \'{}\' was removed by GRID during the time period (Jan 2019-Mar 2022) "
         "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
         "to restore these records and expect to complete this work in 2022".format(ror_id)]), None
-    search = build_retrieve_query(ror_id)
+    search = build_retrieve_query(ror_id, enable_es_7)
     results = search.execute()
-    if results.hits.total > 0:
+    total = None
+    if enable_es_7:
+        total = results.hits.total.get('value')
+    else:
+        total = results.hits.total
+    if total > 0:
         return None, Organization(results[0])
     return Errors(['ROR ID \'{}\' does not exist'.format(ror_id)]), None
