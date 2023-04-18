@@ -38,7 +38,7 @@ class OrganizationViewSet(viewsets.ViewSet):
         if 'format' in params:
             del params['format']
         if 'affiliation' in params:
-            errors, organizations = match_organizations(params)
+            errors, organizations = match_organizations(params, enable_es_7)
         else:
             errors, organizations = search_organizations(params, enable_es_7)
         if errors is not None:
@@ -50,11 +50,12 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        enable_es_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
         ror_id = get_ror_id(pk)
         if ror_id is None:
             errors = Errors(['\'{}\' is not a valid ROR ID'.format(pk)])
             return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
-        errors, organization = retrieve_organization(ror_id)
+        errors, organization = retrieve_organization(ror_id, enable_es_7)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
         serializer = OrganizationSerializer(organization)
