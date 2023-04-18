@@ -69,8 +69,8 @@ organizations_router.register(r'organizations',
 
 
 class HeartbeatView(View):
-    ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
     def get(self, request):
+        ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
         try:
             errors, organizations = search_organizations({}, ENABLE_ES_7)
             if errors is None:
