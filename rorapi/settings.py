@@ -272,3 +272,5 @@ DATA['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data')
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
 
 GRID_REMOVED_IDS = []
+
+LAUNCH_DARKLY_KEY = os.environ.get('LAUNCH_DARKLY_KEY')

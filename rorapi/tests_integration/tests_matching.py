@@ -40,4 +40,4 @@ class APIMatchingTestCase(SimpleTestCase):
             prev = i.get('score')
             self.assertTrue(
                 i.get('matching_type') in
-                ['PHRASE', 'ACRONYM', 'FUZZY', 'HEURISTICS', 'COMMON TERMS'])
+                ['PHRASE', 'ACRONYM', 'FUZZY', 'HEURISTICS', 'COMMON TERMS', 'EXACT'])
