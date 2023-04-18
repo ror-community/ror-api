@@ -66,8 +66,11 @@ class ViewListTestCaseEs6(SimpleTestCase):
         self.assertEquals(list(organizations.keys()), ['errors'])
         self.assertEquals(len(organizations['errors']), 6)
 
-    def test_query_redirect(self):
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_query_redirect(self, search_mock):
         client = Client()
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         response = client.get('/organizations?query.name=query')
         self.assertRedirects(response, '/organizations?query=query')
@@ -131,8 +134,11 @@ class ViewListTestCaseEs7(SimpleTestCase):
         self.assertEquals(list(organizations.keys()), ['errors'])
         self.assertEquals(len(organizations['errors']), 6)
 
-    def test_query_redirect(self):
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_query_redirect(self, search_mock):
         client = Client()
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         response = client.get('/organizations?query.name=query')
         self.assertRedirects(response, '/organizations?query=query')
