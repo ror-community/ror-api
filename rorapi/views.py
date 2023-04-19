@@ -104,9 +104,9 @@ class GenerateId(APIView):
 
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
-    def get(self, request, branch):
+    def get(self, request, branch, esversion):
         st = 200
-        msg = process_files(branch)
+        msg = process_files(branch, esversion)
         if msg['status'] == "ERROR":
             st = 400
         return Response({'status': msg['status'], 'msg': msg['msg']}, status=st)

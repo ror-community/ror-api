@@ -11,7 +11,7 @@ urlpatterns = [
     # Using REST API
     path('generateaddress/<str:geonamesid>', GenerateAddress.as_view()),
     url(r"^generateid$", GenerateId.as_view()),
-    path('indexdata/<str:branch>', IndexData.as_view()),
+    path('indexdata/<str:branch>/<int:esversion>', IndexData.as_view()),
     url(r"^", include(views.organizations_router.urls)),
     url(r"^docs/", include_docs_urls(title="Research Organization Registry")),
     # Prometheus
