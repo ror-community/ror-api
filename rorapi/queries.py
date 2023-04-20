@@ -234,7 +234,7 @@ def retrieve_organization(ror_id, enable_es_7):
     results = search.execute()
     total = None
     if enable_es_7:
-        total = results.hits.total.get('value')
+        total = results.hits.total.value
     else:
         total = results.hits.total
     if total > 0:
