@@ -8,7 +8,7 @@ import glob
 from os.path import exists
 import pathlib
 import shutil
-from rorapi.settings import ES, ES_VARS, DATA
+from rorapi.settings import ES, ES7, ES_VARS, DATA
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
@@ -88,7 +88,7 @@ def get_data():
     return contents, err
 
 
-def process_files(dir):
+def process_files(dir, es_version):
     err = []
     if dir:
         path = os.path.join(DATA['WORKING_DIR'], dir)
@@ -104,7 +104,7 @@ def process_files(dir):
             if path and file and not(e):
                 data, e = prepare_files(path, file)
                 if not(e):
-                    index_error = index(data)
+                    index_error = index(data, es_version)
                     err.append(index_error)
                 else:
                     err.append(e)
@@ -121,30 +121,48 @@ def process_files(dir):
     return msg
 
 
-def index(dataset):
+def index(dataset, es_version):
     err = {}
     index = ES_VARS['INDEX']
     backup_index = '{}-tmp'.format(index)
-    ES.reindex(body={
-        'source': {
-            'index': index
-        },
-        'dest': {
-            'index': backup_index
-        }
-    })
+    if es_version == 7:
+        ES7.reindex(body={
+            'source': {
+                'index': index
+            },
+            'dest': {
+                'index': backup_index
+            }
+        })
+    else:
+        ES.reindex(body={
+            'source': {
+                'index': index
+            },
+            'dest': {
+                'index': backup_index
+            }
+        })
 
     try:
-         for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
+        for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
             body = []
             for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
-                body.append({
-                    'index': {
-                        '_index': index,
-                        '_type': 'org',
-                        '_id': org['id']
-                    }
-                })
+                if es_version == 7:
+                    body.append({
+                        'index': {
+                            '_index': index,
+                            '_id': org['id']
+                        }
+                    })
+                else:
+                    body.append({
+                        'index': {
+                            '_index': index,
+                            '_type': 'org',
+                            '_id': org['id']
+                        }
+                    })
                 org['names_ids'] = [{
                     'name': n
                 } for n in get_nested_names(org)]
@@ -152,20 +170,36 @@ def index(dataset):
                     'id': n
                 } for n in get_nested_ids(org)]
                 body.append(org)
-            ES.bulk(body)
+            if es_version == 7:
+                ES7.bulk(body)
+            else:
+                ES.bulk(body)
     except TransportError:
         err[index.__name__] = f"Indexing error, reverted index back to previous state"
-        ES.reindex(body={
-            'source': {
-                'index': backup_index
-            },
-            'dest': {
-                'index': index
-            }
-        })
-
-    if ES.indices.exists(backup_index):
-        ES.indices.delete(backup_index)
+        if es_version == 7:
+                ES7.reindex(body={
+                'source': {
+                    'index': backup_index
+                },
+                'dest': {
+                    'index': index
+                }
+            })
+        else:
+            ES.reindex(body={
+                'source': {
+                    'index': backup_index
+                },
+                'dest': {
+                    'index': index
+                }
+            })
+    if es_version == 7:
+        if ES7.indices.exists(backup_index):
+            ES7.indices.delete(backup_index)
+    else:
+        if ES.indices.exists(backup_index):
+            ES.indices.delete(backup_index)
     return err
 
 class Command(BaseCommand):
@@ -173,9 +207,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('dir', type=str, help='add directory name for S3 bucket to be processed')
+        parser.add_argument('esversion', type=int, help='ES instance version')
 
     def handle(self,*args, **options):
         dir = options['dir']
-        process_files(dir)
+        es_version = options['esversion']
+        process_files(dir, es_version)
 
 

@@ -45,7 +45,7 @@ class APITestCase(SimpleTestCase):
     def verify_empty(self, output):
         self.assertEquals(self.get_total(output), 0)
         self.assertEquals(output['items'], [])
-        self.assertEquals(output['meta'], {'types': [], 'countries': []})
+        self.assertEquals(output['meta'], {'types': [], 'statuses': [],'countries': []})
 
     def verify_single_item(self, output, org):
         self.assertEquals(self.get_total(output), 1)

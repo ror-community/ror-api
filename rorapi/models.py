@@ -109,6 +109,8 @@ class ExternalIds:
 class Organization(Entity):
     """Organization model class"""
     def __init__(self, data):
+        if "_source" in data:
+            data = data["_source"]
         super(Organization, self).__init__(data, [
             'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
             'wikipedia_url', 'established', 'relationships', 'addresses'
@@ -163,8 +165,11 @@ class Aggregations:
 
 class ListResult:
     """A model class for the list of organizations returned from the search"""
-    def __init__(self, data):
-        self.number_of_results = data.hits.total
+    def __init__(self, data, enable_es_7):
+        if enable_es_7:
+            self.number_of_results = data.hits.total.value
+        else:
+            self.number_of_results = data.hits.total
         self.time_taken = data.took
         self.items = [Organization(x) for x in data]
         self.meta = Aggregations(data.aggregations)
