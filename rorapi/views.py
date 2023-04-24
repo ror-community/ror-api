@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
+import json
 
 from .matching import match_organizations
 from .models import OrganizationSerializer, ListResultSerializer, \
@@ -16,14 +17,17 @@ import os
 import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
-
+from .features import launch_darkly_client
 
 class OrganizationViewSet(viewsets.ViewSet):
-
     lookup_value_regex = \
         r'((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*'
 
     def list(self, request):
+        print(json.dumps(launch_darkly_client.all_flags_state({ "key":"user-key-123abc", "anonymous": True }).__dict__))
+        ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
+        print("Elasticsearch 7 feature status:")
+        print(ENABLE_ES_7)
         params = request.GET.dict()
         if 'query.name' in params or 'query.names' in params:
             param_name = \
@@ -34,9 +38,9 @@ class OrganizationViewSet(viewsets.ViewSet):
         if 'format' in params:
             del params['format']
         if 'affiliation' in params:
-            errors, organizations = match_organizations(params)
+            errors, organizations = match_organizations(params, ENABLE_ES_7)
         else:
-            errors, organizations = search_organizations(params)
+            errors, organizations = search_organizations(params, ENABLE_ES_7)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         if 'affiliation' in params:
@@ -46,11 +50,12 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
         ror_id = get_ror_id(pk)
         if ror_id is None:
             errors = Errors(['\'{}\' is not a valid ROR ID'.format(pk)])
             return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
-        errors, organization = retrieve_organization(ror_id)
+        errors, organization = retrieve_organization(ror_id, ENABLE_ES_7)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND)
         serializer = OrganizationSerializer(organization)
@@ -65,8 +70,9 @@ organizations_router.register(r'organizations',
 
 class HeartbeatView(View):
     def get(self, request):
+        ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
         try:
-            errors, organizations = search_organizations({})
+            errors, organizations = search_organizations({}, ENABLE_ES_7)
             if errors is None:
                 return HttpResponse('OK')
         except:
@@ -98,9 +104,9 @@ class GenerateId(APIView):
 
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
-    def get(self, request, branch):
+    def get(self, request, branch, esversion):
         st = 200
-        msg = process_files(branch)
+        msg = process_files(branch, esversion)
         if msg['status'] == "ERROR":
             st = 400
         return Response({'status': msg['status'], 'msg': msg['msg']}, status=st)
