@@ -1,9 +1,6 @@
 import base32_crockford
-import json
-import os.path
 import random
-from .createindex import Command as CreateIndexCommand
-from rorapi.settings import ES, ES_VARS, ROR_API, GRID_REMOVED_IDS
+from rorapi.settings import ES, ES7, ES_VARS, ROR_API, GRID_REMOVED_IDS
 
 def generate_ror_id():
     """Generates random ROR ID.
@@ -19,16 +16,25 @@ def generate_ror_id():
     return '{}0{}{}'.format(ROR_API['ID_PREFIX'], n_encoded, checksum)
 
 
-def check_ror_id():
+def check_ror_id(enable_es_7):
     """Checks if generated ror id exists in the index. If so, it generates a new id, otherwise it returns the generated ror id
     """
     ror_id = generate_ror_id()
-    s = ES.search(ES_VARS['INDEX'],
-                    body={'query': {
-                        'term': {
-                            '_id': ror_id
-                            }}})
-    if s['hits']['total'] == 1 or s in GRID_REMOVED_IDS:
-        check_ror_id()
+    if enable_es_7:
+        s = ES7.search(index=ES_VARS['INDEX'],
+                        body={'query': {
+                            'term': {
+                                '_id': ror_id
+                                }}})
+        if s['hits']['total']['value'] == 1 or s in GRID_REMOVED_IDS:
+            check_ror_id(enable_es_7)
+    else:
+        s = ES.search(index=ES_VARS['INDEX'],
+                        body={'query': {
+                            'term': {
+                                '_id': ror_id
+                                }}})
+        if s['hits']['total'] == 1 or s in GRID_REMOVED_IDS:
+            check_ror_id(enable_es_7)
     return ror_id
 

@@ -99,7 +99,8 @@ class GenerateAddress(APIView):
 class GenerateId(APIView):
     permission_classes = [OurTokenPermission]
     def get(self, request):
-        id = check_ror_id()
+        ENABLE_ES_7 = launch_darkly_client.variation("elasticsearch-7", { "key":"user-key-123abc", "anonymous": True }, False)
+        id = check_ror_id(ENABLE_ES_7)
         return Response({'id': id})
 
 class IndexData(APIView):
