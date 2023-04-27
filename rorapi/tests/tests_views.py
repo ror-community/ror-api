@@ -294,3 +294,183 @@ class ViewRetrievalTestCaseEs7(SimpleTestCase):
         self.assertEquals(list(organization.keys()), ['errors'])
         self.assertEquals(len(organization['errors']), 1)
         self.assertTrue(any(['not a valid' in e for e in organization['errors']]))
+
+class GenerateIdViewTestCaseEs7(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_empty_es7.json'), 'r') as f:
+            self.test_data_empty = json.load(f)
+        self.maxDiff = None
+
+    @mock.patch('ldclient.client.LDClient.variation')
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_generateid_success(self, search_mock, permission_mock, feature_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
+        permission_mock.return_value = True
+        feature_mock.return_value = True
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('ldclient.client.LDClient.variation')
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    def test_generateid_fail_no_permission(self, permission_mock, feature_mock):
+        permission_mock.return_value = False
+        feature_mock.return_value = True
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 403)
+
+class GenerateIdViewTestCaseEs6(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_empty_es6.json'), 'r') as f:
+            self.test_data_empty = json.load(f)
+        self.maxDiff = None
+
+    @mock.patch('ldclient.client.LDClient.variation')
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_generateid_success(self, search_mock, permission_mock, feature_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
+        permission_mock.return_value = True
+        feature_mock.return_value = False
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('ldclient.client.LDClient.variation')
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    def test_generateid_fail_no_permission(self, permission_mock, feature_mock):
+        permission_mock.return_value = False
+        feature_mock.return_value = False
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 403)
+
+class GenerateAddressViewTestCase(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_address.json'), 'r') as f:
+            self.test_data_address = json.load(f)
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_address_empty.json'), 'r') as f:
+            self.test_data_address_empty = json.load(f)
+        self.maxDiff = None
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('update_address.new_geonames')
+    def test_generateaddress_success(self, address_mock, permission_mock):
+        address_mock.return_value = self.test_data_address
+        permission_mock.return_value = True
+        response = self.client.get('/generateaddress/5378538')
+        self.assertContains(response, 'address')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('update_address.new_geonames')
+    def test_generateaddress_fail_empty(self, address_mock, permission_mock):
+        address_mock.return_value = self.test_data_address_empty
+        permission_mock.return_value = True
+        response = self.client.get('/generateaddress/0000000')
+        self.assertContains(response, 'Expecting value')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    def test_generateid_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.get('/generateaddress/5378538')
+        self.assertEquals(response.status_code, 403)
+
+class IndexRorViewTestCaseEs6(SimpleTestCase):
+    def setUp(self):
+        self.success_msg = {"status": "OK", "msg": "dir indexed"}
+        self.error_msg = {"status": "ERROR", "msg": "error"}
+        self.maxDiff = None
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.views.process_files')
+    def test_index_ror_success(self, index_mock, permission_mock):
+        index_mock.return_value = self.success_msg
+        permission_mock.return_value = True
+        response = self.client.get('/indexdata/foo/6')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.views.process_files')
+    def test_index_ror_fail_error(self, index_mock, permission_mock):
+        index_mock.return_value = self.error_msg
+        permission_mock.return_value = True
+        response = self.client.get('/indexdata/foo/6')
+        self.assertEquals(response.status_code, 400)
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    def test_index_ror_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.get('/indexdata/foo/6')
+        self.assertEquals(response.status_code, 403)
+
+class IndexRorViewTestCaseEs7(SimpleTestCase):
+    def setUp(self):
+        self.success_msg = {"status": "OK", "msg": "dir indexed"}
+        self.error_msg = {"status": "ERROR", "msg": "error"}
+        self.maxDiff = None
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.views.process_files')
+    def test_index_ror_success(self, index_mock, permission_mock):
+        index_mock.return_value = self.success_msg
+        permission_mock.return_value = True
+        response = self.client.get('/indexdata/foo/7')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.views.process_files')
+    def test_index_ror_fail_error(self, index_mock, permission_mock):
+        index_mock.return_value = self.error_msg
+        permission_mock.return_value = True
+        response = self.client.get('/indexdata/foo/7')
+        self.assertEquals(response.status_code, 400)
+
+    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    def test_index_ror_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.get('/indexdata/foo/7')
+        self.assertEquals(response.status_code, 403)
+
+class HeartbeatViewTestCaseEs6(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_search_es6.json'), 'r') as f:
+            self.test_data = json.load(f)
+
+    @mock.patch('ldclient.client.LDClient.variation')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_generateid_success(self, search_mock, feature_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
+        feature_mock.return_value = False
+        response = self.client.get('/heartbeat')
+        self.assertEquals(response.status_code, 200)
+
+class HeartbeatViewTestCaseEs7(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_search_es7.json'), 'r') as f:
+            self.test_data = json.load(f)
+
+    @mock.patch('ldclient.client.LDClient.variation')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_generateid_success(self, search_mock, feature_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
+        feature_mock.return_value = True
+        response = self.client.get('/heartbeat')
+        self.assertEquals(response.status_code, 200)
