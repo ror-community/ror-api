@@ -1,6 +1,7 @@
 import base32_crockford
 import random
-from rorapi.settings import ES, ES7, ES_VARS, ROR_API, GRID_REMOVED_IDS
+from rorapi.queries import retrieve_organization, get_ror_id
+from rorapi.settings import ROR_API
 
 def generate_ror_id():
     """Generates random ROR ID.
@@ -19,22 +20,9 @@ def generate_ror_id():
 def check_ror_id(enable_es_7):
     """Checks if generated ror id exists in the index. If so, it generates a new id, otherwise it returns the generated ror id
     """
-    ror_id = generate_ror_id()
-    if enable_es_7:
-        s = ES7.search(index=ES_VARS['INDEX'],
-                        body={'query': {
-                            'term': {
-                                '_id': ror_id
-                                }}})
-        if s['hits']['total']['value'] == 1 or s in GRID_REMOVED_IDS:
-            check_ror_id(enable_es_7)
-    else:
-        s = ES.search(index=ES_VARS['INDEX'],
-                        body={'query': {
-                            'term': {
-                                '_id': ror_id
-                                }}})
-        if s['hits']['total'] == 1 or s in GRID_REMOVED_IDS:
-            check_ror_id(enable_es_7)
+    ror_id = get_ror_id(generate_ror_id())
+    errors, organization = retrieve_organization(ror_id, enable_es_7)
+    if errors is None:
+        check_ror_id(enable_es_7)
     return ror_id
 

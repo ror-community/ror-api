@@ -305,9 +305,11 @@ class GenerateIdViewTestCaseEs7(SimpleTestCase):
 
     @mock.patch('ldclient.client.LDClient.variation')
     @mock.patch('rorapi.views.OurTokenPermission.has_permission')
-    @mock.patch('elasticsearch.Elasticsearch.search')
+    @mock.patch('elasticsearch_dsl.Search.execute')
     def test_generateid_success(self, search_mock, permission_mock, feature_mock):
-        search_mock.return_value = self.test_data_empty
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
         permission_mock.return_value = True
         feature_mock.return_value = True
         response = self.client.get('/generateid')
@@ -331,9 +333,11 @@ class GenerateIdViewTestCaseEs6(SimpleTestCase):
 
     @mock.patch('ldclient.client.LDClient.variation')
     @mock.patch('rorapi.views.OurTokenPermission.has_permission')
-    @mock.patch('elasticsearch.Elasticsearch.search')
+    @mock.patch('elasticsearch_dsl.Search.execute')
     def test_generateid_success(self, search_mock, permission_mock, feature_mock):
-        search_mock.return_value = self.test_data_empty
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
         permission_mock.return_value = True
         feature_mock.return_value = False
         response = self.client.get('/generateid')
