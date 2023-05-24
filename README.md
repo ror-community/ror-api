@@ -28,7 +28,7 @@ Commands for indexing ROR data, generating new ROR IDs and other internal operat
 
 ROR staff should replace values in [] with valid credential values, however, external users who only wish to run the API locally do not need to add these values as they are used for management functionality only.
 
-- Optionally, uncomment [line 24 in docker-compose.yml](https://github.com/ror-community/ror-api/blob/master/docker-compose.yml#L24) in order to pull the rorapi image from Dockerhub rather than creating it from local code  
+- Optionally, uncomment [line 24 in docker-compose.yml](https://github.com/ror-community/ror-api/blob/master/docker-compose.yml#L41) in order to pull the rorapi image from Dockerhub rather than creating it from local code  
 
 ## Start ror-api locally
 1. Start Docker Desktop
