@@ -30,7 +30,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('filename', type=str, help='Name of data dump zip file to index without extension')
-        parser.add_argument('esversion', type=int, help='ES instance version')
 
     def handle(self, *args, **options):
         # make sure ROR dump file exists
