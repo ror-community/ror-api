@@ -5,7 +5,7 @@ import requests
 import zipfile
 import base64
 from io import BytesIO
-from rorapi.settings import ES, ES7, ES_VARS, ROR_DUMP, DATA
+from rorapi.settings import ES7, ES_VARS, ROR_DUMP, DATA
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
@@ -69,7 +69,6 @@ class Command(BaseCommand):
     help = 'Indexes ROR dataset from a full dump file in ror-data repo'
 
     def handle(self, *args, **options):
-        es_version = options['esversion']
         json_file = ''
         filename = options['filename']
         ror_dump_zip = get_ror_dump_zip(filename)
@@ -90,45 +89,26 @@ class Command(BaseCommand):
 
             index = ES_VARS['INDEX']
             backup_index = '{}-tmp'.format(index)
-            if es_version == 7:
-                ES7.reindex(body={
-                    'source': {
-                        'index': index
-                    },
-                    'dest': {
-                        'index': backup_index
-                    }
-                })
-            else:
-                ES.reindex(body={
-                    'source': {
-                        'index': index
-                    },
-                    'dest': {
-                        'index': backup_index
-                    }
-                })
+            ES7.reindex(body={
+                'source': {
+                    'index': index
+                },
+                'dest': {
+                    'index': backup_index
+                }
+            })
 
 
             try:
                 for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
                     body = []
                     for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
-                        if es_version == 7:
-                            body.append({
-                                'index': {
-                                    '_index': index,
-                                    '_id': org['id']
-                                }
-                            })
-                        else:
-                            body.append({
-                                'index': {
-                                    '_index': index,
-                                    '_type': 'org',
-                                    '_id': org['id']
-                                }
-                            })
+                        body.append({
+                            'index': {
+                                '_index': index,
+                                '_id': org['id']
+                            }
+                        })
                         org['names_ids'] = [{
                             'name': n
                         } for n in get_nested_names(org)]
@@ -136,37 +116,20 @@ class Command(BaseCommand):
                             'id': n
                         } for n in get_nested_ids(org)]
                         body.append(org)
-                    if es_version == 7:
-                        ES7.bulk(body)
-                    else:
-                        ES.bulk(body)
+                    ES7.bulk(body)
             except TransportError:
                 self.stdout.write(TransportError)
                 self.stdout.write('Reverting to backup index')
-                if es_version == 7:
-                     ES7.reindex(body={
-                        'source': {
-                            'index': backup_index
-                        },
-                        'dest': {
-                            'index': index
-                        }
-                    })
-                else:
-                    ES.reindex(body={
-                        'source': {
-                            'index': backup_index
-                        },
-                        'dest': {
-                            'index': index
-                        }
-                    })
-            if es_version == 7:
-                if ES7.indices.exists(backup_index):
-                    ES7.indices.delete(backup_index)
-            else:
-                if ES.indices.exists(backup_index):
-                    ES.indices.delete(backup_index)
-            self.stdout.write('ROR dataset ' + filename + ' indexed to ES version ' + str(es_version))
+                ES7.reindex(body={
+                    'source': {
+                        'index': backup_index
+                    },
+                    'dest': {
+                        'index': index
+                    }
+                })
+            if ES7.indices.exists(backup_index):
+                ES7.indices.delete(backup_index)
+            self.stdout.write('ROR dataset ' + filename + ' indexed')
         else:
             print("ROR data dump zip file does not exist")

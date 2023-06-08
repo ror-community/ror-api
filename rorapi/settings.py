@@ -129,7 +129,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
     'INDEX': 'organizations',
-    'INDEX_TEMPLATE': os.path.join(BASE_DIR, 'rorapi', 'index_template.json'),
     'INDEX_TEMPLATE_ES7': os.path.join(BASE_DIR, 'rorapi', 'index_template_es7.json'),
     'BATCH_SIZE': 20,
     'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
@@ -144,18 +143,9 @@ if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
 else:
     http_auth = ('elastic', os.environ.get('ELASTIC_PASSWORD', 'changeme'))
 
-ES = Elasticsearch([{
-    'host': os.environ.get('ELASTIC_HOST', 'elasticsearch'),
-    'port': int(os.environ.get('ELASTIC_PORT', '9200'))
-}],
-    http_auth=http_auth,
-    use_ssl=False,
-    timeout=240,
-    connection_class=RequestsHttpConnection)
-
 ES7 = Elasticsearch([{
     'host': os.environ.get('ELASTIC7_HOST', 'elasticsearch7'),
-    'port': int(os.environ.get('ELASTIC7_PORT', '9201'))
+    'port': int(os.environ.get('ELASTIC7_PORT', '9200'))
 }],
     http_auth=http_auth,
     use_ssl=False,

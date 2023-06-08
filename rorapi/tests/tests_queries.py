@@ -162,334 +162,7 @@ class ValidationTestCase(SimpleTestCase):
         })
         self.assertIsNone(error)
 
-class BuildSearchQueryTestCaseEs6(SimpleTestCase):
-    ENABLE_ES_7 = False
-
-    def setUp(self):
-        self.default_query = \
-                {'aggs': {'types': {'terms': {'field': 'types', 'size': 10, 'min_doc_count': 1}},
-                'countries': {'terms': {'field': 'country.country_code', 'size': 10, 'min_doc_count': 1}},
-                'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}}, 'from': 0, 'size': 20}
-
-    def test_empty_query_default(self):
-        expected = {'query': {
-            'bool': {
-                'filter': [{'terms': {'status': ['active']}}]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_empty_query_all_status(self):
-        expected = {'query': {'match_all': {}}}
-        expected.update(self.default_query)
-        query = build_search_query({'all_status':''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_empty_query_all_status_false(self):
-        expected = {'query': {
-            'bool': {
-                'filter': [{'terms': {'status': ['active']}}]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'all_status':'false'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_id(self):
-        expected = {'query': {
-                        'match': {
-                            'id': {
-                                'query': 'https://ror.org/0w7hudk23',
-                                'operator': 'and'
-                            }
-                        }
-                    }}
-
-        expected.update(self.default_query)
-
-        query = build_search_query({'query': '0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'ror.org/0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'ror.org%2F0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'http://ror.org/0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query(
-            {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'https://ror.org/0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query(
-            {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_default(self):
-        expected = {'query': {
-            'bool': {
-                'filter': [{'terms': {'status': ['active']}}],
-                'must': [{'nested': {
-                    'path': 'names_ids',
-                    'score_mode': 'max',
-                    'query': {
-                        'query_string': {
-                            'query': 'query terms',
-                            'fuzzy_max_expansions': 1
-                        }
-                    }
-                }}]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_all_status(self):
-        expected = {'query': {
-            'nested': {
-                    'path': 'names_ids',
-                    'score_mode': 'max',
-                    'query': {
-                        'query_string': {
-                            'query': 'query terms',
-                            'fuzzy_max_expansions': 1
-                        }
-                    }
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'all_status': ''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_advanced(self):
-        expected = {'query': {
-            'bool': {
-                'filter': [{'terms': {'status': ['active']}}],
-                'must': [{
-                    'query_string': {
-                        'query': 'query terms',
-                        'default_field': '*',
-                        'default_operator':'and',
-                        'fuzzy_max_expansions': 1
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'query terms'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_advanced_all_status(self):
-        expected = {'query': {
-            'bool': {
-                'must': [{
-                    'query_string': {
-                        'query': 'query terms',
-                        'default_field': '*',
-                        'default_operator':'and',
-                        'fuzzy_max_expansions': 1
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'query terms', 'all_status': ''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_advanced_status_filter(self):
-        expected = {'query': {
-            'bool': {
-                'filter': [{'terms': {'status': ('inactive',)}}],
-                'must': [{
-                    'query_string': {
-                        'query': 'query terms',
-                        'default_field': '*',
-                        'default_operator':'and',
-                        'fuzzy_max_expansions': 1
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        f = 'status:inactive'
-        query = build_search_query({'query.advanced': 'query terms', 'filter': f}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_query_advanced_status_field(self):
-        expected = {'query': {
-            'bool': {
-                'must': [{
-                    'query_string': {
-                        'query': 'status:inactive',
-                        'default_field': '*',
-                        'default_operator':'and',
-                        'fuzzy_max_expansions': 1
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'status:inactive'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_filter(self):
-        f = 'key1:val1,k2:value2'
-        expected = {'query': {
-            'bool': {
-                'filter': [
-                    {'terms': {'key1': ('val1',)}},
-                    {'terms': {'k2': ('value2',)}},
-                    {'terms': {'status': ['active']}}
-                ],
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_filter_status_filter(self):
-        f = 'key1:val1,k2:value2,status:inactive'
-        expected = {'query': {
-            'bool': {
-                'filter': [
-                    {'terms': {'key1': ('val1',)}},
-                    {'terms': {'k2': ('value2',)}},
-                    {'terms': {'status': ('inactive',)}}
-                ],
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_filter_all_status(self):
-        f = 'key1:val1,k2:value2'
-        expected = {'query': {
-            'bool': {
-                'filter': [
-                    {'terms': {'key1': ('val1',)}},
-                    {'terms': {'k2': ('value2',)}},
-                ],
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'filter': f, 'all_status': ''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_filter_query(self):
-        f = 'key1:val1,k2:value2'
-        expected = {'query': {
-            'bool': {
-                'filter': [
-                    {'terms': {'key1': ('val1',)}},
-                    {'terms': {'k2': ('value2',)}},
-                    {'terms': {'status': ['active']}}
-                ],
-                'must': [{
-                    'nested': {
-                        'path': 'names_ids',
-                        'score_mode': 'max',
-                        'query': {
-                            'query_string': {
-                                'query': 'query terms',
-                                'fuzzy_max_expansions': 1
-                            }
-                        }
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'filter': f}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_filter_query_all_status(self):
-        f = 'key1:val1,k2:value2'
-        expected = {'query': {
-            'bool': {
-                'filter': [
-                    {'terms': {'key1': ('val1',)}},
-                    {'terms': {'k2': ('value2',)}},
-                ],
-                'must': [{
-                    'nested': {
-                        'path': 'names_ids',
-                        'score_mode': 'max',
-                        'query': {
-                            'query_string': {
-                                'query': 'query terms',
-                                'fuzzy_max_expansions': 1
-                            }
-                        }
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_pagination(self):
-        expected = {'query': {'bool': {'filter': [{'terms': {'status': ['active']}}]}}}
-        expected.update(self.default_query)
-        expected['from'] = 80
-        query = build_search_query({'page': '5'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_pagination_all_status(self):
-        expected = {'query': {'match_all': {}}}
-        expected.update(self.default_query)
-        expected['from'] = 80
-        query = build_search_query({'page': '5', 'all_status': ''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_pagination_query(self):
-        expected = {'query': {
-            'bool': {
-                'filter': [{'terms': {'status': ['active']}}],
-                'must': [{
-                    'nested': {
-                        'path': 'names_ids',
-                        'score_mode': 'max',
-                        'query': {
-                            'query_string': {
-                                'query': 'query terms',
-                                'fuzzy_max_expansions': 1
-                            }
-                        }
-                    }
-                }]
-            }
-        }}
-        expected.update(self.default_query)
-        expected['from'] = 80
-        query = build_search_query({'page': '5', 'query': 'query terms'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-    def test_pagination_query_all_status(self):
-        expected = {'query': {
-            'nested': {
-                        'path': 'names_ids',
-                        'score_mode': 'max',
-                        'query': {
-                            'query_string': {
-                                'query': 'query terms',
-                                'fuzzy_max_expansions': 1
-                            }
-                        }
-                    }
-            }}
-        expected.update(self.default_query)
-        expected['from'] = 80
-        query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-
-
-class BuildSearchQueryTestCaseEs7(SimpleTestCase):
-
-    ENABLE_ES_7 = True
+class BuildSearchQueryTestCase(SimpleTestCase):
 
     def setUp(self):
         self.default_query = \
@@ -504,13 +177,13 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({}, self.ENABLE_ES_7)
+        query = build_search_query({})
         self.assertEquals(query.to_dict(), expected)
 
     def test_empty_query_all_status(self):
         expected = {'query': {'match_all': {}}, 'track_total_hits': True}
         expected.update(self.default_query)
-        query = build_search_query({'all_status':''}, self.ENABLE_ES_7)
+        query = build_search_query({'all_status':''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_empty_query_all_status_false(self):
@@ -520,7 +193,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'all_status':'false'}, self.ENABLE_ES_7)
+        query = build_search_query({'all_status':'false'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_id(self):
@@ -535,21 +208,21 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
 
         expected.update(self.default_query)
 
-        query = build_search_query({'query': '0w7hudk23'}, self.ENABLE_ES_7)
+        query = build_search_query({'query': '0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'ror.org/0w7hudk23'}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'ror.org/0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'ror.org%2F0w7hudk23'}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'ror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'http://ror.org/0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query(
-            {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'}, self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'https://ror.org/0w7hudk23'}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'http://ror.org/0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
         query = build_search_query(
-            {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'}, self.ENABLE_ES_7)
+            {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
+        query = build_search_query({'query': 'https://ror.org/0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
+        query = build_search_query(
+            {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_default(self):
@@ -569,7 +242,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms'}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'query terms'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_all_status(self):
@@ -586,7 +259,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'all_status': ''}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'query terms', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced(self):
@@ -604,7 +277,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'query terms'}, self.ENABLE_ES_7)
+        query = build_search_query({'query.advanced': 'query terms'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced_all_status(self):
@@ -621,7 +294,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'query terms', 'all_status': ''}, self.ENABLE_ES_7)
+        query = build_search_query({'query.advanced': 'query terms', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced_status_filter(self):
@@ -640,7 +313,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
         }}
         expected.update(self.default_query)
         f = 'status:inactive'
-        query = build_search_query({'query.advanced': 'query terms', 'filter': f}, self.ENABLE_ES_7)
+        query = build_search_query({'query.advanced': 'query terms', 'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced_status_field(self):
@@ -657,7 +330,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'status:inactive'}, self.ENABLE_ES_7)
+        query = build_search_query({'query.advanced': 'status:inactive'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter(self):
@@ -672,7 +345,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.ENABLE_ES_7)
+        query = build_search_query({'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_status_filter(self):
@@ -687,7 +360,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.ENABLE_ES_7)
+        query = build_search_query({'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_all_status(self):
@@ -701,7 +374,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f, 'all_status': ''}, self.ENABLE_ES_7)
+        query = build_search_query({'filter': f, 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_query(self):
@@ -728,7 +401,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'filter': f}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'query terms', 'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_query_all_status(self):
@@ -754,21 +427,21 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''}, self.ENABLE_ES_7)
+        query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination(self):
         expected = {'query': {'bool': {'filter': [{'terms': {'status': ['active']}}]}}}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5'}, self.ENABLE_ES_7)
+        query = build_search_query({'page': '5'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination_all_status(self):
         expected = {'query': {'match_all': {}}}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5', 'all_status': ''}, self.ENABLE_ES_7)
+        query = build_search_query({'page': '5', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination_query(self):
@@ -791,7 +464,7 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
         }}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5', 'query': 'query terms'}, self.ENABLE_ES_7)
+        query = build_search_query({'page': '5', 'query': 'query terms'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination_query_all_status(self):
@@ -809,33 +482,14 @@ class BuildSearchQueryTestCaseEs7(SimpleTestCase):
             }}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''}, self.ENABLE_ES_7)
+        query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
-class BuildRetrieveQueryTestCaseEs6(SimpleTestCase):
 
-    ENABLE_ES_7 = False
-
-    def test_retrieve_query(self):
-        query = build_retrieve_query('ror-id', self.ENABLE_ES_7)
-        self.assertEquals(query.to_dict(), {
-            'query': {
-                'match': {
-                    'id': {
-                        'operator': 'and',
-                        'query': 'ror-id'
-                    }
-                }
-            }
-        })
-
-
-class BuildRetrieveQueryTestCaseEs7(SimpleTestCase):
-
-    ENABLE_ES_7 = True
+class BuildRetrieveQueryTestCase(SimpleTestCase):
 
     def test_retrieve_query(self):
-        query = build_retrieve_query('ror-id', self.ENABLE_ES_7)
+        query = build_retrieve_query('ror-id')
         self.assertEquals(query.to_dict(), {
             'query': {
                 'match': {
@@ -848,77 +502,7 @@ class BuildRetrieveQueryTestCaseEs7(SimpleTestCase):
             'track_total_hits': True
         })
 
-class SearchOrganizationsTestCaseEs6(SimpleTestCase):
-    ENABLE_ES_7 = False
-    def setUp(self):
-        with open(
-                os.path.join(os.path.dirname(__file__),
-                             'data/test_data_search_es6.json'), 'r') as f:
-            self.test_data = json.load(f)
-
-    @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_search_organizations(self, search_mock):
-        search_mock.return_value = \
-            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
-
-        error, organizations = search_organizations({}, self.ENABLE_ES_7)
-        self.assertIsNone(error)
-
-        search_mock.assert_called_once()
-        self.assertEquals(organizations.number_of_results,
-                          self.test_data['hits']['total'])
-        self.assertEquals(organizations.time_taken, self.test_data['took'])
-        self.assertEquals(len(organizations.items),
-                          len(self.test_data['hits']['hits']))
-        for ret, exp in zip(organizations.items,
-                            self.test_data['hits']['hits']):
-            self.assertEquals(ret.id, exp['id'])
-            self.assertEquals(ret.name, exp['name'])
-        self.assertEquals(
-            len(organizations.meta.types),
-            len(self.test_data['aggregations']['types']['buckets']))
-        for ret, exp in \
-                zip(organizations.meta.types,
-                    self.test_data['aggregations']['types']['buckets']):
-            self.assertEquals(ret.title, exp['key'])
-            self.assertEquals(ret.count, exp['doc_count'])
-        self.assertEquals(
-            len(organizations.meta.countries),
-            len(self.test_data['aggregations']['countries']['buckets']))
-        for ret, exp in \
-                zip(organizations.meta.countries,
-                    self.test_data['aggregations']['countries']['buckets']):
-            self.assertEquals(ret.id, exp['key'].lower())
-            self.assertEquals(ret.count, exp['doc_count'])
-        self.assertEquals(
-            len(organizations.meta.statuses),
-            len(self.test_data['aggregations']['statuses']['buckets']))
-        for ret, exp in \
-                zip(organizations.meta.statuses,
-                    self.test_data['aggregations']['statuses']['buckets']):
-            self.assertEquals(ret.id, exp['key'].lower())
-            self.assertEquals(ret.count, exp['doc_count'])
-
-    @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_malformed_search_organizations(self, search_mock):
-        search_mock.return_value = \
-            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
-
-        error, organizations = search_organizations({
-            'query': 'query',
-            'illegal': 'whatever',
-            'filter': 'fi1:e,types:F,f3,field2:44',
-            'another': 3,
-            'page': 'third'
-        }, self.ENABLE_ES_7)
-        self.assertIsNone(organizations)
-
-        search_mock.assert_not_called()
-        self.assertEquals(len(error.errors), 6)
-
-class SearchOrganizationsTestCaseEs7(SimpleTestCase):
-    ENABLE_ES_7 = True
-
+class SearchOrganizationsTestCase(SimpleTestCase):
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
@@ -930,7 +514,7 @@ class SearchOrganizationsTestCaseEs7(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        error, organizations = search_organizations({}, self.ENABLE_ES_7)
+        error, organizations = search_organizations({})
         self.assertIsNone(error)
 
         search_mock.assert_called_once()
@@ -979,57 +563,14 @@ class SearchOrganizationsTestCaseEs7(SimpleTestCase):
             'filter': 'fi1:e,types:F,f3,field2:44',
             'another': 3,
             'page': 'third'
-        }, self.ENABLE_ES_7)
+        })
         self.assertIsNone(organizations)
 
         search_mock.assert_not_called()
         self.assertEquals(len(error.errors), 6)
 
-class RetrieveOrganizationsTestCaseEs6(SimpleTestCase):
-    ENABLE_ES_7 = False
 
-    def setUp(self):
-        with open(
-                os.path.join(os.path.dirname(__file__),
-                             'data/test_data_retrieve_es6.json'), 'r') as f:
-            self.test_data = json.load(f)
-        with open(
-                os.path.join(os.path.dirname(__file__),
-                             'data/test_data_empty_es6.json'), 'r') as f:
-            self.test_data_empty = json.load(f)
-
-    @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_retrieve_organization(self, search_mock):
-        search_mock.return_value = \
-            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
-
-        error, organization = retrieve_organization('ror-id', self.ENABLE_ES_7)
-        print(error)
-        print(organization)
-        self.assertIsNone(error)
-
-        search_mock.assert_called_once()
-        expected = self.test_data['hits']['hits'][0]
-        self.assertEquals(organization.id, expected['id'])
-        self.assertEquals(organization.name, expected['name'])
-
-    @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_retrieve_non_existing_organization(self, search_mock):
-        search_mock.return_value = \
-            IterableAttrDict(self.test_data_empty,
-                             self.test_data_empty['hits']['hits'])
-
-        error, organization = retrieve_organization('ror-id', self.ENABLE_ES_7)
-        self.assertIsNone(organization)
-
-        search_mock.assert_called_once()
-        self.assertEquals(len(error.errors), 1)
-        self.assertTrue('ror-id' in error.errors[0])
-
-
-class RetrieveOrganizationsTestCaseEs7(SimpleTestCase):
-    ENABLE_ES_7 = True
-
+class RetrieveOrganizationsTestCase(SimpleTestCase):
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
@@ -1045,7 +586,7 @@ class RetrieveOrganizationsTestCaseEs7(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        error, organization = retrieve_organization('ror-id', self.ENABLE_ES_7)
+        error, organization = retrieve_organization('ror-id')
         print(error)
         print(organization)
         self.assertIsNone(error)
@@ -1061,7 +602,7 @@ class RetrieveOrganizationsTestCaseEs7(SimpleTestCase):
             IterableAttrDict(self.test_data_empty,
                              self.test_data_empty['hits']['hits'])
 
-        error, organization = retrieve_organization('ror-id', self.ENABLE_ES_7)
+        error, organization = retrieve_organization('ror-id')
         self.assertIsNone(organization)
 
         search_mock.assert_called_once()
