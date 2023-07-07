@@ -258,7 +258,7 @@
                   }
                 }
               },
-              "FundRef": {
+              "Fundref": {
                 "properties": {
                   "preferred": {
                     "type": "keyword"
