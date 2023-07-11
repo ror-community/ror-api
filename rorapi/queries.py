@@ -13,6 +13,7 @@ from urllib.parse import unquote
 ALLOWED_FILTERS = ('country.country_code', 'types', 'country.country_name', 'status')
 ALLOWED_PARAM_KEYS = ('query', 'page', 'filter', 'query.advanced', 'all_status')
 ALLOWED_ALL_STATUS_VALUES = ('', 'true', 'false')
+# includes deprecated ext id types
 ALLOWED_FIELDS = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
     'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',

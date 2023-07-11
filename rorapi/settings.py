@@ -136,7 +136,7 @@ ES_VARS = {
 }
 
 # use AWS4Auth for AWS Elasticsearch unless running locally via docker
-if os.environ.get('ELASTIC_HOST', 'elasticsearch') != 'elasticsearch':
+if os.environ.get('ELASTIC7_HOST', 'elasticsearch7') != 'elasticsearch7':
     http_auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID'),
                          os.environ.get('AWS_SECRET_ACCESS_KEY'),
                          os.environ.get('AWS_REGION'), 'es')
