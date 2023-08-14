@@ -12,7 +12,7 @@ from elasticsearch import TransportError
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
-def get_nested_names(org):
+def get_nested_names_v1(org):
     yield org['name']
     for label in org['labels']:
         yield label['label']
@@ -21,7 +21,11 @@ def get_nested_names(org):
     for acronym in org['acronyms']:
         yield acronym
 
-def get_nested_ids(org):
+def get_nested_names_v2(org):
+    for name in org['names']:
+        yield name['value']
+
+def get_nested_ids_v1(org):
     yield org['id']
     yield re.sub('https://', '', org['id'])
     yield re.sub('https://ror.org/', '', org['id'])
@@ -31,6 +35,66 @@ def get_nested_ids(org):
         else:
             for eid in ext_id['all']:
                 yield eid
+
+def get_nested_ids_v2(org):
+    yield org['id']
+    yield re.sub('https://', '', org['id'])
+    yield re.sub('https://ror.org/', '', org['id'])
+    for ext_id in org['external_ids']:
+        for eid in ext_id['all']:
+            yield eid
+
+def index_dump(self, filename, index, dataset):
+    backup_index = '{}-tmp'.format(index)
+    ES7.reindex(body={
+        'source': {
+            'index': index
+        },
+        'dest': {
+            'index': backup_index
+        }
+    })
+
+    try:
+        for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
+            body = []
+            for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
+                body.append({
+                    'index': {
+                        '_index': index,
+                        '_id': org['id']
+                    }
+                })
+                if 'v2' in index:
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names_v2(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids_v2(org)]
+                else:
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names_v1(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids_v1(org)]
+                body.append(org)
+            ES7.bulk(body)
+    except TransportError:
+        self.stdout.write(TransportError)
+        self.stdout.write('Reverting to backup index')
+        ES7.reindex(body={
+            'source': {
+                'index': backup_index
+            },
+            'dest': {
+                'index': index
+            }
+        })
+    if ES7.indices.exists(backup_index):
+        ES7.indices.delete(backup_index)
+    self.stdout.write('ROR dataset ' + filename + ' indexed')
 
 def get_ror_dump_sha(filename):
     sha = ''
@@ -69,7 +133,7 @@ class Command(BaseCommand):
     help = 'Indexes ROR dataset from a full dump file in ror-data repo'
 
     def handle(self, *args, **options):
-        json_file = ''
+        json_files = []
         filename = options['filename']
         ror_dump_zip = get_ror_dump_zip(filename)
         if ror_dump_zip:
@@ -80,56 +144,17 @@ class Command(BaseCommand):
             unzipped_files = os.listdir(DATA['WORKING_DIR'] + filename)
             for file in unzipped_files:
                 if file.endswith(".json"):
-                    json_file = file
-            json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
-            with open(json_path, 'r') as it:
-                dataset = json.load(it)
+                    json_files.append(file)
+            for json_file in json_files:
+                json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
+                with open(json_path, 'r') as it:
+                    dataset = json.load(it)
+                self.stdout.write('Indexing ROR dataset ' + json_file)
+                if 'schema_v2' in json_file:
+                    index = ES_VARS['INDEX_V2']
+                else:
+                    index = ES_VARS['INDEX_V1']
+                index_dump(self, json_file, index, dataset)
 
-            self.stdout.write('Indexing ROR dataset ' + filename)
-
-            index = ES_VARS['INDEX']
-            backup_index = '{}-tmp'.format(index)
-            ES7.reindex(body={
-                'source': {
-                    'index': index
-                },
-                'dest': {
-                    'index': backup_index
-                }
-            })
-
-
-            try:
-                for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
-                    body = []
-                    for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
-                        body.append({
-                            'index': {
-                                '_index': index,
-                                '_id': org['id']
-                            }
-                        })
-                        org['names_ids'] = [{
-                            'name': n
-                        } for n in get_nested_names(org)]
-                        org['names_ids'] += [{
-                            'id': n
-                        } for n in get_nested_ids(org)]
-                        body.append(org)
-                    ES7.bulk(body)
-            except TransportError:
-                self.stdout.write(TransportError)
-                self.stdout.write('Reverting to backup index')
-                ES7.reindex(body={
-                    'source': {
-                        'index': backup_index
-                    },
-                    'dest': {
-                        'index': index
-                    }
-                })
-            if ES7.indices.exists(backup_index):
-                ES7.indices.delete(backup_index)
-            self.stdout.write('ROR dataset ' + filename + ' indexed')
         else:
-            print("ROR data dump zip file does not exist")
+            self.stdout.write("ROR data dump zip file does not exist")
