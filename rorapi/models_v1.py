@@ -106,12 +106,12 @@ class ExternalIds:
                 pass
 
 
-class Organization(Entity):
+class OrganizationV1(Entity):
     """Organization model class"""
     def __init__(self, data):
         if "_source" in data:
             data = data["_source"]
-        super(Organization, self).__init__(data, [
+        super(OrganizationV1, self).__init__(data, [
             'id', 'name', 'types', 'links', 'aliases', 'acronyms', 'status',
             'wikipedia_url', 'established', 'relationships', 'addresses'
         ])
@@ -163,12 +163,12 @@ class Aggregations:
         self.statuses = [StatusBucket(b) for b in data.statuses.buckets]
 
 
-class ListResult:
+class ListResultV1:
     """A model class for the list of organizations returned from the search"""
     def __init__(self, data):
         self.number_of_results = data.hits.total.value
         self.time_taken = data.took
-        self.items = [Organization(x) for x in data]
+        self.items = [OrganizationV1(x) for x in data]
         self.meta = Aggregations(data.aggregations)
 
 
@@ -180,17 +180,17 @@ class MatchedOrganization:
         self.score = data.score
         self.matching_type = data.matching_type
         self.chosen = data.chosen
-        self.organization = Organization(data.organization)
+        self.organization = OrganizationV1(data.organization)
 
 
-class MatchingResult:
+class MatchingResultV1:
     """A model class for the result of affiliation matching"""
     def __init__(self, data):
         self.number_of_results = len(data)
         self.items = [MatchedOrganization(x) for x in data]
 
 
-class Errors:
+class ErrorsV1:
     """Errors model class"""
     def __init__(self, errors):
         self.errors = errors
@@ -284,7 +284,7 @@ class ExternalIdsSerializer(serializers.Serializer):
     GRID = GridExternalIdSerializer(required=False)
 
 
-class OrganizationSerializer(serializers.Serializer):
+class OrganizationSerializerV1(serializers.Serializer):
     id = serializers.CharField()
     name = serializers.CharField()
     email_address = serializers.StringRelatedField()
@@ -315,10 +315,10 @@ class AggregationsSerializer(serializers.Serializer):
     statuses = BucketSerializer(many=True)
 
 
-class ListResultSerializer(serializers.Serializer):
+class ListResultSerializerV1(serializers.Serializer):
     number_of_results = serializers.IntegerField()
     time_taken = serializers.IntegerField()
-    items = OrganizationSerializer(many=True)
+    items = OrganizationSerializerV1(many=True)
     meta = AggregationsSerializer()
 
 
@@ -327,13 +327,13 @@ class MatchedOrganizationSerializer(serializers.Serializer):
     score = serializers.FloatField()
     matching_type = serializers.CharField()
     chosen = serializers.BooleanField()
-    organization = OrganizationSerializer()
+    organization = OrganizationSerializerV1()
 
 
-class MatchingResultSerializer(serializers.Serializer):
+class MatchingResultSerializerV1(serializers.Serializer):
     number_of_results = serializers.IntegerField()
     items = MatchedOrganizationSerializer(many=True)
 
 
-class ErrorsSerializer(serializers.Serializer):
+class ErrorsSerializerV1(serializers.Serializer):
     errors = serializers.StringRelatedField(many=True)

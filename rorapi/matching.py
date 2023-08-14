@@ -5,7 +5,8 @@ import unicodedata
 import unidecode
 
 from .es_utils import ESQueryBuilder
-from .models import MatchingResult, Errors
+from .models_v1 import MatchingResultV1, ErrorsV1
+from .models_v2 import MatchingResultV2, ErrorsV2
 
 from collections import namedtuple
 from functools import lru_cache

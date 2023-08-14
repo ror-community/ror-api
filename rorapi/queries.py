@@ -4,7 +4,8 @@ from titlecase import titlecase
 from collections import defaultdict
 
 from .matching import match_affiliation
-from .models import Organization, ListResult, MatchingResult, Errors
+from .models_v1 import OrganizationV1, ListResultV1, ErrorsV1
+from .models_v2 import OrganizationV2, ListResultV2, ErrorsV2
 from .settings import GRID_REMOVED_IDS, ROR_API, ES_VARS
 from .es_utils import ESQueryBuilder
 
@@ -14,7 +15,7 @@ ALLOWED_FILTERS = ('country.country_code', 'types', 'country.country_name', 'sta
 ALLOWED_PARAM_KEYS = ('query', 'page', 'filter', 'query.advanced', 'all_status')
 ALLOWED_ALL_STATUS_VALUES = ('', 'true', 'false')
 # includes deprecated ext id types
-ALLOWED_FIELDS = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
+ALLOWED_FIELDS_V1 = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.city', 'addresses.geonames_city.geonames_admin1.ascii_name',
     'addresses.geonames_city.geonames_admin1.code', 'addresses.geonames_city.geonames_admin1.name',
     'addresses.geonames_city.geonames_admin2.ascii_name', 'addresses.geonames_city.geonames_admin2.code',
@@ -23,6 +24,19 @@ ALLOWED_FIELDS = ('acronyms', 'addresses.city', 'addresses.country_geonames_id',
     'addresses.geonames_city.nuts_level1.name', 'addresses.geonames_city.nuts_level2.code',
     'addresses.geonames_city.nuts_level2.name', 'addresses.geonames_city.nuts_level3.code',
     'addresses.geonames_city.nuts_level3.name', 'addresses.lat', 'addresses.line', 'addresses.lng',
+    'addresses.postcode', 'addresses.primary', 'addresses.state', 'addresses.state_code', 'aliases',
+    'country.country_code', 'country.country_name', 'email_address', 'established', 'external_ids.CNRS.all',
+    'external_ids.CNRS.preferred', 'external_ids.FundRef.all', 'external_ids.FundRef.preferred', 'external_ids.HESA.all',
+    'external_ids.HESA.preferred', 'external_ids.GRID.all', 'external_ids.GRID.preferred', 'external_ids.ISNI.all',
+    'external_ids.ISNI.preferred', 'external_ids.OrgRef.all', 'external_ids.OrgRef.preferred', 'external_ids.UCAS.all',
+    'external_ids.UCAS.preferred', 'external_ids.UKPRNS.all', 'external_ids.UKPRNS.preferred', 'external_ids.Wikidata.all',
+    'external_ids.Wikidata.preferred', 'id', 'ip_addresses', 'labels.iso639', 'labels.label', 'links', 'name',
+    'relationships.id', 'relationships.label', 'relationships.type', 'status', 'types', 'wikipedia_url')
+ALLOWED_FIELDS_V2 = ('admin.created.date', 'admin.created.schema_version', 'admin.last_modified.date', 'admin.last_modified.schema_version',
+    'domains', 'established', 'external_ids.all', 'external_ids.preferred', 'external_ids.type',
+    'addresses.geonames_city.city',
+    'addresses.geonames_city.geonames_admin2.name', 'addresses.geonames_city.id',
+    'addresses.lat', 'addresses.line', 'addresses.lng',
     'addresses.postcode', 'addresses.primary', 'addresses.state', 'addresses.state_code', 'aliases',
     'country.country_code', 'country.country_name', 'email_address', 'established', 'external_ids.CNRS.all',
     'external_ids.CNRS.preferred', 'external_ids.FundRef.all', 'external_ids.FundRef.preferred', 'external_ids.HESA.all',
@@ -115,7 +129,7 @@ def validate(params):
 
     adv_query_fields = adv_query_string_to_list(params.get('query.advanced', ''))
     illegal_fields = [
-        f for f in adv_query_fields if (not f.endswith(tuple(ALLOWED_FIELDS)) and not f.endswith(tuple(ALLOWED_ENDINGS)))
+        f for f in adv_query_fields if (not f.endswith(tuple(ALLOWED_FIELDS_V1)) and not f.endswith(tuple(ALLOWED_ENDINGS)))
     ]
     errors.extend([
         'string \'{}\' contains an illegal field name'.format(f) for f in illegal_fields])
@@ -143,14 +157,15 @@ def validate(params):
                     page, 1, ES_VARS['MAX_PAGE']))
         except ValueError:
             errors.append('page \'{}\' is not an integer'.format(page))
+    if version == 'v2':
+        return ErrorsV2(errors) if errors else None
+    return ErrorsV1(errors) if errors else None
 
-    return Errors(errors) if errors else None
 
-
-def build_search_query(params):
+def build_search_query(params, version):
     """Builds search query from API parameters"""
 
-    qb = ESQueryBuilder()
+    qb = ESQueryBuilder(version)
     ror_id = None
 
     if 'all_status' in params:
@@ -199,8 +214,12 @@ def build_search_query(params):
                 filter_dict.update({'status': ['active']})
         qb.add_filters(filter_dict)
 
-    qb.add_aggregations([('types', 'types'),
-                         ('countries', 'country.country_code'), ('statuses', 'status')])
+    if version == 'v2':
+        qb.add_aggregations([('types', 'types'),
+                         ('countries', 'locations.geonames_details.country_code'), ('statuses', 'status')])
+    else:
+        qb.add_aggregations([('types', 'types'),
+                            ('countries', 'country.country_code'), ('statuses', 'status')])
 
     qb.paginate(int(params.get('page', 1)))
     return qb.get_query()
@@ -214,26 +233,35 @@ def build_retrieve_query(ror_id):
     return qb.get_query()
 
 
-def search_organizations(params):
+def search_organizations(params, version):
     """Searches for organizations according to the parameters"""
 
     error = validate(params)
     if error is not None:
         return error, None
+    search = build_search_query(params, version)
+    if version == 'v2':
+        return None, ListResultV2(search.execute())
+    return None, ListResultV1(search.execute())
 
-    search = build_search_query(params)
-    return None, ListResult(search.execute())
 
-
-def retrieve_organization(ror_id):
+def retrieve_organization(ror_id, version):
     """Retrieves the organization of the given ROR ID"""
     if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
-        return Errors(["ROR ID \'{}\' was removed by GRID during the time period (Jan 2019-Mar 2022) "
+        if version == 'v2':
+            return ErrorsV2(["ROR ID \'{}\' was removed by GRID during the time period (Jan 2019-Mar 2022) "
+            "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
+            "to restore these records and expect to complete this work in 2022".format(ror_id)]), None
+        return ErrorsV1(["ROR ID \'{}\' was removed by GRID during the time period (Jan 2019-Mar 2022) "
         "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
         "to restore these records and expect to complete this work in 2022".format(ror_id)]), None
     search = build_retrieve_query(ror_id)
     results = search.execute()
     total = results.hits.total.value
     if total > 0:
-        return None, Organization(results[0])
-    return Errors(['ROR ID \'{}\' does not exist'.format(ror_id)]), None
+        if version =='v2':
+            return None, OrganizationV2(results[0])
+        return None, OrganizationV1(results[0])
+    if version == 'v2':
+        return ErrorsV2(['ROR ID \'{}\' does not exist'.format(ror_id)]), None
+    return ErrorsV1(['ROR ID \'{}\' does not exist'.format(ror_id)]), None
