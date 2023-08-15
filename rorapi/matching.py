@@ -203,7 +203,7 @@ def match_by_query(text, matching_type, query, countries):
     ]
     return chosen, all_matched
 
-def match_by_type(text, matching_type, countries):
+def match_by_type(text, matching_type, countries, version):
     '''Match affiliation text using specific matching mode/type.'''
 
     fields = ['name.norm', 'aliases.norm', 'labels.label.norm']
@@ -229,7 +229,7 @@ def match_by_type(text, matching_type, countries):
     else:
         substrings.append(text)
 
-    queries = [ESQueryBuilder() for _ in substrings]
+    queries = [ESQueryBuilder(version) for _ in substrings]
 
     for s, q in zip(substrings, queries):
         if matching_type == MATCHING_TYPE_PHRASE:
@@ -259,15 +259,16 @@ def match_by_type(text, matching_type, countries):
 class MatchingNode:
     '''Matching node class. Represents a substring of the original affiliation
     that potentially could be matched to an organization.'''
-    def __init__(self, text):
+    def __init__(self, text, version):
         self.text = text
+        self.version = version
         self.matched = None
         self.all_matched = []
 
-    def match(self, countries, min_score):
+    def match(self, countries, min_score, version):
         for matching_type in NODE_MATCHING_TYPES:
             chosen, all_matched = match_by_type(self.text, matching_type,
-                                                countries)
+                                                countries, self.version)
             self.all_matched.extend(all_matched)
             if self.matched is None:
                 self.matched = chosen
@@ -309,12 +310,13 @@ class MatchingGraph:
     Some substrings contain other substrings, which defines the graph edges.
     This prevents matching an organization to a substring and another
     organization to the substring's substring.'''
-    def __init__(self, affiliation):
+    def __init__(self, affiliation, version):
         self.nodes = []
+        self.version = version
         self.affiliation = affiliation
         affiliation = re.sub('&amp;', '&', affiliation)
         affiliation_cleaned = clean_search_string(affiliation)
-        n = MatchingNode(affiliation_cleaned)
+        n = MatchingNode(affiliation_cleaned, self.version)
         self.nodes.append(n)
         for part in [s.strip() for s in re.split('[,;:]', affiliation)]:
             part_cleaned = clean_search_string(part)
@@ -343,7 +345,7 @@ class MatchingGraph:
                 chosen.append(node.matched)
         acr_chosen, acr_all_matched = match_by_type(self.affiliation,
                                                     MATCHING_TYPE_ACRONYM,
-                                                    countries)
+                                                    countries, self.version)
         all_matched.extend(acr_all_matched)
         return chosen, all_matched
 
@@ -400,27 +402,27 @@ def get_output(chosen, all_matched, active_only):
         output.append(best)
     return sorted(output, key=lambda x: x.score, reverse=True)[:100]
 
-def check_exact_match(affiliation, countries):
-    qb = ESQueryBuilder()
+def check_exact_match(affiliation, countries, version):
+    qb = ESQueryBuilder(version)
     qb.add_string_query('"' + affiliation + '"')
     return match_by_query(affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries)
 
-def match_affiliation(affiliation, active_only):
+def match_affiliation(affiliation, active_only, version):
     countries = get_countries(affiliation)
-    exact_chosen, exact_all_matched = check_exact_match(affiliation, countries)
+    exact_chosen, exact_all_matched = check_exact_match(affiliation, countries, version)
     if exact_chosen.score == 1.0:
         return get_output(exact_chosen, exact_all_matched, active_only)
     else:
-        graph = MatchingGraph(affiliation)
+        graph = MatchingGraph(affiliation, version)
         chosen, all_matched = graph.match(countries, MIN_CHOSEN_SCORE)
         return get_output(chosen, all_matched, active_only)
 
-def match_organizations(params):
+def match_organizations(params, version):
     if 'affiliation' in params:
         active_only = True
         if 'all_status' in params:
             if params['all_status'] == '' or params['all_status'].lower() == "true":
                 active_only = False
-        matched = match_affiliation(params.get('affiliation'), active_only)
-        return None, MatchingResult(matched)
+        matched = match_affiliation(params.get('affiliation'), active_only, version)
+        return None, MatchingResultV1(matched)
     return Errors('"affiliation" parameter missing'), None
