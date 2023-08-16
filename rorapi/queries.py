@@ -283,7 +283,7 @@ def build_search_query(params, version):
         # normalize filter values based on casing conventions used in ROR records
         for f in filters:
             if f[0] == "types":
-                if version == "v2":s
+                if version == "v2":
                     f[1] = f[1].lower()
                 else:
                     f[1] = f[1].title()
