@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 
-from ..models import Entity, ExternalIds, Organization, TypeBucket, \
-    CountryBucket, Aggregations, Errors, MatchedOrganization, MatchingResult
+from ..models_v1 import Entity, ExternalIds, OrganizationV1, TypeBucket, \
+    CountryBucket, Aggregations, ErrorsV1, MatchedOrganization, MatchingResultV1
 from .utils import AttrDict
 
 
@@ -97,7 +97,7 @@ class OrganizationTestCase(SimpleTestCase):
                  'FundRef': {'preferred': None, 'all': ['5011004567542']},
                  'GRID': {'preferred': 'grid.12580.34',
                           'all': 'grid.12580.34'}}}
-        organization = Organization(AttrDict(data))
+        organization = OrganizationV1(AttrDict(data))
         self.assertEqual(organization.id, data['id'])
         self.assertEqual(organization.name, data['name'])
         self.assertEqual(organization.types, data['types'])
@@ -277,5 +277,5 @@ class MatchedOrganizationTestCase(SimpleTestCase):
 class ErrorsTestCase(SimpleTestCase):
     def test_attributes_exist(self):
         data = ['err1', 'e2', 'terrible error 3']
-        error = Errors(data)
+        error = ErrorsV1(data)
         self.assertEqual(error.errors, data)

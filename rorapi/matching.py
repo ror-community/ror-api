@@ -204,7 +204,9 @@ def get_score(candidate, aff_sub, countries, version):
     and the candidate, using all name versions."""
     if version == "v2":
         country_code = candidate.locations[0].geonames_details.country_code
-        all_names = [name["value"] for name in candidate.names]
+        all_names = [
+            name["value"] for name in candidate.names if "acronym" not in name["types"]
+        ]
         acronyms = [
             name["value"] for name in candidate.names if "acronym" in name["types"]
         ]

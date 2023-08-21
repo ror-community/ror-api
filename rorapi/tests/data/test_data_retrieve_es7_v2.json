@@ -1,0 +1,145 @@
+{
+    "took": 85,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 1,
+            "relation": "eq"
+        },
+        "max_score": 11.164284,
+        "hits": [
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/02atag894",
+                "_score": 11.164284,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 4140963,
+                            "geonames_details": {
+                                "country_code": "US",
+                                "country_name": "United States",
+                                "lat": 38.88758,
+                                "lng": -77.025728,
+                                "name": "Washington, D.C."
+                            }
+                        }
+                    ],
+                    "established": 1996,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 5897 7463"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "100006209"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q30296535"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.453025.5"
+                            ],
+                            "preferred": "grid.453025.5"
+                        }
+                    ],
+                    "id": "https://ror.org/02atag894",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://science.osti.gov/np"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Office of Nuclear Physics",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "NP",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "parent",
+                            "label": "Office of Science",
+                            "id": "https://ror.org/00mmn6b08"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "government"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Office of Nuclear Physics"
+                        },
+                        {
+                            "name": "NP"
+                        },
+                        {
+                            "id": "https://ror.org/02atag894"
+                        },
+                        {
+                            "id": "ror.org/02atag894"
+                        },
+                        {
+                            "id": "02atag894"
+                        },
+                        {
+                            "id": "0000 0004 5897 7463"
+                        },
+                        {
+                            "id": "100006209"
+                        },
+                        {
+                            "id": "Q30296535"
+                        },
+                        {
+                            "id": "grid.453025.5"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

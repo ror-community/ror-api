@@ -1,0 +1,2878 @@
+{
+    "took": 28,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 104332,
+            "relation": "eq"
+        },
+        "max_score": 0.0,
+        "hits": [
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/02bfwt286",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2158177,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.9083,
+                                "lng": 145.138,
+                                "name": "Melbourne"
+                            }
+                        }
+                    ],
+                    "established": 1958,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 1936 7857"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001779",
+                                "501100001144",
+                                "501100007917",
+                                "501100000991",
+                                "501100001198",
+                                "501100006532"
+                            ],
+                            "preferred": "501100001779"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q598841"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1002.3"
+                            ],
+                            "preferred": "grid.1002.3"
+                        }
+                    ],
+                    "id": "https://ror.org/02bfwt286",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.monash.edu/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Monash University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Box Hill Hospital",
+                            "id": "https://ror.org/0484pjq71"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Burnet Institute",
+                            "id": "https://ror.org/05ktbsm52"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Frankston Hospital",
+                            "id": "https://ror.org/051b68e86"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Jessie McPherson Private Hospital",
+                            "id": "https://ror.org/00aeqjw83"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Monash Institute of Medical Research",
+                            "id": "https://ror.org/05p96ba03"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Monash Medical Centre",
+                            "id": "https://ror.org/036s9kg65"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Monash South Africa",
+                            "id": "https://ror.org/013m0ac37"
+                        },
+                        {
+                            "type": "related",
+                            "label": "The Alfred Hospital",
+                            "id": "https://ror.org/01wddqe20"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Integrative Brain Function",
+                            "id": "https://ror.org/02yasb727"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence in Advanced Molecular Imaging",
+                            "id": "https://ror.org/051e7s436"
+                        },
+                        {
+                            "type": "child",
+                            "label": "Australian Regenerative Medicine Institute",
+                            "id": "https://ror.org/02qa5kg76"
+                        },
+                        {
+                            "type": "child",
+                            "label": "IITB-Monash Research Academy",
+                            "id": "https://ror.org/02r3nf527"
+                        },
+                        {
+                            "type": "child",
+                            "label": "National Trauma Research Institute",
+                            "id": "https://ror.org/048t93218"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Monash University"
+                        },
+                        {
+                            "id": "https://ror.org/02bfwt286"
+                        },
+                        {
+                            "id": "ror.org/02bfwt286"
+                        },
+                        {
+                            "id": "02bfwt286"
+                        },
+                        {
+                            "id": "0000 0004 1936 7857"
+                        },
+                        {
+                            "id": "501100001779"
+                        },
+                        {
+                            "id": "501100001144"
+                        },
+                        {
+                            "id": "501100007917"
+                        },
+                        {
+                            "id": "501100000991"
+                        },
+                        {
+                            "id": "501100001198"
+                        },
+                        {
+                            "id": "501100006532"
+                        },
+                        {
+                            "id": "Q598841"
+                        },
+                        {
+                            "id": "grid.1002.3"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/00rqy9422",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2174003,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -27.495964,
+                                "lng": 153.009627,
+                                "name": "Brisbane"
+                            }
+                        }
+                    ],
+                    "established": 1909,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0000 9320 7537"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001794",
+                                "501100008407",
+                                "501100005268"
+                            ],
+                            "preferred": "501100001794"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q866012"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1003.2"
+                            ],
+                            "preferred": "grid.1003.2"
+                        }
+                    ],
+                    "id": "https://ror.org/00rqy9422",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.uq.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "University of Queensland",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "UQ",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Ipswich Hospital",
+                            "id": "https://ror.org/010g47133"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Ochsner Medical Center",
+                            "id": "https://ror.org/0290qyp66"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Princess Alexandra Hospital",
+                            "id": "https://ror.org/04mqb0968"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Royal Brisbane and Women's Hospital",
+                            "id": "https://ror.org/05p52kj31"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Terrestrial Ecosystem Research Network",
+                            "id": "https://ror.org/03wxseg04"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Children and Families over the Life Course",
+                            "id": "https://ror.org/053mfxd72"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Engineered Quantum Systems",
+                            "id": "https://ror.org/03rtykw43"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Environmental Decisions",
+                            "id": "https://ror.org/01k8nkc73"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Innovations in Peptide and Protein Science",
+                            "id": "https://ror.org/04dxv8v14"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Plant Success in Nature and Agriculture",
+                            "id": "https://ror.org/058xdtn86"
+                        },
+                        {
+                            "type": "child",
+                            "label": "Centre for Quantum Computation and Communication Technology",
+                            "id": "https://ror.org/00rnbty21"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "University of Queensland"
+                        },
+                        {
+                            "name": "UQ"
+                        },
+                        {
+                            "id": "https://ror.org/00rqy9422"
+                        },
+                        {
+                            "id": "ror.org/00rqy9422"
+                        },
+                        {
+                            "id": "00rqy9422"
+                        },
+                        {
+                            "id": "0000 0000 9320 7537"
+                        },
+                        {
+                            "id": "501100001794"
+                        },
+                        {
+                            "id": "501100008407"
+                        },
+                        {
+                            "id": "501100005268"
+                        },
+                        {
+                            "id": "Q866012"
+                        },
+                        {
+                            "id": "grid.1003.2"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/01sf06y89",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2147714,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -33.775259,
+                                "lng": 151.112915,
+                                "name": "Sydney"
+                            }
+                        }
+                    ],
+                    "established": 1964,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 2158 5405"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001230"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q741082"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1004.5"
+                            ],
+                            "preferred": "grid.1004.5"
+                        }
+                    ],
+                    "id": "https://ror.org/01sf06y89",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://mq.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Macquarie University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Sydney Hospital",
+                            "id": "https://ror.org/0402tt118"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Core to Crust Fluid Systems",
+                            "id": "https://ror.org/03nk9pp38"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence in Cognition and its Disorders",
+                            "id": "https://ror.org/044b7p696"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence in Synthetic Biology",
+                            "id": "https://ror.org/01p2zg436"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Macquarie University"
+                        },
+                        {
+                            "id": "https://ror.org/01sf06y89"
+                        },
+                        {
+                            "id": "ror.org/01sf06y89"
+                        },
+                        {
+                            "id": "01sf06y89"
+                        },
+                        {
+                            "id": "0000 0001 2158 5405"
+                        },
+                        {
+                            "id": "501100001230"
+                        },
+                        {
+                            "id": "Q741082"
+                        },
+                        {
+                            "id": "grid.1004.5"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/00jtmb277",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2171507,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -34.405147,
+                                "lng": 150.878387,
+                                "name": "Wollongong"
+                            }
+                        }
+                    ],
+                    "established": 1951,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0486 528X"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001777"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1350021"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1007.6"
+                            ],
+                            "preferred": "grid.1007.6"
+                        }
+                    ],
+                    "id": "https://ror.org/00jtmb277",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://www.uow.edu.au/index.html"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "University of Wollongong",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "Wollongong University",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "UOW",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Shellharbour Hospital",
+                            "id": "https://ror.org/01dvjey82"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Shoalhaven District Memorial Hospital",
+                            "id": "https://ror.org/04p6jw654"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Wollongong Hospital",
+                            "id": "https://ror.org/02d0e3p67"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Electromaterials Science",
+                            "id": "https://ror.org/020g3wn65"
+                        },
+                        {
+                            "type": "child",
+                            "label": "University of Wollongong in Dubai",
+                            "id": "https://ror.org/0447ajy94"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "University of Wollongong"
+                        },
+                        {
+                            "name": "Wollongong University"
+                        },
+                        {
+                            "name": "UOW"
+                        },
+                        {
+                            "id": "https://ror.org/00jtmb277"
+                        },
+                        {
+                            "id": "ror.org/00jtmb277"
+                        },
+                        {
+                            "id": "00jtmb277"
+                        },
+                        {
+                            "id": "0000 0004 0486 528X"
+                        },
+                        {
+                            "id": "501100001777"
+                        },
+                        {
+                            "id": "Q1350021"
+                        },
+                        {
+                            "id": "grid.1007.6"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/01nfmeh72",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2163355,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -42.902093,
+                                "lng": 147.332497,
+                                "name": "Hobart"
+                            }
+                        }
+                    ],
+                    "established": 1890,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 1936 826X"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001249",
+                                "501100001038"
+                            ],
+                            "preferred": "501100001249"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q962011"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1009.8"
+                            ],
+                            "preferred": "grid.1009.8"
+                        }
+                    ],
+                    "id": "https://ror.org/01nfmeh72",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.utas.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "University of Tasmania",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "UTAS",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Australian Maritime College",
+                            "id": "https://ror.org/05fv9c840"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Integrated Marine Observing System",
+                            "id": "https://ror.org/010x3gp67"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Launceston General Hospital",
+                            "id": "https://ror.org/04ymr6s03"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Royal Hobart Hospital",
+                            "id": "https://ror.org/031382m70"
+                        },
+                        {
+                            "type": "child",
+                            "label": "Centre for Marine Socioecology",
+                            "id": "https://ror.org/02xhx4j26"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "University of Tasmania"
+                        },
+                        {
+                            "name": "UTAS"
+                        },
+                        {
+                            "id": "https://ror.org/01nfmeh72"
+                        },
+                        {
+                            "id": "ror.org/01nfmeh72"
+                        },
+                        {
+                            "id": "01nfmeh72"
+                        },
+                        {
+                            "id": "0000 0004 1936 826X"
+                        },
+                        {
+                            "id": "501100001249"
+                        },
+                        {
+                            "id": "501100001038"
+                        },
+                        {
+                            "id": "Q962011"
+                        },
+                        {
+                            "id": "grid.1009.8"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/01kpzv902",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2078025,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -35.024038,
+                                "lng": 138.572615,
+                                "name": "Adelaide"
+                            }
+                        }
+                    ],
+                    "established": 1966,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0367 2697"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001785",
+                                "501100003133"
+                            ],
+                            "preferred": "501100001785"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q15575"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1014.4"
+                            ],
+                            "preferred": "grid.1014.4"
+                        }
+                    ],
+                    "id": "https://ror.org/01kpzv902",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.flinders.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Flinders University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "Flinders University of South Australia",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Centre for Remote Health",
+                            "id": "https://ror.org/04tn8zp39"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Flinders Medical Centre",
+                            "id": "https://ror.org/020aczd56"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Royal Darwin Hospital",
+                            "id": "https://ror.org/04jq72f57"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Women's and Children's Hospital",
+                            "id": "https://ror.org/03kwrfk72"
+                        },
+                        {
+                            "type": "child",
+                            "label": "National Centre for Groundwater Research and Training",
+                            "id": "https://ror.org/0087v5134"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Flinders University"
+                        },
+                        {
+                            "name": "Flinders University of South Australia"
+                        },
+                        {
+                            "id": "https://ror.org/01kpzv902"
+                        },
+                        {
+                            "id": "ror.org/01kpzv902"
+                        },
+                        {
+                            "id": "01kpzv902"
+                        },
+                        {
+                            "id": "0000 0004 0367 2697"
+                        },
+                        {
+                            "id": "501100001785"
+                        },
+                        {
+                            "id": "501100003133"
+                        },
+                        {
+                            "id": "Q15575"
+                        },
+                        {
+                            "id": "grid.1014.4"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/04ttjf776",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2158177,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.806748,
+                                "lng": 144.962573,
+                                "name": "Melbourne"
+                            }
+                        }
+                    ],
+                    "established": 1887,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 2163 3550"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001780",
+                                "100008690",
+                                "100010552"
+                            ],
+                            "preferred": "501100001780"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1057890"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1017.7"
+                            ],
+                            "preferred": "grid.1017.7"
+                        }
+                    ],
+                    "id": "https://ror.org/04ttjf776",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://www.rmit.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "RMIT University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "Royal Melbourne Institute of Technology University",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "RMIT",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Austin Hospital",
+                            "id": "https://ror.org/010mv7n52"
+                        },
+                        {
+                            "type": "child",
+                            "label": "ARC Centre of Excellence for Automated Decision-Making and Society",
+                            "id": "https://ror.org/039p7nx39"
+                        },
+                        {
+                            "type": "child",
+                            "label": "RMIT Europe",
+                            "id": "https://ror.org/03m3ca021"
+                        },
+                        {
+                            "type": "child",
+                            "label": "RMIT Vietnam",
+                            "id": "https://ror.org/004axh929"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "RMIT University"
+                        },
+                        {
+                            "name": "Royal Melbourne Institute of Technology University"
+                        },
+                        {
+                            "name": "RMIT"
+                        },
+                        {
+                            "id": "https://ror.org/04ttjf776"
+                        },
+                        {
+                            "id": "ror.org/04ttjf776"
+                        },
+                        {
+                            "id": "04ttjf776"
+                        },
+                        {
+                            "id": "0000 0001 2163 3550"
+                        },
+                        {
+                            "id": "501100001780"
+                        },
+                        {
+                            "id": "100008690"
+                        },
+                        {
+                            "id": "100010552"
+                        },
+                        {
+                            "id": "Q1057890"
+                        },
+                        {
+                            "id": "grid.1017.7"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/01rxfrp27",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2158177,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.72179,
+                                "lng": 145.047909,
+                                "name": "Melbourne"
+                            }
+                        }
+                    ],
+                    "established": 1964,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 2342 0938"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001215"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1478723"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1018.8"
+                            ],
+                            "preferred": "grid.1018.8"
+                        }
+                    ],
+                    "id": "https://ror.org/01rxfrp27",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.latrobe.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "La Trobe University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Austin Hospital",
+                            "id": "https://ror.org/010mv7n52"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Box Hill Hospital",
+                            "id": "https://ror.org/0484pjq71"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Royal Women's Hospital",
+                            "id": "https://ror.org/03grnna41"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "La Trobe University"
+                        },
+                        {
+                            "id": "https://ror.org/01rxfrp27"
+                        },
+                        {
+                            "id": "ror.org/01rxfrp27"
+                        },
+                        {
+                            "id": "01rxfrp27"
+                        },
+                        {
+                            "id": "0000 0001 2342 0938"
+                        },
+                        {
+                            "id": "501100001215"
+                        },
+                        {
+                            "id": "Q1478723"
+                        },
+                        {
+                            "id": "grid.1018.8"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/04j757h98",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2158177,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.794167,
+                                "lng": 144.9,
+                                "name": "Melbourne"
+                            }
+                        }
+                    ],
+                    "established": 1916,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 0396 9544"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001784"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q180514"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1019.9"
+                            ],
+                            "preferred": "grid.1019.9"
+                        }
+                    ],
+                    "id": "https://ror.org/04j757h98",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.vu.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Victoria University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "VU",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Victoria University"
+                        },
+                        {
+                            "name": "VU"
+                        },
+                        {
+                            "id": "https://ror.org/04j757h98"
+                        },
+                        {
+                            "id": "ror.org/04j757h98"
+                        },
+                        {
+                            "id": "04j757h98"
+                        },
+                        {
+                            "id": "0000 0001 0396 9544"
+                        },
+                        {
+                            "id": "501100001784"
+                        },
+                        {
+                            "id": "Q180514"
+                        },
+                        {
+                            "id": "grid.1019.9"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/04r659a56",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2177671,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -30.489949,
+                                "lng": 151.641018,
+                                "name": "Armidale"
+                            }
+                        }
+                    ],
+                    "established": 1938,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 1936 7371"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001772"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1814435"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1020.3"
+                            ],
+                            "preferred": "grid.1020.3"
+                        }
+                    ],
+                    "id": "https://ror.org/04r659a56",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.une.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "University of New England",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "New England University College of the University of Sydney",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "UNE",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Gosford Hospital",
+                            "id": "https://ror.org/01jg3a168"
+                        },
+                        {
+                            "type": "child",
+                            "label": "UNE Partnerships (Australia)",
+                            "id": "https://ror.org/0238awh09"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "University of New England"
+                        },
+                        {
+                            "name": "New England University College of the University of Sydney"
+                        },
+                        {
+                            "name": "UNE"
+                        },
+                        {
+                            "id": "https://ror.org/04r659a56"
+                        },
+                        {
+                            "id": "ror.org/04r659a56"
+                        },
+                        {
+                            "id": "04r659a56"
+                        },
+                        {
+                            "id": "0000 0004 1936 7371"
+                        },
+                        {
+                            "id": "501100001772"
+                        },
+                        {
+                            "id": "Q1814435"
+                        },
+                        {
+                            "id": "grid.1020.3"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/02czsnj07",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 7932622,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.8493578,
+                                "lng": 145.1127097,
+                                "name": "Burwood"
+                            }
+                        }
+                    ],
+                    "established": 1974,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 0526 7079"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001778",
+                                "501100003028"
+                            ],
+                            "preferred": "501100001778"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1180978",
+                                "Q21973208"
+                            ],
+                            "preferred": "Q1180978"
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1021.2"
+                            ],
+                            "preferred": "grid.1021.2"
+                        }
+                    ],
+                    "id": "https://ror.org/02czsnj07",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.deakin.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Deakin University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Box Hill Hospital",
+                            "id": "https://ror.org/0484pjq71"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Geelong Hospital",
+                            "id": "https://ror.org/00jrpxe15"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Deakin University"
+                        },
+                        {
+                            "id": "https://ror.org/02czsnj07"
+                        },
+                        {
+                            "id": "ror.org/02czsnj07"
+                        },
+                        {
+                            "id": "02czsnj07"
+                        },
+                        {
+                            "id": "0000 0001 0526 7079"
+                        },
+                        {
+                            "id": "501100001778"
+                        },
+                        {
+                            "id": "501100003028"
+                        },
+                        {
+                            "id": "Q1180978"
+                        },
+                        {
+                            "id": "Q21973208"
+                        },
+                        {
+                            "id": "grid.1021.2"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/02sc3r913",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2174003,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -27.470609,
+                                "lng": 153.022851,
+                                "name": "Brisbane"
+                            }
+                        }
+                    ],
+                    "established": 1971,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0437 5432"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001791",
+                                "100008763",
+                                "501100003450"
+                            ],
+                            "preferred": "501100001791"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1202292"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1022.1"
+                            ],
+                            "preferred": "grid.1022.1"
+                        }
+                    ],
+                    "id": "https://ror.org/02sc3r913",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.griffith.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Griffith University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Gold Coast Hospital",
+                            "id": "https://ror.org/05eq01d13"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Robina Hospital",
+                            "id": "https://ror.org/0257s2812"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Sunshine Coast University Hospital",
+                            "id": "https://ror.org/017ay4a94"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Griffith University"
+                        },
+                        {
+                            "id": "https://ror.org/02sc3r913"
+                        },
+                        {
+                            "id": "ror.org/02sc3r913"
+                        },
+                        {
+                            "id": "02sc3r913"
+                        },
+                        {
+                            "id": "0000 0004 0437 5432"
+                        },
+                        {
+                            "id": "501100001791"
+                        },
+                        {
+                            "id": "100008763"
+                        },
+                        {
+                            "id": "501100003450"
+                        },
+                        {
+                            "id": "Q1202292"
+                        },
+                        {
+                            "id": "grid.1022.1"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/023q4bk22",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2151437,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -23.322705,
+                                "lng": 150.520802,
+                                "name": "Rockhampton"
+                            }
+                        }
+                    ],
+                    "established": 1967,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 2193 0854"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001790"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1053985"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1023.0"
+                            ],
+                            "preferred": "grid.1023.0"
+                        }
+                    ],
+                    "id": "https://ror.org/023q4bk22",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://www.cqu.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Central Queensland University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "CQUniversity",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "CQU",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Central Queensland University"
+                        },
+                        {
+                            "name": "CQUniversity"
+                        },
+                        {
+                            "name": "CQU"
+                        },
+                        {
+                            "id": "https://ror.org/023q4bk22"
+                        },
+                        {
+                            "id": "ror.org/023q4bk22"
+                        },
+                        {
+                            "id": "023q4bk22"
+                        },
+                        {
+                            "id": "0000 0001 2193 0854"
+                        },
+                        {
+                            "id": "501100001790"
+                        },
+                        {
+                            "id": "Q1053985"
+                        },
+                        {
+                            "id": "grid.1023.0"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/01p93h210",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2078025,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -34.92049,
+                                "lng": 138.60678,
+                                "name": "Adelaide"
+                            }
+                        }
+                    ],
+                    "established": 1991,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0000 8994 5086"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001787"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q15576"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1026.5"
+                            ],
+                            "preferred": "grid.1026.5"
+                        }
+                    ],
+                    "id": "https://ror.org/01p93h210",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://www.unisa.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "University of South Australia",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "UniSA",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Hanson Institute",
+                            "id": "https://ror.org/047kx5j58"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Lyell McEwin Hospital",
+                            "id": "https://ror.org/00pjm1054"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Women's and Children's Hospital",
+                            "id": "https://ror.org/03kwrfk72"
+                        },
+                        {
+                            "type": "child",
+                            "label": "Centre for Cancer Biology",
+                            "id": "https://ror.org/03yg7hz06"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "University of South Australia"
+                        },
+                        {
+                            "name": "UniSA"
+                        },
+                        {
+                            "id": "https://ror.org/01p93h210"
+                        },
+                        {
+                            "id": "ror.org/01p93h210"
+                        },
+                        {
+                            "id": "01p93h210"
+                        },
+                        {
+                            "id": "0000 0000 8994 5086"
+                        },
+                        {
+                            "id": "501100001787"
+                        },
+                        {
+                            "id": "Q15576"
+                        },
+                        {
+                            "id": "grid.1026.5"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/031rekg67",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2158177,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.821111,
+                                "lng": 145.038333,
+                                "name": "Melbourne"
+                            }
+                        }
+                    ],
+                    "established": 1908,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0409 2862"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001781",
+                                "501100007916",
+                                "501100001135"
+                            ],
+                            "preferred": "501100001781"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q787234"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1027.4"
+                            ],
+                            "preferred": "grid.1027.4"
+                        }
+                    ],
+                    "id": "https://ror.org/031rekg67",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.swinburne.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Swinburne University of Technology",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "Swinburne",
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "child",
+                            "label": "Swinburne University of Technology Sarawak Campus",
+                            "id": "https://ror.org/014cjmc76"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Swinburne University of Technology"
+                        },
+                        {
+                            "name": "Swinburne"
+                        },
+                        {
+                            "id": "https://ror.org/031rekg67"
+                        },
+                        {
+                            "id": "ror.org/031rekg67"
+                        },
+                        {
+                            "id": "031rekg67"
+                        },
+                        {
+                            "id": "0000 0004 0409 2862"
+                        },
+                        {
+                            "id": "501100001781"
+                        },
+                        {
+                            "id": "501100007916"
+                        },
+                        {
+                            "id": "501100001135"
+                        },
+                        {
+                            "id": "Q787234"
+                        },
+                        {
+                            "id": "grid.1027.4"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/006jxzx88",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2165087,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -28.073983,
+                                "lng": 153.416489,
+                                "name": "Gold Coast"
+                            }
+                        }
+                    ],
+                    "established": 1987,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0405 3820"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001789"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q892188"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1033.1"
+                            ],
+                            "preferred": "grid.1033.1"
+                        }
+                    ],
+                    "id": "https://ror.org/006jxzx88",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://bond.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Bond University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Gold Coast Hospital",
+                            "id": "https://ror.org/05eq01d13"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Robina Hospital",
+                            "id": "https://ror.org/0257s2812"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Bond University"
+                        },
+                        {
+                            "id": "https://ror.org/006jxzx88"
+                        },
+                        {
+                            "id": "ror.org/006jxzx88"
+                        },
+                        {
+                            "id": "006jxzx88"
+                        },
+                        {
+                            "id": "0000 0004 0405 3820"
+                        },
+                        {
+                            "id": "501100001789"
+                        },
+                        {
+                            "id": "Q892188"
+                        },
+                        {
+                            "id": "grid.1033.1"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/00wfvh315",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2176632,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -33.4300248,
+                                "lng": 149.5655646,
+                                "name": "Bathurst"
+                            }
+                        }
+                    ],
+                    "established": 1989,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0368 0777"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001769"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1066188"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1037.5"
+                            ],
+                            "preferred": "grid.1037.5"
+                        }
+                    ],
+                    "id": "https://ror.org/00wfvh315",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.csu.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Charles Sturt University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "CSU",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Wagga Wagga Base Hospital",
+                            "id": "https://ror.org/05newpx76"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Charles Sturt University"
+                        },
+                        {
+                            "name": "CSU"
+                        },
+                        {
+                            "id": "https://ror.org/00wfvh315"
+                        },
+                        {
+                            "id": "ror.org/00wfvh315"
+                        },
+                        {
+                            "id": "00wfvh315"
+                        },
+                        {
+                            "id": "0000 0004 0368 0777"
+                        },
+                        {
+                            "id": "501100001769"
+                        },
+                        {
+                            "id": "Q1066188"
+                        },
+                        {
+                            "id": "grid.1037.5"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/04s1nv328",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2172517,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -35.238889,
+                                "lng": 149.0875,
+                                "name": "Canberra"
+                            }
+                        }
+                    ],
+                    "established": 1967,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0004 0385 7472"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001802"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1640648"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1039.b"
+                            ],
+                            "preferred": "grid.1039.b"
+                        }
+                    ],
+                    "id": "https://ror.org/04s1nv328",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.canberra.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "University of Canberra",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "UC",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Calvary Hospital",
+                            "id": "https://ror.org/041c7s516"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Canberra Hospital",
+                            "id": "https://ror.org/04h7nbn38"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "University of Canberra"
+                        },
+                        {
+                            "name": "UC"
+                        },
+                        {
+                            "id": "https://ror.org/04s1nv328"
+                        },
+                        {
+                            "id": "ror.org/04s1nv328"
+                        },
+                        {
+                            "id": "04s1nv328"
+                        },
+                        {
+                            "id": "0000 0004 0385 7472"
+                        },
+                        {
+                            "id": "501100001802"
+                        },
+                        {
+                            "id": "Q1640648"
+                        },
+                        {
+                            "id": "grid.1039.b"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/05qbzwv83",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2177091,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -37.5761,
+                                "lng": 143.846,
+                                "name": "Ballarat"
+                            }
+                        }
+                    ],
+                    "established": 1994,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 1091 4859"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100006643",
+                                "501100001783"
+                            ],
+                            "preferred": "501100006643"
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1121200"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1040.5"
+                            ],
+                            "preferred": "grid.1040.5"
+                        }
+                    ],
+                    "id": "https://ror.org/05qbzwv83",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://federation.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Federation University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Federation University"
+                        },
+                        {
+                            "id": "https://ror.org/05qbzwv83"
+                        },
+                        {
+                            "id": "ror.org/05qbzwv83"
+                        },
+                        {
+                            "id": "05qbzwv83"
+                        },
+                        {
+                            "id": "0000 0001 1091 4859"
+                        },
+                        {
+                            "id": "501100006643"
+                        },
+                        {
+                            "id": "501100001783"
+                        },
+                        {
+                            "id": "Q1121200"
+                        },
+                        {
+                            "id": "grid.1040.5"
+                        }
+                    ]
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/048zcaj52",
+                "_score": 0.0,
+                "_source": {
+                    "locations": [
+                        {
+                            "geonames_id": 2073124,
+                            "geonames_details": {
+                                "country_code": "AU",
+                                "country_name": "Australia",
+                                "lat": -12.3716524297692,
+                                "lng": 130.868711471558,
+                                "name": "Darwin"
+                            }
+                        }
+                    ],
+                    "established": 2003,
+                    "external_ids": [
+                        {
+                            "type": "isni",
+                            "all": [
+                                "0000 0001 2157 559X"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "fundref",
+                            "all": [
+                                "501100001803"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "wikidata",
+                            "all": [
+                                "Q1064071"
+                            ],
+                            "preferred": null
+                        },
+                        {
+                            "type": "grid",
+                            "all": [
+                                "grid.1043.6"
+                            ],
+                            "preferred": "grid.1043.6"
+                        }
+                    ],
+                    "id": "https://ror.org/048zcaj52",
+                    "domains": [],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "http://www.cdu.edu.au/"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "value": "Charles Darwin University",
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null
+                        },
+                        {
+                            "value": "CDU",
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "type": "related",
+                            "label": "Centre for Remote Health",
+                            "id": "https://ror.org/04tn8zp39"
+                        },
+                        {
+                            "type": "related",
+                            "label": "Royal Darwin Hospital",
+                            "id": "https://ror.org/04jq72f57"
+                        }
+                    ],
+                    "status": "active",
+                    "types": [
+                        "education"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2023-07-28",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2023-07-28",
+                            "schema_version": "2.0"
+                        }
+                    },
+                    "names_ids": [
+                        {
+                            "name": "Charles Darwin University"
+                        },
+                        {
+                            "name": "CDU"
+                        },
+                        {
+                            "id": "https://ror.org/048zcaj52"
+                        },
+                        {
+                            "id": "ror.org/048zcaj52"
+                        },
+                        {
+                            "id": "048zcaj52"
+                        },
+                        {
+                            "id": "0000 0001 2157 559X"
+                        },
+                        {
+                            "id": "501100001803"
+                        },
+                        {
+                            "id": "Q1064071"
+                        },
+                        {
+                            "id": "grid.1043.6"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "aggregations": {
+        "types": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "company",
+                    "doc_count": 29745
+                },
+                {
+                    "key": "education",
+                    "doc_count": 20237
+                },
+                {
+                    "key": "nonprofit",
+                    "doc_count": 14019
+                },
+                {
+                    "key": "healthcare",
+                    "doc_count": 13080
+                },
+                {
+                    "key": "facility",
+                    "doc_count": 9670
+                },
+                {
+                    "key": "other",
+                    "doc_count": 8290
+                },
+                {
+                    "key": "government",
+                    "doc_count": 6345
+                },
+                {
+                    "key": "archive",
+                    "doc_count": 2946
+                }
+            ]
+        },
+        "statuses": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "active",
+                    "doc_count": 104332
+                }
+            ]
+        },
+        "countries": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": []
+        }
+    }
+}
