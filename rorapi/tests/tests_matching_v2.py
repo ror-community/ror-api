@@ -180,6 +180,9 @@ class MatchedOrganizationTestCase(SimpleTestCase):
 
 
 class SimilarityTestCase(SimpleTestCase):
+
+    V2_VERSION = 'v2'
+
     def test_get_similarity(self):
         self.assertEqual(
             get_similarity('University of Excellence',
@@ -217,149 +220,167 @@ class SimilarityTestCase(SimpleTestCase):
 
     def test_get_score(self):
         empty = {
-            'name': '',
-            'labels': [],
-            'aliases': [],
-            'acronyms': [],
-            'country': {
-                'country_code': ''
-            }
+            'names': [{
+                'value': '',
+                'types': ['ror_display']
+
+            }],
+            'locations': [{
+                'geonames_details': {
+                    'country_code': ''
+                }
+            }]
         }
         self.assertEqual(
-            get_score(AttrDict(dict(empty, name='University of Excellence')),
-                      'University of Excellence', None), 1)
+            get_score(AttrDict(dict(empty, names=[{'value': 'University of Excellence', 'types': ['ror_display']}])),
+                      'University of Excellence', None, self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University of Excellence',
-                         country={'country_code': 'XY'})),
-                'University of Excellence', ['US-PR']), 0)
+                         names=[{'value': 'University of Excellence', 'types': ['ror_display']}],
+                         locations=[{'geonames_details': {'country_code': 'XY'}}])),
+                'University of Excellence', ['US-PR'], self.V2_VERSION), 0)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University of Excellence',
-                         country={'country_code': 'PR'})),
-                'University of Excellence', ['US-PR']), 1)
+                         names=[{'value': 'University of Excellence', 'types': ['ror_display']}],
+                         locations=[{'geonames_details': {'country_code': 'PR'}}])),
+                'University of Excellence', ['US-PR'], self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
-                    dict(empty, labels=[{
-                        'label': 'University of Excellence'
-                    }])), 'University of Excellence', None), 1)
-        self.assertEqual(
-            get_score(
-                AttrDict(
-                    dict(empty,
-                         labels=[{
-                             'label': 'Excellence U'
-                         }, {
-                             'label': 'University of Excellence'
-                         }])), 'University of Excellence', None), 1)
-        self.assertEqual(
-            get_score(
-                AttrDict(dict(empty, aliases=['University of Excellence'])),
-                'University of Excellence', None), 1)
+                    dict(empty, names=[{'value': 'University of Excellence', 'types': ['label']}]
+                    )), 'University of Excellence', None, self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         aliases=['Excellence U',
-                                  'University of Excellence'])),
-                'University of Excellence', None), 1)
+                         names=[
+                                {'value': 'University of Excellence', 'types': ['ror_display']},
+                                {'value': 'Excellence U', 'types': ['label']}
+                            ]
+                         )), 'University of Excellence', None, self.V2_VERSION), 1)
         self.assertEqual(
-            get_score(AttrDict(dict(empty, acronyms=['UEXC'])),
-                      'University of Excellence', None), 0)
-        self.assertEqual(
-            get_score(AttrDict(dict(empty, acronyms=['UEXC'])), 'UEXC', None),
-            0.9)
+            get_score(
+                AttrDict(dict(empty, names=[{'value': 'University of Excellence', 'types': ['alias']}])),
+                'University of Excellence', None, self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         acronyms=['UEXC'],
-                         country={'country_code': 'PR'})), 'UEXC', ['US-PR']),
+                         names=[
+                                {'value': 'University of Excellence', 'types': ['alias']},
+                                {'value': 'Excellence U', 'types': ['alias']}
+                            ])),
+                'University of Excellence', None, self.V2_VERSION), 1)
+        self.assertEqual(
+            get_score(AttrDict(dict(empty, names=[
+                                            {'value': 'UEXC', 'types': ['acronym']},
+                                            {'value': '', 'types': ['ror_display']}])),
+                      'University of Excellence', None, self.V2_VERSION), 0)
+        self.assertEqual(
+            get_score(AttrDict(dict(empty, names=[
+                                            {'value': 'UEXC', 'types': ['acronym']},
+                                            {'value': '', 'types': ['ror_display']}])),
+                        'UEXC', None, self.V2_VERSION),
+            .9)
+        self.assertEqual(
+            get_score(
+                AttrDict(
+                    dict(empty,
+                         names=[
+                            {'value': 'UEXC', 'types': ['acronym']},
+                            {'value': '', 'types': ['ror_display']}],
+                         locations=[{'geonames_details': {'country_code': 'PR'}}])), 'UEXC', ['US-PR'], self.V2_VERSION),
             1)
 
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University of Excellence',
-                         labels=[{
-                             'label': 'Excellence U'
-                         }, {
-                             'label': 'University Excellence'
-                         }],
-                         aliases=['Excellence U', 'University Excellence'],
-                         acronyms=['UEXC'])), 'University of Excellence',
-                None), 1)
+                         names=[
+                                {'value': 'University of Excellence', 'types': ['ror_display']},
+                                {'value': 'Excellence U', 'types': ['label']},
+                                {'value': 'University Excellence', 'types': ['label']},
+                                {'value': 'UEXC', 'types': ['acronym']},
+                                {'value': 'Excellence U', 'types': ['alias']},
+                                {'value': 'University Excellence', 'types': ['alias']}
+                            ])), 'University of Excellence',
+                None, self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University Excellence',
-                         labels=[{
-                             'label': 'Excellence U'
-                         }, {
-                             'label': 'University of Excellence'
-                         }],
-                         aliases=['Excellence U', 'University Excellence'],
-                         acronyms=['UEXC'])), 'University of Excellence',
-                None), 1)
+                         names=[
+                                {'value': 'University Excellence', 'types': ['ror_display']},
+                                {'value': 'Excellence U', 'types': ['label']},
+                                {'value': 'University of Excellence', 'types': ['label']},
+                                {'value': 'UEXC', 'types': ['acronym']},
+                                {'value': 'Excellence U', 'types': ['alias']},
+                                {'value': 'University Excellence', 'types': ['alias']}
+                            ])), 'University of Excellence',
+                None, self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University Excellence',
-                         labels=[{
-                             'label': 'Excellence U'
-                         }, {
-                             'label': 'University Excellence'
-                         }],
-                         aliases=['Excellence U', 'University of Excellence'],
-                         acronyms=['UEXC'])), 'University of Excellence',
-                None), 1)
+                         names=[
+                                {'value': 'University Excellence', 'types': ['ror_display']},
+                                {'value': 'Excellence U', 'types': ['label']},
+                                {'value': 'University Excellence', 'types': ['label']},
+                                {'value': 'UEXC', 'types': ['acronym']},
+                                {'value': 'Excellence U', 'types': ['alias']},
+                                {'value': 'University of Excellence', 'types': ['alias']}
+                            ])), 'University of Excellence',
+                None, self.V2_VERSION), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University of Brilliance',
-                         labels=[{
-                             'label': 'University of Brilliance'
-                         }],
-                         aliases=['Brilliance U', 'University Brilliance'],
-                         acronyms=['UEXC'])), 'UEXC', None), 0.9)
+                        names=[
+                                {'value': 'University of Brilliance', 'types': ['ror_display']},
+                                {'value': 'University of Brilliance', 'types': ['label']},
+                                {'value': 'UEXC', 'types': ['acronym']},
+                                {'value': 'Brilliance U', 'types': ['alias']},
+                                {'value': 'University Brilliance', 'types': ['alias']}
+                            ])), 'UEXC',
+                None, self.V2_VERSION), .9)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University of Brilliance',
-                         labels=[{
-                             'label': 'University of Brilliance'
-                         }],
-                         aliases=['Brilliance U', 'University Brilliance'],
-                         acronyms=['UEXC'],
-                         country={'country_code': 'PR'})), 'UEXC', ['US-PR']),
+                        names=[
+                            {'value': 'University of Brilliance', 'types': ['ror_display']},
+                            {'value': 'University of Brilliance', 'types': ['label']},
+                            {'value': 'UEXC', 'types': ['acronym']},
+                            {'value': 'Brilliance U', 'types': ['alias']},
+                            {'value': 'University Brilliance', 'types': ['alias']}
+                        ],
+                        locations=[{'geonames_details': {'country_code': 'PR'}}])), 'UEXC', ['US-PR'], self.V2_VERSION),
             1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
-                         name='University of Brilliance',
-                         labels=[{
-                             'label': 'University of Brilliance'
-                         }],
-                         aliases=['Brilliance U', 'University Brilliance'],
-                         acronyms=['UEXC'],
-                         country={'country_code': 'AV'})), 'UEXC', ['US-PR']),
+                        names=[
+                            {'value': 'University of Brilliance', 'types': ['ror_display']},
+                            {'value': 'University of Brilliance', 'types': ['label']},
+                            {'value': 'UEXC', 'types': ['acronym']},
+                            {'value': 'Brilliance U', 'types': ['alias']},
+                            {'value': 'University Brilliance', 'types': ['alias']}
+                        ],
+                         locations=[{'geonames_details': {'country_code': 'AV'}}])), 'UEXC', ['US-PR'], self.V2_VERSION),
             0)
 
 
 class TestMatchingNode(SimpleTestCase):
+
+    V2_VERSION = 'v2'
+
     def test_init(self):
-        empty = MatchingNode('text')
+        empty = MatchingNode('text', self.V2_VERSION)
         self.assertEqual(empty.text, 'text')
         self.assertTrue(empty.matched is None)
 
@@ -400,20 +421,23 @@ class TestCheckDoNotMatch(SimpleTestCase):
         self.assertFalse(check_do_not_match('university of excellence'))
 
 class TestMatchingGraph(SimpleTestCase):
+
+    V2_VERSION = 'v2'
+
     def test_init(self):
-        graph = MatchingGraph('University of Excellence')
+        graph = MatchingGraph('University of Excellence', self.V2_VERSION)
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text, 'University of Excellence')
         self.assertEqual(graph.nodes[1].text, 'University of Excellence')
 
         graph = \
-            MatchingGraph('University of Excellence and Creativity Institute')
+            MatchingGraph('University of Excellence and Creativity Institute', self.V2_VERSION)
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text, 'University of Excellence and Creativity Institute')
         self.assertEqual(graph.nodes[1].text, 'University of Excellence and Creativity Institute')
 
         graph = \
-            MatchingGraph('University of Excellence & Creativity Institute')
+            MatchingGraph('University of Excellence & Creativity Institute', self.V2_VERSION)
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text,
                          'University of Excellence & Creativity Institute')
@@ -421,14 +445,14 @@ class TestMatchingGraph(SimpleTestCase):
                          'University of Excellence & Creativity Institute')
 
         graph = MatchingGraph(
-            'University of Excellence &amp; Creativity Institute')
+            'University of Excellence &amp; Creativity Institute', self.V2_VERSION)
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text,
                          'University of Excellence & Creativity Institute')
         self.assertEqual(graph.nodes[1].text,
                          'University of Excellence & Creativity Institute')
 
-        graph = MatchingGraph('University of Excellence, Creativity Institute')
+        graph = MatchingGraph('University of Excellence, Creativity Institute', self.V2_VERSION)
         self.assertEqual(len(graph.nodes), 3)
         self.assertEqual(graph.nodes[0].text,
                          'University of Excellence Creativity Institute')
@@ -438,7 +462,7 @@ class TestMatchingGraph(SimpleTestCase):
 
         graph = MatchingGraph('School of Brilliance, University of ' +
                               'Excellence and Perseverance; 21-100 ' +
-                              'Gallifrey: Outerspace')
+                              'Gallifrey: Outerspace', self.V2_VERSION)
         self.assertEqual(len(graph.nodes), 5)
         self.assertEqual(graph.nodes[0].text, 'School of Brilliance University of Excellence and Perseverance 21 100 Gallifrey Outerspace')
         self.assertEqual(graph.nodes[1].text, 'School of Brilliance')
@@ -447,7 +471,7 @@ class TestMatchingGraph(SimpleTestCase):
         self.assertEqual(graph.nodes[4].text, 'Outerspace')
 
     def test_remove_low_scores(self):
-        graph = MatchingGraph('University of Excellence, Creativity Institute')
+        graph = MatchingGraph('University of Excellence, Creativity Institute', self.V2_VERSION)
         graph.nodes[0].matched = MatchedOrganization(substring='s0',
                                                      score=10,
                                                      matching_type='q',

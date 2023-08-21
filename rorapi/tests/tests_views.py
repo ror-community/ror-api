@@ -24,7 +24,7 @@ class ViewListTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'list'})
-        request = factory.get('/organizations')
+        request = factory.get('v1/organizations')
         response = view(request)
         response.render()
         organizations = json.loads(response.content.decode('utf-8'))
@@ -57,7 +57,7 @@ class ViewListTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'list'})
-        request = factory.get('/organizations?query=query&illegal=whatever&' +
+        request = factory.get('v1/organizations?query=query&illegal=whatever&' +
                               'filter=fi1:e,types:F,f3,field2:44&another=3&' +
                               'page=third')
         response = view(request)
@@ -73,11 +73,8 @@ class ViewListTestCase(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        response = client.get('/organizations?query.name=query')
-        self.assertRedirects(response, '/organizations?query=query')
-
-        response = client.get('/organizations?query.names=query')
-        self.assertRedirects(response, '/organizations?query=query')
+        response = client.get('v1/organizations?query.names=query')
+        self.assertRedirects(response, 'v1/organizations?query=query')
 
 class ViewRetrievalTestCase(SimpleTestCase):
     def setUp(self):
@@ -98,7 +95,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('/organizations/https://ror.org/02atag894')
+        request = factory.get('v1/organizations/https://ror.org/02atag894')
         response = view(request, pk='https://ror.org/02atag894')
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
@@ -113,7 +110,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
                              self.test_data_empty['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('/organizations/https://ror.org/052gg0110')
+        request = factory.get('v1/organizations/https://ror.org/052gg0110')
         response = view(request, pk='https://ror.org/052gg0110')
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
@@ -130,7 +127,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
                              self.test_data_empty['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('/organizations/https://ror.org/abc123')
+        request = factory.get('v1/organizations/https://ror.org/abc123')
         response = view(request, pk='https://ror.org/abc123')
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
@@ -236,7 +233,7 @@ class HeartbeatViewTestCase(SimpleTestCase):
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_generateid_success(self, search_mock):
+    def test_heartbeat_success(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
         response = self.client.get('/heartbeat')

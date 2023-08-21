@@ -334,10 +334,11 @@ def build_search_query(params, version):
     return qb.get_query()
 
 
-def build_retrieve_query(ror_id):
+def build_retrieve_query(ror_id, version):
     """Builds retrieval query"""
+    print(version)
 
-    qb = ESQueryBuilder()
+    qb = ESQueryBuilder(version)
     qb.add_id_query(ror_id)
     return qb.get_query()
 
@@ -383,7 +384,7 @@ def retrieve_organization(ror_id, version):
             ),
             None,
         )
-    search = build_retrieve_query(ror_id)
+    search = build_retrieve_query(ror_id, version)
     results = search.execute()
     total = results.hits.total.value
     if total > 0:
