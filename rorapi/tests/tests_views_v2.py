@@ -12,10 +12,13 @@ from .utils import IterableAttrDict
 factory = APIRequestFactory()
 
 class ViewListTestCase(SimpleTestCase):
+
+    V2_VERSION = 'v2'
+
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
-                             'data/test_data_search_es7.json'), 'r') as f:
+                             'data/test_data_search_es7_v2.json'), 'r') as f:
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
@@ -24,8 +27,8 @@ class ViewListTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'list'})
-        request = factory.get('v1/organizations')
-        response = view(request)
+        request = factory.get('/v2/organizations')
+        response = view(request, version=self.V2_VERSION)
         response.render()
         organizations = json.loads(response.content.decode('utf-8'))
 
@@ -57,10 +60,10 @@ class ViewListTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'list'})
-        request = factory.get('v1/organizations?query=query&illegal=whatever&' +
+        request = factory.get('/v2/organizations?query=query&illegal=whatever&' +
                               'filter=fi1:e,types:F,f3,field2:44&another=3&' +
                               'page=third')
-        response = view(request)
+        response = view(request, version=self.V2_VERSION)
         response.render()
         organizations = json.loads(response.content.decode('utf-8'))
 
@@ -73,14 +76,17 @@ class ViewListTestCase(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        response = client.get('v1/organizations?query.names=query')
-        self.assertRedirects(response, 'v1/organizations?query=query')
+        response = client.get('/v2/organizations?query.names=query')
+        self.assertRedirects(response, '/v2/organizations?query=query')
 
 class ViewRetrievalTestCase(SimpleTestCase):
+
+    V2_VERSION = 'v2'
+
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
-                             'data/test_data_retrieve_es7.json'), 'r') as f:
+                             'data/test_data_retrieve_es7_v2.json'), 'r') as f:
             self.test_data = json.load(f)
         with open(
                 os.path.join(os.path.dirname(__file__),
@@ -95,12 +101,14 @@ class ViewRetrievalTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('v1/organizations/https://ror.org/02atag894')
-        response = view(request, pk='https://ror.org/02atag894')
+        request = factory.get('/v2/organizations/https://ror.org/02atag894')
+        response = view(request, pk='https://ror.org/02atag894', version=self.V2_VERSION)
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
         # go through every attribute and check to see that they are equal
         self.assertEquals(response.status_code, 200)
+        print(organization)
+        print(self.test_data['hits']['hits'][0]['_source'])
         self.assertEquals(organization, self.test_data['hits']['hits'][0]['_source'])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
@@ -110,8 +118,8 @@ class ViewRetrievalTestCase(SimpleTestCase):
                              self.test_data_empty['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('v1/organizations/https://ror.org/052gg0110')
-        response = view(request, pk='https://ror.org/052gg0110')
+        request = factory.get('/v2/organizations/https://ror.org/052gg0110')
+        response = view(request, pk='https://ror.org/052gg0110', version=self.V2_VERSION)
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
 
@@ -127,8 +135,8 @@ class ViewRetrievalTestCase(SimpleTestCase):
                              self.test_data_empty['hits']['hits'])
 
         view = views.OrganizationViewSet.as_view({'get': 'retrieve'})
-        request = factory.get('v1/organizations/https://ror.org/abc123')
-        response = view(request, pk='https://ror.org/abc123')
+        request = factory.get('/v2/organizations/https://ror.org/abc123')
+        response = view(request, pk='https://ror.org/abc123', version=self.V2_VERSION)
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
 
@@ -229,12 +237,12 @@ class HeartbeatViewTestCase(SimpleTestCase):
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
-                             'data/test_data_search_es7.json'), 'r') as f:
+                             'data/test_data_search_es7_v2.json'), 'r') as f:
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_heartbeat_success(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
-        response = self.client.get('/heartbeat')
+        response = self.client.get('/v2/heartbeat')
         self.assertEquals(response.status_code, 200)

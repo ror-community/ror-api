@@ -3,7 +3,7 @@ import requests
 
 from django.test import SimpleTestCase
 
-BASE_URL = '{}/organizations'.format(
+BASE_URL = '{}/v1/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 

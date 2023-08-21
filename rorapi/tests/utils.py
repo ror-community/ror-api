@@ -19,6 +19,8 @@ class AttrDict(dict):
 
 class IterableAttrDict():
     def __init__(self, nested_dict, iter_list):
+        print(nested_dict)
+        print(iter_list)
         self.attr_dict = AttrDict(nested_dict)
         self.iter_list = [AttrDict(i) for i in iter_list]
 
