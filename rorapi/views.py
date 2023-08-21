@@ -36,9 +36,9 @@ class OrganizationViewSet(viewsets.ViewSet):
     lookup_value_regex = r"((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*"
 
     def list(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
-        print(version)
         params = request.GET.dict()
         if "query.name" in params or "query.names" in params:
+            print("redirecting")
             param_name = "query.name" if "query.name" in params else "query.names"
             params["query"] = params[param_name]
             del params[param_name]
@@ -100,9 +100,10 @@ organizations_router.register(
 
 
 class HeartbeatView(View):
-    def get(self, request):
+    def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        print(version)
         try:
-            errors, organizations = search_organizations({})
+            errors, organizations = search_organizations({}, version)
             if errors is None:
                 return HttpResponse("OK")
         except:
@@ -134,8 +135,8 @@ class GenerateAddress(APIView):
 class GenerateId(APIView):
     permission_classes = [OurTokenPermission]
 
-    def get(self, request):
-        id = check_ror_id()
+    def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        id = check_ror_id(version)
         return Response({"id": id})
 
 

@@ -7,6 +7,7 @@ from rorapi.views import HeartbeatView,GenerateAddress,GenerateId,IndexData
 
 urlpatterns = [
     # Health check
+    url(r"^(?P<version>(v1|v2))\/heartbeat$", HeartbeatView.as_view()),
     url(r"^heartbeat$", HeartbeatView.as_view()),
     # Using REST API
     path('generateaddress/<str:geonamesid>', GenerateAddress.as_view()),
