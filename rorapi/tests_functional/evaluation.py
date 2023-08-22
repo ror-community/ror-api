@@ -7,10 +7,10 @@ def escape_query(query):
                   lambda m: '\\' + m.group(), query)
 
 
-def search(url, param, query, escape=True):
+def search(url, param, query, version, escape=True):
     if escape:
         query = escape_query(query)
-    results = requests.get('{}/organizations'.format(url), {
+    results = requests.get('{}/{}/organizations'.format(url, version), {
         param: query
     }).json()
     if 'items' not in results:
