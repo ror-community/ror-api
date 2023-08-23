@@ -336,8 +336,6 @@ def build_search_query(params, version):
 
 def build_retrieve_query(ror_id, version):
     """Builds retrieval query"""
-    print(version)
-
     qb = ESQueryBuilder(version)
     qb.add_id_query(ror_id)
     return qb.get_query()
@@ -350,7 +348,6 @@ def search_organizations(params, version):
     if error is not None:
         return error, None
     search = build_search_query(params, version)
-    print(search.to_dict())
     if version == "v2":
         return None, ListResultV2(search.execute())
     return None, ListResultV1(search.execute())

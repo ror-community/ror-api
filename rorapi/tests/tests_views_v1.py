@@ -105,6 +105,10 @@ class ViewRetrievalTestCase(SimpleTestCase):
         response = view(request, pk='https://ror.org/02atag894', version=self.V1_VERSION)
         response.render()
         organization = json.loads(response.content.decode('utf-8'))
+        print("organization:")
+        print(organization)
+        print("test data:")
+        print(self.test_data['hits']['hits'][0]['_source'])
         # go through every attribute and check to see that they are equal
         self.assertEquals(response.status_code, 200)
         self.assertEquals(organization, self.test_data['hits']['hits'][0]['_source'])

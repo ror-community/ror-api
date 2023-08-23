@@ -22,11 +22,18 @@ class GeoNamesDetails:
         self.country_name = data.country_name
 
 
-class Locations:
+class Location:
     """A model class for storing addresses"""
     def __init__(self, data):
         self.geonames_id = data.geonames_id
         self.geonames_details = GeoNamesDetails(data.geonames_details)
+
+class ExternalId:
+    """A model class for storing external id"""
+    def __init__(self, data):
+        self.type = data.type
+        self.preferred = data.preferred
+        self.all = [a for a in data.all]
 
 
 class Admin:
@@ -51,9 +58,9 @@ class OrganizationV2(Entity):
             'domains', 'established', 'id', 'types', 'status'
         ])
         self.admin = Admin(data.admin)
-        self.external_ids = [Entity(e, ['all', 'type', 'preferred']) for e in data.external_ids]
+        self.external_ids = [Entity(e, ['type', 'preferred', 'all']) for e in data.external_ids]
         self.links = [Entity(l, ['value', 'type']) for l in data.links]
-        self.locations = [Locations(l) for l in data.locations]
+        self.locations = [Location(l) for l in data.locations]
         self.names = [Entity(n, ['value', 'lang', 'types']) for n in data.names]
         self.relationships = [
             Entity(r, ['type', 'label', 'id']) for r in data.relationships
@@ -143,43 +150,44 @@ class AdminSerializer(serializers.Serializer):
 
 
 class OrganizationNameSerializer(serializers.Serializer):
-    value = serializers.CharField()
     lang = serializers.CharField()
-    types = serializers.CharField()
+    types = serializers.StringRelatedField(many=True)
+    value = serializers.CharField()
 
 
 class OrganizationRelationshipsSerializer(serializers.Serializer):
+    id = serializers.CharField()
     label = serializers.CharField()
     type = serializers.CharField()
-    id = serializers.CharField()
 
 
 class ExternalIdSerializer(serializers.Serializer):
-    all = serializers.CharField()
-    type = serializers.CharField()
+    all = serializers.StringRelatedField(many=True)
     preferred = serializers.CharField()
+    type = serializers.CharField()
 
 
 class LinkSerializer(serializers.Serializer):
-    value = serializers.CharField()
     type = serializers.CharField()
+    value = serializers.CharField()
 
 
 class GeoNamesDetailsSerializer(serializers.Serializer):
-    name = serializers.StringRelatedField()
+    country_code = serializers.CharField()
+    country_name = serializers.CharField()
     lat = serializers.DecimalField(max_digits=None,
                                    decimal_places=10,
                                    coerce_to_string=False)
     lng = serializers.DecimalField(max_digits=None,
                                    decimal_places=10,
                                    coerce_to_string=False)
-    country_name = serializers.CharField()
-    country_code = serializers.CharField()
+    name = serializers.StringRelatedField()
 
 
 class OrganizationLocationSerializer(serializers.Serializer):
-    geonames_id = serializers.IntegerField()
     geonames_details = GeoNamesDetailsSerializer()
+    geonames_id = serializers.IntegerField()
+
 
 
 class OrganizationSerializerV2(serializers.Serializer):
@@ -191,9 +199,9 @@ class OrganizationSerializerV2(serializers.Serializer):
     links = LinkSerializer(many=True)
     locations = OrganizationLocationSerializer(many=True)
     names = OrganizationNameSerializer(many=True)
-    types = serializers.StringRelatedField(many=True)
     relationships = OrganizationRelationshipsSerializer(many=True)
     status = serializers.CharField()
+    types = serializers.StringRelatedField(many=True)
 
 
 class BucketSerializer(serializers.Serializer):

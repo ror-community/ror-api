@@ -66,8 +66,6 @@ class ESQueryBuilder:
         )
 
     def add_filters(self, filters):
-        print("adding filters: ")
-        print(filters)
         for f, v in filters.items():
             self.search = self.search.filter("terms", **{f: v})
 

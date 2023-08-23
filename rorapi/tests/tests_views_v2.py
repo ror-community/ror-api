@@ -107,8 +107,6 @@ class ViewRetrievalTestCase(SimpleTestCase):
         organization = json.loads(response.content.decode('utf-8'))
         # go through every attribute and check to see that they are equal
         self.assertEquals(response.status_code, 200)
-        print(organization)
-        print(self.test_data['hits']['hits'][0]['_source'])
         self.assertEquals(organization, self.test_data['hits']['hits'][0]['_source'])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
