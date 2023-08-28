@@ -5,7 +5,7 @@ import re
 import requests
 
 from django.test import SimpleTestCase
-from ..settings import ROR_API, ES_VARS
+from rorapi.settings import ROR_API, ES_VARS
 
 BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))

@@ -2,8 +2,8 @@ from django.conf.urls import url, include
 from django.urls import path
 from rest_framework.documentation import include_docs_urls
 
-from . import views
-from rorapi.views import HeartbeatView,GenerateAddress,GenerateId,IndexData
+from  . import views
+from rorapi.common.views import HeartbeatView,GenerateAddress,GenerateId,IndexData
 
 urlpatterns = [
     # Health check

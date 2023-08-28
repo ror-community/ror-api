@@ -8,23 +8,25 @@ from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
 import json
 
-from .settings import REST_FRAMEWORK
-from .matching import match_organizations
-from .models_v1 import (
-    OrganizationSerializerV1,
-    ListResultSerializerV1,
-    MatchingResultSerializerV1,
-    ErrorsV1,
-    ErrorsSerializerV1,
+from rorapi.settings import REST_FRAMEWORK
+from rorapi.common.matching import match_organizations
+from rorapi.common.models import (
+    Errors
 )
-from .models_v2 import (
-    OrganizationSerializerV2,
-    ListResultSerializerV2,
-    MatchingResultSerializerV2,
-    ErrorsV2,
-    ErrorsSerializerV2,
+from rorapi.common.serializers import ErrorsSerializer
+
+from rorapi.v1.serializers import (
+    OrganizationSerializer as OrganizationSerializerV1,
+    ListResultSerializer as ListResultSerializerV1,
+    MatchingResultSerializer as MatchingResultSerializerV1
 )
-from .queries import search_organizations, retrieve_organization, get_ror_id
+from rorapi.v2.serializers import (
+    OrganizationSerializer as OrganizationSerializerV2,
+    ListResultSerializer as ListResultSerializerV2,
+    MatchingResultSerializer as MatchingResultSerializerV2,
+)
+
+from rorapi.common.queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
 import os
 import update_address as ua
@@ -50,9 +52,7 @@ class OrganizationViewSet(viewsets.ViewSet):
         else:
             errors, organizations = search_organizations(params, version)
         if errors is not None:
-            if version == "v2":
-                return Response(ErrorsSerializerV2(errors).data)
-            return Response(ErrorsSerializerV1(errors).data)
+            return Response(ErrorsSerializer(errors).data)
         if "affiliation" in params:
             if version == "v2":
                 serializer = MatchingResultSerializerV2(organizations)
@@ -68,23 +68,14 @@ class OrganizationViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         ror_id = get_ror_id(pk)
         if ror_id is None:
-            if version == "v2":
-                errors = ErrorsV2(["'{}' is not a valid ROR ID".format(pk)])
-                return Response(
-                    ErrorsSerializerV2(errors).data, status=status.HTTP_404_NOT_FOUND
-                )
-            errors = ErrorsV1(["'{}' is not a valid ROR ID".format(pk)])
+            errors = Errors(["'{}' is not a valid ROR ID".format(pk)])
             return Response(
-                ErrorsSerializerV1(errors).data, status=status.HTTP_404_NOT_FOUND
+                ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
             )
         errors, organization = retrieve_organization(ror_id, version)
         if errors is not None:
-            if version == "v2":
-                return Response(
-                    ErrorsSerializerV2(errors).data, status=status.HTTP_404_NOT_FOUND
-                )
             return Response(
-                ErrorsSerializerV1(errors).data, status=status.HTTP_404_NOT_FOUND
+                ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
             )
         if version == "v2":
             serializer = OrganizationSerializerV2(organization)

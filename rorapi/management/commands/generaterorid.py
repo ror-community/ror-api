@@ -1,6 +1,6 @@
 import base32_crockford
 import random
-from rorapi.queries import retrieve_organization, get_ror_id
+from rorapi.common.queries import retrieve_organization, get_ror_id
 from rorapi.settings import ROR_API
 
 def generate_ror_id():

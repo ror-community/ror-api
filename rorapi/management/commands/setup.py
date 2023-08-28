@@ -2,9 +2,9 @@ import requests
 import zipfile
 
 from django.core.management.base import BaseCommand
-from .deleteindex import Command as DeleteIndexCommand
-from .createindex import Command as CreateIndexCommand
-from .indexrordump import Command as IndexRorDumpCommand
+from rorapi.management.deleteindex import Command as DeleteIndexCommand
+from rorapi.management.createindex import Command as CreateIndexCommand
+from rorapi.management.indexrordump import Command as IndexRorDumpCommand
 from rorapi.settings import ROR_DUMP
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}

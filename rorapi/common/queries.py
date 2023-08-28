@@ -3,11 +3,18 @@ import json
 from titlecase import titlecase
 from collections import defaultdict
 
-from .matching import match_affiliation
-from .models_v1 import OrganizationV1, ListResultV1, ErrorsV1
-from .models_v2 import OrganizationV2, ListResultV2, ErrorsV2
-from .settings import GRID_REMOVED_IDS, ROR_API, ES_VARS
-from .es_utils import ESQueryBuilder
+from rorapi.common.models import Errors
+from rorapi.common.matching import match_affiliation
+from rorapi.v1.models import (
+    Organization as OrganizationV1,
+    ListResult as ListResultV1
+)
+from rorapi.v2.models import (
+    Organization as OrganizationV2,
+    ListResult as ListResultV2
+)
+from rorapi.settings import GRID_REMOVED_IDS, ROR_API, ES_VARS
+from rorapi.common.es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
 
@@ -248,9 +255,7 @@ def validate(params, version):
                 )
         except ValueError:
             errors.append("page '{}' is not an integer".format(page))
-    if version == "v2":
-        return ErrorsV2(errors) if errors else None
-    return ErrorsV1(errors) if errors else None
+    return Errors(errors) if errors else None
 
 
 def build_search_query(params, version):
@@ -356,21 +361,8 @@ def search_organizations(params, version):
 def retrieve_organization(ror_id, version):
     """Retrieves the organization of the given ROR ID"""
     if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
-        if version == "v2":
-            return (
-                ErrorsV2(
-                    [
-                        "ROR ID '{}' was removed by GRID during the time period (Jan 2019-Mar 2022) "
-                        "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
-                        "to restore these records and expect to complete this work in 2022".format(
-                            ror_id
-                        )
-                    ]
-                ),
-                None,
-            )
         return (
-            ErrorsV1(
+            Errors(
                 [
                     "ROR ID '{}' was removed by GRID during the time period (Jan 2019-Mar 2022) "
                     "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
@@ -388,6 +380,4 @@ def retrieve_organization(ror_id, version):
         if version == "v2":
             return None, OrganizationV2(results[0])
         return None, OrganizationV1(results[0])
-    if version == "v2":
-        return ErrorsV2(["ROR ID '{}' does not exist".format(ror_id)]), None
-    return ErrorsV1(["ROR ID '{}' does not exist".format(ror_id)]), None
+    return Errors(["ROR ID '{}' does not exist".format(ror_id)]), None

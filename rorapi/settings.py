@@ -73,7 +73,7 @@ MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
-ROOT_URLCONF = 'rorapi.urls'
+ROOT_URLCONF = 'rorapi.common.urls'
 
 TEMPLATES = [
     {
@@ -133,9 +133,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
     'INDEX_V1': 'organizations',
-    'INDEX_TEMPLATE_ES7_V1': os.path.join(BASE_DIR, 'rorapi', 'index_template_es7_v1.json'),
+    'INDEX_TEMPLATE_ES7_V1': os.path.join(BASE_DIR, 'rorapi', 'v1', 'index_template_es7_v1.json'),
     'INDEX_V2': 'organizations-v2',
-    'INDEX_TEMPLATE_ES7_V2': os.path.join(BASE_DIR, 'rorapi', 'index_template_es7_v2.json'),
+    'INDEX_TEMPLATE_ES7_V2': os.path.join(BASE_DIR, 'rorapi', 'v2', 'index_template_es7_v2.json'),
     'BATCH_SIZE': 20,
     'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
     'BULK_SIZE': 500

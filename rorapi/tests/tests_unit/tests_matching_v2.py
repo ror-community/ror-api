@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 
-from ..matching import load_geonames_countries, load_geonames_cities, load_countries, to_region, get_country_codes, \
+from rorapi.common.matching import load_geonames_countries, load_geonames_cities, load_countries, to_region, get_country_codes, \
     get_countries, normalize, MatchedOrganization, get_similarity, get_score, \
     MatchingNode, clean_search_string, check_do_not_match, MatchingGraph, get_output, \
     check_exact_match, MATCHING_TYPE_PHRASE, MATCHING_TYPE_COMMON, MATCHING_TYPE_FUZZY

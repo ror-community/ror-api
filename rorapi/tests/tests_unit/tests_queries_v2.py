@@ -3,9 +3,9 @@ import mock
 import os
 
 from django.test import SimpleTestCase
-from ..queries import get_ror_id, validate, build_search_query, \
+from rorapi.common.queries import get_ror_id, validate, build_search_query, \
     build_retrieve_query, search_organizations, retrieve_organization
-from ..settings import ES_VARS
+from rorapi.settings import ES_VARS
 from .utils import IterableAttrDict
 
 

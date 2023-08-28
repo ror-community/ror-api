@@ -1,5 +1,5 @@
 from django.test import SimpleTestCase
-from ..es_utils import ESQueryBuilder
+from rorapi.common.es_utils import ESQueryBuilder
 
 class QueryBuilderTestCaseV1(SimpleTestCase):
     V1_VERSION = 'v1'

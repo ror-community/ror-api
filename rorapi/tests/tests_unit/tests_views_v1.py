@@ -5,7 +5,7 @@ import os
 from django.test import SimpleTestCase, Client
 from rest_framework.test import APIRequestFactory
 
-from .. import views
+from rorapi.common import views
 
 from .utils import IterableAttrDict
 
@@ -155,7 +155,7 @@ class GenerateIdViewTestCase(SimpleTestCase):
             self.test_data_empty = json.load(f)
         self.maxDiff = None
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_generateid_success(self, search_mock, permission_mock):
         search_mock.return_value = \
@@ -165,7 +165,7 @@ class GenerateIdViewTestCase(SimpleTestCase):
         response = self.client.get('/generateid')
         self.assertEquals(response.status_code, 200)
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_generateid_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
         response = self.client.get('/generateid')
@@ -183,7 +183,7 @@ class GenerateAddressViewTestCase(SimpleTestCase):
             self.test_data_address_empty = json.load(f)
         self.maxDiff = None
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     @mock.patch('update_address.new_geonames')
     def test_generateaddress_success(self, address_mock, permission_mock):
         address_mock.return_value = self.test_data_address
@@ -192,7 +192,7 @@ class GenerateAddressViewTestCase(SimpleTestCase):
         self.assertContains(response, 'address')
         self.assertEquals(response.status_code, 200)
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     @mock.patch('update_address.new_geonames')
     def test_generateaddress_fail_empty(self, address_mock, permission_mock):
         address_mock.return_value = self.test_data_address_empty
@@ -201,7 +201,7 @@ class GenerateAddressViewTestCase(SimpleTestCase):
         self.assertContains(response, 'Expecting value')
         self.assertEquals(response.status_code, 200)
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_generateid_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
         response = self.client.get('/generateaddress/5378538')
@@ -213,23 +213,23 @@ class IndexRorViewTestCase(SimpleTestCase):
         self.error_msg = {"status": "ERROR", "msg": "error"}
         self.maxDiff = None
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
-    @mock.patch('rorapi.views.process_files')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.process_files')
     def test_index_ror_success(self, index_mock, permission_mock):
         index_mock.return_value = self.success_msg
         permission_mock.return_value = True
         response = self.client.get('/indexdata/foo')
         self.assertEquals(response.status_code, 200)
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
-    @mock.patch('rorapi.views.process_files')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.process_files')
     def test_index_ror_fail_error(self, index_mock, permission_mock):
         index_mock.return_value = self.error_msg
         permission_mock.return_value = True
         response = self.client.get('/indexdata/foo')
         self.assertEquals(response.status_code, 400)
 
-    @mock.patch('rorapi.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_index_ror_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
         response = self.client.get('/indexdata/foo')

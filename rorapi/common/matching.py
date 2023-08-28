@@ -4,9 +4,10 @@ import re
 import unicodedata
 import unidecode
 
-from .es_utils import ESQueryBuilder
-from .models_v1 import MatchingResultV1, ErrorsV1
-from .models_v2 import MatchingResultV2, ErrorsV2
+from rorapi.common.models import Errors
+from rorapi.common.es_utils import ESQueryBuilder
+from rorapi.v1.models import MatchingResult as MatchingResultV1
+from rorapi.v2.models import MatchingResult as MatchingResultV2
 
 from collections import namedtuple
 from functools import lru_cache
@@ -523,6 +524,4 @@ def match_organizations(params, version):
         if version == "v2":
             return None, MatchingResultV2(matched)
         return None, MatchingResultV1(matched)
-    if version == "v2":
-        return ErrorsV2('"affiliation" parameter missing'), None
-    return ErrorsV1('"affiliation" parameter missing'), None
+    return Errors('"affiliation" parameter missing'), None

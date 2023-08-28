@@ -1,4 +1,4 @@
-from .settings import ES7, ES_VARS
+from rorapi.settings import ES7, ES_VARS
 
 from elasticsearch_dsl import Search, Q
 
