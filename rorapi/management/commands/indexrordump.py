@@ -150,7 +150,7 @@ class Command(BaseCommand):
                 with open(json_path, 'r') as it:
                     dataset = json.load(it)
                 self.stdout.write('Indexing ROR dataset ' + json_file)
-                if 'schema_v2' in json_file:
+                if 'schema_v2' in json_file and (options['version']==2 or options['version'] is None):
                     index = ES_VARS['INDEX_V2']
                 else:
                     index = ES_VARS['INDEX_V1']
