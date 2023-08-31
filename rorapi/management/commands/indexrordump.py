@@ -146,8 +146,6 @@ class Command(BaseCommand):
                 if file.endswith(".json"):
                     json_files.append(file)
             for json_file in json_files:
-                print(json_file)
-                print(options['schema'])
                 index = None
                 json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
                 with open(json_path, 'r') as it:
