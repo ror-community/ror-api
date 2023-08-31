@@ -146,15 +146,20 @@ class Command(BaseCommand):
                 if file.endswith(".json"):
                     json_files.append(file)
             for json_file in json_files:
+                print(json_file)
+                print(options['schema'])
+                index = None
                 json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
                 with open(json_path, 'r') as it:
                     dataset = json.load(it)
-                self.stdout.write('Indexing ROR dataset ' + json_file)
-                if 'schema_v2' in json_file and (options['version']==2 or options['version'] is None):
+                if 'schema_v2' in json_file and (options['schema']==2 or options['schema'] is None):
+                    self.stdout.write('Indexing ROR dataset ' + json_file)
                     index = ES_VARS['INDEX_V2']
-                else:
+                    index_dump(self, json_file, index, dataset)
+                if 'schema_v2' not in json_file and (options['schema']==1 or options['schema'] is None):
+                    self.stdout.write('Indexing ROR dataset ' + json_file)
                     index = ES_VARS['INDEX_V1']
-                index_dump(self, json_file, index, dataset)
+                    index_dump(self, json_file, index, dataset)
 
         else:
             self.stdout.write("ROR data dump zip file does not exist")

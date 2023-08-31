@@ -13,10 +13,10 @@ class Command(BaseCommand):
     help = 'Deletes ROR API index'
 
     def handle(self, *args, **options):
-        if(options['version']==1 or options['version'] is None):
+        if(options['schema']==1 or options['schema'] is None):
             print("deleting v1 index")
             delete_index(self, ES_VARS['INDEX_V1'])
-        if(options['version']==2 or options['version'] is None):
+        if(options['schema']==2 or options['schema'] is None):
             print("deleting v2 index")
             delete_index(self, ES_VARS['INDEX_V2'])
 

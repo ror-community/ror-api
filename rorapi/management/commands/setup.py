@@ -2,9 +2,9 @@ import requests
 import zipfile
 
 from django.core.management.base import BaseCommand
-from rorapi.management.deleteindex import Command as DeleteIndexCommand
-from rorapi.management.createindex import Command as CreateIndexCommand
-from rorapi.management.indexrordump import Command as IndexRorDumpCommand
+from rorapi.management.commands.deleteindex import Command as DeleteIndexCommand
+from rorapi.management.commands.createindex import Command as CreateIndexCommand
+from rorapi.management.commands.indexrordump import Command as IndexRorDumpCommand
 from rorapi.settings import ROR_DUMP
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
@@ -30,16 +30,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('filename', type=str, help='Name of data dump zip file to index without extension')
-
-    def add_arguments(self, parser):
-        parser.add_argument('-v', '--version', type=int, choices=[1, 2] help='Schema version to index if only indexing 1 version. Only set if not indexing both versions.')
+        parser.add_argument('-s', '--schema', type=int, choices=[1, 2], help='Schema version to index if only indexing 1 version. Only set if not indexing both versions.')
 
     def handle(self, *args, **options):
         # make sure ROR dump file exists
         filename = options['filename']
         version = None
-        if options['version']:
-            version = options['version']
+        if options['schema']:
+            version = options['schema']
         sha = get_ror_dump_sha(filename)
 
         if sha:

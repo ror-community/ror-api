@@ -16,9 +16,9 @@ class Command(BaseCommand):
     help = 'Create ROR API index'
 
     def handle(self, *args, **options):
-        if(options['version']==1 or options['version'] is None):
+        if(options['schema']==1 or options['schema'] is None):
             print("creating v1 index")
             create_index(self, ES_VARS['INDEX_V1'], ES_VARS['INDEX_TEMPLATE_ES7_V1'])
-        if(options['version']==2 or options['version'] is None):
+        if(options['schema']==2 or options['schema'] is None):
             print("creating v2 index")
             create_index(self, ES_VARS['INDEX_V2'], ES_VARS['INDEX_TEMPLATE_ES7_V2'])
