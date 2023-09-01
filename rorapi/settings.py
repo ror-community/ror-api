@@ -73,7 +73,7 @@ MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
-ROOT_URLCONF = 'rorapi.urls'
+ROOT_URLCONF = 'rorapi.common.urls'
 
 TEMPLATES = [
     {
@@ -94,7 +94,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'rorapi.wsgi.application'
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', )
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ),
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1','v2'],
+
 }
 
 # Database
@@ -128,8 +132,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
-    'INDEX': 'organizations',
-    'INDEX_TEMPLATE_ES7': os.path.join(BASE_DIR, 'rorapi', 'index_template_es7.json'),
+    'INDEX_V1': 'organizations',
+    'INDEX_TEMPLATE_ES7_V1': os.path.join(BASE_DIR, 'rorapi', 'v1', 'index_template_es7.json'),
+    'INDEX_V2': 'organizations-v2',
+    'INDEX_TEMPLATE_ES7_V2': os.path.join(BASE_DIR, 'rorapi', 'v2', 'index_template_es7.json'),
     'BATCH_SIZE': 20,
     'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
     'BULK_SIZE': 500
@@ -241,7 +247,8 @@ LEGACY_ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.zip'
 LEGACY_ROR_DUMP['ROR_JSON_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.json')
 
 ROR_DUMP = {}
-ROR_DUMP['REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data'
+ROR_DUMP['PROD_REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data'
+ROR_DUMP['TEST_REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data-test'
 ROR_DUMP['GITHUB_TOKEN'] = os.environ.get('GITHUB_TOKEN')
 
 DATA = {}
