@@ -56,7 +56,7 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
-          python manage.py setup v1.29-2023-07-27-ror-data
+          python manage.py setup v1.29-2023-07-27-ror-data -t
           # Dump file temp hard coded for v2 beta
           # Pulled from ror-data-test per settings.py config
       - name: Test
