@@ -247,7 +247,8 @@ LEGACY_ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.zip'
 LEGACY_ROR_DUMP['ROR_JSON_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.json')
 
 ROR_DUMP = {}
-ROR_DUMP['REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data-test'
+ROR_DUMP['PROD_REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data'
+ROR_DUMP['TEST_REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data-test'
 ROR_DUMP['GITHUB_TOKEN'] = os.environ.get('GITHUB_TOKEN')
 
 DATA = {}

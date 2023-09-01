@@ -96,9 +96,12 @@ def index_dump(self, filename, index, dataset):
         ES7.indices.delete(backup_index)
     self.stdout.write('ROR dataset ' + filename + ' indexed')
 
-def get_ror_dump_sha(filename):
+def get_ror_dump_sha(filename, use_test_data):
     sha = ''
-    contents_url = ROR_DUMP['REPO_URL'] + '/contents'
+    if use_test_data:
+        contents_url = ROR_DUMP['TEST_REPO_URL'] + '/contents'
+    else:
+        contents_url = ROR_DUMP['PROD_REPO_URL'] + '/contents'
     try:
         response = requests.get(contents_url, headers=HEADERS)
     except requests.exceptions.RequestException as e:
@@ -112,10 +115,13 @@ def get_ror_dump_sha(filename):
     except:
         return None
 
-def get_ror_dump_zip(filename):
-    sha = get_ror_dump_sha(filename)
+def get_ror_dump_zip(filename, use_test_data):
+    sha = get_ror_dump_sha(filename, use_test_data)
     if sha:
-        blob_url = ROR_DUMP['REPO_URL'] + '/git/blobs/' + sha
+        if use_test_data:
+            blob_url = ROR_DUMP['TEST_REPO_URL'] + '/git/blobs/' + sha
+        else:
+            blob_url = ROR_DUMP['PROD_REPO_URL'] + '/git/blobs/' + sha
         try:
             response = requests.get(blob_url, headers=HEADERS)
         except requests.exceptions.RequestException as e:
@@ -135,7 +141,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         json_files = []
         filename = options['filename']
-        ror_dump_zip = get_ror_dump_zip(filename)
+        use_test_data = options['testdata']
+        ror_dump_zip = get_ror_dump_zip(filename, use_test_data)
         if ror_dump_zip:
             if not os.path.exists(DATA['WORKING_DIR']):
                 os.makedirs(DATA['WORKING_DIR'])
