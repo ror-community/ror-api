@@ -64,9 +64,9 @@ Used in the data deployment process managed in [ror-records](https://github.com/
 
         docker-compose up -d
 
-3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
+3. Index the latest v1 ROR dataset from https://github.com/ror-community/ror-data . To index a v2 dataset, see [Indexing v2 data below](#indexing-v2-data)
 
-        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
@@ -92,11 +92,11 @@ To delete the existing index, create a new index and index a data dump:
 
 **LOCALHOST:** Run
 
-          docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
 
 **DEV/STAGING/PROD:** Access the running ror-api container and run:
 
-         python manage.py setup v1.0-2022-03-17-ror-data
+        python manage.py setup v1.0-2022-03-17-ror-data -s 1
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
