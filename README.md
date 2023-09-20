@@ -15,7 +15,7 @@ Commands for indexing ROR data, generating new ROR IDs and other internal operat
 - Clone this project locally
 - Create a .env file in the root of your local `ror-api` repo with the following values
 
-      ELASTIC_HOST=elasticsearch
+      ELASTIC_HOST=elasticsearch7
       ELASTIC_PORT=9200
       ELASTIC_PASSWORD=changeme
       ROR_BASE_URL=http://localhost
@@ -35,7 +35,7 @@ Replace values in [] with valid credential values. GITHUB_TOKEN is needed in ord
 
 3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
 
-        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
@@ -45,9 +45,9 @@ Replace values in [] with valid credential values. GITHUB_TOKEN is needed in ord
 
 6. Optionally, run tests
 
-        docker-compose exec web python manage.py test rorapi.tests
-        docker-compose exec web python manage.py test rorapi.tests_integration
-        docker-compose exec web python manage.py test rorapi.tests_functional
+        docker-compose exec web python manage.py test rorapi.tests.tests_unit
+        docker-compose exec web python manage.py test rorapi.tests.tests_integration
+        docker-compose exec web python manage.py test rorapi.tests.tests_functional
 
 ## Indexing ROR data (Mar 2022 onward)
 
@@ -92,13 +92,22 @@ To delete the existing index, create a new index and index a data dump:
 
 **LOCALHOST:** Run
 
-          docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data
+          docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
 
 **DEV/STAGING/PROD:** Access the running ror-api container and run:
 
          python manage.py setup v1.0-2022-03-17-ror-data
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
+
+#### Indexing v2 data
+
+The `-s` argument specifies which schema version to index. To index a v2 data dump, use `-s 2`. To index both v1 and v2 at the same time, omit the `-s` option.
+
+Note that a v2 formatted JSON file must exist in the zip file for the specified data dump version. Currently, v2 files only exist in [ror-community/ror-data-test](https://github.com/ror-community/ror-data-test). To index a data dump from ror-data-test rather than ror-data, add the `-t` option to the setup command, ex:
+
+        python manage.py setup v1.32-2023-09-14-ror-data -s 2 -t
+
 
 ## LEGACY: Converting GRID data to ROR  (process used prior to Mar 2022)
 
