@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import pathlib
 
 here = pathlib.Path(__file__).parent.resolve()
@@ -8,9 +8,6 @@ setup(
     version='0.0.1',
     long_description="ROR API",
     url='https://github.com/ror-community/ror-api',
-    package_dir = {
-            'rorapi': 'rorapi',
-            'rorapi.v2': 'rorapi/v2'},
-    packages=["rorapi", "rorapi.v2"],
+    packages=find_packages(),
     python_requires=">=3.7"
 )
