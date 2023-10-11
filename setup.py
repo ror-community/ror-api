@@ -8,6 +8,9 @@ setup(
     version='0.0.1',
     long_description="ROR API",
     url='https://github.com/ror-community/ror-api',
-    packages=["rorapi"],
+    package_dir = {
+            'rorapi': 'rorapi',
+            'rorapi.v2.models': 'rorapi/v2/models'},
+    packages=["rorapi", "rorapi.v2.models"],
     python_requires=">=3.7"
 )
