@@ -123,7 +123,7 @@ def process_files(dir):
 
 def index(dataset):
     err = {}
-    index = ES_VARS['INDEX']
+    index = ES_VARS['INDEX_V1']
     backup_index = '{}-tmp'.format(index)
     ES7.reindex(body={
         'source': {
