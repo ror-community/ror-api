@@ -1,0 +1,177 @@
+{
+    "index_patterns": [
+        "organizations-v2"
+    ],
+    "settings": {
+        "number_of_shards": 1,
+        "analysis": {
+            "analyzer": {
+                "string_lowercase": {
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "ascii_folding"
+                    ]
+                }
+            },
+            "filter": {
+                "ascii_folding": {
+                    "type": "asciifolding",
+                    "preserve_original": true
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "admin": {
+                "properties": {
+                    "created": {
+                        "properties": {
+                            "date": {
+                                "type": "date"
+                            },
+                            "schema_version": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "last_modified": {
+                        "properties": {
+                            "date": {
+                                "type": "date"
+                            },
+                            "schema_version": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            },
+            "domains": {
+                "type": "text",
+                "analyzer": "simple"
+            },
+            "established": {
+                "type": "date"
+            },
+            "external_ids": {
+                "properties": {
+                    "all": {
+                        "type": "keyword"
+                    },
+                    "type": {
+                        "type": "keyword"
+                    },
+                    "preferred": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "id": {
+                "type": "keyword"
+            },
+            "links": {
+                "properties": {
+                    "value": {
+                        "type": "text",
+                        "analyzer": "simple"
+                    },
+                    "type": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "locations": {
+                "properties": {
+                    "geonames_id": {
+                        "type": "integer"
+                    },
+                    "geonames_details": {
+                        "properties": {
+                            "lat": {
+                                "type": "float"
+                            },
+                            "lng": {
+                                "type": "float"
+                            },
+                            "name": {
+                                "type": "keyword"
+                            },
+                            "country_code": {
+                                "type": "keyword"
+                            },
+                            "country_name": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            },
+            "names": {
+                "properties": {
+                    "value": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            },
+                            "norm": {
+                                "type": "text",
+                                "analyzer": "string_lowercase",
+                                "fielddata": true
+                            }
+                        }
+                    },
+                    "lang": {
+                        "type": "keyword"
+                    },
+                    "types": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "types": {
+                "type": "keyword"
+            },
+            "relationships": {
+                "properties": {
+                    "type": {
+                        "type": "keyword"
+                    },
+                    "label": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            },
+                            "norm": {
+                                "type": "text",
+                                "analyzer": "string_lowercase",
+                                "fielddata": true
+                            }
+                        }
+                    },
+                    "id": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "status": {
+                "type": "keyword"
+            },
+            "names_ids": {
+                "type": "nested",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "name": {
+                        "type": "text",
+                        "analyzer": "string_lowercase"
+                    }
+                }
+            }
+        }
+    }
+}
