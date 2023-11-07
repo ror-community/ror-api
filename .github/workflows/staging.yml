@@ -59,7 +59,7 @@ jobs:
       - name: Test
         working-directory: ./ror-api
         run: |
-          python manage.py test rorapi.tests
+          python manage.py test rorapi.tests.tests_unit
           # TODO fix these tests running in GitHub Action
           # python manage.py test rorapi.tests_integration
           # python manage.py test rorapi.tests_functional
