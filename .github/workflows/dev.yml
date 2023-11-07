@@ -5,6 +5,7 @@ on:
       - "dev"
     paths-ignore:
       - '**docker-compose.yml'
+      - ./github/*
 jobs:
   test:
     runs-on: ubuntu-latest
