@@ -1,4 +1,5 @@
 from rest_framework import viewsets, routers, status
+from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
@@ -7,7 +8,9 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
 import json
+import copy
 
+from rorapi.common import validation
 from rorapi.settings import REST_FRAMEWORK
 from rorapi.common.matching import match_organizations
 from rorapi.common.models import (
@@ -83,6 +86,64 @@ class OrganizationViewSet(viewsets.ViewSet):
             serializer = OrganizationSerializerV1(organization)
         return Response(serializer.data)
 
+    def create(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        errors = None
+        if version == "v2":
+            json = request.data
+            if 'id' in json and (json['id'] is not None and json['id'] != ""):
+                errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json['id'])])
+            else:
+                new_record = copy.deepcopy(json)
+                if validation.check_optional_fields(new_record):
+                    new_record = validation.add_missing_optional_fields(new_record)
+                new_record = validation.add_created_last_mod(new_record)
+                new_ror_id = check_ror_id(version)
+                new_record['id'] = new_ror_id
+                # handle admin
+                errors, valid_data = validation.validate_v2(new_record)
+        else:
+            errors = Errors(["Version {} does not support creating records".format(version)])
+        if errors is not None:
+            print(errors)
+            return Response(
+                ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = OrganizationSerializerV2(valid_data)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        errors = None
+        if version == "v2":
+            ror_id = get_ror_id(pk)
+            if ror_id is None:
+                errors = Errors(["'{}' is not a valid ROR ID".format(pk)])
+                return Response(
+                    ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
+                )
+            errors, organization = retrieve_organization(ror_id, version)
+            if organization is None:
+                return Response(
+                    ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
+                )
+            json = request.data
+            if 'id' not in json:
+                errors = Errors(["No value found in ID field. Updated records must include a value in the ID field"])
+            elif get_ror_id(json['id']) != ror_id:
+                errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
+            else:
+                serializer = OrganizationSerializerV2(organization)
+                existing_record = serializer.data
+                updated_record = validation.update_record(json, existing_record)
+                errors, valid_data = validation.validate_v2(updated_record)
+        else:
+            errors = Errors(["Version {} does not support creating records".format(version)])
+        if errors is not None:
+            return Response(
+                ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = OrganizationSerializerV2(valid_data)
+        return Response(serializer.data)
+
 
 organizations_router = routers.DefaultRouter(trailing_slash=False)
 organizations_router.register(
@@ -116,10 +177,13 @@ class OurTokenPermission(BasePermission):
 
 
 class GenerateAddress(APIView):
-    permission_classes = [OurTokenPermission]
+    #permission_classes = [OurTokenPermission]
 
-    def get(self, request, geonamesid):
-        address = ua.new_geonames(geonamesid)
+    def get(self, request, geonamesid, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        if version == 'v2':
+            address = ua.new_geonames_v2(geonamesid)
+        else:
+            address = ua.new_geonames(geonamesid)
         return Response(address)
 
 

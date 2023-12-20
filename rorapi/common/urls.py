@@ -10,6 +10,7 @@ urlpatterns = [
     url(r"^(?P<version>(v1|v2))\/heartbeat$", HeartbeatView.as_view()),
     url(r"^heartbeat$", HeartbeatView.as_view()),
     # Using REST API
+    url(r"^(?P<version>(v1|v2))\/generateaddress\/(?P<geonamesid>[0-9]+)", GenerateAddress.as_view()),
     path('generateaddress/<str:geonamesid>', GenerateAddress.as_view()),
     url(r"^generateid$", GenerateId.as_view()),
     path('indexdata/<str:branch>', IndexData.as_view()),
