@@ -39,7 +39,8 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY', '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
+#DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

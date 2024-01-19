@@ -1,9 +1,9 @@
 from django.conf.urls import url, include
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework.documentation import include_docs_urls
 
 from  . import views
-from rorapi.common.views import HeartbeatView,GenerateAddress,GenerateId,IndexData
+from rorapi.common.views import HeartbeatView,GenerateAddress,GenerateId,IndexData,FileUploadView
 
 urlpatterns = [
     # Health check
@@ -19,4 +19,6 @@ urlpatterns = [
     url(r"^docs/", include_docs_urls(title="Research Organization Registry")),
     # Prometheus
     url("", include("django_prometheus.urls")),
+    re_path(r"^(?P<version>(v1|v2))\/upload$", FileUploadView.as_view()),
+    path('upload/<str:filename>', FileUploadView.as_view())
 ]

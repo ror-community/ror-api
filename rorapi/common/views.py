@@ -7,8 +7,14 @@ from django.shortcuts import redirect
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
+from rest_framework.parsers import FormParser, MultiPartParser
+from rorapi.settings import DATA
 import json
 import copy
+import csv
+import io
+import mimetypes
+import magic
 
 from rorapi.common import validation
 from rorapi.settings import REST_FRAMEWORK
@@ -89,18 +95,11 @@ class OrganizationViewSet(viewsets.ViewSet):
     def create(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         errors = None
         if version == "v2":
-            json = request.data
-            if 'id' in json and (json['id'] is not None and json['id'] != ""):
-                errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json['id'])])
+            json_input = request.data
+            if 'id' in json and (json_input['id'] is not None and json_input['id'] != ""):
+                errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_inputjson['id'])])
             else:
-                new_record = copy.deepcopy(json)
-                if validation.check_optional_fields(new_record):
-                    new_record = validation.add_missing_optional_fields(new_record)
-                new_record = validation.add_created_last_mod(new_record)
-                new_ror_id = check_ror_id(version)
-                new_record['id'] = new_ror_id
-                # handle admin
-                errors, valid_data = validation.validate_v2(new_record)
+                errors, valid_data = validation.new_record_from_json(json_input, version)
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -134,7 +133,12 @@ class OrganizationViewSet(viewsets.ViewSet):
                 serializer = OrganizationSerializerV2(organization)
                 existing_record = serializer.data
                 updated_record = validation.update_record(json, existing_record)
-                errors, valid_data = validation.validate_v2(updated_record)
+                location_errors, updated_locations = validation.update_locations(updated_record['locations'])
+                if len(location_errors) > 0:
+                    errors = Errors(location_errors)
+                else:
+                    updated_record['locations'] = updated_locations
+                    errors, valid_data = validation.validate_v2(updated_record)
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -177,7 +181,7 @@ class OurTokenPermission(BasePermission):
 
 
 class GenerateAddress(APIView):
-    #permission_classes = [OurTokenPermission]
+    permission_classes = [OurTokenPermission]
 
     def get(self, request, geonamesid, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         if version == 'v2':
@@ -204,3 +208,111 @@ class IndexData(APIView):
         if msg["status"] == "ERROR":
             st = 400
         return Response({"status": msg["status"], "msg": msg["msg"]}, status=st)
+
+def save_file(file, full_path):
+    with open(full_path, 'wb+') as f:
+        for chunk in file.chunks():
+            f.write(chunk)
+
+class FileUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    #serializer_class = FileUploadSerializer
+
+    def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        errors = None
+        #serializer = self.serializer_class(data=request.data)
+        #if serializer.is_valid():
+            # you can access the file like this from serializer
+            # uploaded_file = serializer.validated_data["file"]
+            #serializer.save()
+        if version == 'v2':
+            if request.data:
+                file_object = request.data['file']
+                mime_type = magic.from_buffer(file_object.read(2048))
+                if "ASCII text" in mime_type:
+                    file_object.seek(0)
+                    csv_validation_errors = validation.validate_csv(file_object)
+                    if len(csv_validation_errors) == 0:
+                        file_object.seek(0)
+                        #full_path = os.path.join(DATA['DIR'], file_object.name)
+                        #save_file(file_object, full_path)
+                        errors = validation.process_csv(file_object, version)
+                    else:
+                        errors=Errors(csv_validation_errors)
+                else:
+                    errors = Errors(["File upload must be CSV. File type '{}' is not supported".format(mime_type)])
+            else:
+                    errors = Errors(["Could not processs request. No data included in request."])
+        else:
+            errors = Errors(["Version {} does not support creating records".format(version)])
+        if errors is not None:
+            print(errors)
+            return Response(
+                ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            request.data,
+            status=status.HTTP_201_CREATED
+        )
+
+    def get(self, request, filename, **kwargs):
+        filepath = os.path.join(DATA['DIR'], filename)
+
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as fh:
+                mime_type, _ = mimetypes.guess_type(filepath)
+                response = HttpResponse(fh, content_type=mime_type)
+                response['Content-Disposition'] = "attachment; filename=%s" % filename
+                return response
+
+
+class BulkCreateUpdate(APIView):
+    #permission_classes = [OurTokenPermission]
+
+    '''
+    def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        errors = None
+        row_errors = {}
+        skipped_count = 0
+        updated_count = 0
+        new_count = 0
+        if version == 'v2':
+            if request.data:
+                csv_errors = validate_csv(request.data)
+                if csv_errors:
+                    errors = csv_errors
+                else:
+                    with open(request.data, 'r') as csv:
+                        row_num = 1
+                        for row in csv:
+                            if row['ror_id']:
+                                row_error, updated_record = update_from_csv(row)
+                                if row_error:
+                                    row_errors[row_num] = ror_error
+                                    skipped_count += 1
+                                else:
+                                    updated_count += 1
+                            else:
+                                row_error, new_record = create_from_csv(row)
+                                if row_error:
+                                    row_errors[row_num] = ror_error
+                                    skipped_count += 1
+                                else:
+                                    new_count +=1
+                            row_num += 1
+                    if len(ror_errors):
+                        #create row errors csv
+                    if updated_count > 0 or updated_count > 0 or skipped_count > 0:
+                        # created zip
+            else:
+                errors = Errors(["Could not processs request. No CSV file included in request."])
+        else:
+            errors = Errors(["Version {} does not support creating records".format(version)])
+        if errors is not None:
+            print(errors)
+            return Response(
+                ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(zippedfile)
+        '''
