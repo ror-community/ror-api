@@ -4,11 +4,18 @@ import copy
 import csv
 import json
 import io
+import os
 from datetime import datetime
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
 from rorapi.common.models import Errors
 import update_address as ua
+from rorapi.settings import DATA
+from rorapi.v2.serializers import (
+    OrganizationSerializer as OrganizationSerializerV2
+)
+from rorapi.common.queries import get_ror_id
 
 from rorapi.management.commands.generaterorid import check_ror_id
 
@@ -176,6 +183,7 @@ def validate_csv(csv_file):
     print(errors)
     return errors
 
+
 def new_record_from_json(json_input, version):
     errors = None
     valid_data = None
@@ -189,11 +197,29 @@ def new_record_from_json(json_input, version):
         new_record['locations'] = updated_locations
         new_record = add_created_last_mod(new_record)
         new_ror_id = check_ror_id(version)
+        print("new ror id: " + new_ror_id)
         new_record['id'] = new_ror_id
         # handle admin
         errors, valid_data = validate_v2(new_record)
     return errors, valid_data
 
+
+def update_record_from_json(new_json, existing_org):
+    errors = None
+    valid_data = None
+    serializer = OrganizationSerializerV2(existing_org)
+    existing_record = serializer.data
+    updated_record = update_record(new_json, existing_record)
+    location_errors, updated_locations = update_locations(updated_record['locations'])
+    if len(location_errors) > 0:
+        errors = Errors(location_errors)
+    else:
+        updated_record['locations'] = updated_locations
+        errors, valid_data = validate_v2(updated_record)
+    return errors, valid_data
+
+def update_record_from_csv():
+    #todo
 
 def new_record_from_csv(csv_data, version):
     v2_data = copy.deepcopy(V2_TEMPLATE)
@@ -234,7 +260,8 @@ def new_record_from_csv(csv_data, version):
         if csv_data['names.types.' + v]:
             name_obj = {
                 "types": v,
-                "value": csv_data['names.types.' + v].strip()
+                "value": csv_data['names.types.' + v].strip(),
+                "lang": None
             }
             temp_names.append(name_obj)
     print("temp names 1:")
@@ -252,7 +279,8 @@ def new_record_from_csv(csv_data, version):
                 types.append(t['types'])
         name_obj = {
             "types": types,
-            "value": d
+            "value": d,
+            "lang": None
         }
         dup_names_types.append(name_obj)
     temp_names = [t for t in temp_names if t['value'] not in dup_names]
@@ -285,6 +313,12 @@ def process_csv(csv_file, version):
         errors, v2_record = new_record_from_csv(row, version)
         print(errors)
         print(v2_record)
+        ror_id = v2_record['id']
+        full_path = os.path.join(DATA['DIR'], ror_id.split('https://ror.org/')[1] + '.json')
+        serializer = OrganizationSerializerV2(v2_record)
+        json_obj = json.loads(JSONRenderer().render(serializer.data))
+        with open(full_path, "w") as outfile:
+            json.dump(json_obj, outfile, ensure_ascii=False, indent=2)
     '''
         if row['ror_id']:
             row_error, updated_record = update_from_csv(row)

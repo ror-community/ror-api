@@ -96,7 +96,7 @@ class OrganizationViewSet(viewsets.ViewSet):
         errors = None
         if version == "v2":
             json_input = request.data
-            if 'id' in json and (json_input['id'] is not None and json_input['id'] != ""):
+            if 'id' in json_input and (json_input['id'] is not None and json_input['id'] != ""):
                 errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_inputjson['id'])])
             else:
                 errors, valid_data = validation.new_record_from_json(json_input, version)
@@ -124,21 +124,7 @@ class OrganizationViewSet(viewsets.ViewSet):
                 return Response(
                     ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
                 )
-            json = request.data
-            if 'id' not in json:
-                errors = Errors(["No value found in ID field. Updated records must include a value in the ID field"])
-            elif get_ror_id(json['id']) != ror_id:
-                errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
-            else:
-                serializer = OrganizationSerializerV2(organization)
-                existing_record = serializer.data
-                updated_record = validation.update_record(json, existing_record)
-                location_errors, updated_locations = validation.update_locations(updated_record['locations'])
-                if len(location_errors) > 0:
-                    errors = Errors(location_errors)
-                else:
-                    updated_record['locations'] = updated_locations
-                    errors, valid_data = validation.validate_v2(updated_record)
+            errors, valid_data = validation.update_record_from_json(request.data)
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -237,6 +223,7 @@ class FileUploadView(APIView):
                         #full_path = os.path.join(DATA['DIR'], file_object.name)
                         #save_file(file_object, full_path)
                         errors = validation.process_csv(file_object, version)
+
                     else:
                         errors=Errors(csv_validation_errors)
                 else:
