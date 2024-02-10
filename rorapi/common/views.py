@@ -124,7 +124,13 @@ class OrganizationViewSet(viewsets.ViewSet):
                 return Response(
                     ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
                 )
-            errors, valid_data = validation.update_record_from_json(request.data)
+            json = request.data
+            if 'id' not in json:
+                errors = Errors(["No value found in ID field. Updated records must include a value in the ID field"])
+            elif get_ror_id(json['id']) != ror_id:
+                errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
+            else:
+                errors, valid_data = validation.update_record_from_json(json, organization)
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -178,7 +184,7 @@ class GenerateAddress(APIView):
 
 
 class GenerateId(APIView):
-    permission_classes = [OurTokenPermission]
+    spermission_classes = [OurTokenPermission]
 
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         id = check_ror_id(version)
