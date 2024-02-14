@@ -259,17 +259,19 @@ def get_actions_values(csv_field):
             print(ua)
             if ua + UPDATE_DELIMITER in csv_field:
                 print("doing regex:")
-                result = re.search(r"{0}(.*?)(?=$|(add|delete|replace)==)".format(ua + UPDATE_DELIMITER), csv_field)
+                regex = r"(" + re.escape(
+      ua + UPDATE_DELIMITER) + r")(.*?)(?=$|(add|delete|replace)==)"
+                result = re.search(regex, csv_field)
                 print(result[0])
-                #add==foo;bar;delete==fizz;buzz;
-                #^(add|delete|replace)==(.*?)($|(?=add|delete|replace==))
                 temp_val = result[0].replace(ua + UPDATE_DELIMITER, '')
                 print("temp val:")
                 print(temp_val)
-                actions_values[ua] = temp_val
-                csv_field.replace(result[0], '')
+                actions_values[ua] = [v.strip() for v in temp_val.split(';') if v]
+                #csv_field.replace(result[0], '')
+
     else:
-        actions_values[UPDATE_ACTIONS["REPLACE"]] = csv_field
+        actions_values[UPDATE_ACTIONS["REPLACE"]] = [v.strip() for v in csv_field.split(';') if v]
+    print(actions_values)
     return actions_values
 
 def validate_csv_row_update_syntax(csv_data):
@@ -285,6 +287,8 @@ def validate_csv_row_update_syntax(csv_data):
             print("actions values:")
             print(actions_values)
             update_actions = list(actions_values.keys())
+            if len(update_actions)==0:
+                errors.append("Update delimiter '{}' found in '{}' field but no valid update action found in value {}".format(UPDATE_DELIMITER, k, v))
             if len(update_actions) > 2:
                 errors.append("{} update actions '{}' found in '{}' field but only 2 are allowed".format(str(len(update_actions)), ", ".join(update_actions), k))
             if len(update_actions) == 2:
@@ -302,50 +306,65 @@ def validate_csv_row_update_syntax(csv_data):
     return errors
 
 def update_record_from_csv(csv_data, version):
-    errors = None
+    errors = []
     updated_record = None
-    print("updating record from csvs")
-    errors, existing_record = retrieve_organization(csv_data['id'], version)
-    print(existing_record)
-    if existing_record is None:
-        errors = Errors(["No existing record found for ROR ID '{}'".format(csv_data['id'])])
+    print("updating record from csv")
+    existing_org_errors, existing_org = retrieve_organization(csv_data['id'], version)
+    print(existing_org)
+    if existing_org is None:
+        errors.append("No existing record found for ROR ID '{}'".format(csv_data['id']))
     else:
         row_validation_errors = validate_csv_row_update_syntax(csv_data)
         if len(row_validation_errors) > 0:
-            errors = row_validation_errors
+            errors.extend(row_validation_errors)
             print("row validation errors:")
             print(errors)
-
         else:
+            serializer = OrganizationSerializerV2(existing_org)
+            existing_record = serializer.data
+            print(existing_record)
             update_data = {}
-            '''
             #domains
             if csv_data['domains']:
                 actions_values = get_actions_values(csv_data['domains'])
                 temp_domains = copy.deepcopy(existing_record['domains'])
+                print("initial temp domains:")
+                print(temp_domains)
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
                     delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
                     if delete_values is None:
                         temp_domains = []
                     else:
                         #should we check if values to delete exist?
-                        temp_domains = [d for d in temp_domains if d not in delete_values.split(';')]
+                        for d in delete_values:
+                            if d not in temp_domains:
+                                errors.append("Attempting to delete dommain(s) that don't exist: {}".format(d))
+                        temp_domains = [d for d in temp_domains if d not in delete_values]
+                    print("temp domains delete")
+                    print(temp_domains)
                 if UPDATE_ACTIONS['ADD'] in actions_values:
                     add_values = actions_values[UPDATE_ACTIONS['ADD']]
-                    temp_domains = temp_domains.append([a.strip() for a in add_values.split(';')])
+                    for a in add_values:
+                        if a in temp_domains:
+                            errors.append("Attempting to add dommain(s) that already exist: {}".format(a))
+                    print(add_values)
+                    temp_domains.extend(add_values)
+                    print("temp domains add")
+                    print(temp_domains)
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
-                    replace_values = actions_values[UPDATE_ACTIONS['REPLACE']]
-                    temp_domains = [r.strip() for r in replace_values.split(';')]
+                    temp_domains = actions_values[UPDATE_ACTIONS['REPLACE']]
+                    print("temp domains replace")
+                    print(temp_domains)
+                print("final temp domains:")
+                print(temp_domains)
                 update_data['domains'] = temp_domains
 
             #established
             if csv_data['established']:
                 actions_values = get_actions_values(csv_data['established'])
-                if UPDATE_ACTIONS['DELETE'] in actions_values:
-                    update_data['established'] = None
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
-                    update_data['established'] = int(actions_values[UPDATE_ACTIONS['REPLACE']].strip())
-
+                    update_data['established'] = int(actions_values[UPDATE_ACTIONS['REPLACE']][0])
+            '''
             #external ids
             updated_ext_id_types = []
             for k,v in V2_EXTERNAL_ID_TYPES.items():
@@ -445,7 +464,7 @@ def update_record_from_csv(csv_data, version):
                             temp_links.append(link_obj)
                         update_data['links'] = temp_links
 
-            #locations
+
             if csv_data['locations.geonames_id']:
                 temp_locations = copy.deepcopy(existing_record['locations'])
                 action, csv_field_value = get_action_value(csv_data['locations.geonames_id'])
@@ -471,27 +490,79 @@ def update_record_from_csv(csv_data, version):
                         temp_locations.append(location_obj)
 
                 update_data['locations'] = temp_locations
+            '''
+            #locations
+            if csv_data['locations.geonames_id']:
+                actions_values = get_actions_values(csv_data['locations.geonames_id'])
+                temp_locations = copy.deepcopy(existing_record['locations'])
+                print("initial temp locations:")
+                print(temp_locations)
+                if UPDATE_ACTIONS['DELETE'] in actions_values:
+                    delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                    for d in delete_values:
+                        if d not in temp_locations:
+                            errors.append("Attempting to delete type(s) that don't exist: {}".format(d))
+                    temp_locations = [tl for tl in temp_locations if tl['geonames_id'] not in delete_values]
+                if UPDATE_ACTIONS['ADD'] in actions_values:
+                    add_values = actions_values[UPDATE_ACTIONS['ADD']]
+                    for a in add_values:
+                        if a in temp_locations:
+                            errors.append("Attempting to add type(s) that already exist: {}".format(a))
+                    for a in add_values:
+                        location_obj = {
+                            "geonames_id": a,
+                            "geonames_details": {}
+                        }
+                        temp_locations.append(location_obj)
+                if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                    temp_locations = []
+                    for r in UPDATE_ACTIONS['REPLACE']:
+                        location_obj = {
+                            "geonames_id": r,
+                            "geonames_details": {}
+                        }
+                        temp_locations.append(location_obj)
+                print("final temp locations:")
+                print(temp_locations)
+                update_data['locations'] = temp_locations
 
             #names
+            #TODO
 
             #status
             if csv_data['status']:
-                action, csv_field_value = get_action_value(csv_data['established'])
-                update_data['status'] = csv_field_value.strip()
+                actions_values = get_actions_values(csv_data['status'])
+                if UPDATE_ACTIONS['DELETE'] in actions_values:
+                    errors.append("Cannot delete required field 'status'")
+                if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                    update_data['status'] = actions_values[UPDATE_ACTIONS['REPLACE']][0]
 
             #types
             if csv_data['types']:
-                action, csv_field_value = get_action_value(csv_data['types'])
-                if action == "add":
-                    update_data['types'] = existing_record['types'].append([c.strip() for c in csv_field_value.split(';')])
-                elif action == "delete":
-                    update_data['types'] = [t for t in existing_record['types'] if t not in csv_field_value.split(';')]
-                elif action == "replace":
-                    update_data['types'] = [c.strip() for c in csv_field_value.split(';')]
+                actions_values = get_actions_values(csv_data['types'])
+                temp_types = copy.deepcopy(existing_record['types'])
+                print("initial temp types:")
+                print(temp_types)
+                if UPDATE_ACTIONS['DELETE'] in actions_values:
+                    delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                    for d in delete_values:
+                        if d not in temp_types:
+                            errors.append("Attempting to delete type(s) that don't exist: {}".format(d))
+                    temp_types = [t for t in temp_types if t not in delete_values]
+                if UPDATE_ACTIONS['ADD'] in actions_values:
+                    add_values = actions_values[UPDATE_ACTIONS['ADD']]
+                    for a in add_values:
+                        if a in temp_types:
+                            errors.append("Attempting to add type(s) that already exist: {}".format(a))
+                    temp_types.extend(add_values)
+                if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                    temp_types = actions_values[UPDATE_ACTIONS['REPLACE']]
+                print("final temp types:")
+                print(temp_types)
+                update_data['types'] = temp_types
 
-            '''
-            errors, updated_record = update_record_from_json(update_data, existing_record)
-
+            if len(errors) == 0:
+                errors, updated_record = update_record_from_json(update_data, existing_record)
     return errors, updated_record
 
     #return None, None
