@@ -292,7 +292,7 @@ def validate_csv_row_update_syntax(csv_data):
             if len(update_actions) > 2:
                 errors.append("{} update actions '{}' found in '{}' field but only 2 are allowed".format(str(len(update_actions)), ", ".join(update_actions), k))
             if len(update_actions) == 2:
-                if not (UPDATE_ACTIONS['ADD'] and UPDATE_ACTIONS['delete']) in update_actions:
+                if not (UPDATE_ACTIONS['ADD'] and UPDATE_ACTIONS['DELETE']) in update_actions:
                     errors.append("Invalid combination of update actions '{}' found in '{}' field.".format(", ".join(update_actions), k))
             disallowed_actions = [ua for ua in update_actions if ua not in CSV_REQUIRED_FIELDS_ACTIONS[k]]
             print("allowed actions:")
@@ -335,7 +335,6 @@ def update_record_from_csv(csv_data, version):
                     if delete_values is None:
                         temp_domains = []
                     else:
-                        #should we check if values to delete exist?
                         for d in delete_values:
                             if d not in temp_domains:
                                 errors.append("Attempting to delete dommain(s) that don't exist: {}".format(d))
@@ -362,71 +361,79 @@ def update_record_from_csv(csv_data, version):
             #established
             if csv_data['established']:
                 actions_values = get_actions_values(csv_data['established'])
+                if UPDATE_ACTIONS['DELETE'] in actions_values:
+                    update_data['established'] = None
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
                     update_data['established'] = int(actions_values[UPDATE_ACTIONS['REPLACE']][0])
-            '''
+
             #external ids
             updated_ext_id_types = []
             for k,v in V2_EXTERNAL_ID_TYPES.items():
                 if csv_data['external_ids.type.' + v + '.all'] or csv_data['external_ids.type.' + v + '.preferred']:
                     updated_ext_id_types.append(v)
             if len(updated_ext_id_types) > 0:
-                existing_ext_ids = copy.deepcopy(existing_record['external_ids'])
+                temp_ext_ids = copy.deepcopy(existing_record['external_ids'])
                 for t in updated_ext_id_types:
-                    new_ext_id_obj = {}
+                    temp_all = []
+                    temp_preferred = None
+                    existing_ext_id_obj = None
+                    existing_ext_ids_type = [i for i in temp_ext_ids if i['type'] == t]
+
+                    if len(existing_ext_ids_type) == 1:
+                        existing_ext_id_obj = existing_ext_ids_type[0]
+                        temp_all = existing_ext_id_obj['all']
+                        temp_preferred = existing_ext_id_obj['preferred']
+                    if len(existing_ext_ids_type) > 1:
+                        errors.append("Something is wrong. Multiple external ID objects with type ".format(t))
+
+                    # external_ids.all
                     if csv_data['external_ids.type.' + t + '.all']:
-                        action, csv_field_value = get_action_value(csv_data['external_ids.type.' + t + '.all'])
-                        existing_ext_id_obj = [i for i in existing_ext_ids if i['type'] == t]
-                        # all
-                        if action == "add":
-                            new_ext_id_obj = {
-                                "type": t,
-                                "all": existing_ext_id_obj[0]['all'].append([c.strip() for c in csv_field_value.split(';')]),
-                                "preferred": existing_ext_id_obj[0]['preferred']
-                            }
-                        elif action == "delete":
-                            new_ext_id_obj = {
-                                "type": t,
-                                "all": [e for e in existing_ext_id_obj[0]['all'] if e not in csv_field_value.split(';')],
-                                "preferred": existing_ext_id_obj[0]['preferred']
-                            }
-                        elif action == "replace":
-                            new_ext_id_obj = {
-                                "type": t,
-                                "all": [c.strip() for c in csv_field_value.split(';')],
-                                "preferred": existing_ext_id_obj[0]['preferred']
-                            }
-                    # preferred
+                        actions_values = get_actions_values(csv_data['external_ids.type.' + t + '.all'])
+                        if UPDATE_ACTIONS['DELETE'] in actions_values:
+                            delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                            if delete_values is None:
+                                temp_all = []
+                            else:
+                                for d in delete_values:
+                                    if d not in temp_all:
+                                        errors.append("Attempting to delete external ID(s) from {}.all that don't exist: {}".format(t, d))
+                                temp_all = [i for i in temp_all if i not in delete_values]
+                        if UPDATE_ACTIONS['ADD'] in actions_values:
+                            add_values = [a for a in actions_values[UPDATE_ACTIONS['ADD']]]
+                            for a in add_values:
+                                if a in temp_all:
+                                    errors.append("Attempting to add external ID(s) to {}.all that already exist: {}".format(t, a))
+                            temp_all.extend(add_values)
+                        if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                            temp_all = actions_values[UPDATE_ACTIONS['REPLACE']]
+
+                    # external_ids.preferred
                     if csv_data['external_ids.type.' + t + '.preferred']:
-                        if action == "add":
-                            new_ext_id_obj = {
-                                "type": t,
-                                "all": existing_ext_id_obj[0]['all'].append([c.strip() for c in csv_field_value.split(';')]),
-                                "preferred": existing_ext_id_obj[0]['preferred']
-                            }
-                        elif action == "delete":
-                            new_ext_id_obj = {
-                                "type": t,
-                                "all": [e for e in existing_ext_id_obj[0]['all'] if e not in csv_field_value.split(';')],
-                                "preferred": existing_ext_id_obj[0]['preferred']
-                            }
-                        elif action == "replace":
-                            new_ext_id_obj = {
-                                "type": t,
-                                "all": [c.strip() for c in csv_field_value.split(';')],
-                                "preferred": existing_ext_id_obj[0]['preferred']
-                            }
+                        actions_values = get_actions_values(csv_data['external_ids.type.' + t + '.preferred'])
+                        if UPDATE_ACTIONS['DELETE'] in actions_values:
+                            temp_preferred = None
+                        if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                            temp_preferred = actions_values[UPDATE_ACTIONS['REPLACE']][0]
 
 
+                    if len(temp_all) == 0 and temp_preferred is None:
+                        # remove all of type
+                        if not existing_ext_id_obj:
+                            errors.append("Attempting to delete external ID object with type {} that doesn't exist.".format(t))
+                        temp_ext_ids = [i for i in temp_ext_ids if i['type'] != t]
 
+                    else:
+                        # remove all of type and replace with new obj
+                        new_ext_id_obj = {
+                                    "type": t,
+                                    "all": temp_all,
+                                    "preferred": temp_preferred
+                                }
+                        if existing_ext_id_obj:
+                            temp_ext_ids = [i for i in temp_ext_ids if i['type'] != t]
+                        temp_ext_ids.append(new_ext_id_obj)
 
-                        all_ids = [i.strip() for i in csv_data['external_ids.type.' + v + '.all'].split(';')]
-                        ext_id_obj = {
-                            "type": v,
-                            "all": [i.strip() for i in csv_data['external_ids.type.' + v + '.all'].split(';')],
-                            "preferred": csv_data['external_ids.type.' + v + '.preferred'].strip() if csv_data['external_ids.type.' + v + '.preferred'] else all_ids[0]
-                        }
-                        v2_data['external_ids'].append(ext_id_obj)
+                update_data['external_ids'] = temp_ext_ids
 
             #links
             updated_link_types = []
@@ -435,90 +442,74 @@ def update_record_from_csv(csv_data, version):
                     updated_link_types.append(v)
             if len(updated_link_types) > 0:
                 temp_links = copy.deepcopy(existing_record['links'])
-                for t in updated_link_types
+                for t in updated_link_types:
                     if csv_data['links.type.' + t]:
-                        action, csv_field_value = get_action_value(csv_data['links.type.' + t])
-                        if action == "add":
-                            new_links = [c.strip() for c in csv_field_value.split(';')]
-                            for link in new_links:
-                                link_obj = {
-                                    "type": t,
-                                    "value": link
-                                }
-                                temp_links.append(link_obj)
-                        elif action == "delete":
-                            # remove all links of current type
-                            if csv_field_value is None:
+                        actions_values = get_actions_values(csv_data['links.type.' + t])
+                        existing_links = [tl['value'] for tl in temp_links]
+                        if UPDATE_ACTIONS['DELETE'] in actions_values:
+                            delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                            if delete_values is None:
                                 temp_links = [tl for tl in temp_links if tl['type'] != t]
                             else:
-                                deleted_links = [c.strip() for c in csv_field_value.split(';')]
-                                temp_links = [tl for tl in temp_links if tl['value'] not in deleted_links]
-                        elif action == "replace":
-                            temp_links = []
-                            new_links = [c.strip() for c in csv_field_value.split(';')]
-                            for link in new_links:
+                                for d in delete_values:
+                                    if d not in existing_links:
+                                        errors.append("Attempting to delete link(s) that don't exist: {}".format(d))
+                                temp_links = [tl for tl in temp_links if tl['value'] not in delete_values]
+                        if UPDATE_ACTIONS['ADD'] in actions_values:
+                            add_values = [a for a in actions_values[UPDATE_ACTIONS['ADD']]]
+                            for a in add_values:
+                                if a in existing_links:
+                                    errors.append("Attempting to add link(s) that already exist: {}".format(a))
+                            for a in add_values:
                                 link_obj = {
                                     "type": t,
-                                    "value": csv_data['links.type.' + t].strip()
+                                    "value": a
                                 }
-                            temp_links.append(link_obj)
+                                temp_links.append(link_obj)
+                        if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                            temp_links = []
+                            for r in actions_values[UPDATE_ACTIONS['REPLACE']]:
+                                link_obj = {
+                                    "type": t,
+                                    "value": r
+                                }
+                                temp_links.append(link_obj)
+                        print("final temp links:")
+                        print(temp_links)
                         update_data['links'] = temp_links
 
-
-            if csv_data['locations.geonames_id']:
-                temp_locations = copy.deepcopy(existing_record['locations'])
-                action, csv_field_value = get_action_value(csv_data['locations.geonames_id'])
-                if action == "add":
-                    new_locations = [c.strip() for c in csv_field_value.split(';')]
-                    for nl in new_locations:
-                        location_obj = {
-                            "geonames_id": nl,
-                            "geonames_details": {}
-                        }
-                        temp_locations.append(location_obj)
-                elif action == "delete":
-                    deleted_locations = [c.strip() for c in csv_field_value.split(';')]
-                    temp_locations = [tl for tl in temp_locations if tl['geonames_id'] not in deleted_locations]
-                elif action == "replace":
-                    temp_locations = []
-                    new_locations = [c.strip() for c in csv_field_value.split(';')]
-                    for nl in new_locations:
-                        location_obj = {
-                            "geonames_id": nl,
-                            "geonames_details": {}
-                        }
-                        temp_locations.append(location_obj)
-
-                update_data['locations'] = temp_locations
-            '''
             #locations
             if csv_data['locations.geonames_id']:
                 actions_values = get_actions_values(csv_data['locations.geonames_id'])
                 temp_locations = copy.deepcopy(existing_record['locations'])
                 print("initial temp locations:")
                 print(temp_locations)
+                existing_geonames_ids = [tl['geonames_id'] for tl in temp_locations]
+                print(existing_geonames_ids)
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
-                    delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                    delete_values = [int(d) for d in actions_values[UPDATE_ACTIONS['DELETE']]]
                     for d in delete_values:
-                        if d not in temp_locations:
-                            errors.append("Attempting to delete type(s) that don't exist: {}".format(d))
+                        if d not in existing_geonames_ids:
+                            errors.append("Attempting to delete locations(s) that don't exist: {}".format(d))
+                    if len(existing_geonames_ids) == len(delete_values):
+                        errors.append("Cannot remove all values from required field 'locations'")
                     temp_locations = [tl for tl in temp_locations if tl['geonames_id'] not in delete_values]
                 if UPDATE_ACTIONS['ADD'] in actions_values:
-                    add_values = actions_values[UPDATE_ACTIONS['ADD']]
+                    add_values = [int(a) for a in actions_values[UPDATE_ACTIONS['ADD']]]
                     for a in add_values:
-                        if a in temp_locations:
-                            errors.append("Attempting to add type(s) that already exist: {}".format(a))
+                        if int(a) in existing_geonames_ids:
+                            errors.append("Attempting to add locations(s) that already exist: {}".format(a))
                     for a in add_values:
                         location_obj = {
-                            "geonames_id": a,
+                            "geonames_id": int(a),
                             "geonames_details": {}
                         }
                         temp_locations.append(location_obj)
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
                     temp_locations = []
-                    for r in UPDATE_ACTIONS['REPLACE']:
+                    for r in actions_values[UPDATE_ACTIONS['REPLACE']]:
                         location_obj = {
-                            "geonames_id": r,
+                            "geonames_id": int(r),
                             "geonames_details": {}
                         }
                         temp_locations.append(location_obj)
@@ -548,6 +539,8 @@ def update_record_from_csv(csv_data, version):
                     for d in delete_values:
                         if d not in temp_types:
                             errors.append("Attempting to delete type(s) that don't exist: {}".format(d))
+                    if len(temp_types) == len(delete_values):
+                        errors.append("Cannot remove all values from required field 'types'")
                     temp_types = [t for t in temp_types if t not in delete_values]
                 if UPDATE_ACTIONS['ADD'] in actions_values:
                     add_values = actions_values[UPDATE_ACTIONS['ADD']]

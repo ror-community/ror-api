@@ -221,7 +221,8 @@ class FileUploadView(APIView):
             if request.data:
                 file_object = request.data['file']
                 mime_type = magic.from_buffer(file_object.read(2048))
-                if "ASCII text" in mime_type:
+                print(mime_type)
+                if "ASCII text" in mime_type or "CSV text" in mime_type:
                     file_object.seek(0)
                     csv_validation_errors = validation.validate_csv(file_object)
                     if len(csv_validation_errors) == 0:
