@@ -518,7 +518,47 @@ def update_record_from_csv(csv_data, version):
                 update_data['locations'] = temp_locations
 
             #names
-            #TODO
+            updated_name_types = []
+            for k,v in V2_NAME_TYPES.items():
+                if csv_data['names.types.' + v]:
+                    updated_name_types.append(v)
+            if len(updated_name_types) > 0:
+                temp_names = copy.deepcopy(existing_record['names'])
+                for t in updated_name_types:
+                    if csv_data['names.types' + t]:
+                        actions_values = get_actions_values(csv_data['names.types' + t])
+                        existing_names = [n for n in temp_names if t in n['types']]
+                        if UPDATE_ACTIONS['DELETE'] in actions_values:
+                            delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                            if delete_values is None:
+                                temp_links = [tl for tl in temp_links if tl['type'] != t]
+                            else:
+                                for d in delete_values:
+                                    if d not in existing_links:
+                                        errors.append("Attempting to delete link(s) that don't exist: {}".format(d))
+                                temp_links = [tl for tl in temp_links if tl['value'] not in delete_values]
+                        if UPDATE_ACTIONS['ADD'] in actions_values:
+                            add_values = [a for a in actions_values[UPDATE_ACTIONS['ADD']]]
+                            for a in add_values:
+                                if a in existing_links:
+                                    errors.append("Attempting to add link(s) that already exist: {}".format(a))
+                            for a in add_values:
+                                link_obj = {
+                                    "type": t,
+                                    "value": a
+                                }
+                                temp_links.append(link_obj)
+                        if UPDATE_ACTIONS['REPLACE'] in actions_values:
+                            temp_links = []
+                            for r in actions_values[UPDATE_ACTIONS['REPLACE']]:
+                                link_obj = {
+                                    "type": t,
+                                    "value": r
+                                }
+                                temp_links.append(link_obj)
+                        print("final temp links:")
+                        print(temp_links)
+                        update_data['links'] = temp_links
 
             #status
             if csv_data['status']:
