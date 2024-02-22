@@ -378,14 +378,12 @@ def update_record_from_csv(csv_data, version):
                     temp_preferred = None
                     existing_ext_id_obj = None
                     existing_ext_ids_type = [i for i in temp_ext_ids if i['type'] == t]
-
                     if len(existing_ext_ids_type) == 1:
                         existing_ext_id_obj = existing_ext_ids_type[0]
                         temp_all = existing_ext_id_obj['all']
                         temp_preferred = existing_ext_id_obj['preferred']
                     if len(existing_ext_ids_type) > 1:
                         errors.append("Something is wrong. Multiple external ID objects with type ".format(t))
-
                     # external_ids.all
                     if csv_data['external_ids.type.' + t + '.all']:
                         actions_values = get_actions_values(csv_data['external_ids.type.' + t + '.all'])
@@ -441,7 +439,7 @@ def update_record_from_csv(csv_data, version):
                 if csv_data['links.type.' + v]:
                     updated_link_types.append(v)
             if len(updated_link_types) > 0:
-                temp_links = copy.deepcopy(existing_record['links'])
+                temp_names = copy.deepcopy(existing_record['links'])
                 for t in updated_link_types:
                     if csv_data['links.type.' + t]:
                         actions_values = get_actions_values(csv_data['links.type.' + t])
@@ -527,16 +525,40 @@ def update_record_from_csv(csv_data, version):
                 for t in updated_name_types:
                     if csv_data['names.types' + t]:
                         actions_values = get_actions_values(csv_data['names.types' + t])
-                        existing_names = [n for n in temp_names if t in n['types']]
+                        for k, v in actions_values.items():
+                            if v:
+                                vals_obj_list = []
+                                for val in v:
+                                    vals_obj = {
+                                        "value": None,
+                                        "lang_code": None
+                                    }
+                                    if "*" in v:
+                                        name_val, lang_code  = val.split("*")
+                                        vals_obj["value"] = name_val.strip()
+                                        vals_obj["lang_code"] = lang_code.strip()
+                                    else:
+                                        vals_obj["value"] = val.strip()
+                                    vals_obj_list.append(vals_obj)
+                                actions_values[k] = vals_obj_list = []
                         if UPDATE_ACTIONS['DELETE'] in actions_values:
                             delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
                             if delete_values is None:
-                                temp_links = [tl for tl in temp_links if tl['type'] != t]
+                                temp_names = [tn for tn in temp_names if t not in tn['types']]
                             else:
                                 for d in delete_values:
-                                    if d not in existing_links:
+                                    temp_names_match = [tn for tn in temp_names if (t in tn['types'] and tn['value'] == d['value'] and tn['lang_code'] == d['lang_code'])]
+                                    if len(temp_names_match) == 0:
                                         errors.append("Attempting to delete link(s) that don't exist: {}".format(d))
-                                temp_links = [tl for tl in temp_links if tl['value'] not in delete_values]
+                                 #if name has multiple types, delete type only
+                                    else:
+                                        for tnm in temp_names_match:
+                                            if len(tnm['types'] > 1):
+                                                temp_types = [tnm_type for tnm_type in tnm['types'] if tnm_type != t]
+                                                tnm['types'] = temp_types
+                                #if name has only current type, delete obj
+
+
                         if UPDATE_ACTIONS['ADD'] in actions_values:
                             add_values = [a for a in actions_values[UPDATE_ACTIONS['ADD']]]
                             for a in add_values:
