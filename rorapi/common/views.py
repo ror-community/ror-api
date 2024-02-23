@@ -157,7 +157,7 @@ class IndexDataDump(APIView):
             schema = 2
         if dataenv == 'prod':
             testdata = False
-        msg = management.call_command("setup", filename, schema=2, testdata=True)
+        msg = management.call_command("setup", filename, schema=schema, testdata=testdata)
         if 'ERROR' in msg:
             st = 400
 
