@@ -134,7 +134,7 @@ class GenerateId(APIView):
         id = check_ror_id(version)
         print("Generated ID: {}".format(id))
         return Response({"id": id})
-
+s
 
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
