@@ -37,6 +37,7 @@ class Command(BaseCommand):
         parser.add_argument('-t', '--testdata', action='store_true', help='Set flag to pull data dump from ror-data-test instead of ror-data')
 
     def handle(self, *args, **options):
+        msg = None
         # make sure ROR dump file exists
         filename = options['filename']
         use_test_data = options['testdata']
@@ -51,10 +52,11 @@ class Command(BaseCommand):
             DeleteIndexCommand().handle(*args, **options)
             CreateIndexCommand().handle(*args, **options)
             IndexRorDumpCommand().handle(*args, **options)
-
+            msg = 'SUCCESS: ROR dataset {} indexed in version {}. Using test repo: {}'.format(filename, str(options['schema']), str(use_test_data))
         else:
-            self.stdout.write('ROR dataset for file {} not found. '.
-                              format(filename) +
-                              'Please generate the data dump first.')
-            return
+            msg = 'ERROR: ROR dataset for file {} not found. '.format(filename) \
+                +'Please generate the data dump first.'
+            self.stdout.write(msg)
+
+        return msg
 
