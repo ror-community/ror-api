@@ -132,6 +132,7 @@ class GenerateId(APIView):
 
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         id = check_ror_id(version)
+        print("Generated ID: {}".format(id))
         return Response({"id": id})
 
 
@@ -147,7 +148,7 @@ class IndexData(APIView):
 
 
 class IndexDataDump(APIView):
-    #permission_classes = [OurTokenPermission]
+    permission_classes = [OurTokenPermission]
 
     def get(self, request, filename, dataenv, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         schema = 1
@@ -158,7 +159,6 @@ class IndexDataDump(APIView):
         if dataenv == 'prod':
             testdata = False
         msg = management.call_command("setup", filename, schema=2, testdata=True)
-        print(msg)
         if 'ERROR' in msg:
             st = 400
 
