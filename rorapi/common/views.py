@@ -31,7 +31,11 @@ from urllib.parse import urlencode
 import os
 import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
+from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
+
+from django.core import management
+import rorapi.management.commands.indexrordump
 
 
 class OrganizationViewSet(viewsets.ViewSet):
@@ -128,8 +132,8 @@ class GenerateId(APIView):
 
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         id = check_ror_id(version)
+        print("Generated ID: {}".format(id))
         return Response({"id": id})
-
 
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
@@ -140,3 +144,21 @@ class IndexData(APIView):
         if msg["status"] == "ERROR":
             st = 400
         return Response({"status": msg["status"], "msg": msg["msg"]}, status=st)
+
+
+class IndexDataDump(APIView):
+    permission_classes = [OurTokenPermission]
+
+    def get(self, request, filename, dataenv, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        schema = 1
+        testdata = True
+        st = 200
+        if version == 'v2':
+            schema = 2
+        if dataenv == 'prod':
+            testdata = False
+        msg = management.call_command("setup", filename, schema=schema, testdata=testdata)
+        if 'ERROR' in msg:
+            st = 400
+
+        return Response({"status": msg}, status=st)
