@@ -191,7 +191,7 @@ def validate_csv(csv_file):
                 if field not in csv_fields:
                     missing_fields.append(field)
             print(missing_fields)
-            if len(missing_fields) > 0:
+            if missing_fields:
                 errors.append(f'CSV file is missing columns: {", ".join(missing_fields)}')
         else:
             errors.append("CSV file contains no data rows")
@@ -208,7 +208,7 @@ def new_record_from_json(json_input, version):
     if check_optional_fields(new_record):
         new_record = add_missing_optional_fields(new_record)
     location_errors, updated_locations = update_locations(new_record['locations'])
-    if len(location_errors) > 0:
+    if location_errors:
         errors = Errors(location_errors)
     else:
         new_record['locations'] = updated_locations
@@ -227,7 +227,7 @@ def update_record_from_json(new_json, existing_org):
     existing_record = serializer.data
     updated_record = update_record(new_json, existing_record)
     location_errors, updated_locations = update_locations(updated_record['locations'])
-    if len(location_errors) > 0:
+    if location_errors:
         errors = Errors(location_errors)
     else:
         updated_record['locations'] = updated_locations
@@ -287,7 +287,7 @@ def validate_csv_row_update_syntax(csv_data):
             print("actions values:")
             print(actions_values)
             update_actions = list(actions_values.keys())
-            if len(update_actions)==0:
+            if not update_actions:
                 errors.append("Update delimiter '{}' found in '{}' field but no valid update action found in value {}".format(UPDATE_DELIMITER, k, v))
             if len(update_actions) > 2:
                 errors.append("{} update actions '{}' found in '{}' field but only 2 are allowed".format(str(len(update_actions)), ", ".join(update_actions), k))
@@ -299,7 +299,7 @@ def validate_csv_row_update_syntax(csv_data):
             print(CSV_REQUIRED_FIELDS_ACTIONS[k])
             print("disallowed actions:")
             print(disallowed_actions)
-            if len(disallowed_actions) > 0:
+            if disallowed_actions:
                 errors.append("Invalid update action(s) '{}' found in {} field. Allowed actions for this field are '{}'".format(", ".join(disallowed_actions), k, ", ".join(CSV_REQUIRED_FIELDS_ACTIONS[k])))
         if v.strip() == UPDATE_ACTIONS['DELETE'].lower() and k in NO_DELETE_FIELDS:
              errors.append("Invalid update action '{}' in {} field. Cannot remove all values from a required field.".format(UPDATE_ACTIONS['DELETE'], k))
@@ -315,7 +315,7 @@ def update_record_from_csv(csv_data, version):
         errors.append("No existing record found for ROR ID '{}'".format(csv_data['id']))
     else:
         row_validation_errors = validate_csv_row_update_syntax(csv_data)
-        if len(row_validation_errors) > 0:
+        if row_validation_errors:
             errors.extend(row_validation_errors)
             print("row validation errors:")
             print(errors)
@@ -324,6 +324,7 @@ def update_record_from_csv(csv_data, version):
             existing_record = serializer.data
             print(existing_record)
             update_data = {}
+
             #domains
             if csv_data['domains']:
                 actions_values = get_actions_values(csv_data['domains'])
@@ -371,7 +372,7 @@ def update_record_from_csv(csv_data, version):
             for k,v in V2_EXTERNAL_ID_TYPES.items():
                 if csv_data['external_ids.type.' + v + '.all'] or csv_data['external_ids.type.' + v + '.preferred']:
                     updated_ext_id_types.append(v)
-            if len(updated_ext_id_types) > 0:
+            if updated_ext_id_types:
                 temp_ext_ids = copy.deepcopy(existing_record['external_ids'])
                 for t in updated_ext_id_types:
                     temp_all = []
@@ -414,7 +415,7 @@ def update_record_from_csv(csv_data, version):
                             temp_preferred = actions_values[UPDATE_ACTIONS['REPLACE']][0]
 
 
-                    if len(temp_all) == 0 and temp_preferred is None:
+                    if (not temp_all) and temp_preferred is None:
                         # remove all of type
                         if not existing_ext_id_obj:
                             errors.append("Attempting to delete external ID object with type {} that doesn't exist.".format(t))
@@ -438,7 +439,7 @@ def update_record_from_csv(csv_data, version):
             for k,v in V2_LINK_TYPES.items():
                 if csv_data['links.type.' + v]:
                     updated_link_types.append(v)
-            if len(updated_link_types) > 0:
+            if updated_link_types:
                 temp_names = copy.deepcopy(existing_record['links'])
                 for t in updated_link_types:
                     if csv_data['links.type.' + t]:
@@ -520,67 +521,112 @@ def update_record_from_csv(csv_data, version):
             for k,v in V2_NAME_TYPES.items():
                 if csv_data['names.types.' + v]:
                     updated_name_types.append(v)
-            if len(updated_name_types) > 0:
+            print("updated name types")
+            print(updated_name_types)
+            if updated_name_types:
                 temp_names = copy.deepcopy(existing_record['names'])
                 for t in updated_name_types:
-                    if csv_data['names.types' + t]:
-                        actions_values = get_actions_values(csv_data['names.types' + t])
+                    print("updating name type " + t)
+                    if csv_data['names.types.' + t]:
+                        actions_values = get_actions_values(csv_data['names.types.' + t])
                         for k, v in actions_values.items():
                             if v:
                                 vals_obj_list = []
                                 for val in v:
                                     vals_obj = {
                                         "value": None,
-                                        "lang_code": None
+                                        "lang": None
                                     }
                                     if "*" in v:
-                                        name_val, lang_code  = val.split("*")
+                                        name_val, lang  = val.split("*")
                                         vals_obj["value"] = name_val.strip()
-                                        vals_obj["lang_code"] = lang_code.strip()
+                                        vals_obj["lang"] = lang.strip()
                                     else:
                                         vals_obj["value"] = val.strip()
                                     vals_obj_list.append(vals_obj)
-                                actions_values[k] = vals_obj_list = []
+                                actions_values[k] = vals_obj_list
+                        print("updated actions values")
+                        print(actions_values)
                         if UPDATE_ACTIONS['DELETE'] in actions_values:
+                            print("delete in actions")
                             delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                            print(delete_values)
                             if delete_values is None:
                                 temp_names = [tn for tn in temp_names if t not in tn['types']]
                             else:
                                 for d in delete_values:
-                                    temp_names_match = [tn for tn in temp_names if (t in tn['types'] and tn['value'] == d['value'] and tn['lang_code'] == d['lang_code'])]
-                                    if len(temp_names_match) == 0:
-                                        errors.append("Attempting to delete link(s) that don't exist: {}".format(d))
-                                 #if name has multiple types, delete type only
+                                    temp_names_match = [tn for tn in temp_names if (t in tn['types'] and tn['value'] == d['value'] and tn['lang'] == d['lang'])]
+                                    if not temp_names_match:
+                                        errors.append("Attempting to delete name(s) that don't exist: {}".format(d))
                                     else:
                                         for tnm in temp_names_match:
-                                            if len(tnm['types'] > 1):
+                                            temp_names.remove(tnm)
+                                            #if name has multiple types, delete type only
+                                            if len(tnm['types']) > 1:
                                                 temp_types = [tnm_type for tnm_type in tnm['types'] if tnm_type != t]
                                                 tnm['types'] = temp_types
-                                #if name has only current type, delete obj
-
+                                                temp_names.append(tnm)
 
                         if UPDATE_ACTIONS['ADD'] in actions_values:
-                            add_values = [a for a in actions_values[UPDATE_ACTIONS['ADD']]]
+                            add_values = actions_values[UPDATE_ACTIONS['ADD']]
                             for a in add_values:
-                                if a in existing_links:
-                                    errors.append("Attempting to add link(s) that already exist: {}".format(a))
-                            for a in add_values:
-                                link_obj = {
-                                    "type": t,
-                                    "value": a
-                                }
-                                temp_links.append(link_obj)
+                                temp_names_match = [tn for tn in temp_names if (t in tn['types'] and tn['value'] == a['value'] and tn['lang'] == a['lang'])]
+                                # check if value, lang and type already exist
+                                if temp_names_match:
+                                    errors.append("Attempting to add names(s) that already exist: {}".format(a))
+                                else:
+                                    name_vals_match = [tn for tn in temp_names if (tn['value'] == a['value'] and tn['lang'] == a['lang'])]
+                                    if name_vals_match:
+                                        print("name vals match")
+                                        print(name_vals_match)
+                                        for nvm in name_vals_match:
+                                            # if value and lang exist but not type, add type only
+                                            if len(nvm['types']) > 0:
+                                                temp_names.remove(nvm)
+                                                nvm['types'].append(t)
+                                                temp_names.append(nvm)
+                                    else:
+                                        # if value and lang don't exist add new name obj
+                                        name_obj = {
+                                            "types": [t],
+                                            "value": a['value'],
+                                            "lang": a['lang']
+                                        }
+                                        temp_names.append(name_obj)
                         if UPDATE_ACTIONS['REPLACE'] in actions_values:
-                            temp_links = []
-                            for r in actions_values[UPDATE_ACTIONS['REPLACE']]:
-                                link_obj = {
-                                    "type": t,
-                                    "value": r
-                                }
-                                temp_links.append(link_obj)
-                        print("final temp links:")
-                        print(temp_links)
-                        update_data['links'] = temp_links
+                            temp_names_match = [tn for tn in temp_names if t in tn['types']]
+                            # remove all names of current type from temp names using same rules as delete
+                            if temp_names_match:
+                                for tnm in temp_names_match:
+                                    temp_names.remove(tnm)
+                                    #if name has multiple types, delete type only
+                                    if len(tnm['types']) > 1:
+                                        temp_types = [tnm_type for tnm_type in tnm['types'] if tnm_type != t]
+                                        tnm['types'] = temp_types
+                                        temp_names.append(tnm)
+                            replace_values = actions_values[UPDATE_ACTIONS['REPLACE']]
+                            for r in replace_values:
+                                name_vals_match = [tn for tn in temp_names if (tn['value'] == r['value'] and tn['lang'] == r['lang'])]
+                                # add new names of current type to temp names using same rules as add
+                                if name_vals_match:
+                                    for nvm in name_vals_match:
+                                        # if value and lang exist but not type, add type only
+                                        if len(nvm['types'] > 0):
+                                            temp_names.remove(nvm)
+                                            nvm['types'].append(t)
+                                            temp_names.append(nvm)
+                                else:
+                                    # if value and lang don't exist add new name obj
+                                    name_obj = {
+                                        "types": [t],
+                                        "value": r['value'],
+                                        "lang": r['lang']
+                                    }
+                                    temp_names.append(name_obj)
+
+                print("final temp names:")
+                print(temp_names)
+                update_data['names'] = temp_names
 
             #status
             if csv_data['status']:
@@ -616,7 +662,7 @@ def update_record_from_csv(csv_data, version):
                 print(temp_types)
                 update_data['types'] = temp_types
 
-            if len(errors) == 0:
+            if not errors:
                 errors, updated_record = update_record_from_json(update_data, existing_record)
     return errors, updated_record
 
