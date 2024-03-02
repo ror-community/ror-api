@@ -7,6 +7,7 @@ import io
 import os
 import re
 from datetime import datetime
+from iso639 import Lang
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
@@ -17,6 +18,7 @@ from rorapi.v2.serializers import (
     OrganizationSerializer as OrganizationSerializerV2
 )
 from rorapi.common.queries import get_ror_id, retrieve_organization
+from rorapi.common.serializers import ErrorsSerializer
 
 from rorapi.management.commands.generaterorid import check_ror_id
 
@@ -156,6 +158,20 @@ def update_locations(locations):
             except:
                 errors.append("Error retrieving Geonames data for ID {}. Please check that this is a valid Geonames ID".format(location['geonames_id']))
     return errors, updated_locations
+
+def get_lang_code(lang_string):
+    lang_code = None
+    error = None
+    if len(lang_string) == 2:
+        lang_string = lang_string.lower()
+    else:
+        lang_string = lang_string.title()
+    try:
+        lg = Lang(lang_string)
+        lang_code = lg.pt1
+    except Exception as e:
+        error = e.msg
+    return error, lang_code
 
 def get_file_from_url(url):
     rsp = requests.get(url)
@@ -533,14 +549,22 @@ def update_record_from_csv(csv_data, version):
                             if v:
                                 vals_obj_list = []
                                 for val in v:
+                                    print("val is")
+                                    print(val)
                                     vals_obj = {
                                         "value": None,
                                         "lang": None
                                     }
-                                    if "*" in v:
+                                    if LANG_DELIMITER in val:
+                                        print("has lang delim")
                                         name_val, lang  = val.split("*")
                                         vals_obj["value"] = name_val.strip()
-                                        vals_obj["lang"] = lang.strip()
+                                        if lang:
+                                            lang_errors, lang_code = get_lang_code(lang.strip())
+                                            if lang_errors:
+                                                errors.append("Could not convert language value to ISO code: {}".format(lang))
+                                            else:
+                                                vals_obj["lang"] = lang_code
                                     else:
                                         vals_obj["value"] = val.strip()
                                     vals_obj_list.append(vals_obj)
@@ -611,7 +635,7 @@ def update_record_from_csv(csv_data, version):
                                 if name_vals_match:
                                     for nvm in name_vals_match:
                                         # if value and lang exist but not type, add type only
-                                        if len(nvm['types'] > 0):
+                                        if len(nvm['types']) > 0:
                                             temp_names.remove(nvm)
                                             nvm['types'].append(t)
                                             temp_names.append(nvm)
@@ -663,10 +687,11 @@ def update_record_from_csv(csv_data, version):
                 update_data['types'] = temp_types
 
             if not errors:
-                errors, updated_record = update_record_from_json(update_data, existing_record)
+                validation_errors, updated_record = update_record_from_json(update_data, existing_record)
+                if validation_errors:
+                    errors = ErrorsSerializer(validation_errors).data
     return errors, updated_record
 
-    #return None, None
 
 def new_record_from_csv(csv_data, version):
     v2_data = copy.deepcopy(V2_TEMPLATE)
@@ -693,11 +718,12 @@ def new_record_from_csv(csv_data, version):
     #links
     for k,v in V2_LINK_TYPES.items():
         if csv_data['links.type.' + v]:
-            link_obj = {
-                "type": v,
-                "value": csv_data['links.type.' + v].strip()
-            }
-            v2_data['links'].append(link_obj)
+            for l in csv_data['links.type.' + v].split(';'):
+                link_obj = {
+                    "type": v,
+                    "value": l.strip()
+                }
+                v2_data['links'].append(link_obj)
 
     #locations
     if csv_data['locations.geonames_id']:
@@ -713,13 +739,23 @@ def new_record_from_csv(csv_data, version):
     temp_names = []
     for k,v in V2_NAME_TYPES.items():
         if csv_data['names.types.' + v]:
-            name_lang = csv_data['names.types.' + v].split(LANG_DELIMITER)
-            name_obj = {
-                "types": v,
-                "value": name_lang[0].strip(),
-                "lang": name_lang[1].strip() if name_lang[1] else None
-            }
-            temp_names.append(name_obj)
+            for n in csv_data['names.types.' + v].split(';'):
+                if LANG_DELIMITER in n:
+                    name_val, lang_code  = n.split("*")
+                    if lang:
+                        lang_errors, lang_code = get_lang_code(lang.strip())
+                        if lang_errors:
+                            errors.append("Could not convert language value to ISO code: {}".format(lang))
+                else:
+                    name_val = n
+                    lang_code = None
+
+                name_obj = {
+                    "types": [v],
+                    "value": name_val.strip(),
+                    "lang": lang_code
+                }
+                temp_names.append(name_obj)
     print("temp names 1:")
     print(temp_names)
     name_values = [n['value'] for n in temp_names]
@@ -732,7 +768,7 @@ def new_record_from_csv(csv_data, version):
         types = []
         for t in temp_names:
             if t['value'] == d:
-                types.append(t['types'])
+                types.extend(t['types'])
         name_obj = {
             "types": types,
             "value": d,
@@ -753,36 +789,49 @@ def new_record_from_csv(csv_data, version):
     if csv_data['types']:
         v2_data['types'] = [t.strip() for t in csv_data['types'].split(';')]
 
-    errors, new_record = new_record_from_json(v2_data, version)
+    validation_errors, new_record = new_record_from_json(v2_data, version)
+    if validation_errors:
+        errors = ErrorsSerializer(validation_errors).data
     return errors, new_record
 
 def process_csv(csv_file, version):
     print("Processing CSV")
     errors = None
-    row_errors = {}
+    report = []
+    report_fields = ['row', 'ror_id', 'action', 'errors']
     skipped_count = 0
     updated_count = 0
     new_count = 0
     read_file = csv_file.read().decode('utf-8')
     print(read_file)
     reader = csv.DictReader(io.StringIO(read_file))
-    row_num = 1
+    row_num = 2
     for row in reader:
+        ror_id = None
         print("Row data")
         print(row)
         if row['id']:
+            action = 'updated'
+            ror_id = row['id']
             errors, v2_record = update_record_from_csv(row, version)
         else:
+            action = 'updated'
             errors, v2_record = new_record_from_csv(row, version)
         if errors is None:
+            ror_id = v2_record['id']
             serializer = OrganizationSerializerV2(v2_record)
             json_obj = json.loads(JSONRenderer().render(serializer.data))
             print(json_obj)
         else:
+            action = 'skipped'
             print(errors)
 
+        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": errors})
+        row_num += 1
+        print(report)
+
         '''
-        ror_id = v2_record['id']
+
         full_path = os.path.join(DATA['DIR'], ror_id.split('https://ror.org/')[1] + '.json')
         serializer = OrganizationSerializerV2(v2_record)
         json_obj = json.loads(JSONRenderer().render(serializer.data))

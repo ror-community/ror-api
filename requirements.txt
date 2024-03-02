@@ -24,3 +24,4 @@ update_address @ git+https://github.com/ror-community/update_address.git@v2-loca
 launchdarkly-server-sdk==7.6.1
 jsonschema==3.2.0
 python-magic
+iso639-lang
