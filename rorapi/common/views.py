@@ -229,7 +229,7 @@ class FileUploadView(APIView):
                         file_object.seek(0)
                         #full_path = os.path.join(DATA['DIR'], file_object.name)
                         #save_file(file_object, full_path)
-                        errors = validation.process_csv(file_object, version)
+                        errors, msg = validation.process_csv(file_object, version)
 
                     else:
                         errors=Errors(csv_validation_errors)
@@ -246,7 +246,7 @@ class FileUploadView(APIView):
             )
 
         return Response(
-            request.data,
+            msg,
             status=status.HTTP_201_CREATED
         )
 

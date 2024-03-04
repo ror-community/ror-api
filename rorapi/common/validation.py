@@ -6,6 +6,7 @@ import json
 import io
 import os
 import re
+import shutil
 from datetime import datetime
 from iso639 import Lang
 from rest_framework.exceptions import ParseError
@@ -23,6 +24,8 @@ from rorapi.common.serializers import ErrorsSerializer
 from rorapi.management.commands.generaterorid import check_ror_id
 
 NOW = datetime.now()
+
+DIR_NAME = NOW.strftime("%Y-%m-%d-%H-%M-%S") + "-ror-records"
 
 ADMIN = {
     "created": {
@@ -354,7 +357,8 @@ def update_record_from_csv(csv_data, version):
                     else:
                         for d in delete_values:
                             if d not in temp_domains:
-                                errors.append("Attempting to delete dommain(s) that don't exist: {}".format(d))
+                                errors.append("Attempting to delete domain(s) that don't exist: {}".format(d))
+
                         temp_domains = [d for d in temp_domains if d not in delete_values]
                     print("temp domains delete")
                     print(temp_domains)
@@ -362,7 +366,7 @@ def update_record_from_csv(csv_data, version):
                     add_values = actions_values[UPDATE_ACTIONS['ADD']]
                     for a in add_values:
                         if a in temp_domains:
-                            errors.append("Attempting to add dommain(s) that already exist: {}".format(a))
+                            errors.append("Attempting to add domain(s) that already exist: {}".format(a))
                     print(add_values)
                     temp_domains.extend(add_values)
                     print("temp domains add")
@@ -401,6 +405,7 @@ def update_record_from_csv(csv_data, version):
                         temp_preferred = existing_ext_id_obj['preferred']
                     if len(existing_ext_ids_type) > 1:
                         errors.append("Something is wrong. Multiple external ID objects with type ".format(t))
+
                     # external_ids.all
                     if csv_data['external_ids.type.' + t + '.all']:
                         actions_values = get_actions_values(csv_data['external_ids.type.' + t + '.all'])
@@ -430,7 +435,6 @@ def update_record_from_csv(csv_data, version):
                         if UPDATE_ACTIONS['REPLACE'] in actions_values:
                             temp_preferred = actions_values[UPDATE_ACTIONS['REPLACE']][0]
 
-
                     if (not temp_all) and temp_preferred is None:
                         # remove all of type
                         if not existing_ext_id_obj:
@@ -438,6 +442,8 @@ def update_record_from_csv(csv_data, version):
                         temp_ext_ids = [i for i in temp_ext_ids if i['type'] != t]
 
                     else:
+                        if not temp_preferred in temp_all:
+                            errors.append("Changes to external ID object with type {} result in preferred value '{}' not in all values '{}'".format(t, temp_preferred, ", ".join(temp_all)))
                         # remove all of type and replace with new obj
                         new_ext_id_obj = {
                                     "type": t,
@@ -695,7 +701,7 @@ def update_record_from_csv(csv_data, version):
 
 def new_record_from_csv(csv_data, version):
     v2_data = copy.deepcopy(V2_TEMPLATE)
-
+    errors = None
     #domains
     if csv_data['domains']:
         v2_data['domains'] = [d.strip() for d in csv_data['domains'].split(';')]
@@ -794,9 +800,37 @@ def new_record_from_csv(csv_data, version):
         errors = ErrorsSerializer(validation_errors).data
     return errors, new_record
 
+def save_record_file(ror_id, updated, json_obj):
+    dir_path = os.path.join(DATA['DIR'],DIR_NAME)
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
+    subdir = 'updates' if updated else 'new'
+    if not os.path.exists(os.path.join(dir_path, subdir)):
+        os.mkdir(os.path.join(dir_path, subdir))
+    full_path = os.path.join(dir_path, subdir, ror_id.split('https://ror.org/')[1] + '.json')
+    with open(full_path, "w") as outfile:
+        json.dump(json_obj, outfile, ensure_ascii=False, indent=2)
+
+def save_report_file(report, report_fields, csv_file):
+    dir_path = os.path.join(DATA['DIR'],DIR_NAME)
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
+    filepath =  os.path.join(dir_path, 'report.csv')
+    with open(filepath, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=report_fields)
+            writer.writeheader()
+            writer.writerows(report)
+    # save copy of input file
+    filepath =  os.path.join(dir_path, 'input.csv')
+    csv_file.seek(0)
+    with open(filepath, 'wb+') as f:
+        for chunk in csv_file.chunks():
+            f.write(chunk)
+
 def process_csv(csv_file, version):
     print("Processing CSV")
     errors = None
+    success_msg = None
     report = []
     report_fields = ['row', 'ror_id', 'action', 'errors']
     skipped_count = 0
@@ -808,54 +842,41 @@ def process_csv(csv_file, version):
     row_num = 2
     for row in reader:
         ror_id = None
+        updated = False
         print("Row data")
         print(row)
         if row['id']:
-            action = 'updated'
             ror_id = row['id']
+            updated = True
             errors, v2_record = update_record_from_csv(row, version)
         else:
-            action = 'updated'
             errors, v2_record = new_record_from_csv(row, version)
         if errors is None:
+            if updated:
+                action = 'updated'
+                updated_count += 1
+            else:
+                action = 'created'
+                new_count += 1
             ror_id = v2_record['id']
             serializer = OrganizationSerializerV2(v2_record)
             json_obj = json.loads(JSONRenderer().render(serializer.data))
             print(json_obj)
+            #create file
+            file = save_record_file(ror_id, updated, json_obj)
         else:
             action = 'skipped'
+            skipped_count += 1
             print(errors)
-
-        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": errors})
+        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": "; ".join(errors)})
         row_num += 1
         print(report)
+    if new_count > 0 or updated_count > 0 or skipped_count > 0:
+        #create report file
+        save_report_file(report, report_fields, csv_file)
+        # create zip file
+        zipfile = shutil.make_archive(os.path.join(DATA['DIR'],DIR_NAME), 'zip', DATA['DIR'], DIR_NAME)
 
-        '''
-
-        full_path = os.path.join(DATA['DIR'], ror_id.split('https://ror.org/')[1] + '.json')
-        serializer = OrganizationSerializerV2(v2_record)
-        json_obj = json.loads(JSONRenderer().render(serializer.data))
-        with open(full_path, "w") as outfile:
-            json.dump(json_obj, outfile, ensure_ascii=False, indent=2)
-         '''
-    '''
-        if row['ror_id']:
-            row_error, updated_record = update_from_csv(row)
-            if row_error:
-                row_errors[row_num] = ror_error
-                skipped_count += 1
-            else:
-                updated_count += 1
-        else:
-            row_error, new_record = new_record_from_csv(row)
-            if row_error:
-                row_errors[row_num] = ror_error
-                skipped_count += 1
-            else:
-                new_count +=1
-        row_num += 1
-    if len(ror_errors):
-        #create row errors csv
-    if updated_count > 0 or updated_count > 0 or skipped_count > 0:
-        # created zip
-    '''
+    success_msg = {"zipfile": zipfile, "rows processed": new_count + updated_count + skipped_count, "created": new_count, "udpated": updated_count, "skipped": skipped_count}
+    print(success_msg)
+    return errors, success_msg
