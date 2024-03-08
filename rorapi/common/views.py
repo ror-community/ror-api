@@ -42,8 +42,29 @@ import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
 
+class OurTokenPermission(BasePermission):
+    """
+    Allows access only to using our token and user name.
+    """
+
+    def has_permission(self, request, view):
+        has_permission = False
+        if request.method == 'GET':
+            has_permission = True
+        else:
+            header_token = request.headers.get("Token", None)
+            header_user = request.headers.get("Route-User", None)
+            user = os.environ.get("ROUTE_USER")
+            token = os.environ.get("TOKEN")
+            if header_token == token and header_user == user:
+                has_permission = True
+
+        return has_permission
+
 
 class OrganizationViewSet(viewsets.ViewSet):
+    #permission_classes = [OurTokenPermission]
+
     lookup_value_regex = r"((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*"
 
     def list(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
@@ -92,6 +113,7 @@ class OrganizationViewSet(viewsets.ViewSet):
             serializer = OrganizationSerializerV1(organization)
         return Response(serializer.data)
 
+    permission_classes = [OurTokenPermission]
     def create(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         errors = None
         if version == "v2":
@@ -159,19 +181,6 @@ class HeartbeatView(View):
         return HttpResponse(status=500)
 
 
-class OurTokenPermission(BasePermission):
-    """
-    Allows access only to using our token and user name.
-    """
-
-    def has_permission(self, request, view):
-        header_token = request.headers.get("Token", None)
-        header_user = request.headers.get("Route-User", None)
-        user = os.environ.get("ROUTE_USER")
-        token = os.environ.get("TOKEN")
-        return header_token == token and header_user == user
-
-
 class GenerateAddress(APIView):
     permission_classes = [OurTokenPermission]
 
@@ -184,7 +193,7 @@ class GenerateAddress(APIView):
 
 
 class GenerateId(APIView):
-    spermission_classes = [OurTokenPermission]
+    permission_classes = [OurTokenPermission]
 
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         id = check_ror_id(version)
@@ -194,42 +203,31 @@ class GenerateId(APIView):
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
 
-    def get(self, request, branch):
+    def get(self, request, branch, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         st = 200
-        msg = process_files(branch)
+        msg = process_files(branch, version)
         if msg["status"] == "ERROR":
             st = 400
         return Response({"status": msg["status"], "msg": msg["msg"]}, status=st)
 
-def save_file(file, full_path):
-    with open(full_path, 'wb+') as f:
-        for chunk in file.chunks():
-            f.write(chunk)
 
 class FileUploadView(APIView):
+    #permission_classes = [OurTokenPermission]
     parser_classes = (MultiPartParser, FormParser)
-    #serializer_class = FileUploadSerializer
 
     def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         errors = None
-        #serializer = self.serializer_class(data=request.data)
-        #if serializer.is_valid():
-            # you can access the file like this from serializer
-            # uploaded_file = serializer.validated_data["file"]
-            #serializer.save()
         if version == 'v2':
             if request.data:
                 file_object = request.data['file']
                 mime_type = magic.from_buffer(file_object.read(2048))
                 print(mime_type)
-                if "ASCII text" in mime_type or "CSV text" in mime_type:
+                if "ASCII text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
                     file_object.seek(0)
                     csv_validation_errors = validation.validate_csv(file_object)
                     if len(csv_validation_errors) == 0:
                         file_object.seek(0)
-                        #full_path = os.path.join(DATA['DIR'], file_object.name)
-                        #save_file(file_object, full_path)
-                        errors, msg = validation.process_csv(file_object, version)
+                        msg = validation.process_csv(file_object, version)
 
                     else:
                         errors=Errors(csv_validation_errors)
@@ -259,54 +257,3 @@ class FileUploadView(APIView):
                 response = HttpResponse(fh, content_type=mime_type)
                 response['Content-Disposition'] = "attachment; filename=%s" % filename
                 return response
-
-
-class BulkCreateUpdate(APIView):
-    #permission_classes = [OurTokenPermission]
-
-    '''
-    def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
-        errors = None
-        row_errors = {}
-        skipped_count = 0
-        updated_count = 0
-        new_count = 0
-        if version == 'v2':
-            if request.data:
-                csv_errors = validate_csv(request.data)
-                if csv_errors:
-                    errors = csv_errors
-                else:
-                    with open(request.data, 'r') as csv:
-                        row_num = 1
-                        for row in csv:
-                            if row['ror_id']:
-                                row_error, updated_record = update_from_csv(row)
-                                if row_error:
-                                    row_errors[row_num] = ror_error
-                                    skipped_count += 1
-                                else:
-                                    updated_count += 1
-                            else:
-                                row_error, new_record = create_from_csv(row)
-                                if row_error:
-                                    row_errors[row_num] = ror_error
-                                    skipped_count += 1
-                                else:
-                                    new_count +=1
-                            row_num += 1
-                    if len(ror_errors):
-                        #create row errors csv
-                    if updated_count > 0 or updated_count > 0 or skipped_count > 0:
-                        # created zip
-            else:
-                errors = Errors(["Could not processs request. No CSV file included in request."])
-        else:
-            errors = Errors(["Version {} does not support creating records".format(version)])
-        if errors is not None:
-            print(errors)
-            return Response(
-                ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
-            )
-        return Response(zippedfile)
-        '''

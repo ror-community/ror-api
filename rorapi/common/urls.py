@@ -13,7 +13,7 @@ urlpatterns = [
     url(r"^(?P<version>(v1|v2))\/generateaddress\/(?P<geonamesid>[0-9]+)", GenerateAddress.as_view()),
     path('generateaddress/<str:geonamesid>', GenerateAddress.as_view()),
     url(r"^generateid$", GenerateId.as_view()),
-    path('indexdata/<str:branch>', IndexData.as_view()),
+    path(r"^(?P<version>(v1|v2))\/indexdata/(?P<branch>.*)", IndexData.as_view()),
     url(r"^(?P<version>(v1|v2))\/", include(views.organizations_router.urls)),
     url(r"^", include(views.organizations_router.urls)),
     url(r"^docs/", include_docs_urls(title="Research Organization Registry")),

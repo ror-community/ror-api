@@ -7,6 +7,7 @@ import io
 import os
 import re
 import shutil
+import urllib
 from datetime import datetime
 from iso639 import Lang
 from rest_framework.exceptions import ParseError
@@ -23,23 +24,19 @@ from rorapi.common.serializers import ErrorsSerializer
 
 from rorapi.management.commands.generaterorid import check_ror_id
 
-NOW = datetime.now()
-
-DIR_NAME = NOW.strftime("%Y-%m-%d-%H-%M-%S") + "-ror-records"
-
 ADMIN = {
     "created": {
-        "date": NOW.strftime("%Y-%m-%d"),
+        "date": "",
         "schema_version": "2.0"
     },
     "last_modified": {
-        "date": NOW.strftime("%Y-%m-%d"),
+        "date": "",
         "schema_version": "2.0"
     }
 }
 
 LAST_MOD = {
-    "date": NOW.strftime("%Y-%m-%d"),
+    "date": "",
     "schema_version": "2.0"
 }
 
@@ -131,6 +128,7 @@ def update_record(json_input, existing_record):
 
 def update_last_mod(record):
     record['admin']['last_modified'] = copy.deepcopy(LAST_MOD)
+    record['admin']['last_modified']['date'] = datetime.now().strftime("%Y-%m-%d")
     return record
 
 def check_optional_fields(record):
@@ -146,7 +144,10 @@ def add_missing_optional_fields(record):
     return record
 
 def add_created_last_mod(record):
+    today = datetime.now().strftime("%Y-%m-%d")
     record['admin'] = copy.deepcopy(ADMIN)
+    record['admin']['created']['date'] = today
+    record['admin']['last_modified']['date'] = today
     return record
 
 def update_locations(locations):
@@ -462,7 +463,7 @@ def update_record_from_csv(csv_data, version):
                 if csv_data['links.type.' + v]:
                     updated_link_types.append(v)
             if updated_link_types:
-                temp_names = copy.deepcopy(existing_record['links'])
+                temp_links = copy.deepcopy(existing_record['links'])
                 for t in updated_link_types:
                     if csv_data['links.type.' + t]:
                         actions_values = get_actions_values(csv_data['links.type.' + t])
@@ -664,7 +665,7 @@ def update_record_from_csv(csv_data, version):
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
                     errors.append("Cannot delete required field 'status'")
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
-                    update_data['status'] = actions_values[UPDATE_ACTIONS['REPLACE']][0]
+                    update_data['status'] = actions_values[UPDATE_ACTIONS['REPLACE']][0].lower()
 
             #types
             if csv_data['types']:
@@ -673,7 +674,7 @@ def update_record_from_csv(csv_data, version):
                 print("initial temp types:")
                 print(temp_types)
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
-                    delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
+                    delete_values = [av.lower() for av in actions_values[UPDATE_ACTIONS['DELETE']]]
                     for d in delete_values:
                         if d not in temp_types:
                             errors.append("Attempting to delete type(s) that don't exist: {}".format(d))
@@ -681,13 +682,13 @@ def update_record_from_csv(csv_data, version):
                         errors.append("Cannot remove all values from required field 'types'")
                     temp_types = [t for t in temp_types if t not in delete_values]
                 if UPDATE_ACTIONS['ADD'] in actions_values:
-                    add_values = actions_values[UPDATE_ACTIONS['ADD']]
+                    add_values = [av.lower() for av in actions_values[UPDATE_ACTIONS['ADD']]]
                     for a in add_values:
                         if a in temp_types:
                             errors.append("Attempting to add type(s) that already exist: {}".format(a))
                     temp_types.extend(add_values)
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
-                    temp_types = actions_values[UPDATE_ACTIONS['REPLACE']]
+                    temp_types = [av.lower() for av in actions_values[UPDATE_ACTIONS['REPLACE']]]
                 print("final temp types:")
                 print(temp_types)
                 update_data['types'] = temp_types
@@ -701,10 +702,10 @@ def update_record_from_csv(csv_data, version):
 
 def new_record_from_csv(csv_data, version):
     v2_data = copy.deepcopy(V2_TEMPLATE)
-    errors = None
+    errors = []
     #domains
     if csv_data['domains']:
-        v2_data['domains'] = [d.strip() for d in csv_data['domains'].split(';')]
+        v2_data['domains'] = [d.strip() for d in csv_data['domains'].strip(';').split(';')]
 
     #established
     if csv_data['established']:
@@ -713,7 +714,7 @@ def new_record_from_csv(csv_data, version):
     #external ids
     for k,v in V2_EXTERNAL_ID_TYPES.items():
         if csv_data['external_ids.type.' + v + '.all']:
-            all_ids = [i.strip() for i in csv_data['external_ids.type.' + v + '.all'].split(';')]
+            all_ids = [i.strip() for i in csv_data['external_ids.type.' + v + '.all'].strip(';').split(';')]
             ext_id_obj = {
                 "type": v,
                 "all": all_ids,
@@ -724,7 +725,7 @@ def new_record_from_csv(csv_data, version):
     #links
     for k,v in V2_LINK_TYPES.items():
         if csv_data['links.type.' + v]:
-            for l in csv_data['links.type.' + v].split(';'):
+            for l in csv_data['links.type.' + v].strip(';').split(';'):
                 link_obj = {
                     "type": v,
                     "value": l.strip()
@@ -733,7 +734,7 @@ def new_record_from_csv(csv_data, version):
 
     #locations
     if csv_data['locations.geonames_id']:
-        geonames_ids = [i.strip() for i in csv_data['locations.geonames_id'].split(';')]
+        geonames_ids = [i.strip() for i in csv_data['locations.geonames_id'].strip(';').split(';')]
         for geonames_id in geonames_ids:
             location_obj = {
                 "geonames_id": geonames_id,
@@ -745,9 +746,9 @@ def new_record_from_csv(csv_data, version):
     temp_names = []
     for k,v in V2_NAME_TYPES.items():
         if csv_data['names.types.' + v]:
-            for n in csv_data['names.types.' + v].split(';'):
+            for n in csv_data['names.types.' + v].strip(';').split(';'):
                 if LANG_DELIMITER in n:
-                    name_val, lang_code  = n.split("*")
+                    name_val, lang  = n.split("*")
                     if lang:
                         lang_errors, lang_code = get_lang_code(lang.strip())
                         if lang_errors:
@@ -768,40 +769,42 @@ def new_record_from_csv(csv_data, version):
     dup_names = []
     for n in name_values:
         if name_values.count(n) > 1:
-            dup_names.append(n)
-    dup_names_types = []
-    for d in dup_names:
-        types = []
-        for t in temp_names:
-            if t['value'] == d:
-                types.extend(t['types'])
-        name_obj = {
-            "types": types,
-            "value": d,
-            "lang": None
-        }
-        dup_names_types.append(name_obj)
-    temp_names = [t for t in temp_names if t['value'] not in dup_names]
-    temp_names.append(name_obj)
+            if n not in dup_names:
+                dup_names.append(n)
+    if dup_names:
+        dup_names_objs = []
+        for d in dup_names:
+            types = []
+            for t in temp_names:
+                if t['value'] == d:
+                    types.extend(t['types'])
+            name_obj = {
+                "types": types,
+                "value": d,
+                "lang": None
+            }
+            dup_names_objs.append(name_obj)
+        temp_names = [t for t in temp_names if t['value'] not in dup_names]
+        temp_names.extend(dup_names_objs)
     print("temp names 2:")
     print(temp_names)
     v2_data['names'] = temp_names
 
     #status
     if csv_data['status']:
-        v2_data['status'] = csv_data['status'].strip()
+        v2_data['status'] = csv_data['status'].strip().lower()
 
     #types
     if csv_data['types']:
-        v2_data['types'] = [t.strip() for t in csv_data['types'].split(';')]
+        v2_data['types'] = [t.strip().lower() for t in csv_data['types'].strip(';').split(';')]
 
     validation_errors, new_record = new_record_from_json(v2_data, version)
     if validation_errors:
         errors = ErrorsSerializer(validation_errors).data
     return errors, new_record
 
-def save_record_file(ror_id, updated, json_obj):
-    dir_path = os.path.join(DATA['DIR'],DIR_NAME)
+def save_record_file(ror_id, updated, json_obj, dir_name):
+    dir_path = os.path.join(DATA['DIR'],dir_name)
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
     subdir = 'updates' if updated else 'new'
@@ -811,8 +814,8 @@ def save_record_file(ror_id, updated, json_obj):
     with open(full_path, "w") as outfile:
         json.dump(json_obj, outfile, ensure_ascii=False, indent=2)
 
-def save_report_file(report, report_fields, csv_file):
-    dir_path = os.path.join(DATA['DIR'],DIR_NAME)
+def save_report_file(report, report_fields, csv_file, dir_name):
+    dir_path = os.path.join(DATA['DIR'],dir_name)
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
     filepath =  os.path.join(dir_path, 'report.csv')
@@ -829,6 +832,7 @@ def save_report_file(report, report_fields, csv_file):
 
 def process_csv(csv_file, version):
     print("Processing CSV")
+    dir_name = datetime.now().strftime("%Y-%m-%d-%H:%M:%S") + "-ror-records"
     errors = None
     success_msg = None
     report = []
@@ -848,10 +852,10 @@ def process_csv(csv_file, version):
         if row['id']:
             ror_id = row['id']
             updated = True
-            errors, v2_record = update_record_from_csv(row, version)
+            row_errors, v2_record = update_record_from_csv(row, version)
         else:
-            errors, v2_record = new_record_from_csv(row, version)
-        if errors is None:
+            row_errors, v2_record = new_record_from_csv(row, version)
+        if not row_errors:
             if updated:
                 action = 'updated'
                 updated_count += 1
@@ -863,20 +867,28 @@ def process_csv(csv_file, version):
             json_obj = json.loads(JSONRenderer().render(serializer.data))
             print(json_obj)
             #create file
-            file = save_record_file(ror_id, updated, json_obj)
+            file = save_record_file(ror_id, updated, json_obj, dir_name)
         else:
             action = 'skipped'
             skipped_count += 1
-            print(errors)
-        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": "; ".join(errors)})
+            #print(errors)
+        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": row_errors if row_errors else ''})
         row_num += 1
         print(report)
     if new_count > 0 or updated_count > 0 or skipped_count > 0:
         #create report file
-        save_report_file(report, report_fields, csv_file)
+        save_report_file(report, report_fields, csv_file, dir_name)
         # create zip file
-        zipfile = shutil.make_archive(os.path.join(DATA['DIR'],DIR_NAME), 'zip', DATA['DIR'], DIR_NAME)
+        zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
+        # upload to S3
+        try:
+            DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
+            s3_file = f"http://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
+        except Exception as e:
+            errors = e
+            print(errors)
 
-    success_msg = {"zipfile": zipfile, "rows processed": new_count + updated_count + skipped_count, "created": new_count, "udpated": updated_count, "skipped": skipped_count}
+
+    success_msg = {"file": s3_file, "rows processed": new_count + updated_count + skipped_count, "created": new_count, "udpated": updated_count, "skipped": skipped_count}
     print(success_msg)
-    return errors, success_msg
+    return success_msg
