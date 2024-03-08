@@ -51,7 +51,7 @@ class Organization(Entity):
             data, ["established", "id", "status"]
         )
         self.admin = Admin(data.admin)
-        self.domains = data.domains.sort()
+        self.domains = sorted(data.domains)
         sorted_ext_ids = sorted(data.external_ids, key=lambda x: x['type'])
         self.external_ids = [
             Entity(e, ["type", "preferred", "all"]) for e in sorted_ext_ids
@@ -64,9 +64,9 @@ class Organization(Entity):
         self.names = [Entity(n, ["value", "lang", "types"]) for n in sorted_names]
         sorted_rels = sorted(data.relationships, key=lambda x: x['type'])
         self.relationships = [
-            Entity(r, ["type", "label", "id"]) for r in data.relationships
+            Entity(r, ["type", "label", "id"]) for r in sorted_rels
         ]
-        self.types = data.types.sort()
+        self.types = sorted(data.types)
 
 
 class ListResult:

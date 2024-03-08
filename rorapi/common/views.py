@@ -1,22 +1,18 @@
 from rest_framework import viewsets, routers, status
-from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import redirect
-from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import BasePermission
 from rest_framework.views import APIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from rorapi.settings import DATA
-import json
-import copy
-import csv
-import io
 import mimetypes
 import magic
 
-from rorapi.common import validation
+from rorapi.common.create_update import new_record_from_json, update_record_from_json
+from rorapi.common.csv_bulk import process_csv
+from rorapi.common.csv_utils import validate_csv
 from rorapi.settings import REST_FRAMEWORK
 from rorapi.common.matching import match_organizations
 from rorapi.common.models import (
@@ -113,7 +109,6 @@ class OrganizationViewSet(viewsets.ViewSet):
             serializer = OrganizationSerializerV1(organization)
         return Response(serializer.data)
 
-    permission_classes = [OurTokenPermission]
     def create(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         errors = None
         if version == "v2":
@@ -121,7 +116,7 @@ class OrganizationViewSet(viewsets.ViewSet):
             if 'id' in json_input and (json_input['id'] is not None and json_input['id'] != ""):
                 errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_inputjson['id'])])
             else:
-                errors, valid_data = validation.new_record_from_json(json_input, version)
+                errors, valid_data = new_record_from_json(json_input, version)
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -152,7 +147,7 @@ class OrganizationViewSet(viewsets.ViewSet):
             elif get_ror_id(json['id']) != ror_id:
                 errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
             else:
-                errors, valid_data = validation.update_record_from_json(json, organization)
+                errors, valid_data = update_record_from_json(json, organization)
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -224,10 +219,10 @@ class FileUploadView(APIView):
                 print(mime_type)
                 if "ASCII text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
                     file_object.seek(0)
-                    csv_validation_errors = validation.validate_csv(file_object)
+                    csv_validation_errors = validate_csv(file_object)
                     if len(csv_validation_errors) == 0:
                         file_object.seek(0)
-                        msg = validation.process_csv(file_object, version)
+                        msg = process_csv(file_object, version)
 
                     else:
                         errors=Errors(csv_validation_errors)
