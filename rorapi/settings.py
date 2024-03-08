@@ -254,6 +254,7 @@ ROR_DUMP['GITHUB_TOKEN'] = os.environ.get('GITHUB_TOKEN')
 
 DATA = {}
 DATA['DATA_STORE'] = os.environ.get('DATA_STORE', None)
+DATA['PUBLIC_STORE'] = os.environ.get('PUBLIC_STORE', None)
 DATA['WORKING_DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data', '')
 
 if DATA['DATA_STORE']:
