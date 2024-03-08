@@ -48,18 +48,25 @@ class Organization(Entity):
         if "_source" in data:
             data = data["_source"]
         super(Organization, self).__init__(
-            data, ["domains", "established", "id", "types", "status"]
+            data, ["established", "id", "status"]
         )
         self.admin = Admin(data.admin)
+        self.domains = data.domains.sort()
+        sorted_ext_ids = sorted(data.external_ids, key=lambda x: x['type'])
         self.external_ids = [
-            Entity(e, ["type", "preferred", "all"]) for e in data.external_ids
+            Entity(e, ["type", "preferred", "all"]) for e in sorted_ext_ids
         ]
-        self.links = [Entity(l, ["value", "type"]) for l in data.links]
-        self.locations = [Location(l) for l in data.locations]
-        self.names = [Entity(n, ["value", "lang", "types"]) for n in data.names]
+        sorted_links = sorted(data.links, key=lambda x: x['type'])
+        self.links = [Entity(l, ["value", "type"]) for l in sorted_links]
+        sorted_locations = sorted(data.locations, key=lambda x: x['geonames_id'])
+        self.locations = [Location(l) for l in sorted_locations]
+        sorted_names = sorted(data.names, key=lambda x: x['value'])
+        self.names = [Entity(n, ["value", "lang", "types"]) for n in sorted_names]
+        sorted_rels = sorted(data.relationships, key=lambda x: x['type'])
         self.relationships = [
             Entity(r, ["type", "label", "id"]) for r in data.relationships
         ]
+        self.types = data.types.sort()
 
 
 class ListResult:

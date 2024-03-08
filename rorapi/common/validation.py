@@ -16,6 +16,10 @@ from rest_framework.renderers import JSONRenderer
 from rorapi.common.models import Errors
 import update_address as ua
 from rorapi.settings import DATA
+from rorapi.v2.models import (
+    Organization as OrganizationV2,
+    ListResult as ListResultV2
+)
 from rorapi.v2.serializers import (
     OrganizationSerializer as OrganizationSerializerV2
 )
@@ -120,6 +124,16 @@ LANG_DELIMITER = "*"
 
 UPDATE_DELIMITER = "=="
 
+SORT_KEYS = {
+    "domains": None,
+    "external_ids": "type",
+    "links": "type",
+    "locations": "geonames_id",
+    "names": "value",
+    "relationships": "type",
+    "types": None
+}
+
 def update_record(json_input, existing_record):
     record = copy.deepcopy(existing_record)
     for k, v in json_input.items():
@@ -176,6 +190,18 @@ def get_lang_code(lang_string):
     except Exception as e:
         error = e.msg
     return error, lang_code
+
+def sort_list_fields(v2_record):
+    for field in v2_record:
+        if field in SORT_KEYS:
+            if SORT_KEYS[field] is not None:
+                sort_key = SORT_KEYS[field]
+                sorted_vals = sorted(v2_record[field], key=lambda x: x[sort_key])
+            else:
+                sorted_vals = v2_record[field].sort()
+            v2_record[field] = sorted_vals
+    return v2_record
+
 
 def get_file_from_url(url):
     rsp = requests.get(url)
@@ -863,7 +889,8 @@ def process_csv(csv_file, version):
                 action = 'created'
                 new_count += 1
             ror_id = v2_record['id']
-            serializer = OrganizationSerializerV2(v2_record)
+            sorted_record = sort_list_fields(v2_record)
+            serializer = OrganizationSerializerV2(sorted_record)
             json_obj = json.loads(JSONRenderer().render(serializer.data))
             print(json_obj)
             #create file
