@@ -63,7 +63,7 @@ class OurTokenPermission(BasePermission):
 
 
 class OrganizationViewSet(viewsets.ViewSet):
-    #permission_classes = [OurTokenPermission]
+    permission_classes = [OurTokenPermission]
 
     lookup_value_regex = r"((https?(:\/\/|%3A%2F%2F))?ror\.org(\/|%2F))?.*"
 
@@ -212,7 +212,7 @@ class IndexData(APIView):
 
 
 class FileUploadView(APIView):
-    #permission_classes = [OurTokenPermission]
+    permission_classes = [OurTokenPermission]
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):

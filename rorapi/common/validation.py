@@ -489,7 +489,7 @@ def update_record_from_csv(csv_data, version):
                                 }
                                 temp_links.append(link_obj)
                         if UPDATE_ACTIONS['REPLACE'] in actions_values:
-                            temp_links = []
+                            temp_links = [l for l in temp_links if l['type'] != t]
                             for r in actions_values[UPDATE_ACTIONS['REPLACE']]:
                                 link_obj = {
                                     "type": t,
@@ -881,14 +881,15 @@ def process_csv(csv_file, version):
         # create zip file
         zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
         # upload to S3
+        '''
         try:
             DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
-            s3_file = f"http://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
+            zipfile = f"https://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
         except Exception as e:
             errors = e
             print(errors)
+        '''
 
-
-    success_msg = {"file": s3_file, "rows processed": new_count + updated_count + skipped_count, "created": new_count, "udpated": updated_count, "skipped": skipped_count}
+    success_msg = {"file": zipfile, "rows processed": new_count + updated_count + skipped_count, "created": new_count, "udpated": updated_count, "skipped": skipped_count}
     print(success_msg)
     return success_msg
