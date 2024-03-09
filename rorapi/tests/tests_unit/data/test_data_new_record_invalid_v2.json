@@ -1,0 +1,29 @@
+{
+    "locations": [
+        {
+            "geonames_id": 2661552,
+            "geonames_details": {
+                "country_code": "CH",
+                "country_name": "Switzerland",
+                "lat": 46.94809,
+                "lng": 7.44744,
+                "name": "Bern"
+            }
+        }
+    ],
+    "names": [
+        {
+            "value": "JDSU (Switzerland)",
+            "types": [
+                "ror_display",
+                "label"
+            ],
+            "lang": null
+        }
+    ],
+    "status": "active",
+    "types": [
+        "company"
+    ],
+    "foo": "bar"
+}

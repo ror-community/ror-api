@@ -162,6 +162,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         self.assertEquals(len(organization['errors']), 1)
         self.assertTrue(any(['not a valid' in e for e in organization['errors']]))
 
+
 class GenerateIdViewTestCase(SimpleTestCase):
     def setUp(self):
         with open(
@@ -185,6 +186,32 @@ class GenerateIdViewTestCase(SimpleTestCase):
         permission_mock.return_value = False
         response = self.client.get('/generateid')
         self.assertEquals(response.status_code, 403)
+
+
+class GenerateIdViewTestCase(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_empty_es7.json'), 'r') as f:
+            self.test_data_empty = json.load(f)
+        self.maxDiff = None
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_generateid_success(self, search_mock, permission_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
+        permission_mock.return_value = True
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_generateid_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 403)
+
 
 class GenerateAddressViewTestCase(SimpleTestCase):
     def setUp(self):
@@ -295,4 +322,20 @@ class FileUploadViewTestCase(SimpleTestCase):
     def test_file_upload_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
         response = self.client.post('/v2/upload')
+        self.assertEquals(response.status_code, 403)
+
+class CreateOrganizationViewTestCase(SimpleTestCase):
+    # TODO: complete tests. For now just test that endpoint can't be accessed without creds.
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_create_record_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.post('/v2/organizations')
+        self.assertEquals(response.status_code, 403)
+
+class UpdateOrganizationViewTestCase(SimpleTestCase):
+    # TODO: complete tests. For now just test that endpoint can't be accessed without creds.
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_create_record_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.put('/v2/organizations/foo')
         self.assertEquals(response.status_code, 403)
