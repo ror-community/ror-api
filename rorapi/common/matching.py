@@ -308,8 +308,6 @@ def match_by_type(text, matching_type, countries, version):
         elif matching_type == MATCHING_TYPE_HEURISTICS:
             q.add_common_query(fields, normalize(text))
     queries = [q.get_query() for q in queries]
-    for q in queries:
-        print(q.to_dict())
     matched = [
         match_by_query(t, matching_type, q, countries, version)
         for t, q in zip(substrings, queries)
@@ -404,7 +402,6 @@ class MatchingGraph:
             # do not perform search if substring exactly matches a country name or ISO code
             if do_not_match == False:
                 n = MatchingNode(part_cleaned, self.version)
-                print(n)
                 self.nodes.append(n)
 
     def remove_low_scores(self, min_score):
