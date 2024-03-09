@@ -378,7 +378,7 @@ def update_record_from_csv(csv_data, version):
                 update_data['types'] = temp_types
 
             if not errors:
-                validation_errors, updated_record = update_record_from_json(update_data, existing_record)
-                if validation_errors:
-                    errors = ErrorsSerializer(validation_errors).data
+                validation_error, updated_record = update_record_from_json(update_data, existing_record)
+                if validation_error:
+                    errors.append(validation_error)
     return errors, updated_record

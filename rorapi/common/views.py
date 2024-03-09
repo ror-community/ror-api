@@ -114,9 +114,11 @@ class OrganizationViewSet(viewsets.ViewSet):
         if version == "v2":
             json_input = request.data
             if 'id' in json_input and (json_input['id'] is not None and json_input['id'] != ""):
-                errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_inputjson['id'])])
+                errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_input['id'])])
             else:
-                errors, valid_data = new_record_from_json(json_input, version)
+                create_error, valid_data = new_record_from_json(json_input, version)
+                if create_error:
+                    errors = Errors([create_error])
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -147,7 +149,9 @@ class OrganizationViewSet(viewsets.ViewSet):
             elif get_ror_id(json['id']) != ror_id:
                 errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
             else:
-                errors, valid_data = update_record_from_json(json, organization)
+                update_error, valid_data = update_record_from_json(json, organization)
+                if update_error:
+                    errors = Errors([update_error])
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
@@ -222,8 +226,9 @@ class FileUploadView(APIView):
                     csv_validation_errors = validate_csv(file_object)
                     if len(csv_validation_errors) == 0:
                         file_object.seek(0)
-                        msg = process_csv(file_object, version)
-
+                        csv_process_error, msg = process_csv(file_object, version)
+                        if csv_process_error:
+                            errors = Errors([csv_process_error])
                     else:
                         errors=Errors(csv_validation_errors)
                 else:

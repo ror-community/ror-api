@@ -1,6 +1,5 @@
 import copy
 from datetime import datetime
-from rorapi.common.models import Errors
 from rorapi.common.record_utils import *
 import update_address as ua
 from rorapi.v2.record_constants import *
@@ -43,7 +42,7 @@ def add_created_last_mod(record):
     return record
 
 def update_locations(locations):
-    errors = []
+    error = None
     updated_locations = []
     for location in locations:
         if 'geonames_id' in location:
@@ -52,8 +51,8 @@ def update_locations(locations):
                 updated_location = ua.new_geonames_v2(str(location['geonames_id']))
                 updated_locations.append(updated_location['location'])
             except:
-                errors.append("Error retrieving Geonames data for ID {}. Please check that this is a valid Geonames ID".format(location['geonames_id']))
-    return errors, updated_locations
+                error = "Error retrieving Geonames data for ID {}. Please check that this is a valid Geonames ID".format(location['geonames_id'])
+    return error, updated_locations
 
 def sort_list_fields(v2_record):
     for field in v2_record:
@@ -68,34 +67,30 @@ def sort_list_fields(v2_record):
 
 
 def new_record_from_json(json_input, version):
-    errors = None
+    error = None
     valid_data = None
     new_record = copy.deepcopy(json_input)
     if check_optional_fields(new_record):
         new_record = add_missing_optional_fields(new_record)
-    location_errors, updated_locations = update_locations(new_record['locations'])
-    if location_errors:
-        errors = Errors(location_errors)
-    else:
+    error, updated_locations = update_locations(new_record['locations'])
+    if not error:
         new_record['locations'] = updated_locations
         new_record = add_created_last_mod(new_record)
         new_ror_id = check_ror_id(version)
         print("new ror id: " + new_ror_id)
         new_record['id'] = new_ror_id
-        errors, valid_data = validate_record(sort_list_fields(new_record), V2_SCHEMA)
-    return errors, valid_data
+        error, valid_data = validate_record(sort_list_fields(new_record), V2_SCHEMA)
+    return error, valid_data
 
 
 def update_record_from_json(new_json, existing_org):
-    errors = None
+    error = None
     valid_data = None
     serializer = OrganizationSerializerV2(existing_org)
     existing_record = serializer.data
     updated_record = update_record(new_json, existing_record)
-    location_errors, updated_locations = update_locations(updated_record['locations'])
-    if location_errors:
-        errors = Errors(location_errors)
-    else:
+    error, updated_locations = update_locations(updated_record['locations'])
+    if not error:
         updated_record['locations'] = updated_locations
-        errors, valid_data = validate_record(sort_list_fields(updated_record), V2_SCHEMA)
-    return errors, valid_data
+        error, valid_data = validate_record(sort_list_fields(updated_record), V2_SCHEMA)
+    return error, valid_data

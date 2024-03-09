@@ -1,7 +1,6 @@
 import jsonschema
 import requests
 from iso639 import Lang
-from rorapi.common.models import Errors
 
 
 def get_lang_code(lang_string):
@@ -24,15 +23,12 @@ def get_file_from_url(url):
     return rsp.json()
 
 def validate_record(data, schema):
-    errors = []
     try:
         print("validating data:")
         print(data)
         jsonschema.validate(data, schema)
-    except jsonschema.ValidationError as error:
-        errors.append(error)
-        print(errors)
-        return Errors(errors), None
+    except jsonschema.ValidationError as e:
+        return "Validation error: " + e.message, None
     else:
         return None, data
 

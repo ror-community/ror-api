@@ -44,8 +44,8 @@ def save_report_file(report, report_fields, csv_file, dir_name):
 def process_csv(csv_file, version):
     print("Processing CSV")
     dir_name = datetime.now().strftime("%Y-%m-%d-%H:%M:%S") + "-ror-records"
-    errors = None
     success_msg = None
+    error = None
     report = []
     report_fields = ['row', 'ror_id', 'action', 'errors']
     skipped_count = 0
@@ -82,25 +82,27 @@ def process_csv(csv_file, version):
         else:
             action = 'skipped'
             skipped_count += 1
-            #print(errors)
-        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": row_errors if row_errors else ''})
+        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": "; ".join(row_errors) if row_errors else ''})
         row_num += 1
-        print(report)
     if new_count > 0 or updated_count > 0 or skipped_count > 0:
-        #create report file
-        save_report_file(report, report_fields, csv_file, dir_name)
-        # create zip file
-        zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
-        # upload to S3
-        '''
         try:
-            DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
-            zipfile = f"https://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
+            #create report file
+            save_report_file(report, report_fields, csv_file, dir_name)
+            # create zip file
+            zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
+            # upload to S3
+            '''
+            try:
+                DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
+                zipfile = f"https://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
+            except Exception as e:
+                error = f"Error uploading zipfile to S3: {e}"
+            '''
         except Exception as e:
-            errors = e
-            print(errors)
-        '''
-
-    success_msg = {"file": zipfile, "rows processed": new_count + updated_count + skipped_count, "created": new_count, "udpated": updated_count, "skipped": skipped_count}
-    print(success_msg)
-    return success_msg
+            error = f"Unexpected error generating records: {e}"
+    success_msg = {"file": zipfile,
+                   "rows processed": new_count + updated_count + skipped_count,
+                   "created": new_count,
+                   "udpated": updated_count,
+                   "skipped": skipped_count}
+    return error, success_msg

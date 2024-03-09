@@ -104,7 +104,7 @@ def new_record_from_csv(csv_data, version):
     if csv_data['types']:
         v2_data['types'] = [t.strip().lower() for t in csv_data['types'].strip(';').split(';')]
 
-    validation_errors, new_record = new_record_from_json(v2_data, version)
-    if validation_errors:
-        errors = ErrorsSerializer(validation_errors).data
+    validation_error, new_record = new_record_from_json(v2_data, version)
+    if validation_error:
+        errors.append(validation_error)
     return errors, new_record
