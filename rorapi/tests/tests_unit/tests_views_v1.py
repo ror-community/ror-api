@@ -218,7 +218,7 @@ class IndexRorViewTestCase(SimpleTestCase):
     def test_index_ror_success(self, index_mock, permission_mock):
         index_mock.return_value = self.success_msg
         permission_mock.return_value = True
-        response = self.client.get('/indexdata/foo')
+        response = self.client.get('/v1/indexdata/foo')
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
@@ -226,13 +226,13 @@ class IndexRorViewTestCase(SimpleTestCase):
     def test_index_ror_fail_error(self, index_mock, permission_mock):
         index_mock.return_value = self.error_msg
         permission_mock.return_value = True
-        response = self.client.get('/indexdata/foo')
+        response = self.client.get('/v1/indexdata/foo')
         self.assertEquals(response.status_code, 400)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_index_ror_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.get('/indexdata/foo')
+        response = self.client.get('/v1/indexdata/foo')
         self.assertEquals(response.status_code, 403)
 
 class HeartbeatViewTestCase(SimpleTestCase):
