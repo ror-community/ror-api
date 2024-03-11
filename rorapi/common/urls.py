@@ -2,12 +2,8 @@ from django.conf.urls import url, include
 from django.urls import path, re_path
 from rest_framework.documentation import include_docs_urls
 
-from  . import views
-<<<<<<< HEAD
-from rorapi.common.views import HeartbeatView,GenerateAddress,GenerateId,IndexData,BulkUpdate
-=======
-from rorapi.common.views import HeartbeatView,GenerateAddress,GenerateId,IndexData,IndexDataDump
->>>>>>> dev
+from  . import viewss
+from rorapi.common.views import HeartbeatView,GenerateAddress,GenerateId,IndexData,IndexDataDump,BulkUpdate
 
 urlpatterns = [
     # Health check
