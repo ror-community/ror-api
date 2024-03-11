@@ -69,7 +69,7 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
-          python manage.py setup $LATEST_DUMP_FILE -t
+          python manage.py setup v1.42-2024-02-21-ror-data -t
           # Dump file temp hard coded for v2 beta
           # Pulled from ror-data-test per settings.py config
       - name: Test
