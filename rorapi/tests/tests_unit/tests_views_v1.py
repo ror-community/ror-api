@@ -248,3 +248,31 @@ class HeartbeatViewTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
         response = self.client.get('/heartbeat')
         self.assertEquals(response.status_code, 200)
+
+class IndexRorDumpViewTestCase(SimpleTestCase):
+    def setUp(self):
+        self.success_msg = "SUCCESS: ROR dataset vX.XX-XXXX-XX-XX-ror-data indexed in version X. Using test repo: X"
+        self.error_msg = "ERROR: ROR dataset for file vX.XX-XXXX-XX-XX-ror-data not found. Please generate the data dump first."
+        self.maxDiff = None
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('django.core.management.call_command')
+    def test_index_ror_success(self, index_mock, permission_mock):
+        index_mock.return_value = self.success_msg
+        permission_mock.return_value = True
+        response = self.client.get('/v1/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('django.core.management.call_command')
+    def test_index_ror_fail_error(self, index_mock, permission_mock):
+        index_mock.return_value = self.error_msg
+        permission_mock.return_value = True
+        response = self.client.get('/v1/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        self.assertEquals(response.status_code, 400)
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_index_ror_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.get('/v1/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        self.assertEquals(response.status_code, 403)
