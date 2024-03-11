@@ -262,7 +262,7 @@ class BulkUpdate(APIView):
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
-            print(errors)
+            print(errors.__dict__)
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
             )

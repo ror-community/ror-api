@@ -338,6 +338,8 @@ class UpdateOrganizationViewTestCase(SimpleTestCase):
     def test_create_record_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
         response = self.client.put('/v2/organizations/foo')
+        self.assertEquals(response.status_code, 403)
+
 class IndexRorDumpViewTestCase(SimpleTestCase):
     def setUp(self):
         self.success_msg = "SUCCESS: ROR dataset vX.XX-XXXX-XX-XX-ror-data indexed in version X. Using test repo: X"
