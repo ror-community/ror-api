@@ -88,7 +88,7 @@ def get_data():
     return contents, err
 
 
-def process_files(dir):
+def process_files(dir, version):
     err = []
     if dir:
         path = os.path.join(DATA['WORKING_DIR'], dir)
@@ -104,7 +104,7 @@ def process_files(dir):
             if path and file and not(e):
                 data, e = prepare_files(path, file)
                 if not(e):
-                    index_error = index(data)
+                    index_error = index(data, version)
                     err.append(index_error)
                 else:
                     err.append(e)
@@ -116,14 +116,17 @@ def process_files(dir):
     if err:
         msg = {"status": "ERROR", "msg": err}
     else:
-        msg = {"status": "OK", "msg": f"{dir} indexed"}
+        msg = {"status": "OK", "msg": f"{dir} indexed using version {version}"}
 
     return msg
 
 
-def index(dataset):
+def index(dataset, version):
     err = {}
-    index = ES_VARS['INDEX_V1']
+    if version == 'v2':
+        index = ES_VARS['INDEX_V2']
+    else:
+        index = ES_VARS['INDEX_V1']
     backup_index = '{}-tmp'.format(index)
     ES7.reindex(body={
         'source': {
@@ -171,9 +174,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('dir', type=str, help='add directory name for S3 bucket to be processed')
+        parser.add_argument('version', type=str, help='schema version of files to be processed')
 
     def handle(self,*args, **options):
         dir = options['dir']
-        process_files(dir)
+        version = options['version']
+        process_files(dir, version)
 
 

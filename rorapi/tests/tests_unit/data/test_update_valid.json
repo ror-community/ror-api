@@ -1,0 +1,68 @@
+{
+    "locations": [
+        {
+            "geonames_id": 2661552,
+            "geonames_details": {
+                "country_code": "CH",
+                "country_name": "Switzerland",
+                "lat": 46.94809,
+                "lng": 7.44744,
+                "name": "Bern"
+            }
+        }
+    ],
+    "established": null,
+    "external_ids": [
+        {
+            "type": "grid",
+            "all": [
+                "grid.426225.5"
+            ],
+            "preferred": "grid.426225.5"
+        }
+    ],
+    "id": "https://ror.org/00wz65j53",
+    "domains": ["wisc.edu"],
+    "links": [
+        {
+            "type": "website",
+            "value": "https://www.jdsu.com"
+        }
+    ],
+    "names": [
+        {
+            "value": "JDSU (Switzerland)",
+            "types": [
+                "ror_display",
+                "label"
+            ],
+            "lang": null
+        }
+    ],
+    "relationships": [
+        {
+            "label": "JDSU (United States)",
+            "type": "parent",
+            "id": "https://ror.org/01a5v8x09"
+        },
+        {
+            "label": "Viavi Solutions (United States)",
+            "type": "successor",
+            "id": "https://ror.org/059a9e323"
+        }
+    ],
+    "status": "inactive",
+    "types": [
+        "company"
+    ],
+    "admin": {
+        "created": {
+            "date": "2023-07-28",
+            "schema_version": "1.0"
+        },
+        "last_modified": {
+            "date": "2023-07-28",
+            "schema_version": "2.0"
+        }
+    }
+}
