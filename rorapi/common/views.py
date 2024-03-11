@@ -210,7 +210,7 @@ class IndexData(APIView):
         return Response({"status": msg["status"], "msg": msg["msg"]}, status=st)
 
 
-class FileUploadView(APIView):
+class BulkUpdate(APIView):
     permission_classes = [OurTokenPermission]
     parser_classes = (MultiPartParser, FormParser)
 
@@ -226,9 +226,13 @@ class FileUploadView(APIView):
                     csv_validation_errors = validate_csv(file_object)
                     if len(csv_validation_errors) == 0:
                         file_object.seek(0)
-                        csv_process_error, msg = process_csv(file_object, version)
-                        if csv_process_error:
-                            errors = Errors([csv_process_error])
+                        process_csv_error, msg = process_csv(file_object, version)
+                        print("views msg")
+                        print(msg)
+                        print("views type msg")
+                        print(type(msg))
+                        if process_csv_error:
+                            errors = Errors([process_csv_error])
                     else:
                         errors=Errors(csv_validation_errors)
                 else:

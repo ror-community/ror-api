@@ -91,13 +91,11 @@ def process_csv(csv_file, version):
             # create zip file
             zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
             # upload to S3
-            '''
             try:
                 DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
                 zipfile = f"https://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
             except Exception as e:
                 error = f"Error uploading zipfile to S3: {e}"
-            '''
         except Exception as e:
             error = f"Unexpected error generating records: {e}"
     success_msg = {"file": zipfile,

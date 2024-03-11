@@ -291,7 +291,7 @@ class HeartbeatViewTestCase(SimpleTestCase):
         response = self.client.get('/v2/heartbeat')
         self.assertEquals(response.status_code, 200)
 
-class FileUploadViewTestCase(SimpleTestCase):
+class BulkUpdateViewTestCase(SimpleTestCase):
     def setUp(self):
         self.csv_errors_empty = []
         self.csv_errors_error = ['error']
@@ -301,27 +301,27 @@ class FileUploadViewTestCase(SimpleTestCase):
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     @mock.patch('rorapi.common.views.validate_csv')
     @mock.patch('rorapi.common.views.process_csv')
-    def test_file_upload_success(self, permission_mock, validate_csv_mock, process_csv_msg_mock):
+    def test_bulkupdate_success(self, process_csv_mock, validate_csv_mock, permission_mock):
         permission_mock.return_value = True
         validate_csv_mock.return_value = self.csv_errors_empty
-        process_csv_msg_mock.return_value = self.process_csv_msg
+        process_csv_mock.return_value = None, self.process_csv_msg
         with open(os.path.join(os.path.dirname(__file__),
                              'data/test_upload_csv.csv'), 'rb') as f:
-            response = self.client.post('/v2/upload', {"file":f})
+            response = self.client.post('/v2/bulkupdate', {"file":f})
         self.assertEquals(response.status_code, 201)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     @mock.patch('rorapi.common.views.validate_csv')
-    def test_file_upload_fail_error(self, permission_mock, validate_csv_mock):
+    def test_bulkupdate_fail_error(self, validate_csv_mock, permission_mock):
         permission_mock.return_value = True
         validate_csv_mock.return_value = self.csv_errors_error
-        response = self.client.post('/v2/upload')
+        response = self.client.post('/v2/bulkupdate')
         self.assertEquals(response.status_code, 400)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
-    def test_file_upload_fail_no_permission(self, permission_mock):
+    def test_bulkupdate_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.post('/v2/upload')
+        response = self.client.post('/v2/bulkupdate')
         self.assertEquals(response.status_code, 403)
 
 class CreateOrganizationViewTestCase(SimpleTestCase):
