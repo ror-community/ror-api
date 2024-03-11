@@ -17,7 +17,7 @@ from rorapi.common.csv_create import new_record_from_csv
 def save_record_file(ror_id, updated, json_obj, dir_name):
     dir_path = os.path.join(DATA['DIR'],dir_name)
     if not os.path.exists(dir_path):
-        os.mkdir(dir_path)
+        os.makedirs(dir_path)
     subdir = 'updates' if updated else 'new'
     if not os.path.exists(os.path.join(dir_path, subdir)):
         os.mkdir(os.path.join(dir_path, subdir))
