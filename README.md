@@ -169,7 +169,7 @@ Making a POST request `/organizations` performs the following actions:
 
 2. Make a POST request to `/organizations` with the JSON file as the data payload. Credentials are required for POST requests.
 
-    curl -X POST -H "Route-User: [API USER]" -H "Token: [API TOKEN]" "http://api.dev.ror.org/v2/organizations" -d @[PATH TO JSON FILE].json -H "Content-Type: application/json"
+        curl -X POST -H "Route-User: [API USER]" -H "Token: [API TOKEN]" "http://api.dev.ror.org/v2/organizations" -d @[PATH TO JSON FILE].json -H "Content-Type: application/json"
 
 3. The response is a schema-valid JSON object populated with the submitted metadata as well as a ROR ID and Geonames details retrieved from Geonames. Fields and values will be ordered as in the ROR API and optional fields will be populated with empty or null values. Redirect the response to a file for use in the ROR data deployment process. **The resulting record is NOT added to the the ROR index.**
 
@@ -191,7 +191,7 @@ Making a PUT request `/organizations/[ROR ID]` performs the following actions:
 
 2. Make a PUT request to `/organizations/[ROR ID]` with the JSON file as the data payload. Credentials are required for PUT requests. The ROR ID specified in the request path must match the ROR ID in the `id` field of the JSON data.
 
-    curl -X PUT -H "Route-User: [API USER]" -H "Token: [API TOKEN]" "http://api.dev.ror.org/v2/organizations/[ROR ID]" -d @[PATH TO JSON FILE].json -H "Content-Type: application/json"
+        curl -X PUT -H "Route-User: [API USER]" -H "Token: [API TOKEN]" "http://api.dev.ror.org/v2/organizations/[ROR ID]" -d @[PATH TO JSON FILE].json -H "Content-Type: application/json"
 
 3. The response is a schema-valid JSON object populated with the updates in the submitted metadata as well as updated Geonames details retrieved from Geonames. Fields and values will be ordered as in the ROR API and optional fields will be populated with empty or null values. Redirect the response to a file for use in the ROR data deployment process. **The resulting record is NOT updated in the the ROR index.**
 
@@ -217,11 +217,11 @@ Making a POST request `/organizations/bulkupdate` performs the following actions
 
 2. Make a POST request to `/bulkupdate`` with the filepath specfied in the file field of a multi-part form payload. Credentials are required for POST requests.
 
-    curl -X POST -H "Route-User: [API USER]" -H "Token: [API TOKEN]"  'https://api.dev.ror.org/v2/bulkupdate' --form 'file=@"[PATH TO CSV FILE].csv"'
+        curl -X POST -H "Route-User: [API USER]" -H "Token: [API TOKEN]"  'https://api.dev.ror.org/v2/bulkupdate' --form 'file=@"[PATH TO CSV FILE].csv"'
 
 3. The response is a summary with counts of records created/updated/skipped and a link to download the generated files from AWS S3.
 
-    {"file":"https://s3.eu-west-1.amazonaws.com/2024-03-09-15:56:26-ror-records.zip","rows processed":208,"created":207,"udpated":0,"skipped":1}
+        {"file":"https://s3.eu-west-1.amazonaws.com/2024-03-09_15_56_26-ror-records.zip","rows processed":208,"created":207,"udpated":0,"skipped":1}
 
 The zipped file contains the following items:
 - **input.csv:** Copy of the CSV submitted to the API
@@ -282,7 +282,10 @@ The zipped file contains the following items:
 | delete                          | Remove all values from field (single or multi-item field)                         | All optional fields. Not allowed for required fields: locations, names.types.ror_display, status, types                                                                                                                                               |                                                                                                                                                                                                                                                                                                           |
 | replace==                       | Replace all value(s) with specified value(s) (single or multi-item field)         | All fields                                                                                                                                                                                                                                            | replace== has special behavior for external_ids.[type].all and names fields - see below                                                                                                                                                                                                                   |
 | no action (only value supplied) | Replace existing value or add value to currently empty field (single-item fields) | established, external_ids preferred, status, names.types.ror_display                                                                                                                                                                                  | Same action as replace                                                                                                                                                                                                                                                                                    |
-#### External IDs
+#### Fields with special behaviors
+For some fields that contain a list of dictionaries as their value, update actions have special behaviors.
+
+##### External IDs
 
 | Action                          | external_ids.[TYPE].all                                                                                                                                                                                                                                                                                                                                                                           | external.[TYPE].preferred                                                                                                                                                                                           |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -292,7 +295,7 @@ The zipped file contains the following items:
 | delete                          | Deletes any existing all existing values from external_ids.[TYPE].all. Preferred ID is NOT automatically removed from external_ids.[TYPE].all  - it must be explicitly deleted from external.[TYPE].all . After all changes to external_ids.[TYPE].all and external.[TYPE].preferred are calcuated, if the result is that BOTH fields are empty the entire external_ids object is deleted.        | Deletes any existing value in external.[TYPE].preferred. Value is NOT automatically removed from external_ids.[TYPE].all - it must be explicitly deleted from external.[TYPE].all                                   |
 | no action (only value supplied) | Same as replace==                                                                                                                                                                                                                                                                                                                                                                                 | Same as replace==                                                                                                                                                                                                   |
 
-#### Names
+##### Names
 
 | Action                          | names.[TYPE]                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

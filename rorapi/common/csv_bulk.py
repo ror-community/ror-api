@@ -43,7 +43,7 @@ def save_report_file(report, report_fields, csv_file, dir_name):
 
 def process_csv(csv_file, version):
     print("Processing CSV")
-    dir_name = datetime.now().strftime("%Y-%m-%d-%H:%M:%S") + "-ror-records"
+    dir_name = datetime.now().strftime("%Y-%m-%d_%H_%M_%S") + "-ror-records"
     success_msg = None
     error = None
     report = []
