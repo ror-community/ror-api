@@ -25,7 +25,7 @@ def save_record_file(ror_id, updated, json_obj, dir_name):
     with open(full_path, "w") as outfile:
         json.dump(json_obj, outfile, ensure_ascii=False, indent=2)
 
-def save_report_file(report, report_fields, csv_file, dir_name):
+def save_report_file(report, report_fields, csv_file, dir_name, validate_only):
     dir_path = os.path.join(DATA['DIR'],dir_name)
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
@@ -34,14 +34,15 @@ def save_report_file(report, report_fields, csv_file, dir_name):
             writer = csv.DictWriter(csvfile, fieldnames=report_fields)
             writer.writeheader()
             writer.writerows(report)
-    # save copy of input file
-    filepath =  os.path.join(dir_path, 'input.csv')
-    csv_file.seek(0)
-    with open(filepath, 'wb+') as f:
-        for chunk in csv_file.chunks():
-            f.write(chunk)
+    if not validate_only:
+        # save copy of input file
+        filepath =  os.path.join(dir_path, 'input.csv')
+        csv_file.seek(0)
+        with open(filepath, 'wb+') as f:
+            for chunk in csv_file.chunks():
+                f.write(chunk)
 
-def process_csv(csv_file, version):
+def process_csv(csv_file, version, validate_only):
     print("Processing CSV")
     dir_name = datetime.now().strftime("%Y-%m-%d_%H_%M_%S") + "-ror-records"
     success_msg = None
@@ -77,8 +78,9 @@ def process_csv(csv_file, version):
             serializer = OrganizationSerializerV2(v2_record)
             json_obj = json.loads(JSONRenderer().render(serializer.data))
             print(json_obj)
-            #create file
-            file = save_record_file(ror_id, updated, json_obj, dir_name)
+            if not validate_only:
+                #create file
+                file = save_record_file(ror_id, updated, json_obj, dir_name)
         else:
             action = 'skipped'
             skipped_count += 1
@@ -86,21 +88,29 @@ def process_csv(csv_file, version):
         row_num += 1
     if new_count > 0 or updated_count > 0 or skipped_count > 0:
         try:
-            #create report file
-            save_report_file(report, report_fields, csv_file, dir_name)
-            # create zip file
-            zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
-            # upload to S3
-            try:
-                DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
-                zipfile = f"https://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
-            except Exception as e:
-                error = f"Error uploading zipfile to S3: {e}"
+            if validate_only:
+                try:
+                    save_report_file(report, report_fields, csv_file, dir_name, validate_only)
+                    success_msg = os.path.join(DATA['DIR'], dir_name, 'report.csv')
+                except Exception as e:
+                    error = f"Error creating validation report: {e}"
+            else:
+                #create report file
+                save_report_file(report, report_fields, csv_file, dir_name, validate_only)
+                # create zip file
+                zipfile = shutil.make_archive(os.path.join(DATA['DIR'], dir_name), 'zip', DATA['DIR'], dir_name)
+                # upload to S3
+                try:
+                    DATA['CLIENT'].upload_file(zipfile, DATA['PUBLIC_STORE'], dir_name + '.zip')
+                    zipfile = f"https://s3.eu-west-1.amazonaws.com/{DATA['PUBLIC_STORE']}/{urllib.parse.quote(dir_name)}.zip"
+                    success_msg = {"file": zipfile,
+                        "rows processed": new_count + updated_count + skipped_count,
+                        "created": new_count,
+                        "updated": updated_count,
+                        "skipped": skipped_count}
+                except Exception as e:
+                    error = f"Error uploading zipfile to S3: {e}"
         except Exception as e:
             error = f"Unexpected error generating records: {e}"
-    success_msg = {"file": zipfile,
-                   "rows processed": new_count + updated_count + skipped_count,
-                   "created": new_count,
-                   "udpated": updated_count,
-                   "skipped": skipped_count}
+
     return error, success_msg
