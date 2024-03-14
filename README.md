@@ -229,6 +229,14 @@ The zipped file contains the following items:
 - **new:** Directory containing JSON files for records that were successully created (omitted if no records were created)
 - **updates:** A directory containing JSON files for records that were successfully updated (omitted if no records were updated)
 
+#### Validate only
+Use the `?validate` parameter to simulate running the bulkupdate request without actually generating files. The response is the same CSV report described above.
+
+1. Make a POST request to `/bulkupdate?validate`` with the filepath specfied in the file field of a multi-part form payload. Credentials are required for POST requests. Makre sure to redirect the output to a CSV file on your machine.
+
+        curl -X POST -H "Route-User: [API USER]" -H "Token: [API TOKEN]"  'https://api.dev.ror.org/v2/bulkupdate?validate' --form 'file=@"[PATH TO CSV FILE].csv"' > report.csv
+
+
 ### CSV formatting
 
 #### Column headings & values
