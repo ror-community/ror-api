@@ -13,7 +13,7 @@ from rorapi.settings import ES7, ES_VARS, DATA
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
-def get_nested_names(org):
+def get_nested_names_v1(org):
     yield org['name']
     for label in org['labels']:
         yield label['label']
@@ -22,8 +22,11 @@ def get_nested_names(org):
     for acronym in org['acronyms']:
         yield acronym
 
+def get_nested_names_v2(org):
+    for name in org['names']:
+        yield name['value']
 
-def get_nested_ids(org):
+def get_nested_ids_v1(org):
     yield org['id']
     yield re.sub('https://', '', org['id'])
     yield re.sub('https://ror.org/', '', org['id'])
@@ -33,6 +36,14 @@ def get_nested_ids(org):
         else:
             for eid in ext_id['all']:
                 yield eid
+
+def get_nested_ids_v2(org):
+    yield org['id']
+    yield re.sub('https://', '', org['id'])
+    yield re.sub('https://ror.org/', '', org['id'])
+    for ext_id in org['external_ids']:
+        for eid in ext_id['all']:
+            yield eid
 
 def prepare_files(path, local_file):
     data = []
@@ -147,12 +158,20 @@ def index(dataset, version):
                         '_id': org['id']
                     }
                 })
-                org['names_ids'] = [{
-                    'name': n
-                } for n in get_nested_names(org)]
-                org['names_ids'] += [{
-                    'id': n
-                } for n in get_nested_ids(org)]
+                if 'v2' in index:
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names_v2(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids_v2(org)]
+                else:
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names_v1(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids_v1(org)]
                 body.append(org)
             ES7.bulk(body)
     except TransportError:
