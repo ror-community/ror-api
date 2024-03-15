@@ -28,7 +28,7 @@ def save_record_file(ror_id, updated, json_obj, dir_name):
 def save_report_file(report, report_fields, csv_file, dir_name, validate_only):
     dir_path = os.path.join(DATA['DIR'],dir_name)
     if not os.path.exists(dir_path):
-        os.mkdir(dir_path)
+        os.makedirs(dir_path)
     filepath =  os.path.join(dir_path, 'report.csv')
     with open(filepath, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=report_fields)
