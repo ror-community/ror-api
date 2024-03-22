@@ -84,6 +84,8 @@ def process_csv(csv_file, version, validate_only):
         else:
             action = 'skipped'
             skipped_count += 1
+        if validate_only and action == 'created':
+            ror_id = None
         report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": "; ".join(row_errors) if row_errors else ''})
         row_num += 1
     if new_count > 0 or updated_count > 0 or skipped_count > 0:
