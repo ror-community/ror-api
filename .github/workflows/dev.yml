@@ -35,6 +35,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ror-api
+      - name: Checkout ror-data-test
+        uses: actions/checkout@v2
+        with:
+          repository: ror-community/ror-data-test
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: ror-data-test
+      - name: Get last data dump name
+        working-directory: ./ror-data-test
+        run: |
+          FILE="$(ls -Art *.zip | tail -n 1)"
+          echo ${FILE%.*}
+          echo "LATEST_DUMP_FILE=${FILE%.*}" >> $GITHUB_ENV
       - name: Cache dependency
         uses: actions/cache@v2
         with:
@@ -57,7 +69,7 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
-          python manage.py setup v1.35-2023-10-26-ror-data -t
+          python manage.py setup v1.42-2024-02-21-ror-data -t
           # Dump file temp hard coded for v2 beta
           # Pulled from ror-data-test per settings.py config
       - name: Test

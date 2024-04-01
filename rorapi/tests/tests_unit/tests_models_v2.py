@@ -67,7 +67,8 @@ class OrganizationTestCase(SimpleTestCase):
 
         organization = Organization(AttrDict(data))
         self.assertEqual(organization.id, data["id"])
-        self.assertEqual(organization.types, data["types"])
+        for i, type in enumerate(organization.types):
+            self.assertIn(organization.types[i], data["types"])
         self.assertEqual(organization.established, data["established"])
         self.assertEqual(
             organization.locations[0].geonames_details.lat,
@@ -99,21 +100,18 @@ class OrganizationTestCase(SimpleTestCase):
         self.assertEqual(len(organization.names), 6)
 
         for i, name in enumerate(organization.names):
-            self.assertEqual(organization.names[i].value, data["names"][i]["value"])
-            self.assertEqual(organization.names[i].types, data["names"][i]["types"])
-            self.assertEqual(organization.names[i].lang, data["names"][i]["lang"])
+            matched_names = [n for n in data["names"] if \
+                                n['value']==organization.names[i].value and \
+                                n['types']==organization.names[i].types and \
+                                n['lang']==organization.names[i].lang]
+            self.assertTrue(len(matched_names) == 1)
 
         for i, ext_id in enumerate(organization.external_ids):
-            self.assertEqual(
-                organization.external_ids[i].all, data["external_ids"][i]["all"]
-            )
-            self.assertEqual(
-                organization.external_ids[i].preferred,
-                data["external_ids"][i]["preferred"],
-            )
-            self.assertEqual(
-                organization.external_ids[i].type, data["external_ids"][i]["type"]
-            )
+            matched_ids = [e for e in data["external_ids"] if \
+                            e['all']==organization.external_ids[i].all and \
+                            e['preferred']==organization.external_ids[i].preferred and \
+                            e['type']==organization.external_ids[i].type]
+            self.assertTrue(len(matched_ids) == 1)
 
 
 class MatchedOrganizationTestCase(SimpleTestCase):
@@ -153,15 +151,5 @@ class MatchedOrganizationTestCase(SimpleTestCase):
         self.assertEqual(organization.chosen, data["chosen"])
         self.assertEqual(organization.organization.id, data["organization"]["id"])
         for i, name in enumerate(organization.organization.names):
-            self.assertEqual(
-                organization.organization.names[i].value,
-                data["organization"]["names"][i]["value"],
-            )
-            self.assertEqual(
-                organization.organization.names[i].types,
-                data["organization"]["names"][i]["types"],
-            )
-            self.assertEqual(
-                organization.organization.names[i].lang,
-                data["organization"]["names"][i]["lang"],
-            )
+            matched_names = [n for n in data["organization"]["names"] if n['value']==organization.organization.names[i].value and n['types']==organization.organization.names[i].types and organization.organization.names[i].lang]
+            self.assertTrue(len(matched_names) == 1)

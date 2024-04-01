@@ -16,7 +16,7 @@ RUN mv /etc/apt/sources.list.d /etc/apt/sources.list.d.bak && \
     mv /etc/apt/sources.list.d.bak /etc/apt/sources.list.d && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get clean && \
-    apt-get install ntp wget unzip tzdata python3-pip -y && \
+    apt-get install ntp wget unzip tzdata python3-pip libmagic1 -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable Passenger and Nginx and remove the default site

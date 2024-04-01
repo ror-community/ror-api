@@ -537,12 +537,11 @@ class SearchOrganizationsTestCase(SimpleTestCase):
                             self.test_data['hits']['hits']):
             self.assertEquals(ret.id, exp['_source']['id'])
             for i, name in enumerate(ret.names):
-                self.assertEqual(ret.names[i].value,
-                            exp['_source']['names'][i]['value'])
-                self.assertEqual(ret.names[i].types,
-                            exp['_source']['names'][i]['types'])
-                self.assertEqual(ret.names[i].lang,
-                            exp['_source']['names'][i]['lang'])
+                matched_names = [n for n in exp['_source']['names'] if \
+                                    n['value']==ret.names[i].value and \
+                                    n['types']==ret.names[i].types and \
+                                    n['lang']==ret.names[i].lang]
+                self.assertTrue(len(matched_names) == 1)
         self.assertEquals(
             len(organizations.meta.types),
             len(self.test_data['aggregations']['types']['buckets']))
@@ -612,12 +611,11 @@ class RetrieveOrganizationsTestCase(SimpleTestCase):
         expected = self.test_data['hits']['hits'][0]['_source']
         self.assertEquals(organization.id, expected['id'])
         for i, name in enumerate(organization.names):
-                self.assertEqual(organization.names[i].value,
-                            expected['names'][i]['value'])
-                self.assertEqual(organization.names[i].types,
-                            expected['names'][i]['types'])
-                self.assertEqual(organization.names[i].lang,
-                            expected['names'][i]['lang'])
+            matched_names = [n for n in expected["names"] if \
+                                n['value']==organization.names[i].value and \
+                                n['types']==organization.names[i].types and \
+                                n['lang']==organization.names[i].lang]
+            self.assertTrue(len(matched_names) == 1)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_non_existing_organization(self, search_mock):

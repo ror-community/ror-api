@@ -39,7 +39,8 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY', '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
+#DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -253,6 +254,7 @@ ROR_DUMP['GITHUB_TOKEN'] = os.environ.get('GITHUB_TOKEN')
 
 DATA = {}
 DATA['DATA_STORE'] = os.environ.get('DATA_STORE', None)
+DATA['PUBLIC_STORE'] = os.environ.get('PUBLIC_STORE', None)
 DATA['WORKING_DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data', '')
 
 if DATA['DATA_STORE']:
