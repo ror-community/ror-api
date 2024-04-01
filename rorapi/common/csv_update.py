@@ -285,14 +285,8 @@ def update_record_from_csv(csv_data, version):
                         if UPDATE_ACTIONS['ADD'] in actions_values:
                             add_values = actions_values[UPDATE_ACTIONS['ADD']]
                             for a in add_values:
-                                print('temp names:')
-                                print(temp_names)
                                 temp_names_match = [tn for tn in temp_names if (t in tn['types'] and tn['value'] == a['value'] and tn['lang'] == a['lang'])]
-                                print("temp names match:")
-                                print(temp_names_match)
                                 temp_names_null_lang_match = [tn for tn in temp_names if (tn['value'] == a['value'] and (tn['lang'] is None and a['lang'] is not None))]
-                                print("null lang match:")
-                                print(temp_names_null_lang_match)
                                 # check if value, lang and type already exist
                                 if temp_names_match or temp_names_null_lang_match:
                                     if temp_names_match:
