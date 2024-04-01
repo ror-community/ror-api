@@ -6,6 +6,7 @@ from django.test import SimpleTestCase, Client
 from rest_framework.test import APIRequestFactory
 
 from rorapi.common import views
+from rorapi.v2.models import Organization as OrganizationV2
 
 from .utils import IterableAttrDict
 
@@ -107,7 +108,25 @@ class ViewRetrievalTestCase(SimpleTestCase):
         organization = json.loads(response.content.decode('utf-8'))
         # go through every attribute and check to see that they are equal
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(organization, self.test_data['hits']['hits'][0]['_source'])
+        self.assertEquals(organization['admin'], self.test_data['hits']['hits'][0]['_source']['admin'])
+        for d in organization['domains']:
+            self.assertIn(d, self.test_data['hits']['hits'][0]['_source']['domains'])
+        self.assertEquals(organization['established'], self.test_data['hits']['hits'][0]['_source']['established'])
+        for e in organization['external_ids']:
+            self.assertIn(e, self.test_data['hits']['hits'][0]['_source']['external_ids'])
+        self.assertEquals(organization['id'], self.test_data['hits']['hits'][0]['_source']['id'])
+        for l in organization['links']:
+            self.assertIn(l, self.test_data['hits']['hits'][0]['_source']['links'])
+        for l in organization['locations']:
+            self.assertIn(l, self.test_data['hits']['hits'][0]['_source']['locations'])
+        for n in organization['names']:
+            self.assertIn(n, self.test_data['hits']['hits'][0]['_source']['names'])
+        for r in organization['relationships']:
+            self.assertIn(r, self.test_data['hits']['hits'][0]['_source']['relationships'])
+        self.assertEquals(organization['status'], self.test_data['hits']['hits'][0]['_source']['status'])
+        for t in organization['types']:
+            self.assertIn(t, self.test_data['hits']['hits'][0]['_source']['types'])
+
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_retrieve_non_existing_organization(self, search_mock):
@@ -143,6 +162,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         self.assertEquals(len(organization['errors']), 1)
         self.assertTrue(any(['not a valid' in e for e in organization['errors']]))
 
+
 class GenerateIdViewTestCase(SimpleTestCase):
     def setUp(self):
         with open(
@@ -166,6 +186,32 @@ class GenerateIdViewTestCase(SimpleTestCase):
         permission_mock.return_value = False
         response = self.client.get('/generateid')
         self.assertEquals(response.status_code, 403)
+
+
+class GenerateIdViewTestCase(SimpleTestCase):
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_empty_es7.json'), 'r') as f:
+            self.test_data_empty = json.load(f)
+        self.maxDiff = None
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_generateid_success(self, search_mock, permission_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data_empty,
+                             self.test_data_empty['hits']['hits'])
+        permission_mock.return_value = True
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_generateid_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.get('/generateid')
+        self.assertEquals(response.status_code, 403)
+
 
 class GenerateAddressViewTestCase(SimpleTestCase):
     def setUp(self):
@@ -214,7 +260,7 @@ class IndexRorViewTestCase(SimpleTestCase):
     def test_index_ror_success(self, index_mock, permission_mock):
         index_mock.return_value = self.success_msg
         permission_mock.return_value = True
-        response = self.client.get('/indexdata/foo')
+        response = self.client.get('/v2/indexdata/foo')
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
@@ -222,13 +268,13 @@ class IndexRorViewTestCase(SimpleTestCase):
     def test_index_ror_fail_error(self, index_mock, permission_mock):
         index_mock.return_value = self.error_msg
         permission_mock.return_value = True
-        response = self.client.get('/indexdata/foo')
+        response = self.client.get('/v2/indexdata/foo')
         self.assertEquals(response.status_code, 400)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_index_ror_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.get('/indexdata/foo')
+        response = self.client.get('/v2/indexdata/foo')
         self.assertEquals(response.status_code, 403)
 
 class HeartbeatViewTestCase(SimpleTestCase):
@@ -244,6 +290,56 @@ class HeartbeatViewTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
         response = self.client.get('/v2/heartbeat')
         self.assertEquals(response.status_code, 200)
+
+class BulkUpdateViewTestCase(SimpleTestCase):
+    def setUp(self):
+        self.csv_errors_empty = []
+        self.csv_errors_error = ['error']
+        self.process_csv_msg = {"filename":"filename.zip", "rows processed":1,"created":0,"udpated":0,"skipped":1}
+        self.maxDiff = None
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.validate_csv')
+    @mock.patch('rorapi.common.views.process_csv')
+    def test_bulkupdate_success(self, process_csv_mock, validate_csv_mock, permission_mock):
+
+        permission_mock.return_value = True
+        validate_csv_mock.return_value = self.csv_errors_empty
+        process_csv_mock.return_value = None, self.process_csv_msg
+        with open(os.path.join(os.path.dirname(__file__),
+                             'data/test_upload_csv.csv'), 'rb') as f:
+            response = self.client.post('/v2/bulkupdate', {"file":f})
+        self.assertEquals(response.status_code, 201)
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('rorapi.common.views.validate_csv')
+    def test_bulkupdate_fail_error(self, validate_csv_mock, permission_mock):
+        permission_mock.return_value = True
+        validate_csv_mock.return_value = self.csv_errors_error
+        response = self.client.post('/v2/bulkupdate')
+        self.assertEquals(response.status_code, 400)
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_bulkupdate_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.post('/v2/bulkupdate')
+        self.assertEquals(response.status_code, 403)
+
+class CreateOrganizationViewTestCase(SimpleTestCase):
+    # TODO: complete tests. For now just test that endpoint can't be accessed without creds.
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_create_record_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.post('/v2/organizations')
+        self.assertEquals(response.status_code, 403)
+
+class UpdateOrganizationViewTestCase(SimpleTestCase):
+    # TODO: complete tests. For now just test that endpoint can't be accessed without creds.
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    def test_create_record_fail_no_permission(self, permission_mock):
+        permission_mock.return_value = False
+        response = self.client.put('/v2/organizations/foo')
+        self.assertEquals(response.status_code, 403)
 
 class IndexRorDumpViewTestCase(SimpleTestCase):
     def setUp(self):

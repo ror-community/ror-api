@@ -13,7 +13,7 @@ from rorapi.settings import ES7, ES_VARS, DATA
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
-def get_nested_names(org):
+def get_nested_names_v1(org):
     yield org['name']
     for label in org['labels']:
         yield label['label']
@@ -22,8 +22,11 @@ def get_nested_names(org):
     for acronym in org['acronyms']:
         yield acronym
 
+def get_nested_names_v2(org):
+    for name in org['names']:
+        yield name['value']
 
-def get_nested_ids(org):
+def get_nested_ids_v1(org):
     yield org['id']
     yield re.sub('https://', '', org['id'])
     yield re.sub('https://ror.org/', '', org['id'])
@@ -33,6 +36,14 @@ def get_nested_ids(org):
         else:
             for eid in ext_id['all']:
                 yield eid
+
+def get_nested_ids_v2(org):
+    yield org['id']
+    yield re.sub('https://', '', org['id'])
+    yield re.sub('https://ror.org/', '', org['id'])
+    for ext_id in org['external_ids']:
+        for eid in ext_id['all']:
+            yield eid
 
 def prepare_files(path, local_file):
     data = []
@@ -88,7 +99,7 @@ def get_data():
     return contents, err
 
 
-def process_files(dir):
+def process_files(dir, version):
     err = []
     if dir:
         path = os.path.join(DATA['WORKING_DIR'], dir)
@@ -104,7 +115,7 @@ def process_files(dir):
             if path and file and not(e):
                 data, e = prepare_files(path, file)
                 if not(e):
-                    index_error = index(data)
+                    index_error = index(data, version)
                     err.append(index_error)
                 else:
                     err.append(e)
@@ -116,14 +127,17 @@ def process_files(dir):
     if err:
         msg = {"status": "ERROR", "msg": err}
     else:
-        msg = {"status": "OK", "msg": f"{dir} indexed"}
+        msg = {"status": "OK", "msg": f"{dir} indexed using version {version}"}
 
     return msg
 
 
-def index(dataset):
+def index(dataset, version):
     err = {}
-    index = ES_VARS['INDEX_V1']
+    if version == 'v2':
+        index = ES_VARS['INDEX_V2']
+    else:
+        index = ES_VARS['INDEX_V1']
     backup_index = '{}-tmp'.format(index)
     ES7.reindex(body={
         'source': {
@@ -144,12 +158,20 @@ def index(dataset):
                         '_id': org['id']
                     }
                 })
-                org['names_ids'] = [{
-                    'name': n
-                } for n in get_nested_names(org)]
-                org['names_ids'] += [{
-                    'id': n
-                } for n in get_nested_ids(org)]
+                if 'v2' in index:
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names_v2(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids_v2(org)]
+                else:
+                    org['names_ids'] = [{
+                        'name': n
+                    } for n in get_nested_names_v1(org)]
+                    org['names_ids'] += [{
+                        'id': n
+                    } for n in get_nested_ids_v1(org)]
                 body.append(org)
             ES7.bulk(body)
     except TransportError:
@@ -171,9 +193,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('dir', type=str, help='add directory name for S3 bucket to be processed')
+        parser.add_argument('version', type=str, help='schema version of files to be processed')
 
     def handle(self,*args, **options):
         dir = options['dir']
-        process_files(dir)
+        version = options['version']
+        process_files(dir, version)
 
 
