@@ -302,6 +302,7 @@ class BulkUpdateViewTestCase(SimpleTestCase):
     @mock.patch('rorapi.common.views.validate_csv')
     @mock.patch('rorapi.common.views.process_csv')
     def test_bulkupdate_success(self, process_csv_mock, validate_csv_mock, permission_mock):
+
         permission_mock.return_value = True
         validate_csv_mock.return_value = self.csv_errors_empty
         process_csv_mock.return_value = None, self.process_csv_msg

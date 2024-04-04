@@ -1,3 +1,4 @@
+import csv
 from rest_framework import viewsets, routers, status
 from rest_framework.response import Response
 from django.http import HttpResponse
@@ -125,7 +126,6 @@ class OrganizationViewSet(viewsets.ViewSet):
         else:
             errors = Errors(["Version {} does not support creating records".format(version)])
         if errors is not None:
-            print(errors)
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
             )
@@ -235,22 +235,22 @@ class BulkUpdate(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+        validate_only = False
         errors = None
         if version == 'v2':
             if request.data:
                 file_object = request.data['file']
                 mime_type = magic.from_buffer(file_object.read(2048))
                 print(mime_type)
-                if "ASCII text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
+                if "ASCII text" in mime_type or "UTF-8 text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
                     file_object.seek(0)
                     csv_validation_errors = validate_csv(file_object)
                     if len(csv_validation_errors) == 0:
                         file_object.seek(0)
-                        process_csv_error, msg = process_csv(file_object, version)
-                        print("views msg")
-                        print(msg)
-                        print("views type msg")
-                        print(type(msg))
+                        params = request.GET.dict()
+                        if "validate" in params:
+                            validate_only = True
+                        process_csv_error, msg = process_csv(file_object, version, validate_only)
                         if process_csv_error:
                             errors = Errors([process_csv_error])
                     else:
@@ -266,6 +266,11 @@ class BulkUpdate(APIView):
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
             )
+        if validate_only:
+            with open(msg) as file:
+                response = HttpResponse(file, content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename=reports.csv'
+            return response
 
         return Response(
             msg,
