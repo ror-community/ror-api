@@ -12,7 +12,7 @@ class JSONSchemaParser(JSONParser):
         return rsp.json()
 
     def parse(self, stream, media_type=None, parser_context=None):
-        schema = self.get_file_from_url("https://raw.githubusercontent.com/ror-community/ror-schema/schema-v2/ror_schema_v2_0.json")
+        schema = self.get_file_from_url("https://raw.githubusercontent.com/ror-community/ror-schema/master/ror_schema_v2_0.json")
         data = super(JSONSchemaParser, self).parse(stream, media_type,
                                                    parser_context)
         try:

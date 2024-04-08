@@ -8,7 +8,7 @@ from rorapi.v2.serializers import (
 )
 from rorapi.management.commands.generaterorid import check_ror_id
 
-V2_SCHEMA = get_file_from_url("https://raw.githubusercontent.com/ror-community/ror-schema/schema-v2/ror_schema_v2_0.json")
+V2_SCHEMA = get_file_from_url("https://raw.githubusercontent.com/ror-community/ror-schema/master/ror_schema_v2_0.json")
 
 
 def update_record(json_input, existing_record):
