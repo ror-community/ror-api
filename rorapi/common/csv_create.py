@@ -71,27 +71,29 @@ def new_record_from_csv(csv_data, version):
                 temp_names.append(name_obj)
     print("temp names 1:")
     print(temp_names)
-    name_values = [n['value'] for n in temp_names]
+    name_vals = [n['value'] for n in temp_names]
     dup_names = []
-    for n in name_values:
-        if name_values.count(n) > 1:
+    for n in name_vals:
+        if name_vals.count(n) > 1:
             if n not in dup_names:
                 dup_names.append(n)
-    if dup_names:
-        dup_names_objs = []
-        for d in dup_names:
-            types = []
-            for t in temp_names:
-                if t['value'] == d:
-                    types.extend(t['types'])
-            name_obj = {
-                "types": types,
-                "value": d,
-                "lang": None
-            }
-            dup_names_objs.append(name_obj)
-        temp_names = [t for t in temp_names if t['value'] not in dup_names]
-        temp_names.extend(dup_names_objs)
+    for d in dup_names:
+        dup_names_objs = [t for t in temp_names if t['value'] == d]
+        lang_codes = [dno['lang'] for dno in dup_names_objs]
+        for lang_code in lang_codes:
+            if lang_codes.count(lang_code) > 1:
+                name_lang_dups = [dno for dno in dup_names_objs if dno['lang'] == lang_code]
+                types = []
+                for n in name_lang_dups:
+                    types.extend(n['types'])
+                name_obj = {
+                    "types": types,
+                    "value": d,
+                    "lang": lang_code
+                }
+                if name_obj not in temp_names:
+                    temp_names = [t for t in temp_names if t not in name_lang_dups]
+                    temp_names.append(name_obj)
     print("temp names 2:")
     print(temp_names)
     v2_data['names'] = temp_names

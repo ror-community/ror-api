@@ -290,7 +290,7 @@ def update_record_from_csv(csv_data, version):
                                 # check if value, lang and type already exist
                                 if temp_names_match or temp_names_null_lang_match:
                                     if temp_names_match:
-                                        errors.append("Attempting to add names that already exists: {}".format(a))
+                                        errors.append("Attempting to add name that already exists: {}".format(a))
                                     if temp_names_null_lang_match:
                                         errors.append("Attempting to add name with lang code that already exists with no lang code: {}".format(a))
                                 else:
