@@ -142,26 +142,33 @@ class Command(BaseCommand):
         json_files = []
         filename = options['filename']
         use_test_data = options['testdata']
+        self.stdout.write('Getting ROR dump')
         ror_dump_zip = get_ror_dump_zip(filename, use_test_data)
         if ror_dump_zip:
             if not os.path.exists(DATA['WORKING_DIR']):
                 os.makedirs(DATA['WORKING_DIR'])
+            self.stdout.write('Extracting ROR dump')
             with zipfile.ZipFile(ror_dump_zip, 'r') as zip_ref:
                 zip_ref.extractall(DATA['WORKING_DIR'] + filename)
             unzipped_files = os.listdir(DATA['WORKING_DIR'] + filename)
             for file in unzipped_files:
                 if file.endswith(".json"):
                     json_files.append(file)
+
             for json_file in json_files:
                 index = None
                 json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
-                with open(json_path, 'r') as it:
-                    dataset = json.load(it)
                 if 'schema_v2' in json_file and (options['schema']==2 or options['schema'] is None):
+                    self.stdout.write('Loading JSON')
+                    with open(json_path, 'r') as it:
+                        dataset = json.load(it)
                     self.stdout.write('Indexing ROR dataset ' + json_file)
                     index = ES_VARS['INDEX_V2']
                     index_dump(self, json_file, index, dataset)
                 if 'schema_v2' not in json_file and (options['schema']==1 or options['schema'] is None):
+                    self.stdout.write('Loading JSON')
+                    with open(json_path, 'r') as it:
+                        dataset = json.load(it)
                     self.stdout.write('Indexing ROR dataset ' + json_file)
                     index = ES_VARS['INDEX_V1']
                     index_dump(self, json_file, index, dataset)
