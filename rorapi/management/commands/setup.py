@@ -1,13 +1,16 @@
 import requests
 import zipfile
-
+import base64
 from django.core.management.base import BaseCommand
 from rorapi.management.commands.deleteindex import Command as DeleteIndexCommand
 from rorapi.management.commands.createindex import Command as CreateIndexCommand
 from rorapi.management.commands.indexrordump import Command as IndexRorDumpCommand
+from rorapi.management.commands.getrordump import Command as GetRorDumpCommand
 from rorapi.settings import ROR_DUMP
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
+
+HEADERS = {'Authorization': 'token {}'.format(ROR_DUMP['GITHUB_TOKEN']), 'Accept': 'application/vnd.github.v3+json'}
 
 def get_ror_dump_sha(filename, use_test_data):
     sha = ''
@@ -49,6 +52,7 @@ class Command(BaseCommand):
         sha = get_ror_dump_sha(filename, use_test_data)
 
         if sha:
+            GetRorDumpCommand().handle(*args, **options)
             DeleteIndexCommand().handle(*args, **options)
             CreateIndexCommand().handle(*args, **options)
             IndexRorDumpCommand().handle(*args, **options)
