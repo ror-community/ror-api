@@ -247,18 +247,21 @@ def update_record_from_csv(csv_data, version):
                                         "lang": None
                                     }
                                     if LANG_DELIMITER in val:
-                                        print("has lang delim")
-                                        name_val, lang  = val.split("*")
-                                        vals_obj["value"] = name_val.strip()
-                                        if lang:
-                                            lang_errors, lang_code = get_lang_code(lang.strip())
-                                            if lang_errors:
-                                                errors.append("Could not convert language value to ISO code: {}".format(lang))
-                                            else:
-                                                vals_obj["lang"] = lang_code
+                                        if val.count(LANG_DELIMITER) == 1:
+                                            name_val, lang  = val.split("*")
+                                            vals_obj["value"] = name_val.strip()
+                                            if lang:
+                                                lang_errors, lang_code = get_lang_code(lang.strip())
+                                                if lang_errors:
+                                                    errors.append("Could not convert language value to ISO code: {}".format(lang))
+                                                else:
+                                                    vals_obj["lang"] = lang_code
+                                        else:
+                                            errors.append("Could not parse name value {} in names.types.{} because it contains multiple {} lang delimiter chars.".format(val, t, LANG_DELIMITER))
                                     else:
                                         vals_obj["value"] = val.strip()
-                                    vals_obj_list.append(vals_obj)
+                                    if vals_obj["value"]:
+                                        vals_obj_list.append(vals_obj)
                                 actions_values[k] = vals_obj_list
                         print("updated actions values")
                         print(actions_values)
