@@ -30,7 +30,7 @@ def get_ror_dump_sha(filename, use_test_data, github_headers):
     except:
         return None
 
-def get_ror_dump_zip(filename, use_test_data, github_headers):
+def get_ror_dump_zip(self, filename, use_test_data, github_headers):
     sha = get_ror_dump_sha(filename, use_test_data, github_headers)
     if sha:
         if use_test_data:
@@ -46,9 +46,14 @@ def get_ror_dump_zip(filename, use_test_data, github_headers):
             file_decoded = base64.b64decode(response_json['content'])
             with open(filename + '.zip', 'wb') as zip_file:
                 zip_file.write(file_decoded)
+            with zipfile.ZipFile(zip_file.name, 'r') as ror_zip:
+                filenames = ror_zip.namelist()
+                dir_names = [f for f in filenames if ('json' not in f and 'csv' not in f)]
+                if dir_names:
+                    raise SystemExit(f"Dump zip has extra directory and cannot be indexed")
             return zip_file.name
         except:
-            return None
+            raise SystemExit(f"Something went wrong saving zip file")
 
 class Command(BaseCommand):
     help = 'Downloads a specified ROR data dump from Github'
@@ -61,4 +66,5 @@ class Command(BaseCommand):
             github_headers = AUTH_HEADERS
         else:
             github_headers = HEADERS
-        ror_dump_zip = get_ror_dump_zip(filename, use_test_data, github_headers)
+        ror_dump_zip = get_ror_dump_zip(self, filename, use_test_data, github_headers)
+
