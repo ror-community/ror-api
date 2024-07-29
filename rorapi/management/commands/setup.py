@@ -52,11 +52,14 @@ class Command(BaseCommand):
         sha = get_ror_dump_sha(filename, use_test_data)
 
         if sha:
-            GetRorDumpCommand().handle(*args, **options)
-            DeleteIndexCommand().handle(*args, **options)
-            CreateIndexCommand().handle(*args, **options)
-            IndexRorDumpCommand().handle(*args, **options)
-            msg = 'SUCCESS: ROR dataset {} indexed in version {}. Using test repo: {}'.format(filename, str(options['schema']), str(use_test_data))
+            try:
+                GetRorDumpCommand().handle(*args, **options)
+                DeleteIndexCommand().handle(*args, **options)
+                CreateIndexCommand().handle(*args, **options)
+                IndexRorDumpCommand().handle(*args, **options)
+                msg = 'SUCCESS: ROR dataset {} indexed in version {}. Using test repo: {}'.format(filename, str(options['schema']), str(use_test_data))
+            except:
+                msg = 'ERROR: Could not index ROR data dump. Check API logs for details.'
         else:
             msg = 'ERROR: ROR dataset for file {} not found. '.format(filename) \
                 +'Please generate the data dump first.'
