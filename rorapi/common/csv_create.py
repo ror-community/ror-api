@@ -54,21 +54,26 @@ def new_record_from_csv(csv_data, version):
         if csv_data['names.types.' + v]:
             for n in csv_data['names.types.' + v].strip(';').split(';'):
                 if LANG_DELIMITER in n:
-                    name_val, lang  = n.split("*")
-                    if lang:
-                        lang_errors, lang_code = get_lang_code(lang.strip())
-                        if lang_errors:
-                            errors.append("Could not convert language value to ISO code: {}".format(lang))
+                    if n.count(LANG_DELIMITER) == 1:
+                        name_val, lang  = n.split("*")
+                        if lang:
+                            lang_errors, lang_code = get_lang_code(lang.strip())
+                            if lang_errors:
+                                errors.append("Could not convert language value to ISO code: {}".format(lang))
+                    else:
+                        name_val = None
+                        lang_code = None
+                        errors.append("Could not parse name value {} in names.types.{} because it contains multiple {} lang delimiter chars.".format(n, v, LANG_DELIMITER))
                 else:
                     name_val = n
                     lang_code = None
-
-                name_obj = {
-                    "types": [v],
-                    "value": name_val.strip(),
-                    "lang": lang_code
-                }
-                temp_names.append(name_obj)
+                if name_val:
+                    name_obj = {
+                        "types": [v],
+                        "value": name_val.strip(),
+                        "lang": lang_code
+                    }
+                    temp_names.append(name_obj)
     print("temp names 1:")
     print(temp_names)
     name_vals = [n['value'] for n in temp_names]
