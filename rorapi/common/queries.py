@@ -334,6 +334,9 @@ def build_search_query(params, version):
                 ("statuses", "status"),
             ]
         )
+    sort_field = params.get("sort", "_id")
+    sort_order = params.get("order", "asc")
+    qb.add_sort(sort_field, sort_order)
 
     qb.paginate(int(params.get("page", 1)))
     return qb.get_query()
