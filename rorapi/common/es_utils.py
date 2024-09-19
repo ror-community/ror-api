@@ -82,3 +82,6 @@ class ESQueryBuilder:
 
     def get_query(self):
         return self.search
+ 
+    def add_sort(self, field, order="asc"):
+        self.search = self.search.sort({field: {"order": order}})
