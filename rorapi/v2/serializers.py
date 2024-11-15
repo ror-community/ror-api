@@ -33,8 +33,12 @@ class LinkSerializer(serializers.Serializer):
 
 
 class GeoNamesDetailsSerializer(serializers.Serializer):
+    continent_code = serializers.CharField()
+    continent_name = serializers.CharField()
     country_code = serializers.CharField()
     country_name = serializers.CharField()
+    country_subdivision_code = serializers.CharField()
+    country_subdivision_name = serializers.CharField()
     lat = serializers.DecimalField(
         max_digits=None, decimal_places=10, coerce_to_string=False
     )
