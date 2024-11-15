@@ -30,11 +30,15 @@ class OrganizationTestCase(SimpleTestCase):
                 {
                     "geonames_id": 5911606,
                     "geonames_details": {
+                        "continent_code": "OC",
+                        "continent_name": "Oceania",
+                        "country_name": "Gallifrey",
+                        "country_code": "GE",
+                        "country_subdivision_code": "BU",
+                        "country_subdivision_name": "Burnaby State",
                         "lat": "49.198027",
                         "lng": "-123.007714",
                         "name": "Burnaby",
-                        "country_name": "Gallifrey",
-                        "country_code": "GE",
                     },
                 }
             ],
@@ -71,12 +75,12 @@ class OrganizationTestCase(SimpleTestCase):
             self.assertIn(organization.types[i], data["types"])
         self.assertEqual(organization.established, data["established"])
         self.assertEqual(
-            organization.locations[0].geonames_details.lat,
-            data["locations"][0]["geonames_details"]["lat"],
+            organization.locations[0].geonames_details.continent_code,
+            data["locations"][0]["geonames_details"]["continent_code"],
         )
         self.assertEqual(
-            organization.locations[0].geonames_details.lng,
-            data["locations"][0]["geonames_details"]["lng"],
+            organization.locations[0].geonames_details.continent_name,
+            data["locations"][0]["geonames_details"]["continent_name"],
         )
         self.assertEqual(
             organization.locations[0].geonames_details.country_code,
@@ -85,6 +89,22 @@ class OrganizationTestCase(SimpleTestCase):
         self.assertEqual(
             organization.locations[0].geonames_details.country_name,
             data["locations"][0]["geonames_details"]["country_name"],
+        )
+        self.assertEqual(
+            organization.locations[0].geonames_details.country_subdivision_code,
+            data["locations"][0]["geonames_details"]["country_subdivision_code"],
+        )
+        self.assertEqual(
+            organization.locations[0].geonames_details.country_subdivision_name,
+            data["locations"][0]["geonames_details"]["country_subdivision_name"],
+        )
+        self.assertEqual(
+            organization.locations[0].geonames_details.lat,
+            data["locations"][0]["geonames_details"]["lat"],
+        )
+        self.assertEqual(
+            organization.locations[0].geonames_details.lng,
+            data["locations"][0]["geonames_details"]["lng"],
         )
         self.assertEqual(
             organization.locations[0].geonames_details.name,
