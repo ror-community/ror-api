@@ -184,7 +184,7 @@ class HeartbeatView(View):
 
 
 class GenerateAddress(APIView):
-    #permission_classes = [OurTokenPermission]
+    permission_classes = [OurTokenPermission]
 
     def get(self, request, geonamesid, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         if version == 'v2':

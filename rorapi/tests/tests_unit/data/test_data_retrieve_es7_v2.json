@@ -73,7 +73,7 @@
                         {
                             "geonames_details": {
                                 "continent_code": "NA",
-                                "contient_name": "North America",
+                                "continent_name": "North America",
                                 "country_code": "US",
                                 "country_name": "United States",
                                 "country_subdivision_code": "DC",

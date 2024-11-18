@@ -6,12 +6,12 @@ class GeoNamesDetails:
     """A model class for storing geonames city hash"""
 
     def __init__(self, data):
-        self.continent_code = data.country_code
-        self.continent_name = data.country_name
+        self.continent_code = data.continent_code
+        self.continent_name = data.continent_name
         self.country_code = data.country_code
         self.country_name = data.country_name
-        self.country_subdivision_code = data.country_code
-        self.country_subdivision_name = data.country_name
+        self.country_subdivision_code = data.country_subdivision_code
+        self.country_subdivision_name = data.country_subdivision_name
         self.name = data.name
         self.lat = data.lat
         self.lng = data.lng
