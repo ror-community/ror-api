@@ -18,7 +18,8 @@ from rorapi.common.es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
 
-ALLOWED_FILTERS = ("country.country_code", "locations.geonames_details.country_code", "types", "country.country_name", "locations.geonames_details.country_name", "status")
+ALLOWED_FILTERS_V1 = ("country.country_code", "types", "country.country_name", "status")
+ALLOWED_FILTERS_V2 = ("country.country_code", "locations.geonames_details.country_code", "types", "country.country_name", "locations.geonames_details.country_name", "status", "locations.geonames_details.continent_code", "locations.geonames_details.continent_name")
 ALLOWED_PARAM_KEYS = ("query", "page", "filter", "query.advanced", "all_status")
 ALLOWED_ALL_STATUS_VALUES = ("", "true", "false")
 # includes deprecated ext id types
@@ -157,6 +158,14 @@ def check_status_adv_q(adv_q_string):
 
 def filter_string_to_list(filter_string, version):
     filter_list = []
+    if "continent_code" in filter_string and version == "v2":
+        filter_string = filter_string.replace(
+            "continent_code", "locations.geonames_details.continent_code"
+        )
+    if "continent_name" in filter_string and version == "v2":
+        filter_string = filter_string.replace(
+            "continent_name", "locations.geonames_details.continent_name"
+        )
     if "country.country_code" in filter_string and version == "v2":
         filter_string = filter_string.replace(
             "country.country_code", "locations.geonames_details.country_code"
@@ -327,6 +336,7 @@ def build_search_query(params, version):
             [
                 ("types", "types"),
                 ("countries", "locations.geonames_details.country_code"),
+                ("continents", "locations.geonames_details.continent_code"),
                 ("statuses", "status"),
             ]
         )

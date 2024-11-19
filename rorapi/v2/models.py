@@ -1,17 +1,48 @@
 from geonamescache.mappers import country
-from rorapi.common.models import Aggregations, Entity
+from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
+from rorapi.v2.record_constants import continent_code_to_name
 
+class ContinentBucket:
+    """A model class for country aggregation bucket"""
+
+    def __init__(self, data):
+        self.id = data.key.lower()
+        self.title = continent_code_to_name(data.key)
+        self.count = data.doc_count
+
+class CountryBucket:
+    """A model class for country aggregation bucket"""
+
+    def __init__(self, data):
+        self.id = data.key.lower()
+        mapper = country(from_key="iso", to_key="name")
+        try:
+            self.title = mapper(data.key)
+        except AttributeError:
+            # if we have a country code with no name mapping, skip it to prevent 500
+            pass
+        self.count = data.doc_count
+
+
+class Aggregations:
+    """Aggregations model class"""
+
+    def __init__(self, data):
+        self.types = [TypeBucket(b) for b in data.types.buckets]
+        self.countries = [CountryBucket(b) for b in data.countries.buckets]
+        self.continents = [ContinentBucket(b) for b in data.continents.buckets]
+        self.statuses = [StatusBucket(b) for b in data.statuses.buckets]
 
 class GeoNamesDetails:
     """A model class for storing geonames city hash"""
 
     def __init__(self, data):
-        self.continent_code = data.continent_code
-        self.continent_name = data.continent_name
+        self.continent_code = getattr(data, 'continent_code', None)
+        self.continent_name = getattr(data, 'continent_name', None)
         self.country_code = data.country_code
         self.country_name = data.country_name
-        self.country_subdivision_code = data.country_subdivision_code
-        self.country_subdivision_name = data.country_subdivision_name
+        self.country_subdivision_code = getattr(data, 'country_subdivision_code', None)
+        self.country_subdivision_name = getattr(data, 'country_subdivision_name', None)
         self.name = data.name
         self.lat = data.lat
         self.lng = data.lng

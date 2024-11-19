@@ -173,6 +173,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.default_query = \
                 {'aggs': {'types': {'terms': {'field': 'types', 'size': 10, 'min_doc_count': 1}},
                 'countries': {'terms': {'field': 'locations.geonames_details.country_code', 'size': 10, 'min_doc_count': 1}},
+                'continents': {'terms': {'field': 'locations.geonames_details.continent_code', 'size': 10, 'min_doc_count': 1}},
                 'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}},
                 'sort': [{'id': {'order': 'asc'}}], 'track_total_hits': True, 'from': 0, 'size': 20}
 
@@ -557,6 +558,14 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         for ret, exp in \
                 zip(organizations.meta.countries,
                     self.test_data['aggregations']['countries']['buckets']):
+            self.assertEquals(ret.id, exp['key'].lower())
+            self.assertEquals(ret.count, exp['doc_count'])
+        self.assertEquals(
+            len(organizations.meta.continents),
+            len(self.test_data['aggregations']['continents']['buckets']))
+        for ret, exp in \
+                zip(organizations.meta.continents,
+                    self.test_data['aggregations']['continents']['buckets']):
             self.assertEquals(ret.id, exp['key'].lower())
             self.assertEquals(ret.count, exp['doc_count'])
         self.assertEquals(
