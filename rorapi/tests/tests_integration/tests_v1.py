@@ -7,7 +7,7 @@ import requests
 from django.test import SimpleTestCase
 from rorapi.settings import ROR_API, ES_VARS
 
-BASE_URL = '{}/organizations'.format(
+BASE_URL = '{}/v1/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
@@ -39,6 +39,12 @@ class APITestCase(SimpleTestCase):
         self.assertTrue('countries' in output['meta'])
         self.assertTrue(len(output['meta']['countries']) > 0)
         for t in output['meta']['countries']:
+            self.assertTrue('id' in t)
+            self.assertTrue('count' in t)
+
+        self.assertTrue('statuses' in output['meta'])
+        self.assertTrue(len(output['meta']['statuses']) > 0)
+        for t in output['meta']['statuses']:
             self.assertTrue('id' in t)
             self.assertTrue('count' in t)
 
@@ -129,6 +135,7 @@ class APITestCase(SimpleTestCase):
         aggregations = requests.get(BASE_URL, query).json()['meta']
         t_aggrs = aggregations['types']
         c_aggrs = aggregations['countries']
+        s_aggrs = aggregations['statuses']
 
         for t_aggr in t_aggrs:
             filter_string = 'types:{}'.format(t_aggr['title'])
@@ -154,9 +161,20 @@ class APITestCase(SimpleTestCase):
             self.assertTrue(
                 any([c_aggr == c for c in output['meta']['countries']]))
 
-        for t_aggr, c_aggr in itertools.product(t_aggrs, c_aggrs):
-            filter_string = 'country.country_code:{},types:{}' \
-                .format(c_aggr['id'].upper(), t_aggr['title'])
+        for s_aggr in s_aggrs:
+            filter_string = 'status:{}'.format(s_aggr['title'])
+            params = dict(query, filter=filter_string)
+            output = requests.get(BASE_URL, params).json()
+
+            self.assertEquals(self.get_total(output), s_aggr['count'])
+            for i in output['items']:
+                self.assertTrue(s_aggr['title'] in i['status'])
+            self.assertTrue(any([s_aggr == s
+                                 for s in output['meta']['statuses']]))
+
+        for t_aggr, c_aggr, s_aggr in itertools.product(t_aggrs, c_aggrs, s_aggrs):
+            filter_string = 'country.country_code:{},types:{},status:{}' \
+                .format(c_aggr['id'].upper(), t_aggr['title'], s_aggr['title'])
             params = dict(query, filter=filter_string)
             status_code = requests.get(BASE_URL, params).status_code
             if status_code != 200:
@@ -167,10 +185,12 @@ class APITestCase(SimpleTestCase):
                 continue
             self.assertTrue(self.get_total(output) <= t_aggr['count'])
             self.assertTrue(self.get_total(output) <= c_aggr['count'])
+            self.assertTrue(self.get_total(output) <= s_aggr['count'])
             for i in output['items']:
                 self.assertTrue(t_aggr['title'] in i['types'])
                 self.assertEquals(c_aggr['id'].upper(),
                                   i['country']['country_code'])
+                self.assertTrue(s_aggr['title'] in i['status'])
             self.assertTrue(
                 any([t_aggr['id'] == t['id']
                      for t in output['meta']['types']]))
@@ -179,6 +199,9 @@ class APITestCase(SimpleTestCase):
                     c_aggr['id'] == c['id']
                     for c in output['meta']['countries']
                 ]))
+            self.assertTrue(
+                any([s_aggr['id'] == s['id']
+                     for s in output['meta']['statuses']]))
 
     def test_filtering(self):
         self.verify_filtering({})
@@ -220,9 +243,10 @@ class APITestCase(SimpleTestCase):
 
     def test_query_grid_retrieval(self):
         for test_org in requests.get(BASE_URL).json()['items']:
-            grid = test_org['external_ids']['GRID']['preferred']
-            output = requests.get(BASE_URL, {'query': '"' + grid + '"'}).json()
-            self.verify_single_item(output, test_org)
+            if 'GRID' in test_org['external_ids'].keys():
+                grid = test_org['external_ids']['GRID']['preferred']
+                output = requests.get(BASE_URL, {'query': '"' + grid + '"'}).json()
+                self.verify_single_item(output, test_org)
 
     def test_error(self):
         output = requests.get(BASE_URL, {

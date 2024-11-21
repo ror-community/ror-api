@@ -155,42 +155,46 @@ def check_status_adv_q(adv_q_string):
         status_in_q = True
     return status_in_q
 
+def get_country_name_filters(country_name_field, filter_string, version):
+    country_name_filters = []
+    if version == "v1":
+        allowed_filters = ALLOWED_FILTERS_V1
+    else:
+        allowed_filters = ALLOWED_FILTERS_V2
+    search = re.findall(country_name_field + ":([^:]*)", filter_string)
+    if search:
+        for s in search:
+            if len(re.findall(",", s)) > 1:
+                s = s.rsplit(",", 1)[0]
+            for allowed_filter in allowed_filters:
+                if allowed_filter in s:
+                    s = s.rsplit("," + allowed_filter, 1)[0]
+            country_name_filter = country_name_field + ":" + s
+            filter_string = filter_string.replace(country_name_filter, "")
+            country_name_filters.append(country_name_filter)
+    return country_name_filters
+
 
 def filter_string_to_list(filter_string, version):
     filter_list = []
-    if "continent_code" in filter_string and version == "v2":
-        filter_string = filter_string.replace(
-            "continent_code", "locations.geonames_details.continent_code"
-        )
-    if "continent_name" in filter_string and version == "v2":
-        filter_string = filter_string.replace(
-            "continent_name", "locations.geonames_details.continent_name"
-        )
-    if "country.country_code" in filter_string and version == "v2":
-        filter_string = filter_string.replace(
-            "country.country_code", "locations.geonames_details.country_code"
-        )
+    if version == "v2":
+        if "country.country_code" in filter_string:
+            filter_string = filter_string.replace(
+                "country.country_code", "locations.geonames_details.country_code"
+            )
+        if "country.country_name" in filter_string:
+            filter_string = filter_string.replace(
+                "country.country_name", "locations.geonames_details.country_name"
+            )
     # some country names contain comma chars
     # allow comma chars in country_name filter values only
     # country.country_name:Germany,types:Company
-    if "country.country_name" in filter_string:
-        country_name_filters = []
-        search = re.findall("country.country_name:([^:]*)", filter_string)
-        if search:
-            for s in search:
-                if len(re.findall(",", s)) > 1:
-                    s = s.rsplit(",", 1)[0]
-                for allowed_filter in ALLOWED_FILTERS:
-                    if allowed_filter in s:
-                        s = s.rsplit("," + allowed_filter, 1)[0]
-                country_name_filter = "country.country_name:" + s
-                v2_country_name_filter = "locations.geonames_details.country_name:" + s
-                filter_string = filter_string.replace(country_name_filter, "")
-                if version == "v2":
-                    country_name_filters.append(v2_country_name_filter)
-                else:
-                    country_name_filters.append(country_name_filter)
-
+    if version == "v1":
+        country_name_field = "country.country_name"
+    else:
+        country_name_field = "locations.geonames_details.country_code"
+    if country_name_field in filter_string:
+        country_name_filters = get_country_name_filters(country_name_field, filter_string, version)
         filter_list = [f for f in filter_string.split(",") if f]
         filter_list = filter_list + country_name_filters
     else:
@@ -253,7 +257,11 @@ def validate(params, version):
 
     valid_filters = [f for f in filters if ":" in f]
     filter_keys = [f.split(":")[0] for f in valid_filters]
-    illegal_keys = [v for v in filter_keys if v not in ALLOWED_FILTERS]
+    if version == "v1":
+        allowed_filters = ALLOWED_FILTERS_V1
+    else:
+        allowed_filters = ALLOWED_FILTERS_V2
+    illegal_keys = [v for v in filter_keys if v not in allowed_filters]
     errors.extend(["filter key '{}' is illegal".format(k) for k in illegal_keys])
 
     if "page" in params:
