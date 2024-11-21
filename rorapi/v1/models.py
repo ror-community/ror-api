@@ -1,14 +1,6 @@
 from geonamescache.mappers import country
 from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
 
-class ContinentBucket:
-    """A model class for country aggregation bucket"""
-
-    def __init__(self, data):
-        self.id = data.key.lower()
-        self.title = data.key
-        self.count = data.doc_count
-
 class Aggregations:
     """Aggregations model class"""
 
