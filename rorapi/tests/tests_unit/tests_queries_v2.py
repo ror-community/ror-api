@@ -175,7 +175,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                 'countries': {'terms': {'field': 'locations.geonames_details.country_code', 'size': 10, 'min_doc_count': 1}},
                 'continents': {'terms': {'field': 'locations.geonames_details.continent_code', 'size': 10, 'min_doc_count': 1}},
                 'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}},
-                'sort': [{'id': {'order': 'asc'}}], 'track_total_hits': True, 'from': 0, 'size': 20}
+                'track_total_hits': True, 'from': 0, 'size': 20}
 
     def test_empty_query_default(self):
         expected = {'query': {
