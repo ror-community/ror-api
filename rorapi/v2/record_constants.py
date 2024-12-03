@@ -65,3 +65,17 @@ V2_SORT_KEYS = {
     "types": None
 }
 
+V2_CONTINENT_CODES_NAMES = {
+    "AF": "Africa",
+    "AN": "Antarctica",
+    "AS": "Asia",
+    "EU": "Europe",
+    "NA": "North America",
+    "OC": "Oceania",
+    "SA": "South America"
+}
+
+def continent_code_to_name(continent_code):
+    if continent_code.upper() in V2_CONTINENT_CODES_NAMES.keys():
+        return V2_CONTINENT_CODES_NAMES[continent_code.upper()]
+    return None

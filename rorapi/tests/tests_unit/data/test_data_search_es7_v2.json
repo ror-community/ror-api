@@ -24,8 +24,12 @@
                         {
                             "geonames_id": 2158177,
                             "geonames_details": {
+                                "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.9083,
                                 "lng": 145.138,
                                 "name": "Melbourne"
@@ -220,8 +224,12 @@
                         {
                             "geonames_id": 2174003,
                             "geonames_details": {
+ "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -27.495964,
                                 "lng": 153.009627,
                                 "name": "Brisbane"
@@ -404,8 +412,12 @@
                         {
                             "geonames_id": 2147714,
                             "geonames_details": {
+ "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -33.775259,
                                 "lng": 151.112915,
                                 "name": "Sydney"
@@ -535,8 +547,12 @@
                         {
                             "geonames_id": 2171507,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -34.405147,
                                 "lng": 150.878387,
                                 "name": "Wollongong"
@@ -691,8 +707,12 @@
                         {
                             "geonames_id": 2163355,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -42.902093,
                                 "lng": 147.332497,
                                 "name": "Hobart"
@@ -841,8 +861,12 @@
                         {
                             "geonames_id": 2078025,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -35.024038,
                                 "lng": 138.572615,
                                 "name": "Adelaide"
@@ -991,8 +1015,12 @@
                         {
                             "geonames_id": 2158177,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.806748,
                                 "lng": 144.962573,
                                 "name": "Melbourne"
@@ -1150,8 +1178,12 @@
                         {
                             "geonames_id": 2158177,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.72179,
                                 "lng": 145.047909,
                                 "name": "Melbourne"
@@ -1276,8 +1308,12 @@
                         {
                             "geonames_id": 2158177,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.794167,
                                 "lng": 144.9,
                                 "name": "Melbourne"
@@ -1396,8 +1432,12 @@
                         {
                             "geonames_id": 2177671,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -30.489949,
                                 "lng": 151.641018,
                                 "name": "Armidale"
@@ -1537,8 +1577,12 @@
                         {
                             "geonames_id": 7932622,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.8493578,
                                 "lng": 145.1127097,
                                 "name": "Burwood"
@@ -1666,8 +1710,12 @@
                         {
                             "geonames_id": 2174003,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -27.470609,
                                 "lng": 153.022851,
                                 "name": "Brisbane"
@@ -1800,8 +1848,12 @@
                         {
                             "geonames_id": 2151437,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -23.322705,
                                 "lng": 150.520802,
                                 "name": "Rockhampton"
@@ -1930,8 +1982,12 @@
                         {
                             "geonames_id": 2078025,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -34.92049,
                                 "lng": 138.60678,
                                 "name": "Adelaide"
@@ -2071,8 +2127,12 @@
                         {
                             "geonames_id": 2158177,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.821111,
                                 "lng": 145.038333,
                                 "name": "Melbourne"
@@ -2205,8 +2265,12 @@
                         {
                             "geonames_id": 2165087,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -28.073983,
                                 "lng": 153.416489,
                                 "name": "Gold Coast"
@@ -2326,8 +2390,12 @@
                         {
                             "geonames_id": 2176632,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -33.4300248,
                                 "lng": 149.5655646,
                                 "name": "Bathurst"
@@ -2452,8 +2520,12 @@
                         {
                             "geonames_id": 2172517,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -35.238889,
                                 "lng": 149.0875,
                                 "name": "Canberra"
@@ -2583,8 +2655,12 @@
                         {
                             "geonames_id": 2177091,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -37.5761,
                                 "lng": 143.846,
                                 "name": "Ballarat"
@@ -2697,8 +2773,12 @@
                         {
                             "geonames_id": 2073124,
                             "geonames_details": {
+                                 "continent_code": "OC",
+                                "continent_name": "Oceania",
                                 "country_code": "AU",
                                 "country_name": "Australia",
+                                "country_subdivision_code": "VIC",
+                                "country_subdivision_name": "Victoria",
                                 "lat": -12.3716524297692,
                                 "lng": 130.868711471558,
                                 "name": "Darwin"
@@ -2873,6 +2953,16 @@
             "doc_count_error_upper_bound": 0,
             "sum_other_doc_count": 0,
             "buckets": []
+        },
+        "continents": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "OC",
+                    "doc_count": 20
+                }
+            ]
         }
     }
 }
