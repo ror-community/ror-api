@@ -48,7 +48,7 @@ def process_csv(csv_file, version, validate_only):
     success_msg = None
     error = None
     report = []
-    report_fields = ['row', 'issue_url', 'ror_id', 'action', 'errors']
+    report_fields = ['row', 'html_url', 'ror_id', 'action', 'errors']
     skipped_count = 0
     updated_count = 0
     new_count = 0
