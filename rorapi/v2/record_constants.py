@@ -1,17 +1,17 @@
 V2_ADMIN = {
     "created": {
         "date": "",
-        "schema_version": "2.0"
+        "schema_version": "2.1"
     },
     "last_modified": {
         "date": "",
-        "schema_version": "2.0"
+        "schema_version": "2.1"
     }
 }
 
 V2_LAST_MOD = {
     "date": "",
-    "schema_version": "2.0"
+    "schema_version": "2.1"
 }
 
 V2_OPTIONAL_FIELD_DEFAULTS = {
