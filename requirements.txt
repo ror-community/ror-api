@@ -20,7 +20,7 @@ boto3
 pandas==1.4.1
 numpy==1.22
 titlecase==2.3
-update_address @ git+https://github.com/ror-community/update_address.git@v2-locations
+update_address @ git+https://github.com/ror-community/update_address.git@v2-1-locations
 launchdarkly-server-sdk==7.6.1
 jsonschema==3.2.0
 python-magic

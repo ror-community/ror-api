@@ -20,6 +20,7 @@ def get_lang_code(lang_string):
 def get_file_from_url(url):
     rsp = requests.get(url)
     rsp.raise_for_status()
+    print(rsp.json())
     return rsp.json()
 
 def validate_record(data, schema):

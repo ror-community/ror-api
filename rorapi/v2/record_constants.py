@@ -1,17 +1,17 @@
 V2_ADMIN = {
     "created": {
         "date": "",
-        "schema_version": "2.0"
+        "schema_version": "2.1"
     },
     "last_modified": {
         "date": "",
-        "schema_version": "2.0"
+        "schema_version": "2.1"
     }
 }
 
 V2_LAST_MOD = {
     "date": "",
-    "schema_version": "2.0"
+    "schema_version": "2.1"
 }
 
 V2_OPTIONAL_FIELD_DEFAULTS = {
@@ -65,3 +65,17 @@ V2_SORT_KEYS = {
     "types": None
 }
 
+V2_CONTINENT_CODES_NAMES = {
+    "AF": "Africa",
+    "AN": "Antarctica",
+    "AS": "Asia",
+    "EU": "Europe",
+    "NA": "North America",
+    "OC": "Oceania",
+    "SA": "South America"
+}
+
+def continent_code_to_name(continent_code):
+    if continent_code.upper() in V2_CONTINENT_CODES_NAMES.keys():
+        return V2_CONTINENT_CODES_NAMES[continent_code.upper()]
+    return None
