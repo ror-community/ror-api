@@ -1,9 +1,11 @@
 from rest_framework import serializers
-from rorapi.common.serializers import (
-    AggregationsSerializer,
-    OrganizationRelationshipsSerializer,
-)
+from rorapi.common.serializers import BucketSerializer, OrganizationRelationshipsSerializer
 
+class AggregationsSerializer(serializers.Serializer):
+    types = BucketSerializer(many=True)
+    countries = BucketSerializer(many=True)
+    continents = BucketSerializer(many=True)
+    statuses = BucketSerializer(many=True)
 
 class AdminDetailsSerializer(serializers.Serializer):
     date = serializers.DateTimeField()
@@ -33,8 +35,12 @@ class LinkSerializer(serializers.Serializer):
 
 
 class GeoNamesDetailsSerializer(serializers.Serializer):
+    continent_code = serializers.CharField()
+    continent_name = serializers.CharField()
     country_code = serializers.CharField()
     country_name = serializers.CharField()
+    country_subdivision_code = serializers.CharField()
+    country_subdivision_name = serializers.CharField()
     lat = serializers.DecimalField(
         max_digits=None, decimal_places=10, coerce_to_string=False
     )

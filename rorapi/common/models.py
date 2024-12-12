@@ -40,15 +40,6 @@ class StatusBucket:
         self.count = data.doc_count
 
 
-class Aggregations:
-    """Aggregations model class"""
-
-    def __init__(self, data):
-        self.types = [TypeBucket(b) for b in data.types.buckets]
-        self.countries = [CountryBucket(b) for b in data.countries.buckets]
-        self.statuses = [StatusBucket(b) for b in data.statuses.buckets]
-
-
 class Errors:
     """Errors model class"""
 

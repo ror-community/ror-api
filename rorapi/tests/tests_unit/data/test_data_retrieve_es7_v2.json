@@ -72,8 +72,12 @@
                     "locations": [
                         {
                             "geonames_details": {
+                                "continent_code": "NA",
+                                "continent_name": "North America",
                                 "country_code": "US",
                                 "country_name": "United States",
+                                "country_subdivision_code": "DC",
+                                "country_subdivision_name": "District of Columbia",
                                 "lat": 38.88758,
                                 "lng": -77.025728,
                                 "name": "Washington, D.C."

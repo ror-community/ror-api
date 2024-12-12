@@ -1,5 +1,13 @@
 from geonamescache.mappers import country
-from rorapi.common.models import Aggregations, Entity
+from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
+
+class Aggregations:
+    """Aggregations model class"""
+
+    def __init__(self, data):
+        self.types = [TypeBucket(b) for b in data.types.buckets]
+        self.countries = [CountryBucket(b) for b in data.countries.buckets]
+        self.statuses = [StatusBucket(b) for b in data.statuses.buckets]
 
 class GeoAdmin:
     def __init__(self, data):

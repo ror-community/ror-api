@@ -17,6 +17,8 @@ services:
       test: curl -f http://elastic:changeme@elasticsearch:8200
       interval: 10s
       timeout: 1s
+    volumes:
+      - ./esdata:/usr/share/elasticsearch/data
   web:
     container_name: rorapiweb
     env_file: .env

@@ -3,8 +3,12 @@
         {
             "geonames_id": 2661552,
             "geonames_details": {
+                "continent_code": "EU",
+                "contient_name": "Europe",
                 "country_code": "CH",
                 "country_name": "Switzerland",
+                "country_subdivision_code": "BE",
+                "country_subdivision_name": "Bern",
                 "lat": 46.94809,
                 "lng": 7.44744,
                 "name": "Bern"

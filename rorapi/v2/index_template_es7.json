@@ -89,6 +89,24 @@
                     },
                     "geonames_details": {
                         "properties": {
+                            "continent_code": {
+                                "type": "keyword"
+                            },
+                            "continent_name": {
+                                "type": "keyword"
+                            },
+                            "country_code": {
+                                "type": "keyword"
+                            },
+                            "country_name": {
+                                "type": "keyword"
+                            },
+                            "country_subdivision_code": {
+                                "type": "keyword"
+                            },
+                            "country_subdivision_name": {
+                                "type": "keyword"
+                            },
                             "lat": {
                                 "type": "float"
                             },
@@ -96,12 +114,6 @@
                                 "type": "float"
                             },
                             "name": {
-                                "type": "keyword"
-                            },
-                            "country_code": {
-                                "type": "keyword"
-                            },
-                            "country_name": {
                                 "type": "keyword"
                             }
                         }

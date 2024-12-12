@@ -54,6 +54,14 @@ class ViewListTestCase(SimpleTestCase):
                     self.test_data['aggregations']['countries']['buckets']):
             self.assertEquals(ret['id'], exp['key'].lower())
             self.assertEquals(ret['count'], exp['doc_count'])
+        self.assertEquals(
+            len(organizations['meta']['continents']),
+            len(self.test_data['aggregations']['continents']['buckets']))
+        for ret, exp in \
+                zip(organizations['meta']['continents'],
+                    self.test_data['aggregations']['continents']['buckets']):
+            self.assertEquals(ret['id'], exp['key'].lower())
+            self.assertEquals(ret['count'], exp['doc_count'])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_invalid_search_organizations(self, search_mock):

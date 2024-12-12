@@ -117,7 +117,7 @@ class QueryFuzzyTestCase(SimpleTestCase):
                 'query': 'julius~ maximilian~ universitat~ wuerzburg~'
             }).json()
         self.assertTrue(items['number_of_results'] > 0)
-        self.assertEquals(items['items'][0]['id'], 'https://ror.org/00fbnyb24')
+        self.assertEquals(items['items'][0]['id'], 'https://ror.org/03pvr2g57')
 
     def test_extra_word(self):
         items = requests.get(

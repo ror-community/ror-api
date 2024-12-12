@@ -13,11 +13,5 @@ class BucketSerializer(serializers.Serializer):
     count = serializers.IntegerField()
 
 
-class AggregationsSerializer(serializers.Serializer):
-    types = BucketSerializer(many=True)
-    countries = BucketSerializer(many=True)
-    statuses = BucketSerializer(many=True)
-
-
 class ErrorsSerializer(serializers.Serializer):
     errors = serializers.StringRelatedField(many=True)
