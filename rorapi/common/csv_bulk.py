@@ -48,7 +48,7 @@ def process_csv(csv_file, version, validate_only):
     success_msg = None
     error = None
     report = []
-    report_fields = ['row', 'ror_id', 'action', 'errors']
+    report_fields = ['row', 'html_url', 'ror_id', 'action', 'errors']
     skipped_count = 0
     updated_count = 0
     new_count = 0
@@ -57,10 +57,13 @@ def process_csv(csv_file, version, validate_only):
     reader = csv.DictReader(io.StringIO(read_file))
     row_num = 2
     for row in reader:
+        html_url = None
         ror_id = None
         updated = False
         print("Row data")
         print(row)
+        if row['html_url']:
+            html_url = row['html_url']
         if row['id']:
             ror_id = row['id']
             updated = True
@@ -86,7 +89,7 @@ def process_csv(csv_file, version, validate_only):
             skipped_count += 1
         if validate_only and action == 'created':
             ror_id = None
-        report.append({"row": row_num, "ror_id": ror_id if ror_id else '', "action": action, "errors": "; ".join(row_errors) if row_errors else ''})
+        report.append({"row": row_num, "html_url": html_url, "ror_id": ror_id if ror_id else '', "action": action, "errors": "; ".join(row_errors) if row_errors else ''})
         row_num += 1
     if new_count > 0 or updated_count > 0 or skipped_count > 0:
         try:

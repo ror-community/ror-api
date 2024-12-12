@@ -7,7 +7,7 @@ import requests
 from django.test import SimpleTestCase
 from rorapi.settings import ROR_API, ES_VARS
 
-BASE_URL = '{}/organizations'.format(
+BASE_URL = '{}/v2/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
@@ -25,7 +25,7 @@ class APITestCase(SimpleTestCase):
 
         self.assertEquals(len(output['items']), 20)
         for i in output['items']:
-            for k in ['id', 'name']:
+            for k in ['id', 'names']:
                 self.assertTrue(k in i)
                 self.assertIsNotNone(
                     re.match(r'https:\/\/ror\.org\/0\w{6}\d{2}', i['id']))
@@ -42,10 +42,22 @@ class APITestCase(SimpleTestCase):
             self.assertTrue('id' in t)
             self.assertTrue('count' in t)
 
+        self.assertTrue('statuses' in output['meta'])
+        self.assertTrue(len(output['meta']['statuses']) > 0)
+        for t in output['meta']['statuses']:
+            self.assertTrue('id' in t)
+            self.assertTrue('count' in t)
+
+        self.assertTrue('continents' in output['meta'])
+        self.assertTrue(len(output['meta']['continents']) >= 0)
+        for t in output['meta']['continents']:
+            self.assertTrue('id' in t)
+            self.assertTrue('count' in t)
+
     def verify_empty(self, output):
         self.assertEquals(self.get_total(output), 0)
         self.assertEquals(output['items'], [])
-        self.assertEquals(output['meta'], {'types': [], 'statuses': [],'countries': []})
+        self.assertEquals(output['meta'], {'types': [], 'statuses': [],'countries': [],'continents': []})
 
     def verify_single_item(self, output, org):
         self.assertEquals(self.get_total(output), 1)
@@ -129,6 +141,8 @@ class APITestCase(SimpleTestCase):
         aggregations = requests.get(BASE_URL, query).json()['meta']
         t_aggrs = aggregations['types']
         c_aggrs = aggregations['countries']
+        s_aggrs = aggregations['statuses']
+        co_aggrs = aggregations['continents']
 
         for t_aggr in t_aggrs:
             filter_string = 'types:{}'.format(t_aggr['title'])
@@ -142,7 +156,7 @@ class APITestCase(SimpleTestCase):
                                  for t in output['meta']['types']]))
 
         for c_aggr in c_aggrs:
-            filter_string = 'country.country_code:{}' \
+            filter_string = 'locations.geonames_details.country_code:{}' \
                 .format(c_aggr['id'].upper())
             params = dict(query, filter=filter_string)
             output = requests.get(BASE_URL, params).json()
@@ -150,13 +164,37 @@ class APITestCase(SimpleTestCase):
             self.assertEquals(self.get_total(output), c_aggr['count'])
             for i in output['items']:
                 self.assertEquals(c_aggr['id'].upper(),
-                                  i['country']['country_code'])
+                                  i['locations'][0]['geonames_details']['country_code'])
             self.assertTrue(
                 any([c_aggr == c for c in output['meta']['countries']]))
 
-        for t_aggr, c_aggr in itertools.product(t_aggrs, c_aggrs):
-            filter_string = 'country.country_code:{},types:{}' \
-                .format(c_aggr['id'].upper(), t_aggr['title'])
+        for s_aggr in s_aggrs:
+            filter_string = 'status:{}'.format(s_aggr['title'])
+            params = dict(query, filter=filter_string)
+            output = requests.get(BASE_URL, params).json()
+
+            self.assertEquals(self.get_total(output), s_aggr['count'])
+            for i in output['items']:
+                self.assertTrue(s_aggr['title'] in i['status'])
+            self.assertTrue(any([s_aggr == s
+                                 for s in output['meta']['statuses']]))
+
+        for co_aggr in co_aggrs:
+            filter_string = 'locations.geonames_details.continent_code:{}' \
+                .format(co_aggr['id'].upper())
+            params = dict(query, filter=filter_string)
+            output = requests.get(BASE_URL, params).json()
+
+            self.assertEquals(self.get_total(output), co_aggr['count'])
+            for i in output['items']:
+                self.assertEquals(co_aggr['id'].upper(),
+                                  i['locations'][0]['geonames_details']['continent_code'])
+            self.assertTrue(
+                any([co_aggr == co for co in output['meta']['continents']]))
+
+        for t_aggr, c_aggr, s_aggr, co_aggr in itertools.product(t_aggrs, c_aggrs, s_aggrs, co_aggrs):
+            filter_string = 'locations.geonames_details.country_code:{},types:{},status:{},locations.geonames_details.continent_code:{}' \
+                .format(c_aggr['id'].upper(), t_aggr['title'], s_aggr['title'], co_aggr['id'].upper())
             params = dict(query, filter=filter_string)
             status_code = requests.get(BASE_URL, params).status_code
             if status_code != 200:
@@ -167,10 +205,15 @@ class APITestCase(SimpleTestCase):
                 continue
             self.assertTrue(self.get_total(output) <= t_aggr['count'])
             self.assertTrue(self.get_total(output) <= c_aggr['count'])
+            self.assertTrue(self.get_total(output) <= s_aggr['count'])
+            self.assertTrue(self.get_total(output) <= co_aggr['count'])
             for i in output['items']:
                 self.assertTrue(t_aggr['title'] in i['types'])
                 self.assertEquals(c_aggr['id'].upper(),
-                                  i['country']['country_code'])
+                                  i['locations'][0]['geonames_details']['country_code'])
+                self.assertTrue(s_aggr['title'] in i['status'])
+                self.assertEquals(co_aggr['id'].upper(),
+                                  i['locations'][0]['geonames_details']['continent_code'])
             self.assertTrue(
                 any([t_aggr['id'] == t['id']
                      for t in output['meta']['types']]))
@@ -178,6 +221,14 @@ class APITestCase(SimpleTestCase):
                 any([
                     c_aggr['id'] == c['id']
                     for c in output['meta']['countries']
+                ]))
+            self.assertTrue(
+                any([s_aggr['id'] == s['id']
+                     for s in output['meta']['statuses']]))
+            self.assertTrue(
+                any([
+                    co_aggr['id'] == co['id']
+                    for co in output['meta']['continents']
                 ]))
 
     def test_filtering(self):
@@ -220,9 +271,11 @@ class APITestCase(SimpleTestCase):
 
     def test_query_grid_retrieval(self):
         for test_org in requests.get(BASE_URL).json()['items']:
-                grid = test_org['external_ids']['GRID']['preferred']
-                output = requests.get(BASE_URL, {'query': '"' + grid + '"'}).json()
-                self.verify_single_item(output, test_org)
+            for ext_id in test_org['external_ids']:
+                if ext_id['type'] == 'grid':
+                    grid_id = ext_id['preferred']
+                    output = requests.get(BASE_URL, {'query': '"' + grid_id + '"'}).json()
+                    self.verify_single_item(output, test_org)
 
     def test_error(self):
         output = requests.get(BASE_URL, {
