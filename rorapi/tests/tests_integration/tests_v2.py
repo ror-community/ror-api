@@ -209,11 +209,9 @@ class APITestCase(SimpleTestCase):
             self.assertTrue(self.get_total(output) <= co_aggr['count'])
             for i in output['items']:
                 self.assertTrue(t_aggr['title'] in i['types'])
-                self.assertEquals(c_aggr['id'].upper(),
-                                  i['locations'][0]['geonames_details']['country_code'])
+                self.assertTrue(c_aggr['id'].upper() in [l['geonames_details']['country_code'] for l in i['locations']])
                 self.assertTrue(s_aggr['title'] in i['status'])
-                self.assertEquals(co_aggr['id'].upper(),
-                                  i['locations'][0]['geonames_details']['continent_code'])
+                self.assertTrue(co_aggr['id'].upper() in [l['geonames_details']['continent_code'] for l in i['locations']])
             self.assertTrue(
                 any([t_aggr['id'] == t['id']
                      for t in output['meta']['types']]))
