@@ -14,7 +14,7 @@ import magic
 from rorapi.common.create_update import new_record_from_json, update_record_from_json
 from rorapi.common.csv_bulk import process_csv
 from rorapi.common.csv_utils import validate_csv
-from rorapi.settings import REST_FRAMEWORK
+from rorapi.settings import REST_FRAMEWORK, ES7, ES_VARS
 from rorapi.common.matching import match_organizations
 from rorapi.common.models import (
     Errors
@@ -175,8 +175,10 @@ class HeartbeatView(View):
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         print(version)
         try:
-            errors, organizations = search_organizations({}, version)
-            if errors is None:
+            index = ES_VARS['INDEX_V1']
+            if version == 'v2':
+                index = ES_VARS['INDEX_V2']
+            if ES7.indices.exists(index):
                 return HttpResponse("OK")
         except:
             pass
