@@ -93,8 +93,7 @@ class Organization(Entity):
         ]
         sorted_links = sorted(data.links, key=lambda x: x['type'])
         self.links = [Entity(l, ["value", "type"]) for l in sorted_links]
-        sorted_locations = sorted(data.locations, key=lambda x: x['geonames_id'])
-        self.locations = [Location(l) for l in sorted_locations]
+        self.locations = [Location(l) for l in data.locations]
         sorted_names = sorted(data.names, key=lambda x: x['value'])
         self.names = [Entity(n, ["value", "lang", "types"]) for n in sorted_names]
         sorted_rels = sorted(data.relationships, key=lambda x: x['type'])
