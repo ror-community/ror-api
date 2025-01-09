@@ -25,3 +25,4 @@ launchdarkly-server-sdk==7.6.1
 jsonschema==3.2.0
 python-magic
 iso639-lang
+rapidfuzz==3.6.1

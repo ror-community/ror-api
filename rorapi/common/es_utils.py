@@ -23,10 +23,29 @@ class ESQueryBuilder:
     def add_string_query(self, terms):
         self.search = self.search.query(
             "nested",
-            path="names_ids",
+            path="search.names_ids",
             score_mode="max",
-            query=Q("query_string", query=terms, fuzzy_max_expansions=1),
+            query=Q("query_string", query=terms, fuzzy_max_expansions=1)
         )
+
+    def add_affiliation_query(self, terms, max_candidates):
+        print(terms)
+        self.search = self.search.query(
+            "nested",
+            path="search.names_ids",
+            score_mode="max",
+            query=Q("match", **{"search.names_ids.name": terms})
+            #Q({"match": {"query": terms, "fields": ["names.name"]}})
+        ).extra(size=max_candidates)
+        '''
+        Nested(
+        path="outer_nested_field",
+        query=Q(
+            "nested",
+            path="outer_nested_field.inner_nested_field",
+            query=Q("match", outer_nested_field__inner_nested_field__some_field="some_value")
+        )
+        '''
 
     def add_string_query_advanced(self, terms):
         self.search = self.search.query(
@@ -82,6 +101,7 @@ class ESQueryBuilder:
 
     def get_query(self):
         return self.search
- 
+
     def add_sort(self, field, order="asc"):
         self.search = self.search.sort({field: {"order": order}})
+
