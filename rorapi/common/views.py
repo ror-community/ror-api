@@ -17,6 +17,7 @@ from rorapi.common.csv_utils import validate_csv
 from rorapi.settings import REST_FRAMEWORK, ES7, ES_VARS
 from rorapi.common.matching import match_organizations
 from rorapi.common.new_matching import match_organizations as new_match_organizations
+from rorapi.common.matching_beta import match_organizations as beta_match_organizations
 from rorapi.common.models import (
     Errors
 )
@@ -79,8 +80,11 @@ class OrganizationViewSet(viewsets.ViewSet):
         if "format" in params:
             del params["format"]
         if "affiliation" in params:
-            if "new_matching" in params:
-                errors, organizations = new_match_organizations(params, version)
+            if version == "v2":
+                if "new_matching" in params:
+                    print("new_matching")
+                    errors, organizations = new_match_organizations(params, version)
+                errors, organizations = beta_match_organizations(params, version)
             else:
                 errors, organizations = match_organizations(params, version)
         else:
@@ -88,13 +92,13 @@ class OrganizationViewSet(viewsets.ViewSet):
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         if "affiliation" in params:
-            if "new_matching" in params:
-                serializer = OrganizationSerializerV2(organizations)
+            if version == "v2":
+                if "new_matching" in params:
+                    print("new matching")
+                    serializer = OrganizationSerializerV2(organizations)
+                serializer = MatchingResultSerializerV2(organizations)
             else:
-                if version == "v2":
-                    serializer = MatchingResultSerializerV2(organizations)
-                else:
-                    serializer = MatchingResultSerializerV1(organizations)
+                serializer = MatchingResultSerializerV1(organizations)
         else:
             if version == "v2":
                 serializer = ListResultSerializerV2(organizations)

@@ -118,17 +118,17 @@ class MatchedOrganization:
     string"""
 
     def __init__(self, data):
-        #self.substring = data.substring
-        #self.score = data.score
-        #self.matching_type = data.matching_type
-        #self.chosen = data.chosen
-        self.organization = Organization(data)
+        print(data)
+        self.substring = data.substring
+        self.score = data.score
+        self.matching_type = data.matching_type
+        self.chosen = data.chosen
+        self.organization = Organization(data.organization)
 
 
 class MatchingResult:
     """A model class for the result of affiliation matching"""
 
     def __init__(self, data):
-        #self.number_of_results = len(data)
-        print(data)
+        self.number_of_results = len(data)
         self.items = [MatchedOrganization(x) for x in data]

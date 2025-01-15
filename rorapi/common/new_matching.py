@@ -9,7 +9,7 @@ from elasticsearch_dsl import Search, Q
 from rorapi.common.models import Errors
 from rorapi.common.es_utils import ESQueryBuilder
 from rorapi.v1.models import MatchingResult as MatchingResultV1
-from rorapi.v2.models import Organization as OrganizationV2
+from rorapi.v2.models import MatchingResult as MatchingResultV2
 
 from collections import namedtuple
 from functools import lru_cache
@@ -307,16 +307,13 @@ def get_candidates(aff):
     qb = ESQueryBuilder("v2")
     qb.add_string_query(aff)
     search = qb.get_query()
-    print(search)
     results = search.execute()
-    print(results)
     return results.hits.hits
 
 
 def match(input_data, active_only):
     aff_countries = get_countries(input_data)
     candidates = get_candidates(input_data)
-    print(candidates)
     if active_only:
         candidates = [
             c
@@ -339,18 +336,23 @@ def match(input_data, active_only):
         not in aff_countries
     ):
         return []
-    return matched.candidate
+    return [
+        {
+            "id": matched.candidate["_id"],
+            "confidence": min(12, matched.candidate["_score"]) / 12,
+            "score": matched.candidate["_score"]
+        }
+    ]
 
 
 def match_organizations(params, version):
+    print("new_matching.py")
     if "affiliation" in params:
-        if version == "v2":
-            active_only = True
-            if "all_status" in params:
-                if params["all_status"] == "" or params["all_status"].lower() == "true":
-                    active_only = False
-            matched = match(params.get("affiliation"), active_only)
-            return None, OrganizationV2(matched)
-        else:
-            return Errors('New affiliation matching is only supported in v2'), None
+        active_only = True
+        if "all_status" in params:
+            if params["all_status"] == "" or params["all_status"].lower() == "true":
+                active_only = False
+        matched = match(params.get("affiliation"), active_only)
+        print(matched)
+        return None, MatchingResultV2(matched)
     return Errors('"affiliation" parameter missing'), None

@@ -17,6 +17,9 @@ class AffiliationMatchingTestCase(SimpleTestCase):
     def match(self, affiliation):
         affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
                              lambda m: '\\' + m.group(), affiliation)
+        print(requests.get('{}/v2/organizations'.format(API_URL), {
+            'affiliation': affiliation
+        }))
         results = requests.get('{}/v2/organizations'.format(API_URL), {
             'affiliation': affiliation
         }).json()
