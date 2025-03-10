@@ -72,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
+    'rorapi.middleware.ClientRateLimitMiddleware',
 ]
 
 ROOT_URLCONF = 'rorapi.common.urls'
@@ -273,3 +274,7 @@ ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
 GRID_REMOVED_IDS = []
 
 LAUNCH_DARKLY_KEY = os.environ.get('LAUNCH_DARKLY_KEY')
+
+# Toggle for behavior-based rate limiting
+import os
+ENABLE_BEHAVIORAL_LIMITING = os.getenv("ENABLE_BEHAVIORAL_LIMITING", "False") == "True"
