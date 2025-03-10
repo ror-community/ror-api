@@ -37,7 +37,6 @@ from urllib.parse import urlencode
 import os
 import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
-from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
 from django.core import management
 import rorapi.management.commands.indexrordump
