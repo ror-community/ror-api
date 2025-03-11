@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..models.client import Client
-from ..serializers.client_serializers import ClientSerializer
+from rorapi.v2.models import Client
+from rorapi.v2.serializers import ClientSerializer
 from django.core.mail import send_mail
 from django.utils.timezone import now
 
