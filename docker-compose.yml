@@ -19,6 +19,21 @@ services:
       timeout: 1s
     volumes:
       - ./esdata:/usr/share/elasticsearch/data
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=rorapi
+      - MYSQL_USER=ror_user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   web:
     container_name: rorapiweb
     env_file: .env
@@ -31,3 +46,6 @@ services:
       - ./rorapi:/home/app/webapp/rorapi
     depends_on:
       - elasticsearch7
+      - db
+volumes:
+  mysql_data:
