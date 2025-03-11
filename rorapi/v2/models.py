@@ -1,4 +1,5 @@
 from geonamescache.mappers import country
+from django.db import models
 from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
 from rorapi.v2.record_constants import continent_code_to_name
 
@@ -131,3 +132,28 @@ class MatchingResult:
     def __init__(self, data):
         self.number_of_results = len(data)
         self.items = [MatchedOrganization(x) for x in data]
+
+
+class Client(models.Model):
+    # Required field
+    email = models.EmailField(max_length=255)
+
+    # Optional fields
+    name = models.CharField(max_length=255, blank=True)
+    institution_name = models.CharField(max_length=255, blank=True)
+    institution_ror = models.URLField(max_length=255, blank=True)
+    country_code = models.CharField(max_length=2, blank=True)
+    ror_use = models.TextField(max_length=500, blank=True)
+
+    # System fields
+    client_id = models.CharField(
+        max_length=32,
+        unique=True,
+        editable=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_request_at = models.DateTimeField(null=True, blank=True)
+    request_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.email} - {self.client_id}"
