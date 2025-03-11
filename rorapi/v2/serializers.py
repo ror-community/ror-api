@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rorapi.v2.models import Client
 from rorapi.common.serializers import BucketSerializer, OrganizationRelationshipsSerializer
 
 class AggregationsSerializer(serializers.Serializer):
@@ -87,3 +88,9 @@ class MatchedOrganizationSerializer(serializers.Serializer):
 class MatchingResultSerializer(serializers.Serializer):
     number_of_results = serializers.IntegerField()
     items = MatchedOrganizationSerializer(many=True)
+
+
+class ClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = ['email']
