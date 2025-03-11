@@ -1,5 +1,6 @@
 from django.urls import path
-from .views.client_views import ClientRegistrationView, ValidateClientView
+from rorapi.v2.views import ClientRegistrationView, ValidateClientView
+
 
 urlpatterns = [
     path('client-id/', ClientRegistrationView.as_view(), name='client-registration'),
