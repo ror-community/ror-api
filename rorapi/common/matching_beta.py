@@ -14,7 +14,7 @@ from functools import lru_cache
 from rapidfuzz import fuzz
 from itertools import groupby
 
-MIN_CHOSEN_SCORE = 96
+MIN_CHOSEN_SCORE = 92
 MIN_SCORE = 50
 
 MATCHING_TYPE_PHRASE = "PHRASE"
@@ -94,24 +94,22 @@ def to_region(c):
 
 
 def get_country_codes(string):
-    """Extract the country codes from the string,
-    if the country names are mentioned."""
-
     string = unidecode.unidecode(string).strip()
     lower = re.sub(r"\s+", " ", string.lower())
     lower_alpha = re.sub(r"\s+", " ", re.sub("[^a-z]", " ", string.lower()))
     alpha = re.sub(r"\s+", " ", re.sub("[^a-zA-Z]", " ", string))
     codes = []
-    for code, name in COUNTRIES:
+    for code, name in GEONAMES_COUNTRIES:
         if re.search("[^a-z]", name):
             score = fuzz.partial_ratio(name, lower)
         elif len(name) == 2:
-            score = max([fuzz.ratio(name.upper(), t) for t in alpha.split()])
+            score = max([fuzz.ratio(name.upper(), t) for t in alpha.split()] + [0])
         else:
-            score = max([fuzz.ratio(name, t) for t in lower_alpha.split()])
+            score = max([fuzz.ratio(name, t) for t in lower_alpha.split()] + [0])
         if score >= 90:
             codes.append(code.upper())
     return list(set(codes))
+
 
 
 def get_countries(string):

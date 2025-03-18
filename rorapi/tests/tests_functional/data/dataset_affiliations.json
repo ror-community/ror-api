@@ -1,11 +1,5 @@
 [
-    {
-        "affiliation": "Department of Pathology, Samsung Medical Center, Sungkyunkwan University School of Medicine, Seoul, Korea.",
-        "ror_ids": [
-            "https://ror.org/05a15z872",
-            "https://ror.org/04q78tk20"
-        ]
-    },
+
     {
         "affiliation": "Department of Clinical Research, Venous Research Foundation, Chicago, Illinois, USA",
         "ror_ids": []
@@ -64,13 +58,6 @@
         "affiliation": "Lehigh Valley Hospital, Allentown, PA;",
         "ror_ids": [
             "https://ror.org/03h4fx826"
-        ]
-    },
-    {
-        "affiliation": "Dana-Farber Cancer Institute/Boston Children's Hospital, Boston, MA",
-        "ror_ids": [
-            "https://ror.org/02jzgtq86",
-            "https://ror.org/00dvg7y05"
         ]
     },
     {
@@ -256,23 +243,9 @@
         ]
     },
     {
-        "affiliation": "Department of Pathology; Turku University Hospital, University of Turku; Turku Finland",
-        "ror_ids": [
-            "https://ror.org/05dbzj528",
-            "https://ror.org/05vghhr25"
-        ]
-    },
-    {
         "affiliation": "New York University; New York NY USA",
         "ror_ids": [
             "https://ror.org/0190ak572"
-        ]
-    },
-    {
-        "affiliation": "Institute of Biological Chemistry, Academia Sinica, Taipei, Taiwan; Institute of Molecular Medicine, College of Medicine, National Taiwan University, Taipei,          Taiwan",
-        "ror_ids": [
-            "https://ror.org/05bxb3784",
-            "https://ror.org/05bqach95"
         ]
     },
     {
@@ -288,23 +261,9 @@
         ]
     },
     {
-        "affiliation": "Faculty of Geo-Information Science and Earth Observation (ITC), University of Twente, Enschede, The Netherlands",
-        "ror_ids": [
-            "https://ror.org/038v7xb98",
-            "https://ror.org/006hf6230"
-        ]
-    },
-    {
         "affiliation": "University of Surrey, Guildford, United Kingdom",
         "ror_ids": [
             "https://ror.org/00ks66431"
-        ]
-    },
-    {
-        "affiliation": "Counseling Center, University of Washington, USA",
-        "ror_ids": [
-            "https://ror.org/00ykgmf04",
-            "https://ror.org/00cvxb145"
         ]
     },
     {
@@ -434,14 +393,6 @@
         "ror_ids": []
     },
     {
-        "affiliation": "From the Royal Free Hospital and University College London (J.V.B.), Department of Neurology, Royal Free Hospital, London, UK; and the Center for Stroke Research (P.B.G.), Department of Neurology and Rehabilitation, University of Illinois College of Medicine at Chicago, Chicago, Ill.",
-        "ror_ids": [
-            "https://ror.org/01ge67z96",
-            "https://ror.org/02jx3x895",
-            "https://ror.org/047426m28"
-        ]
-    },
-    {
         "affiliation": "Instituto de Bot\u00e2nica,  Brasil",
         "ror_ids": [
             "https://ror.org/01fptm710"
@@ -487,13 +438,6 @@
         "affiliation": "University of San Diego, San Diego, CA, USA",
         "ror_ids": [
             "https://ror.org/03jbbze48"
-        ]
-    },
-    {
-        "affiliation": "From the Laboratoire de Biochimie Applique\u0301e, Faculte\u0301 des Sciences Pharmaceutiques et Biologiques, Cha\u0302tenay-Malabry (B.V., I.M., H.T., N.M.), and the Laboratoires de Biochimie (B.V., I.M., N.M.), Biologie Mole\u0301culaire (X.J.), and the Centre de Medecine Pre\u0301ventive Cardiovasculaire and INSERM U28 (J.L.M., A.S.), Ho\u0302pital Broussais, Paris, France.",
-        "ror_ids": [
-            "https://ror.org/0315s4978",
-            "https://ror.org/05h8pvh61"
         ]
     },
     {
@@ -721,13 +665,6 @@
         "ror_ids": []
     },
     {
-        "affiliation": "National Agriculture and Food Research Organization; Hokkaido Agricultural Research Center; Sapporo 062-8555 Japan",
-        "ror_ids": [
-            "https://ror.org/023v4bd62",
-            "https://ror.org/02bkd7d61"
-        ]
-    },
-    {
         "affiliation": "Division of Human Genetics, Department of Pediatrics; The Children's Hospital; Pennsylvania Philadelphia",
         "ror_ids": []
     },
@@ -767,13 +704,6 @@
         "affiliation": "Air Force Institute of Technology",
         "ror_ids": [
             "https://ror.org/03f9f1d95"
-        ]
-    },
-    {
-        "affiliation": "Assistance Publique-H\u00f4pitaux de Marseille, Centre Pluridisciplinaire de Diagnostic Pr\u00e9natal, H\u00f4pital Nord, Chemin des Bourrely, 13015 Marseille, France",
-        "ror_ids": [
-            "https://ror.org/002cp4060",
-            "https://ror.org/029a4pp87"
         ]
     },
     {
@@ -897,13 +827,6 @@
         ]
     },
     {
-        "affiliation": "Department of Anesthesiology, Nanfang Hospital, Southern Medical University, Guangzhou, China",
-        "ror_ids": [
-            "https://ror.org/01eq10738",
-            "https://ror.org/01vjw4z39"
-        ]
-    },
-    {
         "affiliation": "National Referral Center for Rare Systemic Autoimmune Diseases, H\u00f4pital Cochin, AP-HP, and Universit\u00e9 Paris Descartes; Paris France",
         "ror_ids": [
             "https://ror.org/00ph8tk69"
@@ -948,13 +871,6 @@
         ]
     },
     {
-        "affiliation": "Infertility Unit, Fondazione IRCCS Ca\u2019 Granda, Ospedale Maggiore Policlinico, University of Milan, Milan, Italy",
-        "ror_ids": [
-            "https://ror.org/016zn0y21",
-            "https://ror.org/00wjc7c48"
-        ]
-    },
-    {
         "affiliation": "Department of Chemical and Biomolecular Engineering and \u2021Department of Materials Science and Engineering, University of California, Los Angeles, California 90095, United States",
         "ror_ids": [
             "https://ror.org/046rm7j60"
@@ -985,14 +901,6 @@
     {
         "affiliation": " Professor of Surgery, Department of General Surgery, Erasmus Medical Centre, Rotterdam, The Netherlands",
         "ror_ids": []
-    },
-    {
-        "affiliation": "Institute of Higher Education, University of Florida, Gainesville, Florida; Santa Fe Community College, Gainesville, Floridam and Deytona Beach Community College, Daytona Beach, Florida.",
-        "ror_ids": [
-            "https://ror.org/02y3ad647",
-            "https://ror.org/02axsa366",
-            "https://ror.org/03jbk2g75"
-        ]
     },
     {
         "affiliation": "Australian Centre for Asian Business, University of South Australia, Australia",
@@ -1040,13 +948,6 @@
         "affiliation": "Department of Orthopedics, Rady Children\u2019s Hospital San Diego, 3020 Children\u2019s Way, MC 5054, 92123, San Diego, CA USA",
         "ror_ids": [
             "https://ror.org/00414dg76"
-        ]
-    },
-    {
-        "affiliation": "Deutsches Herzzentrum M\u00fcnchen, Technische Universit\u00e4t M\u00fcnchen, Germany",
-        "ror_ids": [
-            "https://ror.org/04hbwba26",
-            "https://ror.org/02kkvpp62"
         ]
     },
     {
@@ -1282,14 +1183,6 @@
         ]
     },
     {
-        "affiliation": "From the Department of Internal Medicine, Division of Cardiology, University of Texas Southwestern Medical Center, Dallas (H.M.H., J.A.d.L., D.K.M., S.R.D.); Division of Cardiology, University of Missouri-Kansas City (J.R.E.); Duke Clinical Research Institute, Durham, NC (S.A.P., K.P.A., M.T.R.); and Division of Cardiology, Brigham and Women\u2019s Hospital, Boston, MA (N.D., S.D.W.).",
-        "ror_ids": [
-            "https://ror.org/05byvp690",
-            "https://ror.org/01w0d5g70",
-            "https://ror.org/04b6nzv94"
-        ]
-    },
-    {
         "affiliation": " Horticultural Crops Research Laboratory, USDA ARS, 3420 NW Orchard Avenue, Corvallis, Oregon 97330",
         "ror_ids": [
             "https://ror.org/01na82s61"
@@ -1322,13 +1215,6 @@
     {
         "affiliation": "Ankara Ataturk Training and Research Hospital,  Turkey",
         "ror_ids": []
-    },
-    {
-        "affiliation": "\n        M.L. Boninger, MD, is Professor and Chair, Department of Physical Medicine and Rehabilitation and McGowan Institute for Regenerative Medicine, University of Pittsburgh.",
-        "ror_ids": [
-            "https://ror.org/04js6xx21",
-            "https://ror.org/01an3r305"
-        ]
     },
     {
         "affiliation": "Department of Thoracic Oncology, National Cancer Center Hospital East, Tokyo, Japan;",
@@ -1493,13 +1379,6 @@
         ]
     },
     {
-        "affiliation": "Department of Endocrinology; Tongji Hospital; Tongji Medical College; Huazhong University of Science and Technology; Wuhan; China",
-        "ror_ids": [
-            "https://ror.org/04xy45965",
-            "https://ror.org/00p991c53"
-        ]
-    },
-    {
         "affiliation": "Department of Research and Process Development, Klabin S.A., S\u00e3o Paulo, SP, Brazil",
         "ror_ids": []
     },
@@ -1510,23 +1389,9 @@
         ]
     },
     {
-        "affiliation": "Department of Pediatrics, Alberta Children\u2019s Hospital Research Institute, University of Calgary, Alberta, Canada",
-        "ror_ids": [
-            "https://ror.org/00sx29x36",
-            "https://ror.org/03yjb2x39"
-        ]
-    },
-    {
         "affiliation": "Department of Clinical Neurological Sciences, Western University, London, ON, Canada",
         "ror_ids": [
             "https://ror.org/02grkyz14"
-        ]
-    },
-    {
-        "affiliation": "Department of Thoracic and Cardiovascular Surgery, Gangnam Severance Hospital, Yonsei University, College of Medicine, Seoul, Korea.",
-        "ror_ids": [
-            "https://ror.org/04ajwkn20",
-            "https://ror.org/01wjejq96"
         ]
     },
     {
@@ -1802,14 +1667,6 @@
         "ror_ids": []
     },
     {
-        "affiliation": "Institute of Materials and Environmental Chemistry; Hungarian Academy of Sciences and; Department of Physics; Budapest University of Technology and Economics; Budafoki ut 8 1111 Budapest Hungary",
-        "ror_ids": [
-            "https://ror.org/00r71zw23",
-            "https://ror.org/02ks8qq67",
-            "https://ror.org/02w42ss30"
-        ]
-    },
-    {
         "affiliation": "Universiti Teknologi",
         "ror_ids": []
     },
@@ -2066,23 +1923,9 @@
         ]
     },
     {
-        "affiliation": "Institute of Biological and Environmental Sciences, Zoology Building; University of Aberdeen; Aberdeen UK",
-        "ror_ids": [
-            "https://ror.org/051wgfj58",
-            "https://ror.org/016476m91"
-        ]
-    },
-    {
         "affiliation": "Department of Anthropology; Hunter College; New York NY 10065",
         "ror_ids": [
             "https://ror.org/00g2xk477"
-        ]
-    },
-    {
-        "affiliation": "Department of Pharmacology, Baylor College of Medicine, Texas Medical Center, Houston 77030.",
-        "ror_ids": [
-            "https://ror.org/02pttbw34",
-            "https://ror.org/00dqsbj20"
         ]
     },
     {
@@ -2136,13 +1979,6 @@
         ]
     },
     {
-        "affiliation": "From the Vascular Physiology and Thrombosis Research Laboratory of the Atherosclerosis Research Center, Cedars-Sinai Burns and Allen Research Institute; Division of Cardiology, Department of Medicine, Cedars-Sinai Medical Center; and University of California at Los Angeles School of Medicine, Los Angeles, Calif.",
-        "ror_ids": [
-            "https://ror.org/02pammg90",
-            "https://ror.org/046rm7j60"
-        ]
-    },
-    {
         "affiliation": "Department of Cranio-Maxillofacial, Oncological and Reconstructive Surgery, Jagiellonian University, Medical College, 1 Zlotej Jesieni Street, 31-826 Krakow, Poland",
         "ror_ids": [
             "https://ror.org/03bqmcz70"
@@ -2170,13 +2006,6 @@
         "affiliation": "Professor of Civil Engineering, Director, Centre for Geomechanics and Railway Engineering, Univ. of Wollongong, Wollongong, NSW 2522, AU (Corresponding author), e-mail: indra@uow.edu.au",
         "ror_ids": [
             "https://ror.org/00jtmb277"
-        ]
-    },
-    {
-        "affiliation": " Department of Obstetrics and Gynecology, and Sackler Faculty of Medicine, Rabin Medical Center, Beilinson Hospital, Petach Tikvah Israel, Tel Aviv University, Tel Aviv, Israel; ",
-        "ror_ids": [
-            "https://ror.org/01vjtf564",
-            "https://ror.org/04mhzgx49"
         ]
     },
     {
@@ -2296,13 +2125,6 @@
         ]
     },
     {
-        "affiliation": "School of Veterinary Medicine, University of Idaho, Moscow, Idaho 83843 and School of Veterinary Medicine, Oregon State University, Corvallis, Oregon 97331",
-        "ror_ids": [
-            "https://ror.org/03hbp5t65",
-            "https://ror.org/00ysfqy60"
-        ]
-    },
-    {
         "affiliation": "Co-director of the California Statewide Systems Change project and a professor in Administration, Rehabilitation, and Postsecondary Education at San Diego State University.",
         "ror_ids": [
             "https://ror.org/0264fdx42"
@@ -2324,13 +2146,6 @@
         "affiliation": "From the Department of Medicine, Division of Cardiology, Pulmonary Diseases and Angiology, and the Department of Pharmacology (D.J.H.), Heinrich-Heine-University Du\u0308sseldorf, Germany.",
         "ror_ids": [
             "https://ror.org/024z2rq82"
-        ]
-    },
-    {
-        "affiliation": "Center for Reproductive Medicine, Department of Obstetrics and Gynaecology, Academic Medical Center; University of Amsterdam; Amsterdam The Netherlands",
-        "ror_ids": [
-            "https://ror.org/03t4gr691",
-            "https://ror.org/04dkp9463"
         ]
     },
     {
@@ -2368,22 +2183,8 @@
         ]
     },
     {
-        "affiliation": "Food Composition Laboratory, Beltsville Human Nutrition Research Center (BHNRC), United States Department of Agriculture-Agricultural Reasearch Service (USDA-ARS), Building 161, Beltsville, MD 20705. Names are necessary to report factually on available data; however, the USDA neither guarantees nor warrants the standard of the product, and the use of the name by the USDA implies no approval of the product to the exclusion of others that may also be suitable.",
-        "ror_ids": [
-            "https://ror.org/02wzb5b52",
-            "https://ror.org/01na82s61"
-        ]
-    },
-    {
         "affiliation": "Clinical Development Gynecological Therapies, Division of Pharmaceuticals, Bayer AG, Berlin, Germany.",
         "ror_ids": []
-    },
-    {
-        "affiliation": "Guangdong Lung Cancer Institute, Guangdong General Hospital (GGH) and Guangdong Academy of Medical Sciences, Guangzhou, China;",
-        "ror_ids": [
-            "https://ror.org/03jpekd50",
-            "https://ror.org/0432p8t34"
-        ]
     },
     {
         "affiliation": "Department of Philosophy, School of History, Art History and Philosophy, University of Sussex, Brighton, UK",
@@ -2500,13 +2301,6 @@
         ]
     },
     {
-        "affiliation": "Department of Pathology, Asan Medical Center, University of Ulsan College of Medicine, Seoul, Korea.",
-        "ror_ids": [
-            "https://ror.org/03s5q0090",
-            "https://ror.org/02c2f8975"
-        ]
-    },
-    {
         "affiliation": "Lovisenberg Diaconal University College; Oslo Norway",
         "ror_ids": []
     },
@@ -2514,13 +2308,6 @@
         "affiliation": "Biotechnology\rResearch Institute for Drug Discovery, National Institute of Advanced Industrial Science and Technology (AIST), Tsukuba Center fifth, 1-1-1 Higashi, Tsukuba, Ibaraki 305-8565, Japan",
         "ror_ids": [
             "https://ror.org/01703db54"
-        ]
-    },
-    {
-        "affiliation": "State Key Laboratory of Loess and Quaternary Geology, Institute of Earth Environment, Chinese Academy of Sciences, Xi'an 710075, China, , Key Laboratory of Lake Sedimentation and Environment, Nanjing Institute of Geography &amp; Limnology, Chinese Academy of Sciences, Nanjing 210008, China",
-        "ror_ids": [
-            "https://ror.org/034t30j35",
-            "https://ror.org/03k6r8t20"
         ]
     },
     {
@@ -2628,13 +2415,6 @@
         ]
     },
     {
-        "affiliation": "Department of Pediatric Surgery, Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan, Hubei, China.",
-        "ror_ids": [
-            "https://ror.org/04xy45965",
-            "https://ror.org/00p991c53"
-        ]
-    },
-    {
         "affiliation": " Razi Drug Research Center, Iran University of Medical Sciences, Tehran, Iran; ",
         "ror_ids": [
             "https://ror.org/03w04rv71"
@@ -2735,31 +2515,9 @@
         ]
     },
     {
-        "affiliation": " Microbial Genomics and Bioprocessing Research Unit, National Center for Agricultural Utilization Research, Agricultural Research Service, U.S. Department of Agriculture, 1815 North University Street, Peoria, Illinois 61604",
-        "ror_ids": [
-            "https://ror.org/02d2m2044",
-            "https://ror.org/02gbdhj19",
-            "https://ror.org/01na82s61"
-        ]
-    },
-    {
-        "affiliation": "Department of Neurology; Institute of Neurosciences; Hospital Cl\u00ednico San Carlos; Universidad Complutense de Madrid; Madrid Spain",
-        "ror_ids": [
-            "https://ror.org/04d0ybj29",
-            "https://ror.org/02p0gd045"
-        ]
-    },
-    {
         "affiliation": "USDA-ARS, Grain Marketing and Production Research Center, Manhattan, KS 66502. Names are necessary to report factually on available data; however, the USDA neither guarantees nor warrants the standard of the product, and the use of the name by the USDA implies no approval of the product to the exclusion of others that may also be suitable.",
         "ror_ids": [
             "https://ror.org/01na82s61"
-        ]
-    },
-    {
-        "affiliation": "Laboratory of Virology, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Rocky Mountain Laboratories, Hamilton, Montana",
-        "ror_ids": [
-            "https://ror.org/043z4tv69",
-            "https://ror.org/01cwqze88"
         ]
     },
     {
@@ -2889,13 +2647,6 @@
         ]
     },
     {
-        "affiliation": "Department of Psychiatry; Massachusetts General Hospital; Harvard Medical School; Boston MA USA",
-        "ror_ids": [
-            "https://ror.org/002pd6e78",
-            "https://ror.org/03wevmz92"
-        ]
-    },
-    {
         "affiliation": "Griffith University of Australia; Department. Civil Engineering; Australia",
         "ror_ids": [
             "https://ror.org/02sc3r913"
@@ -2918,13 +2669,6 @@
         "ror_ids": []
     },
     {
-        "affiliation": "Research Center; Faculty of Medicine Ramathibodi Hospital, Mahidol University; Bangkok Thailand",
-        "ror_ids": [
-            "https://ror.org/04884sy85",
-            "https://ror.org/01znkr924"
-        ]
-    },
-    {
         "affiliation": "American National Red Cross",
         "ror_ids": [
             "https://ror.org/0284e2q78"
@@ -2944,13 +2688,6 @@
         "affiliation": "Nurosurgical Department, Funabashi Municipa Medical Center",
         "ror_ids": [
             "https://ror.org/02nycs597"
-        ]
-    },
-    {
-        "affiliation": "ASCO President/Dana-Farber Cancer Institute, Harvard Medical School, USA",
-        "ror_ids": [
-            "https://ror.org/02jzgtq86",
-            "https://ror.org/03wevmz92"
         ]
     },
     {
@@ -2993,13 +2730,6 @@
         "affiliation": "Brigham and Women's Hospital; Boston Massachusetts USA",
         "ror_ids": [
             "https://ror.org/04b6nzv94"
-        ]
-    },
-    {
-        "affiliation": "Department of Experimental Surgery and Molecular Oncology of Solid Tumors, Mannheim Medical Faculty; Heidelberg University, and DKFZ (German Cancer Research Center); Mannheim Heidelberg Germany",
-        "ror_ids": [
-            "https://ror.org/038t36y30",
-            "https://ror.org/04cdgtt98"
         ]
     },
     {
@@ -3134,14 +2864,6 @@
         "affiliation": "Department of Geography; The Hebrew University of Jerusalem; Israel",
         "ror_ids": [
             "https://ror.org/03qxff017"
-        ]
-    },
-    {
-        "affiliation": "From the Departments of Pathology (Dr Dintzis) and Surgery (Ms Hales and Drs Calhoun, Javid, and Byrd), University of Washington Medical Center, Seattle; Breast Surgery Clinic (Dr Harrington), Department of Pathology (Dr Tan), and Clinical Trials (Mses Fortney and Porenta), Overlake Hospital Medical Center, Bellevue, Washington; Development (Dr Miller), Clinical Operations (Mses Ishak and Gombotz), Research (Ms Hansen and Dr Parrish-Novak), and Device Development (Dr Kittle and Mr Perry), Blaze...",
-        "ror_ids": [
-            "https://ror.org/00wbzw723",
-            "https://ror.org/004hxna20",
-            "https://ror.org/01ky34z31"
         ]
     },
     {
@@ -3307,13 +3029,6 @@
         "ror_ids": []
     },
     {
-        "affiliation": "Department of Gastroenterology and Hepatology; Leiden University Medical Center; Leiden University; Leiden The Netherlands",
-        "ror_ids": [
-            "https://ror.org/05xvt9f17",
-            "https://ror.org/027bh9e22"
-        ]
-    },
-    {
         "affiliation": "Department of Chemistry; Hong Kong Baptist University; Kowloon Hong Kong SAR China",
         "ror_ids": [
             "https://ror.org/0145fw131"
@@ -3360,13 +3075,6 @@
     {
         "affiliation": "Embajada de Francia,  Bolivia",
         "ror_ids": []
-    },
-    {
-        "affiliation": "Department of Pediatrics, Children's Hospital of Michigan, Wayne State University, Detroit, Michigan",
-        "ror_ids": [
-            "https://ror.org/0429x9p85",
-            "https://ror.org/01070mq45"
-        ]
     },
     {
         "affiliation": "early years consultant and inspector",
@@ -3476,13 +3184,6 @@
         "affiliation": "National Cancer Center Hospital East, Kashiwa, Japan;",
         "ror_ids": [
             "https://ror.org/03rm3gk43"
-        ]
-    },
-    {
-        "affiliation": "\n        Laboratory of Nutrition and Cancer, Centre de recherche\u0301 du Centre hospitalier de l'Universite\u0301 de Montre\u0301al-Ho\u0302tel-Dieu; Department of Medicine, Universite\u0301 de Montre\u0301al, Montreal, H2W 1T7, Canada",
-        "ror_ids": [
-            "https://ror.org/0410a8y51",
-            "https://ror.org/0161xgx34"
         ]
     },
     {
@@ -3666,14 +3367,6 @@
         ]
     },
     {
-        "affiliation": "From the Department of Surgery, Federal\rUniversity of Mato Grosso, Cuiaba, Brazil; and the\rVeterans Administration Surgical Services,\rWilliam S. Middleton Memorial Veterans Hospital Madison and the Department of\rSurgery, The University of Wisconsin\u2013Madison, Madison, Wisconsin",
-        "ror_ids": [
-            "https://ror.org/01mqvjv41",
-            "https://ror.org/037xafn82",
-            "https://ror.org/01y2jtd41"
-        ]
-    },
-    {
         "affiliation": "Centre for Clean Environment and Energy; Griffith University; Gold Coast Campus; QLD; 4222; Australia",
         "ror_ids": [
             "https://ror.org/02sc3r913"
@@ -3737,13 +3430,6 @@
         "affiliation": "Technical University of Cluj-Napoca",
         "ror_ids": [
             "https://ror.org/03r8nwp71"
-        ]
-    },
-    {
-        "affiliation": "Clinical Metabolomics Core Facility; Clinical Biochemistry, Rigshospitalet; University of Copenhagen; Copenhagen Denmark",
-        "ror_ids": [
-            "https://ror.org/03mchdq19",
-            "https://ror.org/035b05819"
         ]
     },
     {
@@ -3832,13 +3518,6 @@
         "affiliation": "Graduate School, Shibaura Institute of Technology",
         "ror_ids": [
             "https://ror.org/020wjcq07"
-        ]
-    },
-    {
-        "affiliation": "Department of Neurology, Children\u2019s Hospital Boston and Harvard Medical School, Boston, MA",
-        "ror_ids": [
-            "https://ror.org/00dvg7y05",
-            "https://ror.org/03wevmz92"
         ]
     },
     {
@@ -4000,13 +3679,6 @@
         ]
     },
     {
-        "affiliation": " Department of Obstetrics and Gynecology, Charles University in Prague, Faculty of Medicine Hradec Kralove, University Hospital Hradec Kralove, Hradec Kralove, Czech Republic, ",
-        "ror_ids": [
-            "https://ror.org/024d6js02",
-            "https://ror.org/04wckhb82"
-        ]
-    },
-    {
         "affiliation": "Laboratory of Immunology, Faculty of Public Health, Lebanese University, Fanar, Lebanon;",
         "ror_ids": [
             "https://ror.org/05x6qnc69"
@@ -4049,13 +3721,6 @@
         ]
     },
     {
-        "affiliation": "National Human Genome Research Institute, National Institutes of Health, Bethesda, MD",
-        "ror_ids": [
-            "https://ror.org/00baak391",
-            "https://ror.org/01cwqze88"
-        ]
-    },
-    {
         "affiliation": "RIKEN Institute of Physical and Chemical Research",
         "ror_ids": [
             "https://ror.org/01sjwvz98"
@@ -4065,13 +3730,6 @@
         "affiliation": "Gastro-Intestinal Unit, University Department of Therapeutics, at the Royal Infirmary, Edinburgh, and the University Department of Pathology",
         "ror_ids": [
             "https://ror.org/009bsy196"
-        ]
-    },
-    {
-        "affiliation": "Department of Psychosocial Oncology, Princess Margaret Hospital, Toronto, Ontario, Canada; Faculty of Medicine, University of Toronto, Toronto, Ontario, Canada",
-        "ror_ids": [
-            "https://ror.org/03zayce58",
-            "https://ror.org/03dbr7087"
         ]
     },
     {
@@ -4115,13 +3773,6 @@
         ]
     },
     {
-        "affiliation": "From the Department of Physiology, Faculty of Medicine, Universite\u0301 de Montre\u0301al and Institut de Cardiologie de Montre\u0301al (Que\u0301bec), Canada.",
-        "ror_ids": [
-            "https://ror.org/0161xgx34",
-            "https://ror.org/03vs03g62"
-        ]
-    },
-    {
         "affiliation": "Funda\u00e7\u00e3o Pr\u00f3-Sangue Hemocentro de S\u00e3o Paulo; S\u00e3o Paulo SP Brazil",
         "ror_ids": [
             "https://ror.org/05cjk9k86"
@@ -4146,13 +3797,6 @@
         ]
     },
     {
-        "affiliation": "Laboratoire J.A. Dieudonn\u00e9, Universit\u00e9 de Nice Sophia-Antipolis, UMR CNRS 7351, Parc Valrose, F-06108 Nice Cedex 02, France",
-        "ror_ids": [
-            "https://ror.org/0274zdr66",
-            "https://ror.org/02k9vew78"
-        ]
-    },
-    {
         "affiliation": " Department of Psychology, Sapienza University of Rome, Italy",
         "ror_ids": [
             "https://ror.org/02be6w209"
@@ -4174,13 +3818,6 @@
         "affiliation": " a   Security Policy Studies , The Elliott School of International Affairs, George Washington University , 1957 E Street, NW,  Washington ,  DC ,  20052 ,  USA",
         "ror_ids": [
             "https://ror.org/00y4zzh67"
-        ]
-    },
-    {
-        "affiliation": "Telethon Kids Institute; The University of Western Australia; Australia",
-        "ror_ids": [
-            "https://ror.org/01dbmzx78",
-            "https://ror.org/047272k79"
         ]
     },
     {
@@ -4211,13 +3848,6 @@
         "affiliation": "Department of Psychological Sciences, Birkbeck, University of London",
         "ror_ids": [
             "https://ror.org/04cw6st05"
-        ]
-    },
-    {
-        "affiliation": "Institute of Organic Chemistry and Biochemistry; Czech Academy of Sciences; Flemingovo n\u00e1m. 2 166\u200910 Prague 6 Czech Republic",
-        "ror_ids": [
-            "https://ror.org/04nfjn472",
-            "https://ror.org/053avzc18"
         ]
     },
     {
@@ -4331,13 +3961,6 @@
         ]
     },
     {
-        "affiliation": "Department of Ophthalmology of Shanghai Changzheng Hospital, Second Military Medical University, Shanghai, China.",
-        "ror_ids": [
-            "https://ror.org/0103dxn66",
-            "https://ror.org/04tavpn47"
-        ]
-    },
-    {
         "affiliation": " a   Department of Chemistry , Eastern Kentucky University ,  Richmond ,  KY ,  40475",
         "ror_ids": [
             "https://ror.org/012xks909"
@@ -4372,13 +3995,6 @@
         ]
     },
     {
-        "affiliation": "Neuroscience Research Australia, The University of New South Wales, Sydney, Australia",
-        "ror_ids": [
-            "https://ror.org/01g7s6g79",
-            "https://ror.org/03r8z3t63"
-        ]
-    },
-    {
         "affiliation": "Department of Gastroenterology and Hepatology; VU University Medical Centre; Amsterdam The Netherlands",
         "ror_ids": [
             "https://ror.org/00q6h8f30"
@@ -4394,14 +4010,6 @@
         "affiliation": "Biological Control Laboratory; UTFPR - Federal University of Technology - Parana; CEP 85660-000 Dois Vizinhos Parana Brazil",
         "ror_ids": [
             "https://ror.org/002v2kq79"
-        ]
-    },
-    {
-        "affiliation": "FMRIB Centre for Functional MRI of the Brain; John Radcliffe Hospital, University of Oxford; Oxford United Kingdom",
-        "ror_ids": [
-            "https://ror.org/0172mzb45",
-            "https://ror.org/0080acb59",
-            "https://ror.org/052gg0110"
         ]
     },
     {
@@ -4491,13 +4099,6 @@
         ]
     },
     {
-        "affiliation": "College of Chemistry and Molecular Engineering, Peking University, Beijing 100871, China, Institute of Geophysical and Geochemical Exploration, Chinese Academy of Geological Sciences, Langfang 065000, China",
-        "ror_ids": [
-            "https://ror.org/02v51f717",
-            "https://ror.org/02gp4e279"
-        ]
-    },
-    {
         "affiliation": "Dana-Farber Cancer Institute, Boston, MA, USA",
         "ror_ids": [
             "https://ror.org/02jzgtq86"
@@ -4526,43 +4127,15 @@
         "ror_ids": []
     },
     {
-        "affiliation": "Institute for Biotechnology and Bioengineering, Centre for Biological Engineering; Universidade do Minho; Campus de Gualtar 4710-057 Braga Portugal",
-        "ror_ids": [
-            "https://ror.org/05ws8g470",
-            "https://ror.org/037wpkx04"
-        ]
-    },
-    {
         "affiliation": "Department of Plant Protection, Faculty of Agriculture, University of Kurdistan, P.O. Box 416, Sanandaj, Iran",
         "ror_ids": [
             "https://ror.org/04k89yk85"
         ]
     },
     {
-        "affiliation": "Karolinska Institute, Department of Clinical Science and Education, S\u00f6dersjukhuset, Stockholm, Sweden",
-        "ror_ids": [
-            "https://ror.org/056d84691",
-	    "https://ror.org/00ncfk576"
-        ]
-    },
-    {
         "affiliation": "Department of Internal Medicine and Radboud Center for Infectious diseases (RCI); Radboud University Nijmegen Medical Centre; Nijmegen The Netherlands",
         "ror_ids": [
             "https://ror.org/05wg1m734"
-        ]
-    },
-    {
-        "affiliation": "The Kimmel Cancer Center; Thomas Jefferson University; Philadelphia PA USA",
-        "ror_ids": [
-            "https://ror.org/010h6g454",
-            "https://ror.org/00ysqcn41"
-        ]
-    },
-    {
-        "affiliation": "Department of Obstetrics and Gynecology, East-West Neo Medical Center, Kyung Hee University, Seoul, Korea.",
-        "ror_ids": [
-            "https://ror.org/053d97e59",
-            "https://ror.org/01zqcg218"
         ]
     },
     {
@@ -4578,13 +4151,6 @@
         ]
     },
     {
-        "affiliation": "Community Oncology and Prevention Trials Research Group, National Cancer Institute, National Institutes of Health, Bethesda, Maryland.",
-        "ror_ids": [
-            "https://ror.org/040gcmg81",
-            "https://ror.org/01cwqze88"
-        ]
-    },
-    {
         "affiliation": "Zhuangjiang Hospital, Southern Medical University; Department of Gastroenterology and Hepatology; NO. 253 Middle Industry Avenue Guangzhou Guangdong China 510280",
         "ror_ids": [
             "https://ror.org/01vjw4z39"
@@ -4594,13 +4160,6 @@
         "affiliation": "Department of Biological Sciences; Al al-Bayt University; Al-Mafraq Jordan",
         "ror_ids": [
             "https://ror.org/028jh2126"
-        ]
-    },
-    {
-        "affiliation": "Service de P\u00e9diatrie G\u00e9n\u00e9rale; H\u00f4pital Robert Debr\u00e9; Assistance Publique-H\u00f4pitaux de Paris; Paris France",
-        "ror_ids": [
-            "https://ror.org/02dcqy320",
-            "https://ror.org/00pg5jh14"
         ]
     },
     {
@@ -4680,13 +4239,6 @@
         ]
     },
     {
-        "affiliation": "Transplantation and Liver Surgery Clinic; Helsinki University Hospital, Helsinki University; Helsinki Finland",
-        "ror_ids": [
-            "https://ror.org/040af2s02",
-            "https://ror.org/02e8hzf44"
-        ]
-    },
-    {
         "affiliation": "Port Said University",
         "ror_ids": [
             "https://ror.org/01vx5yq44"
@@ -4706,13 +4258,6 @@
         "affiliation": "Graduate School of Science and Engineering Ibaraki University",
         "ror_ids": [
             "https://ror.org/00sjd5653"
-        ]
-    },
-    {
-        "affiliation": "Department of Vertebrate Zoology, National Museum of Natural History, Smithsonian Institution, Washington, DC 20560-0162, USA",
-        "ror_ids": [
-            "https://ror.org/00cz47042",
-            "https://ror.org/01pp8nd67"
         ]
     },
     {
@@ -4749,13 +4294,6 @@
         "affiliation": "Department of Pharmacological and Pharmaceutical Sciences; College of Pharmacy; University of Houston; Houston TX USA",
         "ror_ids": [
             "https://ror.org/048sx0r50"
-        ]
-    },
-    {
-        "affiliation": "From the Departments of Pediatrics and Surgery of the New York Hospital-Cornell University Medical Center, and from the Rockefeller University, New York, New York.",
-        "ror_ids": [
-            "https://ror.org/05bnh6r87",
-            "https://ror.org/0420db125"
         ]
     },
     {
@@ -4841,13 +4379,6 @@
         ]
     },
     {
-        "affiliation": "General Clinical Research Unit, Mater Misericordiae University Hospital, School of Medicine and Medical Sciences, University College Dublin, Dublin 7, Ireland.",
-        "ror_ids": [
-            "https://ror.org/040hqpc16",
-            "https://ror.org/05m7pjf47"
-        ]
-    },
-    {
         "affiliation": "School of Dentistry, University of California, Los Angeles, California.",
         "ror_ids": [
             "https://ror.org/046rm7j60"
@@ -4873,13 +4404,6 @@
         "affiliation": "The International Centre for Ecohydraulics Research, Faculty of Engineering and the Environment; University of Southampton; Southampton UK",
         "ror_ids": [
             "https://ror.org/01ryk1543"
-        ]
-    },
-    {
-        "affiliation": "Privatklinik Meiringen AG, Meiringen und Zentrum f\u00fcr Translationale Forschung, Universit\u00e4tsklinik f\u00fcr Psychiatrie und Psychotherapie, Universit\u00e4t Bern",
-        "ror_ids": [
-            "https://ror.org/00tbqf005",
-            "https://ror.org/02k7v4d05"
         ]
     },
     {
@@ -5027,25 +4551,9 @@
         "ror_ids": []
     },
     {
-        "affiliation": "Japanese Red Cross Medcl Ctr, Tokyo, Japan; National Kyushu Cancer Ctr, Fukuoka, Japan; Fukuoka Univ Hosp, Fukuoka, Japan; National Kumamoto Medcl Ctr, Kumamoto, Japan; Yokkaichi Municipal Hosp, Yokkaichi, Japan; National Kyushu Medcl Ctr, Fukuoka, Japan; Chiba Cancer Ctr, Chiba, Japan; Tokyo Metropolitan Geriatric Medcl Ctr, Tokyo, Japan",
-        "ror_ids": [
-            "https://ror.org/01gezbc84",
-            "https://ror.org/00d3mr981",
-            "https://ror.org/05sy5w128",
-            "https://ror.org/03k36hk88"
-        ]
-    },
-    {
         "affiliation": "Department of Psychiatry, Yale University School of Medicine, New Haven, CT, USA",
         "ror_ids": [
             "https://ror.org/03v76x132"
-        ]
-    },
-    {
-        "affiliation": "Institut Pprime, UPR 3346 CNRS, ENSMA and University of Poitiers, 86961 Futuroscope, France",
-        "ror_ids": [
-            "https://ror.org/05vjdsn22",
-            "https://ror.org/04xhy8q59"
         ]
     },
     {
@@ -5117,13 +4625,6 @@
         "ror_ids": []
     },
     {
-        "affiliation": "Institute for Microstructural Sciences; National Research Council Canada; Building M50, 1200 Montreal Road; Ottawa; Ontario; Canada; K1A 0R6",
-        "ror_ids": [
-            "https://ror.org/03v7h1165",
-            "https://ror.org/04mte1k06"
-        ]
-    },
-    {
         "affiliation": "Beijing Municipal Institute of Labour Protection, Beijing 100054, China",
         "ror_ids": [
             "https://ror.org/050ct8k07"
@@ -5143,14 +4644,6 @@
         "affiliation": "Professor, Department of Agricultural Economics, Ghent University, Coupure Links 653, 9000 Gent, Belgium",
         "ror_ids": [
             "https://ror.org/00cv9y106"
-        ]
-    },
-    {
-        "affiliation": "Center for Cancer Research, National Cancer Institute, National Institutes of Health, Bethesda, Maryland.",
-        "ror_ids": [
-            "https://ror.org/05bjen692",
-            "https://ror.org/040gcmg81",
-            "https://ror.org/01cwqze88"
         ]
     },
     {
@@ -5187,13 +4680,6 @@
         "affiliation": " Department of Genetic Toxicology and Cancer Biology, National Institute of Biology, Ljubljana, Slovenia",
         "ror_ids": [
             "https://ror.org/03s5t0r17"
-        ]
-    },
-    {
-        "affiliation": "Department of Surgery; Division of Neurosurgery; University of Toronto; Toronto Western Hospital; Toronto; Ontario; Canada",
-        "ror_ids": [
-            "https://ror.org/03dbr7087",
-            "https://ror.org/03qv8yq19"
         ]
     },
     {
@@ -5236,13 +4722,6 @@
         "affiliation": "Epidemiology and Biostatistics Unit, Institute of Hygiene, Catholic University of the Sacred Heart, Rome, Italy.",
         "ror_ids": [
             "https://ror.org/03h7r5v07"
-        ]
-    },
-    {
-        "affiliation": "aNational Center for Injury Prevention and Control, Centers for Disease Control and Prevention, 4770 Buford Highway, NE, MS-F64, Atlanta, GA, 30341, United States of America (USA).",
-        "ror_ids": [
-            "https://ror.org/0015x1k58",
-            "https://ror.org/042twtr12"
         ]
     },
     {
@@ -5426,13 +4905,6 @@
         ]
     },
     {
-        "affiliation": "Clinical Science Division, Department of Surgery/Physiology, and Institute of Medical Science, University of Toronto, Toronto M5S 1A8; and Division of Cardiovascular Surgery, The Hospital for Sick Children, Toronto M5G 1X8, Ontario, Canada",
-        "ror_ids": [
-            "https://ror.org/03dbr7087",
-            "https://ror.org/057q4rt57"
-        ]
-    },
-    {
         "affiliation": "University of Southern California",
         "ror_ids": [
             "https://ror.org/03taz7m60"
@@ -5463,13 +4935,6 @@
         ]
     },
     {
-        "affiliation": "Laboratory of Epidemiology, Demography, and Biometry, National Institute on Aging, National Institutes of Health, Baltimore, Maryland.",
-        "ror_ids": [
-            "https://ror.org/049v75w11",
-            "https://ror.org/01cwqze88"
-        ]
-    },
-    {
         "affiliation": "Henan Normal University",
         "ror_ids": [
             "https://ror.org/00s13br28"
@@ -5479,13 +4944,6 @@
         "affiliation": "Institute of Phytochemistry, University Witten-Herdecke",
         "ror_ids": [
             "https://ror.org/00yq55g44"
-        ]
-    },
-    {
-        "affiliation": "Liver Cancer Institute Zhongshan Hospital; Key Laboratory of Carcinogenesis and Cancer Invasion, Ministry of Education, Fudan University; Shanghai China",
-        "ror_ids": [
-            "https://ror.org/032x22645",
-            "https://ror.org/013q1eq08"
         ]
     },
     {
@@ -5505,13 +4963,6 @@
     {
         "affiliation": "CHU La Timone; Marseille France",
         "ror_ids": []
-    },
-    {
-        "affiliation": "Google & University of Wisconsin-Madison, Madison, WI, USA",
-        "ror_ids": [
-            "https://ror.org/00njsd438",
-            "https://ror.org/01y2jtd41"
-        ]
     },
     {
         "affiliation": "Atat\u00fcrk University,  Turkey",

@@ -82,9 +82,8 @@ class OrganizationViewSet(viewsets.ViewSet):
         if "affiliation" in params:
             if version == "v2":
                 if "new_matching" in params:
-                    print("new_matching")
-                    errors, organizations = new_match_organizations(params, version)
-                errors, organizations = beta_match_organizations(params, version)
+                    errors, organizations = beta_match_organizations(params, version)
+                errors, organizations = match_organizations(params, version)
             else:
                 errors, organizations = match_organizations(params, version)
         else:
@@ -95,7 +94,9 @@ class OrganizationViewSet(viewsets.ViewSet):
             if version == "v2":
                 if "new_matching" in params:
                     print("new matching")
+                '''
                     serializer = OrganizationSerializerV2(organizations)
+                '''
                 serializer = MatchingResultSerializerV2(organizations)
             else:
                 serializer = MatchingResultSerializerV1(organizations)
