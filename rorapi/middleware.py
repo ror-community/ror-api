@@ -1,6 +1,6 @@
 from django.core.cache import cache
 from django.http import JsonResponse
-from rorapi.v2.models.client import Client
+from rorapi.v2.models import Client
 from django.utils.timezone import now
 import os
 

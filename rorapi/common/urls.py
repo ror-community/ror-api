@@ -3,7 +3,7 @@ from django.urls import path, re_path
 from rest_framework.documentation import include_docs_urls
 from  . import views
 from rorapi.common.views import (
-    HeartbeatView,GenerateAddress,GenerateId,IndexData,IndexDataDump,BulkUpdate)
+    HeartbeatView,GenerateAddress,GenerateId,IndexData,IndexDataDump,BulkUpdate,ClientRegistrationView)
 
 urlpatterns = [
     # Health check
@@ -14,6 +14,7 @@ urlpatterns = [
     path('generateaddress/<str:geonamesid>', GenerateAddress.as_view()),
     url(r"^generateid$", GenerateId.as_view()),
     re_path(r"^(?P<version>(v1|v2))\/bulkupdate$", BulkUpdate.as_view()),
+    re_path(r"^(?P<version>(v1|v2))\/register$", ClientRegistrationView.as_view()),
     url(r"^(?P<version>(v1|v2))\/indexdata/(?P<branch>.*)", IndexData.as_view()),
     url(r"^(?P<version>(v1|v2))\/indexdatadump\/(?P<filename>v(\d+\.)?(\d+\.)?(\*|\d+)-\d{4}-\d{2}-\d{2}-ror-data)\/(?P<dataenv>(test|prod))$", IndexDataDump.as_view()),
     url(r"^(?P<version>(v1|v2))\/", include(views.organizations_router.urls)),

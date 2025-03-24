@@ -1,4 +1,6 @@
 from geonamescache.mappers import country
+import random
+import string
 from django.db import models
 from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
 from rorapi.v2.record_constants import continent_code_to_name
@@ -135,8 +137,8 @@ class MatchingResult:
 
 
 class Client(models.Model):
-    # Required field
-    email = models.EmailField(max_length=255)
+    # Required fields
+    email = models.EmailField(max_length=255, unique=True)
 
     # Optional fields
     name = models.CharField(max_length=255, blank=True)
@@ -157,3 +159,14 @@ class Client(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.client_id}"
+
+    @staticmethod
+    def generate_client_id():
+        """Generate a unique 32-character client ID"""
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=32))
+
+    def save(self, *args, **kwargs):
+        # Ensure client_id is generated before saving
+        if not self.client_id:  # Only generate if it's empty
+            self.client_id = self.generate_client_id()
+        super().save(*args, **kwargs)
