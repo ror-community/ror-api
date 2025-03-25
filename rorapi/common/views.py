@@ -57,18 +57,26 @@ class ClientRegistrationView(APIView):
             from_email = 'support@ror.org'
             recipient_list = [client.email]
 
-            send_mail(
-                subject,
-                message,
-                from_email,
-                recipient_list,
-                fail_silently=False,
-            )
+            # send_mail(
+            #     subject,
+            #     message,
+            #     from_email,
+            #     recipient_list,
+            #     fail_silently=False,
+            # )
 
             return Response({'client_id': client.client_id}, status=status.HTTP_201_CREATED)
 
         # Return validation errors if serializer is not valid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ValidateClientView(APIView):
+    def get(self, request, client_id):
+        # Check if the client_id exists in the database
+        client_exists = Client.objects.filter(client_id=client_id).exists()
+
+        # Return response indicating whether client ID is valid
+        return Response({'valid': client_exists}, status=status.HTTP_200_OK)
 
 class OurTokenPermission(BasePermission):
     """
