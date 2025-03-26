@@ -17,28 +17,7 @@ from itertools import groupby
 MIN_CHOSEN_SCORE = 92
 MIN_SCORE = 50
 
-MATCHING_TYPE_PHRASE = "PHRASE"
-MATCHING_TYPE_COMMON = "COMMON TERMS"
-MATCHING_TYPE_FUZZY = "FUZZY"
-MATCHING_TYPE_HEURISTICS = "HEURISTICS"
-MATCHING_TYPE_ACRONYM = "ACRONYM"
-MATCHING_TYPE_EXACT = "EXACT"
 MATCHING_TYPE_SINGLE = "SINGLE SEARCH"
-
-NODE_MATCHING_TYPES = (
-    MATCHING_TYPE_PHRASE,
-    MATCHING_TYPE_COMMON,
-    MATCHING_TYPE_FUZZY,
-    MATCHING_TYPE_HEURISTICS,
-)
-
-SPECIAL_CHARS_REGEX = '[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^"\~\*\?\:\/\.\,\;]'
-DO_NOT_MATCH = "university hospital"
-
-#####################################################################
-# Country extraction                                                #
-#####################################################################
-
 
 @lru_cache(maxsize=None)
 def load_geonames_countries():
@@ -111,17 +90,11 @@ def get_country_codes(string):
     return list(set(codes))
 
 
-
 def get_countries(string):
     """Extract country codes the the string and map to regions."""
 
     codes = get_country_codes(string)
     return [to_region(c) for c in codes]
-
-
-#####################################################################
-# Similarity                                                        #
-#####################################################################
 
 
 def check_latin_chars(s):
@@ -168,6 +141,7 @@ def normalize(s):
     s = re.sub("^the ", "", s)
     s = re.sub(r"\s+", " ", s.strip().lower())
     return s
+
 
 def get_similarity(aff_sub, cand_name):
     """Calculate the similarity between the affiliation substring
@@ -228,15 +202,6 @@ def get_score(candidate, aff_sub, countries, version):
     if aff_sub != "USA" and aff_sub in acronyms:
         scores.append(1) if countries else scores.append(0.9)
     return max(scores)
-
-
-### begin new search functions
-def check_latin_chars(s):
-    for ch in s:
-        if ch.isalpha():
-            if "LATIN" not in unicodedata.name(ch):
-                return False
-    return True
 
 
 def last_non_overlapping(candidates):
@@ -309,7 +274,15 @@ def choose_candidate(rescored):
 
 def score(aff, candidate):
     best = MatchedOrganization(
-        organization=candidate, name="", score=0, rescore=0, start=-1, end=-1, matching_type=MATCHING_TYPE_SINGLE, substring=aff, chosen=False
+        organization=candidate,
+        name="",
+        score=0,
+        rescore=0,
+        start=-1,
+        end=-1,
+        matching_type=MATCHING_TYPE_SINGLE,
+        substring=aff,
+        chosen=False,
     )
     for candidate_name in candidate["_source"]["search"]["names_ids"]:
         if hasattr(candidate_name, "name"):
@@ -322,9 +295,7 @@ def score(aff, candidate):
                 or (" " not in aff and aff.lower() != name.lower())
             ):
                 continue
-            alignment = fuzz.partial_ratio_alignment(
-                normalize(aff), normalize(name)
-            )
+            alignment = fuzz.partial_ratio_alignment(normalize(aff), normalize(name))
             if alignment.score > best.score:
                 best = MatchedOrganization(
                     organization=candidate,
@@ -335,19 +306,24 @@ def score(aff, candidate):
                     end=alignment.src_end,
                     matching_type=MATCHING_TYPE_SINGLE,
                     substring=aff,
-                    chosen=False
+                    chosen=False,
                 )
     return best
 
 
-
-#####################################################################
-# Matching                                                          #
-#####################################################################
-
 MatchedOrganization = namedtuple(
     "MatchedOrganization",
-    ["organization", "name", "score", "rescore", "start", "end", "matching_type", "substring", "chosen"],
+    [
+        "organization",
+        "name",
+        "score",
+        "rescore",
+        "start",
+        "end",
+        "matching_type",
+        "substring",
+        "chosen",
+    ],
 )
 MatchedOrganization.__new__.__defaults__ = (None, None, 0, 0, 0, 0, None, None, False)
 
@@ -363,19 +339,21 @@ def match_by_query(text, matching_type, query, countries, version):
         scored_candidates = [score(text, c) for c in candidates]
         scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE]
         for s in scored_candidates:
-            print(f'score: {s.score}')
+            print(f"score: {s.score}")
         if scored_candidates:
             if len(scored_candidates) == 1:
                 chosen_candidate = scored_candidates[0]
             if len(scored_candidates) > 1:
                 rescored_candidates = rescore(text, scored_candidates)
-                rescored_candidates = [r for r in rescored_candidates if r.score >= MIN_CHOSEN_SCORE]
+                rescored_candidates = [
+                    r for r in rescored_candidates if r.score >= MIN_CHOSEN_SCORE
+                ]
                 if rescored_candidates:
                     chosen_candidate = choose_candidate(rescored_candidates)
             if chosen_candidate:
                 print("Chosen:")
                 print(chosen_candidate)
-                chosen_true  = MatchedOrganization(
+                chosen_true = MatchedOrganization(
                     organization=chosen_candidate.organization,
                     name=chosen_candidate.name,
                     rescore=chosen_candidate.rescore,
@@ -384,210 +362,37 @@ def match_by_query(text, matching_type, query, countries, version):
                     end=chosen_candidate.end,
                     matching_type=MATCHING_TYPE_SINGLE,
                     substring=chosen_candidate.substring,
-                    chosen=True
+                    chosen=True,
                 )
-        scored_candidates = [s._replace(score = round(s.score / 100, 2)) for s in scored_candidates]
+        scored_candidates = [
+            s._replace(score=round(s.score / 100, 2)) for s in scored_candidates
+        ]
 
     return chosen_true, scored_candidates
 
 
-def match_by_type(text, matching_type, countries, version):
-    """Match affiliation text using specific matching mode/type."""
-
-    fields_v1 = ["name.norm", "aliases.norm", "labels.label.norm"]
-    fields_v2 = ["names.value.norm"]
-    substrings = []
-    if matching_type == MATCHING_TYPE_HEURISTICS:
-        h1 = re.search(r"University of ([^\s]+)", text)
-        if h1 is not None:
-            substrings.append(h1.group())
-            substrings.append(h1.group(1) + " University")
-        h2 = re.search(r"([^\s]+) University", text)
-        if h2 is not None:
-            substrings.append(h2.group())
-            substrings.append("University of " + h2.group(1))
-    elif matching_type == MATCHING_TYPE_ACRONYM:
-        iso3_substrings = []
-        all_substrings = re.findall("[A-Z]{3,}", text)
-        for substring in all_substrings:
-            for country in GEONAMES_COUNTRIES.values():
-                if substring.lower() == country["iso3"].lower():
-                    iso3_substrings.append(substring)
-        substrings = [x for x in all_substrings if x not in iso3_substrings]
-
-    else:
-        substrings.append(text)
-
-    queries = [ESQueryBuilder(version) for _ in substrings]
-
-    if version == "v2":
-        fields = fields_v2
-    else:
-        fields = fields_v1
-
-    for s, q in zip(substrings, queries):
-        if matching_type == MATCHING_TYPE_PHRASE:
-            q.add_phrase_query(fields, normalize(text))
-        elif matching_type == MATCHING_TYPE_COMMON:
-            q.add_common_query(fields, normalize(text))
-        elif matching_type == MATCHING_TYPE_FUZZY:
-            q.add_fuzzy_query(fields, normalize(text))
-        elif matching_type == MATCHING_TYPE_ACRONYM:
-            q.add_match_query(normalize(text))
-        elif matching_type == MATCHING_TYPE_HEURISTICS:
-            q.add_common_query(fields, normalize(text))
-    queries = [q.get_query() for q in queries]
-    matched = [
-        match_by_query(t, matching_type, q, countries, version)
-        for t, q in zip(substrings, queries)
-    ]
-    if not matched:
-        matched.append(
-            (MatchedOrganization(substring=text, matching_type=matching_type), [])
-        )
-    all_matched = [m for sub in matched for m in sub[1]]
-    max_score = max([m[0].score for m in matched])
-    chosen = [m[0] for m in matched if m[0].score == max_score][0]
-
-    return chosen, all_matched
-
-
-class MatchingNode:
-    """Matching node class. Represents a substring of the original affiliation
-    that potentially could be matched to an organization."""
-
-    def __init__(self, text, version):
-        self.text = text
-        self.version = version
-        self.matched = None
-        self.all_matched = []
-
-    def match(self, countries, min_score):
-        for matching_type in NODE_MATCHING_TYPES:
-            chosen, all_matched = match_by_type(
-                self.text, matching_type, countries, self.version
-            )
-            self.all_matched.extend(all_matched)
-            if self.matched is None:
-                self.matched = chosen
-            if (
-                self.matched is not None
-                and chosen.score > self.matched.score
-                and self.matched.score < min_score
-            ):
-                self.matched = chosen
-
-
-def clean_search_string(search_string):
-    # strip special chars
-    search_string_cleaned = re.sub(SPECIAL_CHARS_REGEX, " ", search_string)
-    # replace multiple spaces with 1 space
-    search_string_cleaned = re.sub(" +", " ", search_string_cleaned)
-    search_string_cleaned = search_string_cleaned.strip()
-    # strip postal codes
-    search_string_cleaned = re.sub("\d{5}", "", search_string_cleaned)
-    return search_string_cleaned
-
-
-def check_do_not_match(search_string):
-    do_not_match = False
-    if search_string.lower() in DO_NOT_MATCH:
-        do_not_match = True
-        return do_not_match
-    else:
-        for country in GEONAMES_COUNTRIES.values():
-            if (
-                search_string.lower() == country["name"].lower()
-                or search_string.lower() == country["iso"].lower()
-                or search_string.lower() == country["iso3"].lower()
-            ):
-                do_not_match = True
-                break
-        for city in GEONAMES_CITIES.values():
-            if search_string.lower() == city["name"].lower():
-                do_not_match = True
-                break
-    return do_not_match
-
-
-class MatchingGraph:
-    """A matching graph represents the entire input affiliation. The nodes
-    are substrings that could be potentially matched to an organization name.
-    Some substrings contain other substrings, which defines the graph edges.
-    This prevents matching an organization to a substring and another
-    organization to the substring's substring."""
-
-    def __init__(self, affiliation, version):
-        self.nodes = []
-        self.version = version
-        self.affiliation = affiliation
-        affiliation = re.sub("&amp;", "&", affiliation)
-        affiliation_cleaned = clean_search_string(affiliation)
-        n = MatchingNode(affiliation_cleaned, self.version)
-        self.nodes.append(n)
-        for part in [s.strip() for s in re.split("[,;:]", affiliation)]:
-            part_cleaned = clean_search_string(part)
-            do_not_match = check_do_not_match(part_cleaned)
-            # do not perform search if substring exactly matches a country name or ISO code
-            if do_not_match == False:
-                n = MatchingNode(part_cleaned, self.version)
-                self.nodes.append(n)
-
-    def remove_low_scores(self, min_score):
-        for node in self.nodes:
-            if node.matched is not None and node.matched.score < min_score:
-                node.matched = None
-
-    def match(self, countries, min_score):
-        for node in self.nodes:
-            node.match(countries, min_score)
-        self.remove_low_scores(min_score)
-        chosen = []
-        all_matched = []
-        for node in self.nodes:
-            all_matched.extend(node.all_matched)
-            if node.matched is not None and node.matched.organization["id"] not in [
-                m.organization["id"] for m in chosen
-            ]:
-                chosen.append(node.matched)
-        acr_chosen, acr_all_matched = match_by_type(
-            self.affiliation, MATCHING_TYPE_ACRONYM, countries, self.version
-        )
-        all_matched.extend(acr_all_matched)
-        return chosen, all_matched
-
-
 def get_output(chosen, all_matched, active_only):
-    #all_matched = [m for m in all_matched if m.rescore > MIN_MATCHING_SCORE]
+    # all_matched = [m for m in all_matched if m.rescore > MIN_MATCHING_SCORE]
     if active_only:
-        all_matched = [m for m in all_matched if m.organization['_source']['status'] == "active"]
+        all_matched = [
+            m for m in all_matched if m.organization["_source"]["status"] == "active"
+        ]
     all_matched = sorted(all_matched, key=lambda x: x.score, reverse=True)[:100]
     if chosen:
-        all_matched = [a for a in all_matched if a.organization['_id'] != chosen.organization['_id']]
+        all_matched = [
+            a
+            for a in all_matched
+            if a.organization["_id"] != chosen.organization["_id"]
+        ]
         all_matched.insert(0, chosen)
     return all_matched
 
 
-def check_exact_match(affiliation, countries, version):
-    qb = ESQueryBuilder(version)
-    qb.add_string_query('"' + affiliation + '"')
-    return match_by_query(
-        affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries, version
-    )
-
-def check_exact_match(affiliation, countries, version):
-    qb = ESQueryBuilder(version)
-    qb.add_string_query('"' + affiliation + '"')
-    return match_by_query(
-        affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries, version
-    )
-
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
     qb.add_string_query(aff)
-    return match_by_query(
-        aff, MATCHING_TYPE_SINGLE, qb.get_query(), countries, version
-    )
+    return match_by_query(aff, MATCHING_TYPE_SINGLE, qb.get_query(), countries, version)
+
 
 def match_affiliation(affiliation, active_only, version):
     countries = get_countries(affiliation)

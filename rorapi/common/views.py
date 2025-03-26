@@ -16,8 +16,7 @@ from rorapi.common.csv_bulk import process_csv
 from rorapi.common.csv_utils import validate_csv
 from rorapi.settings import REST_FRAMEWORK, ES7, ES_VARS
 from rorapi.common.matching import match_organizations
-from rorapi.common.new_matching import match_organizations as new_match_organizations
-from rorapi.common.matching_beta import match_organizations as beta_match_organizations
+from rorapi.common.matching_single_search import match_organizations as single_search_match_organizations
 from rorapi.common.models import (
     Errors
 )
@@ -71,6 +70,7 @@ class OrganizationViewSet(viewsets.ViewSet):
 
     def list(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         params = request.GET.dict()
+        print(params)
         if "query.name" in params or "query.names" in params:
             print("redirecting")
             param_name = "query.name" if "query.name" in params else "query.names"
@@ -81,9 +81,12 @@ class OrganizationViewSet(viewsets.ViewSet):
             del params["format"]
         if "affiliation" in params:
             if version == "v2":
-                if "new_matching" in params:
-                    errors, organizations = beta_match_organizations(params, version)
-                errors, organizations = match_organizations(params, version)
+                if "single_search" in params:
+                    print("single search")
+                    errors, organizations = single_search_match_organizations(params, version)
+                else:
+                    print("NOT single search")
+                    errors, organizations = match_organizations(params, version)
             else:
                 errors, organizations = match_organizations(params, version)
         else:
@@ -92,11 +95,6 @@ class OrganizationViewSet(viewsets.ViewSet):
             return Response(ErrorsSerializer(errors).data)
         if "affiliation" in params:
             if version == "v2":
-                if "new_matching" in params:
-                    print("new matching")
-                '''
-                    serializer = OrganizationSerializerV2(organizations)
-                '''
                 serializer = MatchingResultSerializerV2(organizations)
             else:
                 serializer = MatchingResultSerializerV1(organizations)
