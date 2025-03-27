@@ -23,11 +23,8 @@ services:
     image: mysql:8.0
     volumes:
       - mysql_data:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=rorapi
-      - MYSQL_USER=ror_user
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=password
+    env_file:
+      - .env
     ports:
       - "3306:3306"
     healthcheck:
