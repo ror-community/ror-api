@@ -48,7 +48,7 @@ jobs:
           echo ${FILE%.*}
           echo "LATEST_DUMP_FILE=${FILE%.*}" >> $GITHUB_ENV
       - name: Cache dependency
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
