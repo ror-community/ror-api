@@ -53,8 +53,8 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
-          python manage.py setup v1.35-2023-10-26-ror-data -t
-          # temp hard-coded dump file for v2 beta
+          python manage.py setup v1.55-2024-10-31-ror-data -t
+          # temp hard-coded dump file for v2.1 release
       - name: Test
         working-directory: ./ror-api
         run: |
