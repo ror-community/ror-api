@@ -24,7 +24,9 @@ Commands for indexing ROR data, generating new ROR IDs and other internal operat
       ROUTE_USER=[USER]
       TOKEN=[TOKEN]
 
-Replace values in [] with valid credential values. GITHUB_TOKEN is needed in order to index an existing data dump locally. ROUTE_USER and TOKEN are only needed in order to use generate-id functionality locally. AWS_* and DATA_STORE are only needed in order to use incremental indexing from S3 functionality locally.
+ROR staff should replace values in [] with valid credential values. External users do not need to add these values but should comment out this line https://github.com/ror-community/ror-api/blob/8a5a5ae8b483564c966a7184349c581dcae756ef/rorapi/management/commands/setup.py#L13 so that there is no attempt to send a Github token when retrieving a data dump for indexing.
+
+- Optionally, uncomment [line 24 in docker-compose.yml](https://github.com/ror-community/ror-api/blob/master/docker-compose.yml#L24) in order to pull the rorapi image from Dockerhub rather than creating it from local code  
 
 ## Start ror-api locally
 1. Start Docker Desktop

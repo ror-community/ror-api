@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import sys
 import json
 import sentry_sdk
 import boto3
@@ -71,7 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_prometheus.middleware.PrometheusAfterMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware'
 ]
 
 ROOT_URLCONF = 'rorapi.common.urls'
@@ -105,7 +106,23 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {}
+if 'collectstatic' in sys.argv and os.environ.get('DJANGO_SKIP_DB_CHECK') == 'True':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.dummy'
+        }
+    }
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME', 'rorapi'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -273,3 +290,16 @@ ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
 GRID_REMOVED_IDS = []
 
 LAUNCH_DARKLY_KEY = os.environ.get('LAUNCH_DARKLY_KEY')
+
+# Toggle for behavior-based rate limiting
+import os
+ENABLE_BEHAVIORAL_LIMITING = os.getenv("ENABLE_BEHAVIORAL_LIMITING", "False") == "True"
+
+# Email settings for Django
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailtrap.io'  # Change this to your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@example.com'  # Your SMTP username
+EMAIL_HOST_PASSWORD = 'your-email-password'  # Your SMTP password
+DEFAULT_FROM_EMAIL = 'support@ror.org'

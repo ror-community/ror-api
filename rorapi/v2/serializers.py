@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rorapi.v2.models import Client
 from rorapi.common.serializers import BucketSerializer, OrganizationRelationshipsSerializer
 
 class AggregationsSerializer(serializers.Serializer):
@@ -87,3 +88,15 @@ class MatchedOrganizationSerializer(serializers.Serializer):
 class MatchingResultSerializer(serializers.Serializer):
     number_of_results = serializers.IntegerField()
     items = MatchedOrganizationSerializer(many=True)
+
+
+class ClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = ['email', 'name', 'institution_name', 'institution_ror', 'country_code', 'ror_use']
+
+    def validate_email(self, value):
+        """Validate the email format and ensure it's unique."""
+        if Client.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A client with this email already exists.")
+        return value

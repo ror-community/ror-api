@@ -26,3 +26,10 @@ def check_ror_id(version):
         check_ror_id(version)
     return ror_id
 
+
+def generate_ror_client_id():
+    """Generates a random ROR client ID.
+    """
+
+    n = random.randint(0, 2**160 - 1)
+    return base32_crockford.encode(n).lower().zfill(32)
