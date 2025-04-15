@@ -63,3 +63,5 @@ launchdarkly-server-sdk==7.6.1
 jsonschema==3.2.0
 python-magic
 iso639-lang
+bleach==6.0.0
+pycountry==22.3.5

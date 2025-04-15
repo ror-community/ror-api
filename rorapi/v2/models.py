@@ -141,11 +141,11 @@ class Client(models.Model):
     email = models.EmailField(max_length=255)
 
     # Optional fields
-    name = models.CharField(max_length=255, blank=True)
-    institution_name = models.CharField(max_length=255, blank=True)
-    institution_ror = models.URLField(max_length=255, blank=True)
-    country_code = models.CharField(max_length=2, blank=True)
-    ror_use = models.TextField(max_length=500, blank=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    institution_name = models.CharField(max_length=255, blank=True, null=True)
+    institution_ror = models.URLField(max_length=255, blank=True, null=True)
+    country_code = models.CharField(max_length=2, blank=True, null=True)
+    ror_use = models.TextField(max_length=500, blank=True, null=True)
 
     # System fields
     client_id = models.CharField(
