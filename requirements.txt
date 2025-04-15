@@ -54,8 +54,12 @@ statsmodels==0.10.2
 titlecase==2.3
 tomli==2.2.1
 Unidecode==1.1.1
-update-address @ git+https://github.com/ror-community/update_address.git@5b088906e788a8539c8bd1a1b25829610dd2e331
 uritemplate==4.1.1
 urllib3==1.25.8
 yapf==0.43.0
 zipp==3.20.2
+update_address @ git+https://github.com/ror-community/update_address.git
+launchdarkly-server-sdk==7.6.1
+jsonschema==3.2.0
+python-magic
+iso639-lang

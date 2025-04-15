@@ -32,7 +32,7 @@ jobs:
         with:
           path: ror-api
       - name: Cache dependency
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -53,8 +53,8 @@ jobs:
       - name: Setup
         working-directory: ./ror-api
         run: |
-          python manage.py setup v1.35-2023-10-26-ror-data -t
-          # temp hard-coded dump file for v2 beta
+          python manage.py setup v1.55-2024-10-31-ror-data -t
+          # temp hard-coded dump file for v2.1 release
       - name: Test
         working-directory: ./ror-api
         run: |
@@ -72,7 +72,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
