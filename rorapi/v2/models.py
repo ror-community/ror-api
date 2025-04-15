@@ -138,7 +138,7 @@ class MatchingResult:
 
 class Client(models.Model):
     # Required fields
-    email = models.EmailField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255)
 
     # Optional fields
     name = models.CharField(max_length=255, blank=True)

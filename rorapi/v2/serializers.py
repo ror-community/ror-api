@@ -1,4 +1,7 @@
 from rest_framework import serializers
+import bleach
+import pycountry
+import re
 from rorapi.v2.models import Client
 from rorapi.common.serializers import BucketSerializer, OrganizationRelationshipsSerializer
 
@@ -99,4 +102,40 @@ class ClientSerializer(serializers.ModelSerializer):
         """Validate the email format and ensure it's unique."""
         if Client.objects.filter(email=value).exists():
             raise serializers.ValidationError("A client with this email already exists.")
+        return value
+
+    def validate_name(self, value):
+        """Sanitize name and validate length."""
+        value = bleach.clean(value)  # Sanitize to strip HTML
+        if len(value) > 255:
+            raise serializers.ValidationError("Name cannot be longer than 255 characters.")
+        return value
+
+    def validate_institution_name(self, value):
+        """Sanitize institution name and validate length."""
+        value = bleach.clean(value)  # Sanitize to strip HTML
+        if len(value) > 255:
+            raise serializers.ValidationError("Institution name cannot be longer than 255 characters.")
+        return value
+
+    def validate_institution_ror(self, value):
+        """Validate and format institution ROR to match 'https://ror.org/XXXXX'."""
+        value = bleach.clean(value)  # Sanitize to strip HTML
+        ror_regex = r'https://ror\.org/[A-Za-z0-9]+'
+        if not re.match(ror_regex, value):
+            raise serializers.ValidationError("Institution ROR must be in the format 'https://ror.org/XXXXX'.")
+        return value
+
+    def validate_country_code(self, value):
+        """Validate that the country code is a valid ISO 3166-1 alpha-2 country code."""
+        value = value.strip().upper()  # Normalize to uppercase
+        if len(value) != 2 or not pycountry.countries.get(alpha_2=value):
+            raise serializers.ValidationError(f"{value} is not a valid ISO 3166-1 alpha-2 country code.")
+        return value
+
+    def validate_ror_use(self, value):
+        """Sanitize ror_use and validate length."""
+        value = bleach.clean(value)  # Sanitize to strip HTML
+        if len(value) > 500:
+            raise serializers.ValidationError("ROR use cannot be longer than 500 characters.")
         return value
