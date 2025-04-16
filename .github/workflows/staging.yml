@@ -10,7 +10,7 @@ jobs:
       ELASTIC_PASSWORD: "changeme"
       ELASTIC7_HOST: "localhost"
       ELASTIC7_PORT: "9200"
-      DB_NAME: rorapi"
+      DB_NAME: "rorapi"
       DB_USER: "ror_user"
       DB_HOST: "db"
       DB_PASSWORD: "password"
@@ -35,10 +35,10 @@ jobs:
       db:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: rorapi
-          MYSQL_USER: ror_user
-          MYSQL_PASSWORD: password
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: "rorapi"
+          MYSQL_USER: "ror_user"
+          MYSQL_PASSWORD: "password"
+          MYSQL_ROOT_PASSWORD: "password"
         ports:
           - 3306:3306
     steps:
