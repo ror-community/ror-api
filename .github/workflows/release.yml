@@ -11,7 +11,7 @@ jobs:
       ELASTIC7_PORT: "9200"
       DB_NAME: "rorapi"
       DB_USER: "ror_user"
-      DB_HOST: "db"
+      DB_HOST: "localhost"
       DB_PASSWORD: "password"
       DB_PORT: 3306
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
