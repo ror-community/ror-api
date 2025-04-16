@@ -10,6 +10,11 @@ jobs:
       ELASTIC_PASSWORD: "changeme"
       ELASTIC7_HOST: "localhost"
       ELASTIC7_PORT: "9200"
+      DB_NAME: rorapi
+      DB_USER: ror_user
+      DB_HOST: db
+      DB_PASSWORD: password
+      DB_PORT: 3306
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -27,6 +32,15 @@ jobs:
           http.cors.allow-origin: "*"
         ports:
           - 9200:9200
+      db:
+        image: mysql:8.0
+        env:
+          DB_NAME: rorapi
+          DB_USER: ror_user
+          DB_HOST: rorapi
+          DB_PASSWORD: password
+        ports:
+          - 3306:3306
     steps:
       - name: Checkout ror-api code
         uses: actions/checkout@v2
