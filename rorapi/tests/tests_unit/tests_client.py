@@ -1,5 +1,5 @@
 from django.test import TestCase
-from rorapi.v2.models.client import Client
+from rorapi.v2.models import Client
 
 class ClientTests(TestCase):
     def test_client_registration(self):
