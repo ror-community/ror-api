@@ -1,4 +1,7 @@
 from geonamescache.mappers import country
+import random
+import string
+from django.db import models
 from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
 from rorapi.v2.record_constants import continent_code_to_name
 
@@ -131,3 +134,39 @@ class MatchingResult:
     def __init__(self, data):
         self.number_of_results = len(data)
         self.items = [MatchedOrganization(x) for x in data]
+
+
+class Client(models.Model):
+    # Required fields
+    email = models.EmailField(max_length=255)
+
+    # Optional fields
+    name = models.CharField(max_length=255, blank=True, null=True)
+    institution_name = models.CharField(max_length=255, blank=True, null=True)
+    institution_ror = models.URLField(max_length=255, blank=True, null=True)
+    country_code = models.CharField(max_length=2, blank=True, null=True)
+    ror_use = models.TextField(max_length=500, blank=True, null=True)
+
+    # System fields
+    client_id = models.CharField(
+        max_length=32,
+        unique=True,
+        editable=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_request_at = models.DateTimeField(null=True, blank=True)
+    request_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.email} - {self.client_id}"
+
+    @staticmethod
+    def generate_client_id():
+        """Generate a unique 32-character client ID"""
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=32))
+
+    def save(self, *args, **kwargs):
+        # Ensure client_id is generated before saving
+        if not self.client_id:  # Only generate if it's empty
+            self.client_id = self.generate_client_id()
+        super().save(*args, **kwargs)
