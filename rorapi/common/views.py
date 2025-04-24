@@ -55,54 +55,8 @@ class ClientRegistrationView(APIView):
             from_email = 'support@ror.org'
             recipient_list = [client.email]
 
-            text_content = """
-                Thank you for registering for a ROR API client ID!
-
-                Your ROR API client ID is:
-
-                {}
-
-                This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.
-
-                In order to receive a rate limit of 2000 requests per 5 minute period, please include this client ID with your ROR API requests, in a custom HTTP header named Client-Id, for example:
-
-                curl -H "Client-Id: {}" https://api.ror.org/organizations?query=oxford
-
-                Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.
-
-                We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new client ID. For more information about ROR API client IDs, see https://ror.readme.io
-
-                If you have questions, please see ROR documentation or contact us at support@ror.org
-
-                Cheers,
-                The ROR Team
-                support@ror.org
-                https://ror.org
-            """.format(client.client_id, client.client_id)
-
-            html_content = """
-                <p>Thank you for registering for a ROR API client ID!</p>
-
-                <p><strong>Your ROR API client ID is:</strong></p>
-
-                <pre style="background:#f4f4f4;padding:10px;">{}</pre>
-
-                <p>This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.</p>
-
-                <p>In order to receive a rate limit of <strong>2000 requests per 5 minute period</strong>, please include this client ID with your ROR API requests, in a custom HTTP header named <code>Client-Id</code>, for example:</p>
-
-                <pre style="background:#f4f4f4;padding:10px;">curl -H "Client-Id: {}" https://api.ror.org/organizations?query=oxford</pre>
-
-                <p>Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.</p>
-
-                <p>We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new one.</p>
-
-                <p>For more information about ROR API client IDs, see <a href="https://ror.readme.io/">our documentation</a>.</p>
-
-                <p>If you have questions, please see the ROR documentation or contact us at <a href="mailto:support@ror.org">support@ror.org</a>.</p>
-
-                <p>Cheers,<br/>The ROR Team<br/><a href="mailto:support@ror.org">support@ror.org</a><br/><a href="https://ror.org">https://ror.org</a></p>
-            """.format(client.client_id, client.client_id)
+            html_content = self._get_html_content(client.client_id)
+            text_content = self._get_text_content(client.client_id)
 
             msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
             msg.attach_alternative(html_content, "text/html")
@@ -110,8 +64,54 @@ class ClientRegistrationView(APIView):
 
             return Response({'client_id': client.client_id}, status=status.HTTP_201_CREATED)
 
-        # Return validation errors if serializer is not valid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def _get_text_content(self, client_id):
+        return f"""
+            Thank you for registering for a ROR API client ID!
+
+            Your ROR API client ID is:
+            {client_id}
+
+            This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.
+
+            In order to receive a rate limit of 2000 requests per 5 minute period, please include this client ID with your ROR API requests, in a custom HTTP header named Client-Id, for example:
+
+            curl -H "Client-Id: {client_id}" https://api.ror.org/organizations?query=oxford
+
+            Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.
+
+            We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new client ID. For more information about ROR API client IDs, see https://ror.readme.io
+
+            If you have questions, please see ROR documentation or contact us at support@ror.org
+
+            Cheers,
+            The ROR Team
+            support@ror.org
+            https://ror.org
+        """
+
+
+    def _get_html_content(self, client_id):
+        return f"""
+            <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+                <p>Thank you for registering for a ROR API client ID!</p>
+                <p><strong>Your ROR API client ID is:</strong></p>
+                <pre style="background:#f4f4f4;padding:10px;">{client_id}</pre>
+                <p>This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.</p>
+                <p>In order to receive a rate limit of <strong>2000 requests per 5 minute period</strong>, please include this client ID with your ROR API requests, in a custom HTTP header named <code>Client-Id</code>, for example:</p>
+                <pre style="background:#f4f4f4;padding:10px;">curl -H "Client-Id: {client_id}" https://api.ror.org/organizations?query=oxford</pre>
+                <p>Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.</p>
+                <p>We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new one.</p>
+                <p>For more information about ROR API client IDs, see <a href="https://ror.readme.io/">our documentation</a>.</p>
+                <p>If you have questions, please see the ROR documentation or contact us at <a href="mailto:support@ror.org">support@ror.org</a>.</p>
+                <p>Cheers,<br>
+                The ROR Team<br>
+                <a href="mailto:support@ror.org">support@ror.org</a><br>
+                <a href="https://ror.org">https://ror.org</a></p>
+            </div>
+        """
+
 
 class ValidateClientView(APIView):
     def get(self, request, client_id):
