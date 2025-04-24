@@ -60,13 +60,13 @@ class ClientRegistrationView(APIView):
 
                 Your ROR API client ID is:
 
-                {client.client_id}
+                {}
 
                 This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.
 
                 In order to receive a rate limit of 2000 requests per 5 minute period, please include this client ID with your ROR API requests, in a custom HTTP header named Client-Id, for example:
 
-                curl -H "Client-Id: {client.client_id}" https://api.ror.org/organizations?query=oxford
+                curl -H "Client-Id: {}" https://api.ror.org/organizations?query=oxford
 
                 Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.
 
@@ -78,20 +78,20 @@ class ClientRegistrationView(APIView):
                 The ROR Team
                 support@ror.org
                 https://ror.org
-            """
+            """.format(client.client_id, client.client_id)
 
             html_content = """
                 <p>Thank you for registering for a ROR API client ID!</p>
 
                 <p><strong>Your ROR API client ID is:</strong></p>
 
-                <pre style="background:#f4f4f4;padding:10px;">{client.client_id}</pre>
+                <pre style="background:#f4f4f4;padding:10px;">{}</pre>
 
                 <p>This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.</p>
 
                 <p>In order to receive a rate limit of <strong>2000 requests per 5 minute period</strong>, please include this client ID with your ROR API requests, in a custom HTTP header named <code>Client-Id</code>, for example:</p>
 
-                <pre style="background:#f4f4f4;padding:10px;">curl -H "Client-Id: {client.client_id}" https://api.ror.org/organizations?query=oxford</pre>
+                <pre style="background:#f4f4f4;padding:10px;">curl -H "Client-Id: {}" https://api.ror.org/organizations?query=oxford</pre>
 
                 <p>Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.</p>
 
@@ -102,7 +102,7 @@ class ClientRegistrationView(APIView):
                 <p>If you have questions, please see the ROR documentation or contact us at <a href="mailto:support@ror.org">support@ror.org</a>.</p>
 
                 <p>Cheers,<br/>The ROR Team<br/><a href="mailto:support@ror.org">support@ror.org</a><br/><a href="https://ror.org">https://ror.org</a></p>
-            """
+            """.format(client.client_id, client.client_id)
 
             msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
             msg.attach_alternative(html_content, "text/html")
