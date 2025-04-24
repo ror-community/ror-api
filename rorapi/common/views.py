@@ -40,7 +40,7 @@ from rorapi.management.commands.generaterorid import check_ror_id
 from rorapi.management.commands.indexror import process_files
 from django.core import management
 import rorapi.management.commands.indexrordump
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.utils.timezone import now
 from rorapi.v2.models import Client
 from rorapi.v2.serializers import ClientSerializer
@@ -51,19 +51,62 @@ class ClientRegistrationView(APIView):
         if serializer.is_valid():
             client = serializer.save()
 
-            # Send a registration email to the client
-            subject = 'Your ROR API Client ID'
-            message = f'Thank you for registering. Your Client ID is: {client.client_id}'
+            subject = 'ROR API client ID'
             from_email = 'support@ror.org'
             recipient_list = [client.email]
 
-            # send_mail(
-            #     subject,
-            #     message,
-            #     from_email,
-            #     recipient_list,
-            #     fail_silently=False,
-            # )
+            text_content = """
+                Thank you for registering for a ROR API client ID!
+
+                Your ROR API client ID is:
+
+                {client.client_id}
+
+                This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.
+
+                In order to receive a rate limit of 2000 requests per 5 minute period, please include this client ID with your ROR API requests, in a custom HTTP header named Client-Id, for example:
+
+                curl -H "Client-Id: {client.client_id}" https://api.ror.org/organizations?query=oxford
+
+                Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.
+
+                We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new client ID. For more information about ROR API client IDs, see https://ror.readme.io
+
+                If you have questions, please see ROR documentation or contact us at support@ror.org
+
+                Cheers,
+                The ROR Team
+                support@ror.org
+                https://ror.org
+            """
+
+            html_content = """
+                <p>Thank you for registering for a ROR API client ID!</p>
+
+                <p><strong>Your ROR API client ID is:</strong></p>
+
+                <pre style="background:#f4f4f4;padding:10px;">{client.client_id}</pre>
+
+                <p>This client ID is not used for authentication or authorization, and is therefore not secret and can be sent as plain text.</p>
+
+                <p>In order to receive a rate limit of <strong>2000 requests per 5 minute period</strong>, please include this client ID with your ROR API requests, in a custom HTTP header named <code>Client-Id</code>, for example:</p>
+
+                <pre style="background:#f4f4f4;padding:10px;">curl -H "Client-Id: {client.client_id}" https://api.ror.org/organizations?query=oxford</pre>
+
+                <p>Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.</p>
+
+                <p>We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new one.</p>
+
+                <p>For more information about ROR API client IDs, see <a href="https://ror.readme.io/">our documentation</a>.</p>
+
+                <p>If you have questions, please see the ROR documentation or contact us at <a href="mailto:support@ror.org">support@ror.org</a>.</p>
+
+                <p>Cheers,<br/>The ROR Team<br/><a href="mailto:support@ror.org">support@ror.org</a><br/><a href="https://ror.org">https://ror.org</a></p>
+            """
+
+            msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
             return Response({'client_id': client.client_id}, status=status.HTTP_201_CREATED)
 
@@ -72,10 +115,8 @@ class ClientRegistrationView(APIView):
 
 class ValidateClientView(APIView):
     def get(self, request, client_id):
-        # Check if the client_id exists in the database
         client_exists = Client.objects.filter(client_id=client_id).exists()
 
-        # Return response indicating whether client ID is valid
         return Response({'valid': client_exists}, status=status.HTTP_200_OK)
 
 class OurTokenPermission(BasePermission):
