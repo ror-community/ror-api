@@ -52,7 +52,7 @@ class ClientRegistrationView(APIView):
             client = serializer.save()
 
             subject = 'ROR API client ID'
-            from_email = 'support@ror.org'
+            from_email = 'api@ror.org'
             recipient_list = [client.email]
 
             html_content = self._get_html_content(client.client_id)
@@ -83,11 +83,11 @@ class ClientRegistrationView(APIView):
 
             We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new client ID. For more information about ROR API client IDs, see https://ror.readme.io/docs/client-id
 
-            If you have questions, please see ROR documentation or contact us at support@ror.org
+            If you have questions, please see ROR documentation or contact us at api@ror.org
 
             Cheers,
             The ROR Team
-            support@ror.org
+            api@ror.org
             https://ror.org
         """
 
@@ -104,10 +104,10 @@ class ClientRegistrationView(APIView):
                 <p>Requests without a valid client ID are subject to a rate limit of 50 requests per 5 minute period.</p>
                 <p>We do not provide a way to recover or revoke a lost client ID. If you lose track of your client ID, please register a new one.</p>
                 <p>For more information about ROR API client IDs, see <a href="https://ror.readme.io/docs/client-id/">our documentation</a>.</p>
-                <p>If you have questions, please see the ROR documentation or contact us at <a href="mailto:support@ror.org">support@ror.org</a>.</p>
+                <p>If you have questions, please see the ROR documentation or contact us at <a href="mailto:api@ror.org">api@ror.org</a>.</p>
                 <p>Cheers,<br>
                 The ROR Team<br>
-                <a href="mailto:support@ror.org">support@ror.org</a><br>
+                <a href="mailto:api@ror.org">api@ror.org</a><br>
                 <a href="https://ror.org">https://ror.org</a></p>
             </div>
         """
