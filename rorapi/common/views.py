@@ -52,7 +52,7 @@ class ClientRegistrationView(APIView):
             client = serializer.save()
 
             subject = 'ROR API client ID'
-            from_email = 'api@ror.org'
+            from_email = "ROR API Support <api@ror.org>"
             recipient_list = [client.email]
 
             html_content = self._get_html_content(client.client_id)
