@@ -23,7 +23,7 @@ def check_ror_id(version):
     ror_id = get_ror_id(generate_ror_id())
     errors, organization = retrieve_organization(ror_id, version)
     if errors is None:
-        check_ror_id(version)
+        return check_ror_id(version)
     return ror_id
 
 
