@@ -10,6 +10,7 @@ jobs:
       ELASTIC_PASSWORD: "changeme"
       ELASTIC7_HOST: "localhost"
       ELASTIC7_PORT: "9200"
+      DB_HOST: 127.0.0.1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -27,6 +28,16 @@ jobs:
           http.cors.allow-origin: "*"
         ports:
           - 9200:9200
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: "rorapi"
+          MYSQL_USER: "ror_user"
+          MYSQL_PASSWORD: "password"
+          MYSQL_ROOT_PASSWORD: "password"
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout ror-api code
         uses: actions/checkout@v2

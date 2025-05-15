@@ -16,7 +16,7 @@ RUN mv /etc/apt/sources.list.d /etc/apt/sources.list.d.bak && \
     mv /etc/apt/sources.list.d.bak /etc/apt/sources.list.d && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get clean && \
-    apt-get install ntp wget unzip tzdata python3-pip libmagic1 -y && \
+    apt-get install ntp wget unzip tzdata python3-pip libmagic1 default-libmysqlclient-dev libcairo2-dev pkg-config -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable Passenger and Nginx and remove the default site
@@ -54,6 +54,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 RUN pip3 install yapf
 
 # collect static files for Django
+ENV DJANGO_SKIP_DB_CHECK=True
 RUN python manage.py collectstatic --noinput
 
 # Expose web
