@@ -127,7 +127,7 @@ def update_record_from_csv(csv_data, version):
                         temp_ext_ids = [i for i in temp_ext_ids if i['type'] != t]
 
                     else:
-                        if not temp_preferred in temp_all:
+                        if temp_preferred is not None and temp_preferred not in temp_all:
                             errors.append("Changes to external ID object with type {} result in preferred value '{}' not in all values '{}'".format(t, temp_preferred, ", ".join(temp_all)))
                         # remove all of type and replace with new obj
                         new_ext_id_obj = {
