@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'rorapi.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
-    'DEFAULT_VERSION': 'v1',
+    'DEFAULT_VERSION': 'v2',
     'ALLOWED_VERSIONS': ['v1','v2'],
 
 }

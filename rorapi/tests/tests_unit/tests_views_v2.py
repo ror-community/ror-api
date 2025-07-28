@@ -234,7 +234,7 @@ class GenerateAddressViewTestCase(SimpleTestCase):
         self.maxDiff = None
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
-    @mock.patch('update_address.new_geonames')
+    @mock.patch('update_address.new_geonames_v2')
     def test_generateaddress_success(self, address_mock, permission_mock):
         address_mock.return_value = self.test_data_address
         permission_mock.return_value = True
@@ -243,18 +243,18 @@ class GenerateAddressViewTestCase(SimpleTestCase):
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
-    @mock.patch('update_address.new_geonames')
+    @mock.patch('update_address.new_geonames_v2')
     def test_generateaddress_fail_empty(self, address_mock, permission_mock):
         address_mock.return_value = self.test_data_address_empty
         permission_mock.return_value = True
-        response = self.client.get('/generateaddress/0000000')
+        response = self.client.get('/v2/generateaddress/0000000')
         self.assertContains(response, 'Expecting value')
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_generateid_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.get('/generateaddress/5378538')
+        response = self.client.get('/v2/generateaddress/5378538')
         self.assertEquals(response.status_code, 403)
 
 class IndexRorViewTestCase(SimpleTestCase):
