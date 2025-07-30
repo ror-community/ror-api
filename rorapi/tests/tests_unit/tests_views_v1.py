@@ -148,6 +148,7 @@ class ViewRetrievalTestCase(SimpleTestCase):
         self.assertTrue(any(['not a valid' in e for e in organization['errors']]))
 
 class GenerateIdViewTestCase(SimpleTestCase):
+
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
@@ -172,6 +173,7 @@ class GenerateIdViewTestCase(SimpleTestCase):
         self.assertEquals(response.status_code, 403)
 
 class GenerateAddressViewTestCase(SimpleTestCase):
+    V1_VERSION = 'v1'
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
@@ -188,7 +190,7 @@ class GenerateAddressViewTestCase(SimpleTestCase):
     def test_generateaddress_success(self, address_mock, permission_mock):
         address_mock.return_value = self.test_data_address
         permission_mock.return_value = True
-        response = self.client.get('/generateaddress/5378538')
+        response = self.client.get('/v1/generateaddress/5378538')
         self.assertContains(response, 'address')
         self.assertEquals(response.status_code, 200)
 
@@ -197,14 +199,14 @@ class GenerateAddressViewTestCase(SimpleTestCase):
     def test_generateaddress_fail_empty(self, address_mock, permission_mock):
         address_mock.return_value = self.test_data_address_empty
         permission_mock.return_value = True
-        response = self.client.get('/generateaddress/0000000')
+        response = self.client.get('/v1/generateaddress/0000000')
         self.assertContains(response, 'Expecting value')
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_generateid_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.get('/generateaddress/5378538')
+        response = self.client.get('/v1/generateaddress/5378538')
         self.assertEquals(response.status_code, 403)
 
 class IndexRorViewTestCase(SimpleTestCase):
