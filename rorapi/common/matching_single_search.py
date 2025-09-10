@@ -262,7 +262,7 @@ def match_by_query(text, query, countries):
                     chosen_candidate = choose_candidate(rescored_candidates)
             if chosen_candidate:
                 if (countries
-                    and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
+                    and to_region(chosen_candidate.organization["_source"]["locations"][0]["geonames_details"]["country_code"]) 
                     not in countries):
                     pass
                 else:
