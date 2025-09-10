@@ -307,9 +307,21 @@ def get_candidates(aff, countries, version):
 
 
 def match_affiliation(affiliation, active_only, version):
-    countries = get_countries(affiliation)
-    chosen, all_matched = get_candidates(affiliation, countries, version)
-    return get_output(chosen, all_matched, active_only)
+    try:
+        try:
+            countries = get_countries(affiliation)
+        except:
+            return "countries error"
+        try:
+            chosen, all_matched = get_candidates(affiliation, countries, version)
+        except:
+            return "get_candidates error"
+        try:
+            return get_output(chosen, all_matched, active_only)
+        except:
+            return "get_output error"
+    except:
+        return "error"
 
 
 def match_organizations(params, version):
@@ -318,10 +330,11 @@ def match_organizations(params, version):
         if "all_status" in params:
             if params["all_status"] == "" or params["all_status"].lower() == "true":
                 active_only = False
-        try:
-            matched = match_affiliation(params.get("affiliation"), active_only, version)
-        except:
-            return Errors(["'affiliation' parameter missing here"]), None
+        matched = match_affiliation(params.get("affiliation"), active_only, version)
+
+        if isinstance(matched, str):
+            return Errors(["{}".format(matched)]), None
+        
         if version == "v2":
             return None, MatchingResultV2(matched)
         return None, MatchingResultV1(matched)
