@@ -314,12 +314,15 @@ def match_affiliation(affiliation, active_only, version):
 
 def match_organizations(params, version):
     if "affiliation" in params:
-        active_only = True
-        if "all_status" in params:
-            if params["all_status"] == "" or params["all_status"].lower() == "true":
-                active_only = False
-        matched = match_affiliation(params.get("affiliation"), active_only, version)
-        if version == "v2":
-            return None, MatchingResultV2(matched)
-        return None, MatchingResultV1(matched)
+        try:
+            active_only = True
+            if "all_status" in params:
+                if params["all_status"] == "" or params["all_status"].lower() == "true":
+                    active_only = False
+            matched = match_affiliation(params.get("affiliation"), active_only, version)
+            if version == "v2":
+                return None, MatchingResultV2(matched)
+            return None, MatchingResultV1(matched)
+        except:
+            return Errors('"affiliation" parameter missing'), None
     return Errors('"affiliation" parameter missing'), None

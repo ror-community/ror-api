@@ -158,8 +158,8 @@ class OrganizationViewSet(viewsets.ViewSet):
         if "affiliation" in params:
             if version == "v2":
                 if "single_search" in params:
-                    errors, organizations = match_organizations(params, version)
-                    # errors, organizations = single_search_match_organizations(params, version)
+                    # errors, organizations = match_organizations(params, version)
+                    errors, organizations = single_search_match_organizations(params, version)
                 else:
                     errors, organizations = match_organizations(params, version)
             else:
