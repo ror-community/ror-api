@@ -262,7 +262,7 @@ def match_by_query(text, query, countries):
                     chosen_candidate = choose_candidate(rescored_candidates)
             if chosen_candidate:
                 if (countries
-                    and to_region(chosen_candidate.organization["_source"]["locations"][0]["geonames_details"]["country_code"]) 
+                    and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
                     not in countries):
                     pass
                 else:
@@ -302,26 +302,22 @@ def get_output(chosen, all_matched, active_only):
 
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
-    qb.add_affiliation_query(aff, 200)
-    return match_by_query(aff, qb.get_query(), countries)
+    try:
+        qb.add_affiliation_query(aff, 200)
+    except:
+        return "query error", None
+    try:
+        return match_by_query(aff, qb.get_query(), countries)
+    except:
+        return "match_by_query error", None
 
 
 def match_affiliation(affiliation, active_only, version):
-    try:
-        try:
-            countries = get_countries(affiliation)
-        except:
-            return "countries error"
-        try:
-            chosen, all_matched = get_candidates(affiliation, countries, version)
-        except:
-            return "get_candidates error"
-        try:
-            return get_output(chosen, all_matched, active_only)
-        except:
-            return "get_output error"
-    except:
-        return "error"
+    countries = get_countries(affiliation)
+    chosen, all_matched = get_candidates(affiliation, countries, version)
+    if isinstance(chosen, str):
+        return chosen
+    return get_output(chosen, all_matched, active_only)
 
 
 def match_organizations(params, version):
