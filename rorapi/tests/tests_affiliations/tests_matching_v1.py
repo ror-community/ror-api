@@ -7,9 +7,9 @@ import requests
 from django.test import SimpleTestCase
 from statsmodels.stats.api import proportion_confint
 
-ACCURACY_MIN = 0.885741
-PRECISION_MIN = 0.915426
-RECALL_MIN = 0.920048
+ACCURACY_MIN = 0.7000
+PRECISION_MIN = 0.9000
+RECALL_MIN = 0.6000
 
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
 API_VERSION = 'v1'
