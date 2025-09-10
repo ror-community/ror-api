@@ -11,28 +11,40 @@ PRECISION_MIN = 0.915426
 RECALL_MIN = 0.920048
 
 API_URL = os.environ.get('ROR_BASE_URL', 'http://localhost')
+TEST_DATASET_1 = "dataset_affiliations_springer_2023_10_31.json"
+TEST_DATASET_2 = "dataset_affiliations_crossref_2024_02_19.json"
 
 
 class AffiliationMatchingTestCase(SimpleTestCase):
-    def match(self, affiliation):
+    def match(self, affiliation, single_search=False):
         affiliation = re.sub(r'([\+\-=\&\|><!\(\)\{\}\[\]\^"\~\*\?:\\\/])',
                              lambda m: '\\' + m.group(), affiliation)
-        results = requests.get('{}/v2/organizations'.format(API_URL), {
-            'affiliation': affiliation
-        }).json()
+        if not single_search:
+            results = requests.get('{}/v2/organizations'.format(API_URL), {
+                'affiliation': affiliation
+            }).json()
+        else:
+            results = requests.get('{}/v2/organizations'.format(API_URL), {
+                'affiliation': affiliation,
+                'single_search': ''
+            }).json()
         return [
             item.get('organization').get('id') for item in results.get('items')
             if item.get('chosen')
         ]
 
-    def setUp(self):
+    def setUp(self, test_dataset='crossref',single_search=False):
+        if test_dataset == 'crossref':
+            test_dataset = TEST_DATASET_2
+        else:
+            test_dataset = TEST_DATASET_1
         with open(
                 os.path.join(os.path.dirname(__file__),
-                             'data/dataset_affiliations.json')) as affs_file:
+                             f'data/{test_dataset}')) as affs_file:
             self.dataset = json.load(affs_file)
         self.results = []
         for i, d in enumerate(self.dataset):
-            self.results.append(self.match(d['affiliation']))
+            self.results.append(self.match(d['affiliation'], single_search))
             if i % 100 == 0:
                 print('Progress: {0:.2f}%'.format(100 * i / len(self.dataset)))
         with open('resresultsults.json', 'w') as f:
