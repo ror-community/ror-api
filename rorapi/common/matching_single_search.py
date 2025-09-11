@@ -246,55 +246,46 @@ def match_by_query(text, query, countries):
         chosen_candidate = None
         chosen_true = None
         results = query.execute()
-        candidates = results.hits.hits
     except:
         return "query error", None
+    try:
+        candidates = results.hits.hits
+    except:
+        return f"candidates error: {results}", None
     if candidates:
-        try:
-            candidates = [c for c in candidates if c["_source"]["status"] == "active"]
-            scored_candidates = [score(text, c) for c in candidates]
-            scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
-        except:
-            return "score error", None
+        candidates = [c for c in candidates if c["_source"]["status"] == "active"]
+        scored_candidates = [score(text, c) for c in candidates]
+        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
         if scored_candidates:
-            try:
-                if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
-                    chosen_candidate = scored_candidates[0]
-                if len(scored_candidates) > 1:
-                    rescored_candidates = rescore(text, scored_candidates)
-                    rescored_candidates = [
-                        r for r in rescored_candidates if r.score >= MIN_SCORE
-                    ]
-                    if rescored_candidates:
-                        chosen_candidate = choose_candidate(rescored_candidates)
-            except:
-                return "rescored error", None
-            if chosen_candidate:
-                try:
-                    if (countries
-                        and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
-                        not in countries):
-                        pass
-                    else:
-                        chosen_true = MatchedOrganization(
-                            organization=chosen_candidate.organization,
-                            name=chosen_candidate.name,
-                            rescore=chosen_candidate.rescore,
-                            score=round(chosen_candidate.score / 100, 2),
-                            start=chosen_candidate.start,
-                            end=chosen_candidate.end,
-                            matching_type=MATCHING_TYPE_SINGLE,
-                            substring=chosen_candidate.substring,
-                            chosen=True,
-                        )
-                except:
-                    return "chosen error", None
-        try:
-            scored_candidates = [
-                    s._replace(score=round(s.score / 100, 2)) for s in scored_candidates
+            if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
+                chosen_candidate = scored_candidates[0]
+            if len(scored_candidates) > 1:
+                rescored_candidates = rescore(text, scored_candidates)
+                rescored_candidates = [
+                    r for r in rescored_candidates if r.score >= MIN_SCORE
                 ]
-        except:
-            return "scored candidates error", None
+                if rescored_candidates:
+                    chosen_candidate = choose_candidate(rescored_candidates)
+            if chosen_candidate:
+                if (countries
+                    and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
+                    not in countries):
+                    pass
+                else:
+                    chosen_true = MatchedOrganization(
+                        organization=chosen_candidate.organization,
+                        name=chosen_candidate.name,
+                        rescore=chosen_candidate.rescore,
+                        score=round(chosen_candidate.score / 100, 2),
+                        start=chosen_candidate.start,
+                        end=chosen_candidate.end,
+                        matching_type=MATCHING_TYPE_SINGLE,
+                        substring=chosen_candidate.substring,
+                        chosen=True,
+                    )
+        scored_candidates = [
+            s._replace(score=round(s.score / 100, 2)) for s in scored_candidates
+        ]
 
     return chosen_true, scored_candidates
 
