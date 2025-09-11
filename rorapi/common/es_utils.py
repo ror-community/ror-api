@@ -32,7 +32,7 @@ class ESQueryBuilder:
         # print(terms)
         self.search = self.search.query(
             "nested",
-            path="affiliation_match",
+            path="affiliation_match.names",
             score_mode="max",
             query=Q("match", **{"affiliation_match.names.name": terms})
         ).extra(size=max_candidates)
