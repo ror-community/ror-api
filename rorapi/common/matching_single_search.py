@@ -241,17 +241,11 @@ MatchedOrganization.__new__.__defaults__ = (None, None, 0, 0, 0, 0, None, None, 
 
 def match_by_query(text, query, countries):
     """Match affiliation text using specific ES query."""
-    try:
-        scored_candidates = []
-        chosen_candidate = None
-        chosen_true = None
-        results = query.execute()
-    except Exception as e:
-        return f"query error: {e}", None
-    try:
-        candidates = results.hits.hits
-    except Exception as e:
-        return f"candidates error: {e}\n{results}", None
+    scored_candidates = []
+    chosen_candidate = None
+    chosen_true = None
+    results = query.execute()
+    candidates = results.hits.hits
     if candidates:
         candidates = [c for c in candidates if c["_source"]["status"] == "active"]
         scored_candidates = [score(text, c) for c in candidates]
