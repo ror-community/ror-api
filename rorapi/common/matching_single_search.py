@@ -241,45 +241,60 @@ MatchedOrganization.__new__.__defaults__ = (None, None, 0, 0, 0, 0, None, None, 
 
 def match_by_query(text, query, countries):
     """Match affiliation text using specific ES query."""
-    scored_candidates = []
-    chosen_candidate = None
-    chosen_true = None
-    results = query.execute()
-    candidates = results.hits.hits
+    try:
+        scored_candidates = []
+        chosen_candidate = None
+        chosen_true = None
+        results = query.execute()
+        candidates = results.hits.hits
+    except:
+        return "query error", None
     if candidates:
-        candidates = [c for c in candidates if c["_source"]["status"] == "active"]
-        scored_candidates = [score(text, c) for c in candidates]
-        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
+        try:
+            candidates = [c for c in candidates if c["_source"]["status"] == "active"]
+            scored_candidates = [score(text, c) for c in candidates]
+            scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
+        except:
+            return "score error", None
         if scored_candidates:
-            if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
-                chosen_candidate = scored_candidates[0]
-            if len(scored_candidates) > 1:
-                rescored_candidates = rescore(text, scored_candidates)
-                rescored_candidates = [
-                    r for r in rescored_candidates if r.score >= MIN_SCORE
-                ]
-                if rescored_candidates:
-                    chosen_candidate = choose_candidate(rescored_candidates)
+            try:
+                if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
+                    chosen_candidate = scored_candidates[0]
+                if len(scored_candidates) > 1:
+                    rescored_candidates = rescore(text, scored_candidates)
+                    rescored_candidates = [
+                        r for r in rescored_candidates if r.score >= MIN_SCORE
+                    ]
+                    if rescored_candidates:
+                        chosen_candidate = choose_candidate(rescored_candidates)
+            except:
+                return "rescored error", None
             if chosen_candidate:
-                if (countries
-                    and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
-                    not in countries):
-                    pass
-                else:
-                    chosen_true = MatchedOrganization(
-                        organization=chosen_candidate.organization,
-                        name=chosen_candidate.name,
-                        rescore=chosen_candidate.rescore,
-                        score=round(chosen_candidate.score / 100, 2),
-                        start=chosen_candidate.start,
-                        end=chosen_candidate.end,
-                        matching_type=MATCHING_TYPE_SINGLE,
-                        substring=chosen_candidate.substring,
-                        chosen=True,
-                    )
-        scored_candidates = [
-            s._replace(score=round(s.score / 100, 2)) for s in scored_candidates
-        ]
+                try:
+                    if (countries
+                        and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
+                        not in countries):
+                        pass
+                    else:
+                        chosen_true = MatchedOrganization(
+                            organization=chosen_candidate.organization,
+                            name=chosen_candidate.name,
+                            rescore=chosen_candidate.rescore,
+                            score=round(chosen_candidate.score / 100, 2),
+                            start=chosen_candidate.start,
+                            end=chosen_candidate.end,
+                            matching_type=MATCHING_TYPE_SINGLE,
+                            substring=chosen_candidate.substring,
+                            chosen=True,
+                        )
+                except:
+                    return "chosen error", None
+        try:
+            scored_candidates = [
+                    s._replace(score=round(s.score / 100, 2)) for s in scored_candidates
+                ]
+        except:
+            return "scored candidates error", None
 
     return chosen_true, scored_candidates
 
@@ -302,14 +317,8 @@ def get_output(chosen, all_matched, active_only):
 
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
-    try:
-        qb.add_affiliation_query(aff, 200)
-    except:
-        return "query error", None
-    try:
-        return match_by_query(aff, qb.get_query(), countries)
-    except:
-        return "match_by_query error", None
+    qb.add_affiliation_query(aff, 200)
+    return match_by_query(aff, qb.get_query(), countries)
 
 
 def match_affiliation(affiliation, active_only, version):
