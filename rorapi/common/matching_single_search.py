@@ -246,12 +246,12 @@ def match_by_query(text, query, countries):
         chosen_candidate = None
         chosen_true = None
         results = query.execute()
-    except:
-        return "query error", None
+    except Exception as e:
+        return f"query error: {e}", None
     try:
         candidates = results.hits.hits
-    except:
-        return f"candidates error: {results}", None
+    except Exception as e:
+        return f"candidates error: {e}\n{results}", None
     if candidates:
         candidates = [c for c in candidates if c["_source"]["status"] == "active"]
         scored_candidates = [score(text, c) for c in candidates]
