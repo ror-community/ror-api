@@ -310,16 +310,14 @@ def get_output(chosen, all_matched, active_only):
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
     try:
+        curr_v2_index = ES7.get('organizations-v2')['mappings']
+    except Exception as e:
+        return f"query error {version}: {e}", None
+    try:
         qb.add_affiliation_query(aff, 200)
         return match_by_query(aff, qb.get_query(), countries)
     except Exception as e:
-        try:
-            # get index info like the mappings
-            curr_v2_index = ES7.get('organizations-v2')['mappings']
-            return curr_v2_index, None
-        except Exception as e2:
-            return f"query error: {e2}", None
-        return f"query error: {e2}", None
+        return f"query error: {e}", None
 
 
 def match_affiliation(affiliation, active_only, version):
