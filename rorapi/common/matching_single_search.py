@@ -4,6 +4,7 @@ import unicodedata
 import unidecode
 
 from rorapi.common.models import Errors
+from rorapi.settings import ES7
 from rorapi.common.es_utils import ESQueryBuilder
 from rorapi.v1.models import MatchingResult as MatchingResultV1
 from rorapi.v2.models import MatchingResult as MatchingResultV2
@@ -308,8 +309,17 @@ def get_output(chosen, all_matched, active_only):
 
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
-    qb.add_affiliation_query(aff, 200)
-    return match_by_query(aff, qb.get_query(), countries)
+    try:
+        qb.add_affiliation_query(aff, 200)
+        return match_by_query(aff, qb.get_query(), countries)
+    except Exception as e:
+        try:
+            # get index info like the mappings
+            curr_v2_index = ES7.get('organizations-v2')['mappings']
+            return curr_v2_index, None
+        except Exception as e2:
+            return f"query error: {e2}", None
+        return f"query error: {e2}", None
 
 
 def match_affiliation(affiliation, active_only, version):
