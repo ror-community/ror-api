@@ -2,6 +2,7 @@ import os
 import re
 import unicodedata
 import unidecode
+import json
 
 from rorapi.common.models import Errors
 from rorapi.settings import ES7
@@ -311,6 +312,8 @@ def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
     try:
         curr_v2_index = ES7.get('organizations-v2')['mappings']
+        # return as json string
+        return json.dumps(curr_v2_index), None
     except Exception as e:
         return f"query error {version}: {e}", None
     try:
