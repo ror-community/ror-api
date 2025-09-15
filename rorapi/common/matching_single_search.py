@@ -311,7 +311,8 @@ def get_output(chosen, all_matched, active_only):
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
     try:
-        curr_v2_index = ES7.get('organizations-v2')['mappings']
+        # get the index mappings for an index
+        curr_v2_index = ES7.indices.get_mapping('organizations-v2')
         # return as json string
         return json.dumps(curr_v2_index), None
     except Exception as e:
