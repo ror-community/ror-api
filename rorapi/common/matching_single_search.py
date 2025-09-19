@@ -251,7 +251,8 @@ def match_by_query(text, query, countries):
     if candidates:
         candidates = [c for c in candidates if c["_source"]["status"] == "active"]
         scored_candidates = [score(text, c) for c in candidates]
-        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
+        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE]
+        scored_candidates_to_return = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
         if scored_candidates:
             if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
                 chosen_candidate = scored_candidates[0]
@@ -279,18 +280,14 @@ def match_by_query(text, query, countries):
                         substring=chosen_candidate.substring,
                         chosen=True,
                     )
-        scored_candidates = [
-            s._replace(score=round(s.score / 100, 2)) for s in scored_candidates
+        scored_candidates_to_return = [
+            s._replace(score=round(s.score / 100, 2)) for s in scored_candidates_to_return
         ]
 
-    return chosen_true, scored_candidates
+    return chosen_true, scored_candidates_to_return
 
 
-def get_output(chosen, all_matched, active_only):
-    if active_only:
-        all_matched = [
-            m for m in all_matched if m.organization["_source"]["status"] == "active"
-        ]
+def get_output(chosen, all_matched):
     all_matched = sorted(all_matched, key=lambda x: x.score, reverse=True)[:100]
     if chosen:
         all_matched = [
