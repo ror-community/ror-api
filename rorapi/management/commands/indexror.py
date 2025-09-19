@@ -9,6 +9,7 @@ from os.path import exists
 import pathlib
 import shutil
 from rorapi.settings import ES7, ES_VARS, DATA
+import random
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
@@ -191,8 +192,10 @@ def index(dataset, version):
                         'id': n
                     } for n in get_nested_ids_v1(org)]
                 body.append(org)
-            print(body[0])
-            print(body[8])
+            print("example_1: ", body[0])
+            print("example_1: ", body[1])
+            print("example_2: ", body[8])
+            print("example_2: ", body[9])
             ES7.bulk(body)
     except TransportError:
         err[index.__name__] = f"Indexing error, reverted index back to previous state"

@@ -98,8 +98,10 @@ def index_dump(self, filename, index, dataset):
                         'id': n
                     } for n in get_nested_ids_v1(org)]
                 body.append(org)
-            print(body[0])
-            print(body[8])
+            print("example_1: ", body[0])
+            print("example_1: ", body[1])
+            print("example_2: ", body[8])
+            print("example_2: ", body[9])
             ES7.bulk(body)
     except TransportError:
         self.stdout.write(TransportError)
