@@ -244,6 +244,7 @@ MatchedOrganization.__new__.__defaults__ = (None, None, 0, 0, 0, 0, None, None, 
 def match_by_query(text, query, countries):
     """Match affiliation text using specific ES query."""
     scored_candidates = []
+    scored_candidates_to_return = []
     chosen_candidate = None
     chosen_true = None
     results = query.execute()
