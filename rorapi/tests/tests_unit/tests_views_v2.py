@@ -23,6 +23,19 @@ class ViewListTestCase(SimpleTestCase):
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_search_organizations_with_affiliations_match(self, search_mock):        
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get('/v2/organizations?affiliation=Sorbonne University, France&single_search= ')
+
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+        organizations = json.loads(response.content.decode('utf-8'))
+
+        print("testing affiliations match: ", organizations)
+        self.assertNotEqual(organizations['number_of_results'], 0)
+
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
     def test_search_organizations(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
