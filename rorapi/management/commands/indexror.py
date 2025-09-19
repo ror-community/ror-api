@@ -9,7 +9,6 @@ from os.path import exists
 import pathlib
 import shutil
 from rorapi.settings import ES7, ES_VARS, DATA
-import random
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
