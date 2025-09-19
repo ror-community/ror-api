@@ -250,20 +250,16 @@ def match_by_query(text, query, countries):
     results = query.execute()
     candidates = results.hits.hits
     if candidates:
-        candidates = [c for c in candidates if c["_source"]["status"] == "active"]
-        scored_candidates = [score(text, c) for c in candidates]
-        scored_candidates_to_return = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
-        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE]
+        active_candidates = [score(text, c) for c in candidates if c["_source"]["status"] == "active"]
+        scored_candidates_to_return = [s for s in active_candidates if s.score >= MIN_SCORE_FOR_RETURN]
+        scored_candidates = [s for s in scored_candidates_to_return if s.score >= MIN_SCORE]
+        #### choose candidate ####
         if scored_candidates:
-            if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
+            if (len(scored_candidates) == 1):
                 chosen_candidate = scored_candidates[0]
-            if len(scored_candidates) > 1:
-                rescored_candidates = rescore(text, scored_candidates)
-                rescored_candidates = [
-                    r for r in rescored_candidates if r.score >= MIN_SCORE
-                ]
-                if rescored_candidates:
-                    chosen_candidate = choose_candidate(rescored_candidates)
+            rescored_candidates = rescore(text, scored_candidates)
+            if rescored_candidates:
+                chosen_candidate = choose_candidate(rescored_candidates)
             if chosen_candidate:
                 if (countries
                     and to_region(chosen_candidate[0]["_source"]["locations"][0]["geonames_details"]["country_code"]) 
@@ -281,15 +277,15 @@ def match_by_query(text, query, countries):
                         substring=chosen_candidate.substring,
                         chosen=True,
                     )
-        scored_candidates_to_return = [
-            s._replace(score=round(s.score / 100, 2)) for s in scored_candidates_to_return
-        ]
 
     return chosen_true, scored_candidates_to_return
 
 
 def get_output(chosen, all_matched):
-    all_matched = sorted(all_matched, key=lambda x: x.score, reverse=True)[:100]
+    all_matched = sorted(all_matched, key=lambda x: x.score, reverse=True)[:10]
+    all_matched = [
+        s._replace(score=round(s.score / 100, 2)) for s in all_matched
+    ]
     if chosen:
         all_matched = [
             a
