@@ -45,13 +45,18 @@ def get_nested_ids_v2(org):
         for eid in ext_id['all']:
             yield eid
 
+def get_single_search_names_v2(org):
+    for name in org["names"]:
+        if "acronym" not in name["types"]:
+            yield name["value"]
+
 def get_affiliation_match_doc(org):
     doc = { 
         'id': org['id'],
         'country': org["locations"][0]["geonames_details"]["country_code"],
         'status': org['status'],
         'primary': [n["value"] for n in org["names"] if "ror_display" in n["types"]][0],
-        'names': [{"name": n} for n in get_nested_names_v2(org)],
+        'names': [{"name": n} for n in get_single_search_names_v2(org)],
         'relationships': [{"type": r['type'], "id": r['id']} for r in org['relationships']]
     }
     return doc
@@ -186,6 +191,8 @@ def index(dataset, version):
                         'id': n
                     } for n in get_nested_ids_v1(org)]
                 body.append(org)
+            print(body[0])
+            print(body[8])
             ES7.bulk(body)
     except TransportError:
         err[index.__name__] = f"Indexing error, reverted index back to previous state"
