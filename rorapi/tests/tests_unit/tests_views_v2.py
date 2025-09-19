@@ -23,7 +23,55 @@ class ViewListTestCase(SimpleTestCase):
             self.test_data = json.load(f)
 
     @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_search_organizations_with_affiliations_match(self, search_mock):        
+    def test_search_organizations_with_affiliations_match(self, search_mock):
+        # Create mock data with affiliation_match field required for single search
+        mock_hit = {
+            "_index": "organizations-v2",
+            "_type": "_doc", 
+            "_id": "https://ror.org/02en5vm52",
+            "_score": 1.0,
+            "_source": {
+                "id": "https://ror.org/02en5vm52",
+                "status": "active",
+                "locations": [
+                    {
+                        "geonames_id": 2988507,
+                        "geonames_details": {
+                            "continent_code": "EU",
+                            "continent_name": "Europe", 
+                            "country_code": "FR",
+                            "country_name": "France",
+                            "lat": 48.8566,
+                            "lng": 2.3522,
+                            "name": "Paris"
+                        }
+                    }
+                ],
+                "names": [
+                    {
+                        "value": "Sorbonne University",
+                        "types": ["ror_display", "label"],
+                        "lang": null
+                    }
+                ],
+                "affiliation_match": {
+                    "names": [
+                        {"name": "Sorbonne University"},
+                        {"name": "Sorbonne Université"},
+                        {"name": "Université de la Sorbonne"}
+                    ]
+                },
+                "types": ["Education"],
+                "established": 2018
+            }
+        }
+        
+        mock_response = IterableAttrDict(
+            {"hits": {"hits": [mock_hit], "total": {"value": 1}}},
+            [mock_hit]
+        )
+        search_mock.return_value = mock_response
+        
         view = views.OrganizationViewSet.as_view({'get': 'list'})
         data = {'affiliation':'Sorbonne University, France',
                 'single_search': ''}
@@ -34,7 +82,9 @@ class ViewListTestCase(SimpleTestCase):
         organizations = json.loads(response.content.decode('utf-8'))
 
         print("testing affiliations match: ", organizations)
-        self.assertNotEqual(organizations['number_of_results'], 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('items', organizations)
+        self.assertGreater(len(organizations['items']), 0)
 
 
     @mock.patch('elasticsearch_dsl.Search.execute')
