@@ -51,7 +51,7 @@ class ViewListTestCase(SimpleTestCase):
                     {
                         "value": "Sorbonne University",
                         "types": ["ror_display", "label"],
-                        "lang": null
+                        "lang": "fr"
                     }
                 ],
                 "affiliation_match": {
