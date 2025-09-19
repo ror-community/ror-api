@@ -243,17 +243,11 @@ MatchedOrganization.__new__.__defaults__ = (None, None, 0, 0, 0, 0, None, None, 
 
 def match_by_query(text, query, countries):
     """Match affiliation text using specific ES query."""
-    try:
-        scored_candidates = []
-        chosen_candidate = None
-        chosen_true = None
-        results = query.execute()
-    except Exception as e:
-        return f"query error: {e}", None
-    try:
-        candidates = results.hits.hits
-    except Exception as e:
-        return f"candidates error: {e}\n{results}", None
+    scored_candidates = []
+    chosen_candidate = None
+    chosen_true = None
+    results = query.execute()
+    candidates = results.hits.hits
     if candidates:
         candidates = [c for c in candidates if c["_source"]["status"] == "active"]
         scored_candidates = [score(text, c) for c in candidates]
@@ -310,25 +304,13 @@ def get_output(chosen, all_matched, active_only):
 
 def get_candidates(aff, countries, version):
     qb = ESQueryBuilder(version)
-    try:
-        # get the index mappings for an index
-        curr_v2_index = ES7.indices.get_mapping('organizations-v2')
-        # return as json string
-        return json.dumps(curr_v2_index), None
-    except Exception as e:
-        return f"query error {version}: {e}", None
-    try:
-        qb.add_affiliation_query(aff, 200)
-        return match_by_query(aff, qb.get_query(), countries)
-    except Exception as e:
-        return f"query error: {e}", None
+    qb.add_affiliation_query(aff, 200)
+    return match_by_query(aff, qb.get_query(), countries)
 
 
 def match_affiliation(affiliation, active_only, version):
     countries = get_countries(affiliation)
     chosen, all_matched = get_candidates(affiliation, countries, version)
-    if isinstance(chosen, str):
-        return chosen
     return get_output(chosen, all_matched, active_only)
 
 
