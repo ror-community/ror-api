@@ -251,8 +251,8 @@ def match_by_query(text, query, countries):
     if candidates:
         candidates = [c for c in candidates if c["_source"]["status"] == "active"]
         scored_candidates = [score(text, c) for c in candidates]
-        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE]
         scored_candidates_to_return = [s for s in scored_candidates if s.score >= MIN_SCORE_FOR_RETURN]
+        scored_candidates = [s for s in scored_candidates if s.score >= MIN_SCORE]
         if scored_candidates:
             if (len(scored_candidates) == 1) and (scored_candidates[0].score >= MIN_SCORE):
                 chosen_candidate = scored_candidates[0]
@@ -305,19 +305,15 @@ def get_candidates(aff, countries, version):
     return match_by_query(aff, qb.get_query(), countries)
 
 
-def match_affiliation(affiliation, active_only, version):
+def match_affiliation(affiliation, version):
     countries = get_countries(affiliation)
     chosen, all_matched = get_candidates(affiliation, countries, version)
-    return get_output(chosen, all_matched, active_only)
+    return get_output(chosen, all_matched)
 
 
 def match_organizations(params, version):
     if "affiliation" in params:
-        active_only = True
-        if "all_status" in params:
-            if params["all_status"] == "" or params["all_status"].lower() == "true":
-                active_only = False
-        matched = match_affiliation(params.get("affiliation"), active_only, version)
+        matched = match_affiliation(params.get("affiliation"), version)
         
         if version == "v2":
             return None, MatchingResultV2(matched)
