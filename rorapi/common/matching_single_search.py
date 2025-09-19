@@ -321,9 +321,6 @@ def match_organizations(params, version):
             if params["all_status"] == "" or params["all_status"].lower() == "true":
                 active_only = False
         matched = match_affiliation(params.get("affiliation"), active_only, version)
-
-        if isinstance(matched, str):
-            return Errors(["{}".format(matched)]), None
         
         if version == "v2":
             return None, MatchingResultV2(matched)

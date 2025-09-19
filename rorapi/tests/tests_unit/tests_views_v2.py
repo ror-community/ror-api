@@ -25,7 +25,9 @@ class ViewListTestCase(SimpleTestCase):
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_search_organizations_with_affiliations_match(self, search_mock):        
         view = views.OrganizationViewSet.as_view({'get': 'list'})
-        request = factory.get('/v2/organizations?affiliation=Sorbonne University, France&single_search= ')
+        data = {'affiliation':'Sorbonne University, France',
+                'single_search': ''}
+        request = factory.get('/v2/organizations', data)
 
         response = view(request, version=self.V2_VERSION)
         response.render()
