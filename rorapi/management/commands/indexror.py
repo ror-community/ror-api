@@ -45,6 +45,22 @@ def get_nested_ids_v2(org):
         for eid in ext_id['all']:
             yield eid
 
+def get_single_search_names_v2(org):
+    for name in org["names"]:
+        if "acronym" not in name["types"]:
+            yield name["value"]
+
+def get_affiliation_match_doc(org):
+    doc = { 
+        'id': org['id'],
+        'country': org["locations"][0]["geonames_details"]["country_code"],
+        'status': org['status'],
+        'primary': [n["value"] for n in org["names"] if "ror_display" in n["types"]][0],
+        'names': [{"name": n} for n in get_single_search_names_v2(org)],
+        'relationships': [{"type": r['type'], "id": r['id']} for r in org['relationships']]
+    }
+    return doc
+
 def prepare_files(path, local_file):
     data = []
     err = {}
@@ -165,6 +181,8 @@ def index(dataset, version):
                     org['names_ids'] += [{
                         'id': n
                     } for n in get_nested_ids_v2(org)]
+                    # experimental affiliations_match nested doc
+                    org['affiliation_match'] = get_affiliation_match_doc(org)
                 else:
                     org['names_ids'] = [{
                         'name': n

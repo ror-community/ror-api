@@ -183,6 +183,43 @@
                         "analyzer": "string_lowercase"
                     }
                 }
+            },
+            "affiliation_match": {
+                "type": "nested",
+                "properties": {
+                    "id": {
+                        "type": "keyword"
+                    },
+                    "country": {
+                        "type": "keyword"
+                    },
+                    "status": {
+                        "type": "keyword"
+                    },
+                    "primary": {
+                        "type": "text",
+                        "analyzer": "string_lowercase"
+                    },
+                    "names": {
+                        "type": "nested",
+                        "properties": {
+                            "name": {
+                                "type": "text",
+                                "analyzer": "string_lowercase"
+                            }
+                        }
+                    },
+                    "relationships": {
+                        "properties": {
+                            "type": {
+                                "type": "keyword"
+                            },
+                            "id": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
