@@ -1,6 +1,9 @@
 name: Run tests
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'enable-tests'
 
 jobs:
   test:
