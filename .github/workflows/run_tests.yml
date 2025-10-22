@@ -13,8 +13,6 @@ jobs:
       ELASTIC7_HOST: "localhost"
       ELASTIC7_PORT: "9200"
       DB_HOST: 127.0.0.1
-      # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       LAUNCH_DARKLY_KEY: ${{ secrets.LAUNCH_DARKLY_KEY_DEV }}
@@ -57,13 +55,6 @@ jobs:
           FILE="$(ls -Art *.zip | tail -n 1)"
           echo ${FILE%.*}
           echo "LATEST_DUMP_FILE=${FILE%.*}" >> $GITHUB_ENV
-      # - name: Cache dependency
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
       - name: Set up Python environment
         uses: actions/setup-python@v6
         with:
@@ -77,13 +68,13 @@ jobs:
           pip install yapf
 
           python manage.py collectstatic --noinput
-      - name: Setup
+      - name: Load test data
         working-directory: ./ror-api
         run: |
-          python manage.py setup v1.55-2024-10-31-ror-data -t
+          python manage.py setup ${{ env.LATEST_DUMP_FILE }} -t
           # Dump file temp hard coded for v2.1 release
           # Pulled from ror-data-test per settings.py config
-      - name: Test
+      - name: Run Tests
         working-directory: ./ror-api
         run: |
           python manage.py test rorapi.tests.tests_unit
