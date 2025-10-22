@@ -6,4 +6,4 @@ on:
   workflow_dispatch:
 jobs:
   test-pr:
-    uses: ./.github/workflows/run-tests.yml
+    uses: ./.github/workflows/run_tests.yml
