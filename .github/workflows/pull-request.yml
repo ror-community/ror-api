@@ -7,3 +7,4 @@ on:
 jobs:
   test-pr:
     uses: ./.github/workflows/run_tests.yml
+    secrets: inherit
