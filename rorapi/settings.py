@@ -159,13 +159,18 @@ ES_VARS = {
     'BULK_SIZE': 500
 }
 
-# use AWS4Auth for AWS Elasticsearch unless running locally via docker
-if os.environ.get('ELASTIC7_HOST', 'elasticsearch7') != 'elasticsearch7':
-    http_auth = AWS4Auth(os.environ.get('AWS_ACCESS_KEY_ID'),
-                         os.environ.get('AWS_SECRET_ACCESS_KEY'),
-                         os.environ.get('AWS_REGION'), 'es')
+# use AWS4Auth for AWS Elasticsearch unless running locally via docker or localhost
+if os.environ.get('ELASTIC7_HOST', 'elasticsearch7') not in ['elasticsearch7', 'localhost']:
+    aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+    aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    aws_region = os.environ.get('AWS_REGION')
+    if aws_access_key and aws_secret_key and aws_region:
+        http_auth = AWS4Auth(aws_access_key, aws_secret_key, aws_region, 'es')
+    else:
+        http_auth = ('elastic', os.environ.get('ELASTIC_PASSWORD', 'changeme'))
 else:
     http_auth = ('elastic', os.environ.get('ELASTIC_PASSWORD', 'changeme'))
+
 
 ES7 = Elasticsearch([{
     'host': os.environ.get('ELASTIC7_HOST', 'elasticsearch7'),
