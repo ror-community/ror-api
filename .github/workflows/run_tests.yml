@@ -58,10 +58,10 @@ jobs:
           pip install yapf
 
           python manage.py collectstatic --noinput
-      - name: Load test data
-        working-directory: ./ror-api
-        run: |
-          python manage.py setup ${{ env.TEST_DATA_DUMP_FILE }} -t
+      # - name: Load test data
+      #   working-directory: ./ror-api
+      #   run: |
+      #     python manage.py setup ${{ env.TEST_DATA_DUMP_FILE }} -t
       - name: Run Tests
         working-directory: ./ror-api
         run: |
