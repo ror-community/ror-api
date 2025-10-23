@@ -18,7 +18,7 @@ services:
       interval: 10s
       timeout: 1s
     volumes:
-      - ./esdata:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
   db:
     image: mysql:8.0
     volumes:
@@ -46,3 +46,5 @@ services:
       - db
 volumes:
   mysql_data:
+  esdata:
+    driver: local
