@@ -1,0 +1,29 @@
+name: Flow Guard
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  flow-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate promotion path
+        run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          echo "Base: $BASE Head: $HEAD"
+
+          if [ "$BASE" = "staging" ]; then
+            if [ "$HEAD" != "dev" ]; then
+              echo "ERROR: staging can only receive PRs from dev."
+              exit 1
+            fi
+          fi
+
+          if [ "$BASE" = "master" ]; then
+            if [ "$HEAD" != "staging" ]; then
+              echo "ERROR: master can only receive PRs from staging."
+              exit 1
+            fi
+          fi
+
+          echo "Flow guard passed."
