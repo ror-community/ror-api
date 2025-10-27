@@ -16,6 +16,7 @@ from rorapi.common.csv_bulk import process_csv
 from rorapi.common.csv_utils import validate_csv
 from rorapi.settings import REST_FRAMEWORK, ES7, ES_VARS
 from rorapi.common.matching import match_organizations
+from rorapi.common.matching_single_search import match_organizations as single_search_match_organizations
 from rorapi.common.models import (
     Errors
 )
@@ -155,7 +156,14 @@ class OrganizationViewSet(viewsets.ViewSet):
         if "format" in params:
             del params["format"]
         if "affiliation" in params:
-            errors, organizations = match_organizations(params, version)
+            if version == "v2":
+                if "single_search" in params:
+                    # errors, organizations = match_organizations(params, version)
+                    errors, organizations = single_search_match_organizations(params, version)
+                else:
+                    errors, organizations = match_organizations(params, version)
+            else:
+                errors, organizations = match_organizations(params, version)
         else:
             errors, organizations = search_organizations(params, version)
         if errors is not None:
