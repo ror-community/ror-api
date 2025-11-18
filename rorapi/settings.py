@@ -308,4 +308,4 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
 
 # API Deprecation
-V1_DEPRECATED = os.environ.get("V1_DEPRECATED", "False") == "True"
+V1_DEPRECATED = os.environ.get("V1_DEPRECATED", "False").lower() in ("true", "1", "yes")
