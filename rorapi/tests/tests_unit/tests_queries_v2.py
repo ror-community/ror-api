@@ -370,6 +370,20 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         query = build_search_query({'filter': f}, self.V2_VERSION)
         self.assertEquals(query.to_dict(), expected)
 
+    def test_filter_whitespace_normalization(self):
+        f = 'locations.geonames_details.country_name:South  Africa'
+        expected = {'query': {
+            'bool': {
+                'filter': [
+                    {'terms': {'locations.geonames_details.country_name': ('South Africa',)}},
+                    {'terms': {'status': ['active']}}
+                ],
+            }
+        }}
+        expected.update(self.default_query)
+        query = build_search_query({'filter': f}, self.V2_VERSION)
+        self.assertEquals(query.to_dict(), expected)
+
     def test_filter_all_status(self):
         f = 'key1:val1,k2:value2'
         expected = {'query': {
