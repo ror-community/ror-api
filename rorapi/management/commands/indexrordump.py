@@ -12,29 +12,9 @@ from elasticsearch import TransportError
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
-def get_nested_names_v1(org):
-    yield org['name']
-    for label in org['labels']:
-        yield label['label']
-    for alias in org['aliases']:
-        yield alias
-    for acronym in org['acronyms']:
-        yield acronym
-
 def get_nested_names_v2(org):
     for name in org['names']:
         yield name['value']
-
-def get_nested_ids_v1(org):
-    yield org['id']
-    yield re.sub('https://', '', org['id'])
-    yield re.sub('https://ror.org/', '', org['id'])
-    for ext_name, ext_id in org['external_ids'].items():
-        if ext_name == 'GRID':
-            yield ext_id['all']
-        else:
-            for eid in ext_id['all']:
-                yield eid
 
 def get_nested_ids_v2(org):
     yield org['id']
@@ -81,22 +61,14 @@ def index_dump(self, filename, index, dataset):
                         '_id': org['id']
                     }
                 })
-                if 'v2' in index:
-                    org['names_ids'] = [{
-                        'name': n
-                    } for n in get_nested_names_v2(org)]
-                    org['names_ids'] += [{
-                        'id': n
-                    } for n in get_nested_ids_v2(org)]
-                    # experimental affiliations_match nested doc
-                    org['affiliation_match'] = get_affiliation_match_doc(org)
-                else:
-                    org['names_ids'] = [{
-                        'name': n
-                    } for n in get_nested_names_v1(org)]
-                    org['names_ids'] += [{
-                        'id': n
-                    } for n in get_nested_ids_v1(org)]
+                org['names_ids'] = [{
+                    'name': n
+                } for n in get_nested_names_v2(org)]
+                org['names_ids'] += [{
+                    'id': n
+                } for n in get_nested_ids_v2(org)]
+                # experimental affiliations_match nested doc
+                org['affiliation_match'] = get_affiliation_match_doc(org)
                 body.append(org)
             ES7.bulk(body)
     except TransportError:
@@ -134,21 +106,24 @@ class Command(BaseCommand):
                     json_files.append(file)
             if json_files:
                 for json_file in json_files:
-                    index = None
                     json_path = os.path.join(DATA['WORKING_DIR'], filename, '') + json_file
-                    if 'schema_v2' in json_file and (options['schema']==2 or options['schema'] is None):
+                    # Check if file is v2.0+ format or legacy schema_v2 format
+                    version_match = re.match(r'v(\d+)\.(\d+)', json_file)
+                    is_v2_format = False
+                    if version_match:
+                        major, minor = map(int, version_match.groups())
+                        if major >= 2:
+                            is_v2_format = True
+                    elif 'schema_v2' in json_file:
+                        # Legacy format with schema_v2 in filename
+                        is_v2_format = True
+                    
+                    if is_v2_format and (options.get('schema') == 2 or options.get('schema') is None):
                         self.stdout.write('Loading JSON')
                         with open(json_path, 'r') as it:
                             dataset = json.load(it)
                         self.stdout.write('Indexing ROR dataset ' + json_file)
                         index = ES_VARS['INDEX_V2']
-                        index_dump(self, json_file, index, dataset)
-                    if 'schema_v2' not in json_file and (options['schema']==1 or options['schema'] is None):
-                        self.stdout.write('Loading JSON')
-                        with open(json_path, 'r') as it:
-                            dataset = json.load(it)
-                        self.stdout.write('Indexing ROR dataset ' + json_file)
-                        index = ES_VARS['INDEX_V1']
                         index_dump(self, json_file, index, dataset)
             else:
                 self.stdout.write("ROR data dump does not contain any JSON files")

@@ -151,8 +151,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
-    'INDEX_V1': 'organizations',
-    'INDEX_TEMPLATE_ES7_V1': os.path.join(BASE_DIR, 'rorapi', 'v1', 'index_template_es7.json'),
+    'INDEX_V1': 'organizations',  # Kept for v1 API queries (backward compatibility)
     'INDEX_V2': 'organizations-v2',
     'INDEX_TEMPLATE_ES7_V2': os.path.join(BASE_DIR, 'rorapi', 'v2', 'index_template_es7.json'),
     'BATCH_SIZE': 20,

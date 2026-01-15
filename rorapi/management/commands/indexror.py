@@ -13,29 +13,9 @@ from rorapi.settings import ES7, ES_VARS, DATA
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
-def get_nested_names_v1(org):
-    yield org['name']
-    for label in org['labels']:
-        yield label['label']
-    for alias in org['aliases']:
-        yield alias
-    for acronym in org['acronyms']:
-        yield acronym
-
 def get_nested_names_v2(org):
     for name in org['names']:
         yield name['value']
-
-def get_nested_ids_v1(org):
-    yield org['id']
-    yield re.sub('https://', '', org['id'])
-    yield re.sub('https://ror.org/', '', org['id'])
-    for ext_name, ext_id in org['external_ids'].items():
-        if ext_name == 'GRID':
-            yield ext_id['all']
-        else:
-            for eid in ext_id['all']:
-                yield eid
 
 def get_nested_ids_v2(org):
     yield org['id']
@@ -150,10 +130,10 @@ def process_files(dir, version):
 
 def index(dataset, version):
     err = {}
-    if version == 'v2':
-        index = ES_VARS['INDEX_V2']
-    else:
-        index = ES_VARS['INDEX_V1']
+    if version != 'v2':
+        err[index.__name__] = f"Only v2 schema version is supported. Received: {version}"
+        return err
+    index = ES_VARS['INDEX_V2']
     backup_index = '{}-tmp'.format(index)
     ES7.reindex(body={
         'source': {
@@ -174,22 +154,14 @@ def index(dataset, version):
                         '_id': org['id']
                     }
                 })
-                if 'v2' in index:
-                    org['names_ids'] = [{
-                        'name': n
-                    } for n in get_nested_names_v2(org)]
-                    org['names_ids'] += [{
-                        'id': n
-                    } for n in get_nested_ids_v2(org)]
-                    # experimental affiliations_match nested doc
-                    org['affiliation_match'] = get_affiliation_match_doc(org)
-                else:
-                    org['names_ids'] = [{
-                        'name': n
-                    } for n in get_nested_names_v1(org)]
-                    org['names_ids'] += [{
-                        'id': n
-                    } for n in get_nested_ids_v1(org)]
+                org['names_ids'] = [{
+                    'name': n
+                } for n in get_nested_names_v2(org)]
+                org['names_ids'] += [{
+                    'id': n
+                } for n in get_nested_ids_v2(org)]
+                # experimental affiliations_match nested doc
+                org['affiliation_match'] = get_affiliation_match_doc(org)
                 body.append(org)
             ES7.bulk(body)
     except TransportError:
@@ -211,11 +183,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('dir', type=str, help='add directory name for S3 bucket to be processed')
-        parser.add_argument('version', type=str, help='schema version of files to be processed')
 
     def handle(self,*args, **options):
         dir = options['dir']
-        version = options['version']
+        version = 'v2'
         process_files(dir, version)
 
 

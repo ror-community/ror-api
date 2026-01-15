@@ -303,11 +303,10 @@ class IndexDataDump(APIView):
     permission_classes = [OurTokenPermission]
 
     def get(self, request, filename, dataenv, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
-        schema = 1
+        # Always use v2 schema - v1 indexing support has been removed
+        schema = 2
         testdata = True
         st = 200
-        if version == 'v2':
-            schema = 2
         if dataenv == 'prod':
             testdata = False
         msg = management.call_command("setup", filename, schema=schema, testdata=testdata)
