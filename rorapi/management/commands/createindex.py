@@ -13,12 +13,8 @@ def create_index(self, index, template_file):
     self.stdout.write('Created index {}'.format(index))
 
 class Command(BaseCommand):
-    help = 'Create ROR API index'
+    help = 'Create ROR API v2 index'
 
     def handle(self, *args, **options):
-        if(options['schema']==1 or options['schema'] is None):
-            print("creating v1 index")
-            create_index(self, ES_VARS['INDEX_V1'], ES_VARS['INDEX_TEMPLATE_ES7_V1'])
-        if(options['schema']==2 or options['schema'] is None):
-            print("creating v2 index")
-            create_index(self, ES_VARS['INDEX_V2'], ES_VARS['INDEX_TEMPLATE_ES7_V2'])
+        self.stdout.write("creating v2 index")
+        create_index(self, ES_VARS['INDEX_V2'], ES_VARS['INDEX_TEMPLATE_ES7_V2'])
