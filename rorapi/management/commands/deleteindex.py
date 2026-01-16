@@ -10,13 +10,11 @@ def delete_index(self, index):
         self.stdout.write('Index {} does not exist'.format(index))
 
 class Command(BaseCommand):
-    help = 'Deletes ROR API index'
+    help = 'Deletes ROR API v2 index'
 
     def handle(self, *args, **options):
-        if(options['schema']==1 or options['schema'] is None):
-            print("deleting v1 index")
-            delete_index(self, ES_VARS['INDEX_V1'])
-        if(options['schema']==2 or options['schema'] is None):
-            print("deleting v2 index")
+        schema = options.get('schema', 2)
+        if schema == 2 or schema is None:
+            self.stdout.write("deleting v2 index")
             delete_index(self, ES_VARS['INDEX_V2'])
 

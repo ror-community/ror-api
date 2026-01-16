@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('filename', type=str, help='Name of data dump zip file to index without extension')
-        parser.add_argument('-s', '--schema', type=int, choices=[1, 2], help='Schema version to index if only indexing 1 version. Only set if not indexing both versions.')
+        parser.add_argument('-s', '--schema', type=int, choices=[2], default=2, help='Schema version to index (v2 only)')
         parser.add_argument('-t', '--testdata', action='store_true', help='Set flag to pull data dump from ror-data-test instead of ror-data')
 
     def handle(self, *args, **options):
@@ -57,7 +57,7 @@ class Command(BaseCommand):
                 DeleteIndexCommand().handle(*args, **options)
                 CreateIndexCommand().handle(*args, **options)
                 IndexRorDumpCommand().handle(*args, **options)
-                msg = 'SUCCESS: ROR dataset {} indexed in version {}. Using test repo: {}'.format(filename, str(options['schema']), str(use_test_data))
+                msg = 'SUCCESS: ROR dataset {} indexed in v2. Using test repo: {}'.format(filename, str(use_test_data))
             except:
                 msg = 'ERROR: Could not index ROR data dump. Check API logs for details.'
         else:
