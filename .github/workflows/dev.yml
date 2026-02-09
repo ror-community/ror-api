@@ -59,9 +59,7 @@ jobs:
           echo "TAG=$(git tag --points-at HEAD)" >> $GITHUB_OUTPUT
           echo "GIT_SHA=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           echo "GIT_SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "MESSAGE<<EOF" >> $GITHUB_OUTPUT
-          git log --format=%B -n 1 ${{ github.event.after }} >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "MESSAGE=$(git log --format=%B -n 1 ${{ github.event.after }} | tr '\n' ' ' | sed 's/  */ /g')" >> $GITHUB_OUTPUT
         id: extract_variables
 
       - name: Checkout terraform config repo
