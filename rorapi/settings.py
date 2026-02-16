@@ -65,7 +65,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'rorapi.middleware.deprecation.V1DeprecationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -101,7 +100,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
     'DEFAULT_VERSION': 'v2',
-    'ALLOWED_VERSIONS': ['v1','v2'],
+    'ALLOWED_VERSIONS': ['v2'],
 
 }
 
@@ -153,7 +152,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 ES_VARS = {
-    'INDEX_V1': 'organizations',  # Kept for v1 API queries (backward compatibility)
     'INDEX_V2': 'organizations-v2',
     'INDEX_TEMPLATE_ES7_V2': os.path.join(BASE_DIR, 'rorapi', 'v2', 'index_template_es7.json'),
     'BATCH_SIZE': 20,
@@ -307,6 +305,3 @@ EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
-
-# API Deprecation
-V1_DEPRECATED = os.environ.get("V1_DEPRECATED", "False").lower() in ("true", "1", "yes")
