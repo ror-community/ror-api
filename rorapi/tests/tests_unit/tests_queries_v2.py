@@ -34,8 +34,6 @@ class GetRorIDTestCase(SimpleTestCase):
 
 class ValidationTestCase(SimpleTestCase):
 
-    V2_VERSION = 'v2'
-
     def test_illegal_parameters(self):
         error = validate({
             'query': 'query',
@@ -167,7 +165,6 @@ class ValidationTestCase(SimpleTestCase):
         self.assertIsNone(error)
 
 class BuildSearchQueryTestCase(SimpleTestCase):
-    V2_VERSION = 'v2'
 
     def setUp(self):
         self.default_query = \
@@ -509,8 +506,6 @@ class BuildSearchQueryTestCase(SimpleTestCase):
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
 
-    V2_VERSION = 'v2'
-
     def test_retrieve_query(self):
         query = build_retrieve_query('ror-id')
         self.assertEquals(query.to_dict(), {
@@ -526,8 +521,6 @@ class BuildRetrieveQueryTestCase(SimpleTestCase):
         })
 
 class SearchOrganizationsTestCase(SimpleTestCase):
-
-    V2_VERSION = 'v2'
 
     def setUp(self):
         with open(
@@ -610,8 +603,6 @@ class SearchOrganizationsTestCase(SimpleTestCase):
 
 
 class RetrieveOrganizationsTestCase(SimpleTestCase):
-
-    V2_VERSION = 'v2'
 
     def setUp(self):
         with open(

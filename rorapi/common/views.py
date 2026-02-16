@@ -293,26 +293,29 @@ class BulkUpdate(APIView):
         validate_only = False
         errors = None
         if request.data:
-            file_object = request.data['file']
-            mime_type = magic.from_buffer(file_object.read(2048))
-            print(mime_type)
-            if "ASCII text" in mime_type or "UTF-8 text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
-                file_object.seek(0)
-                csv_validation_errors = validate_csv(file_object)
-                if len(csv_validation_errors) == 0:
-                    file_object.seek(0)
-                    params = request.GET.dict()
-                    if "validate" in params:
-                        validate_only = True
-                    process_csv_error, msg = process_csv(file_object, 'v2', validate_only)
-                    if process_csv_error:
-                        errors = Errors([process_csv_error])
-                else:
-                    errors = Errors(csv_validation_errors)
+            file_object = request.data.get('file')
+            if file_object is None:
+                errors = Errors(["File upload required. 'file' field is missing."])
             else:
-                errors = Errors(["File upload must be CSV. File type '{}' is not supported".format(mime_type)])
+                mime_type = magic.from_buffer(file_object.read(2048))
+                print(mime_type)
+                if "ASCII text" in mime_type or "UTF-8 text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
+                    file_object.seek(0)
+                    csv_validation_errors = validate_csv(file_object)
+                    if len(csv_validation_errors) == 0:
+                        file_object.seek(0)
+                        params = request.GET.dict()
+                        if "validate" in params:
+                            validate_only = True
+                        process_csv_error, msg = process_csv(file_object, 'v2', validate_only)
+                        if process_csv_error:
+                            errors = Errors([process_csv_error])
+                    else:
+                        errors = Errors(csv_validation_errors)
+                else:
+                    errors = Errors(["File upload must be CSV. File type '{}' is not supported".format(mime_type)])
         else:
-            errors = Errors(["Could not processs request. No data included in request."])
+            errors = Errors(["Could not process request. No data included in request."])
         if errors is not None:
             print(errors.__dict__)
             return Response(
