@@ -22,11 +22,6 @@ from rorapi.common.models import (
 )
 from rorapi.common.serializers import ErrorsSerializer
 
-from rorapi.v1.serializers import (
-    OrganizationSerializer as OrganizationSerializerV1,
-    ListResultSerializer as ListResultSerializerV1,
-    MatchingResultSerializer as MatchingResultSerializerV1
-)
 from rorapi.v2.serializers import (
     OrganizationSerializer as OrganizationSerializerV2,
     ListResultSerializer as ListResultSerializerV2,
@@ -156,28 +151,18 @@ class OrganizationViewSet(viewsets.ViewSet):
         if "format" in params:
             del params["format"]
         if "affiliation" in params:
-            if version == "v2":
-                if "single_search" in params:
-                    # errors, organizations = match_organizations(params, version)
-                    errors, organizations = single_search_match_organizations(params, version)
-                else:
-                    errors, organizations = match_organizations(params, version)
+            if "single_search" in params:
+                errors, organizations = single_search_match_organizations(params)
             else:
-                errors, organizations = match_organizations(params, version)
+                errors, organizations = match_organizations(params)
         else:
-            errors, organizations = search_organizations(params, version)
+            errors, organizations = search_organizations(params)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
         if "affiliation" in params:
-            if version == "v2":
-                serializer = MatchingResultSerializerV2(organizations)
-            else:
-                serializer = MatchingResultSerializerV1(organizations)
+            serializer = MatchingResultSerializerV2(organizations)
         else:
-            if version == "v2":
-                serializer = ListResultSerializerV2(organizations)
-            else:
-                serializer = ListResultSerializerV1(organizations)
+            serializer = ListResultSerializerV2(organizations)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
@@ -187,29 +172,23 @@ class OrganizationViewSet(viewsets.ViewSet):
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
             )
-        errors, organization = retrieve_organization(ror_id, version)
+        errors, organization = retrieve_organization(ror_id)
         if errors is not None:
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
             )
-        if version == "v2":
-            serializer = OrganizationSerializerV2(organization)
-        else:
-            serializer = OrganizationSerializerV1(organization)
+        serializer = OrganizationSerializerV2(organization)
         return Response(serializer.data)
 
     def create(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         errors = None
-        if version == "v2":
-            json_input = request.data
-            if 'id' in json_input and (json_input['id'] is not None and json_input['id'] != ""):
-                errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_input['id'])])
-            else:
-                create_error, valid_data = new_record_from_json(json_input, version)
-                if create_error:
-                    errors = Errors([create_error])
+        json_input = request.data
+        if 'id' in json_input and (json_input['id'] is not None and json_input['id'] != ""):
+            errors = Errors(["Value {} found in ID field. New records cannot contain a value in the ID field".format(json_input['id'])])
         else:
-            errors = Errors(["Version {} does not support creating records".format(version)])
+            create_error, valid_data = new_record_from_json(json_input, 'v2')
+            if create_error:
+                errors = Errors([create_error])
         if errors is not None:
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
@@ -219,29 +198,26 @@ class OrganizationViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         errors = None
-        if version == "v2":
-            ror_id = get_ror_id(pk)
-            if ror_id is None:
-                errors = Errors(["'{}' is not a valid ROR ID".format(pk)])
-                return Response(
-                    ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
-                )
-            errors, organization = retrieve_organization(ror_id, version)
-            if organization is None:
-                return Response(
-                    ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
-                )
-            json = request.data
-            if 'id' not in json:
-                errors = Errors(["No value found in ID field. Updated records must include a value in the ID field"])
-            elif get_ror_id(json['id']) != ror_id:
-                errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
-            else:
-                update_error, valid_data = update_record_from_json(json, organization)
-                if update_error:
-                    errors = Errors([update_error])
+        ror_id = get_ror_id(pk)
+        if ror_id is None:
+            errors = Errors(["'{}' is not a valid ROR ID".format(pk)])
+            return Response(
+                ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
+            )
+        errors, organization = retrieve_organization(ror_id)
+        if organization is None:
+            return Response(
+                ErrorsSerializer(errors).data, status=status.HTTP_404_NOT_FOUND
+            )
+        json = request.data
+        if 'id' not in json:
+            errors = Errors(["No value found in ID field. Updated records must include a value in the ID field"])
+        elif get_ror_id(json['id']) != ror_id:
+            errors = Errors(["Value {} in IDs field does not match resource ID specified in request URL {}".format(json['id'], pk)])
         else:
-            errors = Errors(["Version {} does not support creating records".format(version)])
+            update_error, valid_data = update_record_from_json(json, organization)
+            if update_error:
+                errors = Errors([update_error])
         if errors is not None:
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
@@ -258,14 +234,10 @@ organizations_router.register(
 
 class HeartbeatView(View):
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
-        print(version)
         try:
-            index = ES_VARS['INDEX_V1']
-            if version == 'v2':
-                index = ES_VARS['INDEX_V2']
-            if ES7.indices.exists(index):
+            if ES7.indices.exists(ES_VARS['INDEX_V2']):
                 return HttpResponse("OK")
-        except:
+        except Exception:
             pass
         return HttpResponse(status=500)
 
@@ -274,10 +246,7 @@ class GenerateAddress(APIView):
     permission_classes = [OurTokenPermission]
 
     def get(self, request, geonamesid, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
-        if version == 'v2':
-            address = ua.new_geonames_v2(geonamesid)
-        else:
-            address = ua.new_geonames(geonamesid)
+        address = ua.new_geonames_v2(geonamesid)
         return Response(address)
 
 
@@ -285,7 +254,7 @@ class GenerateId(APIView):
     permission_classes = [OurTokenPermission]
 
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
-        id = check_ror_id(version)
+        id = check_ror_id()
         print("Generated ID: {}".format(id))
         return Response({"id": id})
 
@@ -294,7 +263,7 @@ class IndexData(APIView):
 
     def get(self, request, branch, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         st = 200
-        msg = process_files(branch, version)
+        msg = process_files(branch, 'v2')
         if msg["status"] == "ERROR":
             st = 400
         return Response({"status": msg["status"], "msg": msg["msg"]}, status=st)
@@ -323,30 +292,27 @@ class BulkUpdate(APIView):
     def post(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         validate_only = False
         errors = None
-        if version == 'v2':
-            if request.data:
-                file_object = request.data['file']
-                mime_type = magic.from_buffer(file_object.read(2048))
-                print(mime_type)
-                if "ASCII text" in mime_type or "UTF-8 text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
+        if request.data:
+            file_object = request.data['file']
+            mime_type = magic.from_buffer(file_object.read(2048))
+            print(mime_type)
+            if "ASCII text" in mime_type or "UTF-8 text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
+                file_object.seek(0)
+                csv_validation_errors = validate_csv(file_object)
+                if len(csv_validation_errors) == 0:
                     file_object.seek(0)
-                    csv_validation_errors = validate_csv(file_object)
-                    if len(csv_validation_errors) == 0:
-                        file_object.seek(0)
-                        params = request.GET.dict()
-                        if "validate" in params:
-                            validate_only = True
-                        process_csv_error, msg = process_csv(file_object, version, validate_only)
-                        if process_csv_error:
-                            errors = Errors([process_csv_error])
-                    else:
-                        errors=Errors(csv_validation_errors)
+                    params = request.GET.dict()
+                    if "validate" in params:
+                        validate_only = True
+                    process_csv_error, msg = process_csv(file_object, 'v2', validate_only)
+                    if process_csv_error:
+                        errors = Errors([process_csv_error])
                 else:
-                    errors = Errors(["File upload must be CSV. File type '{}' is not supported".format(mime_type)])
+                    errors = Errors(csv_validation_errors)
             else:
-                    errors = Errors(["Could not processs request. No data included in request."])
+                errors = Errors(["File upload must be CSV. File type '{}' is not supported".format(mime_type)])
         else:
-            errors = Errors(["Version {} does not support creating records".format(version)])
+            errors = Errors(["Could not processs request. No data included in request."])
         if errors is not None:
             print(errors.__dict__)
             return Response(
