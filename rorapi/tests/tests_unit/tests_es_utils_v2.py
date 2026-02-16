@@ -2,9 +2,8 @@ from django.test import SimpleTestCase
 from rorapi.common.es_utils import ESQueryBuilder
 
 class QueryBuilderTestCaseV2(SimpleTestCase):
-    V2_VERSION = 'v2'
     def test_id_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_id_query('ror-id')
 
         self.assertEqual(qb.get_query().to_dict(), {
@@ -20,7 +19,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
         })
 
     def test_match_all_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_match_all_query()
 
         self.assertEqual(qb.get_query().to_dict(),
@@ -31,7 +30,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
                          })
 
     def test_string_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_string_query('query terms')
 
         self.assertEqual(
@@ -51,7 +50,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
                 'track_total_hits': True
             })
     def test_string_query_advanced(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_string_query_advanced('query terms')
 
         self.assertEqual(
@@ -72,7 +71,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             })
 
     def test_phrase_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_phrase_query(['f1', 'f2'], 'query terms')
 
         self.assertEqual(
@@ -94,7 +93,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             })
 
     def test_common_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_common_query(['f1', 'f2'], 'query terms')
 
         self.assertEqual(
@@ -122,7 +121,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             })
 
     def test_match_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_match_query('query terms')
 
         self.assertEqual(qb.get_query().to_dict(),
@@ -135,7 +134,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
                          })
 
     def test_fuzzy_query(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_fuzzy_query(['f1', 'f2'], 'query terms')
 
         self.assertEqual(
@@ -163,7 +162,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             })
 
     def test_add_filters(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_match_all_query()
         qb.add_filters({'key1': ['val1'], 'k2': ['value2']})
 
@@ -186,7 +185,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             })
 
     def test_add_aggregations(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_match_all_query()
         qb.add_aggregations([('countries', 'code'), ('types', 'type')])
 
@@ -215,7 +214,7 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             })
 
     def test_paginate(self):
-        qb = ESQueryBuilder(self.V2_VERSION)
+        qb = ESQueryBuilder()
         qb.add_match_all_query()
         qb.paginate(10)
 
