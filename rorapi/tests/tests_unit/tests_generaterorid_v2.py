@@ -8,8 +8,6 @@ DUPLICATE_ID_RAW = "duplicateid"
 UNIQUE_ID_RAW = "uniqueid"
 DUPLICATE_ROR_ID = f"{ROR_API['ID_PREFIX']}{DUPLICATE_ID_RAW}"
 UNIQUE_ROR_ID = f"{ROR_API['ID_PREFIX']}{UNIQUE_ID_RAW}"
-TEST_VERSION = 'v2'
-
 class GenerateRorIdCommandTestCase(SimpleTestCase):
 
     @patch('rorapi.management.commands.generaterorid.get_ror_id')
@@ -30,6 +28,6 @@ class GenerateRorIdCommandTestCase(SimpleTestCase):
             (Errors(f"ROR ID '{UNIQUE_ROR_ID}' does not exist"), None)
         ]
 
-        result_ror_id = generaterorid.check_ror_id(TEST_VERSION)
+        result_ror_id = generaterorid.check_ror_id()
 
         self.assertEqual(result_ror_id, UNIQUE_ROR_ID)

@@ -6,11 +6,8 @@ from elasticsearch_dsl import Search, Q
 class ESQueryBuilder:
     """Elasticsearch query builder class"""
 
-    def __init__(self, version):
-        if version == "v2":
-            self.search = Search(using=ES7, index=ES_VARS["INDEX_V2"])
-        else:
-            self.search = Search(using=ES7, index=ES_VARS["INDEX_V1"])
+    def __init__(self):
+        self.search = Search(using=ES7, index=ES_VARS["INDEX_V2"])
         self.search = self.search.extra(track_total_hits=True)
         self.search = self.search.params(search_type="dfs_query_then_fetch")
 

@@ -7,7 +7,6 @@ import json
 from rorapi.common.models import Errors
 from rorapi.settings import ES7
 from rorapi.common.es_utils import ESQueryBuilder
-from rorapi.v1.models import MatchingResult as MatchingResultV1
 from rorapi.v2.models import MatchingResult as MatchingResultV2
 
 from collections import namedtuple
@@ -296,23 +295,20 @@ def get_output(chosen, all_matched):
     return all_matched
 
 
-def get_candidates(aff, countries, version):
-    qb = ESQueryBuilder(version)
+def get_candidates(aff, countries):
+    qb = ESQueryBuilder()
     qb.add_affiliation_query(aff, 200)
     return match_by_query(aff, qb.get_query(), countries)
 
 
-def match_affiliation(affiliation, version):
+def match_affiliation(affiliation):
     countries = get_countries(affiliation)
-    chosen, all_matched = get_candidates(affiliation, countries, version)
+    chosen, all_matched = get_candidates(affiliation, countries)
     return get_output(chosen, all_matched)
 
 
-def match_organizations(params, version):
+def match_organizations(params):
     if "affiliation" in params:
-        matched = match_affiliation(params.get("affiliation"), version)
-        
-        if version == "v2":
-            return None, MatchingResultV2(matched)
-        return None, MatchingResultV1(matched)
+        matched = match_affiliation(params.get("affiliation"))
+        return None, MatchingResultV2(matched)
     return Errors(["'affiliation' parameter missing"]), None
