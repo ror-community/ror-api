@@ -5,10 +5,6 @@ from collections import defaultdict
 
 from rorapi.common.models import Errors
 from rorapi.common.matching import match_affiliation
-from rorapi.v1.models import (
-    Organization as OrganizationV1,
-    ListResult as ListResultV1
-)
 from rorapi.v2.models import (
     Organization as OrganizationV2,
     ListResult as ListResultV2
@@ -18,74 +14,9 @@ from rorapi.common.es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
 
-ALLOWED_FILTERS_V1 = ("country.country_code", "types", "country.country_name", "status")
 ALLOWED_FILTERS_V2 = ("country.country_code", "locations.geonames_details.country_code", "types", "country.country_name", "locations.geonames_details.country_name", "status", "locations.geonames_details.continent_code", "locations.geonames_details.continent_name")
 ALLOWED_PARAM_KEYS = ("query", "page", "filter", "query.advanced", "all_status")
 ALLOWED_ALL_STATUS_VALUES = ("", "true", "false")
-# includes deprecated ext id types
-ALLOWED_FIELDS_V1 = (
-    "acronyms",
-    "addresses.city",
-    "addresses.country_geonames_id",
-    "addresses.geonames_city.city",
-    "addresses.geonames_city.geonames_admin1.ascii_name",
-    "addresses.geonames_city.geonames_admin1.code",
-    "addresses.geonames_city.geonames_admin1.name",
-    "addresses.geonames_city.geonames_admin2.ascii_name",
-    "addresses.geonames_city.geonames_admin2.code",
-    "addresses.geonames_city.geonames_admin2.name",
-    "addresses.geonames_city.id",
-    "addresses.geonames_city.license.attribution",
-    "addresses.geonames_city.license.license",
-    "addresses.geonames_city.nuts_level1.code",
-    "addresses.geonames_city.nuts_level1.name",
-    "addresses.geonames_city.nuts_level2.code",
-    "addresses.geonames_city.nuts_level2.name",
-    "addresses.geonames_city.nuts_level3.code",
-    "addresses.geonames_city.nuts_level3.name",
-    "addresses.lat",
-    "addresses.line",
-    "addresses.lng",
-    "addresses.postcode",
-    "addresses.primary",
-    "addresses.state",
-    "addresses.state_code",
-    "aliases",
-    "country.country_code",
-    "country.country_name",
-    "email_address",
-    "established",
-    "external_ids.CNRS.all",
-    "external_ids.CNRS.preferred",
-    "external_ids.FundRef.all",
-    "external_ids.FundRef.preferred",
-    "external_ids.HESA.all",
-    "external_ids.HESA.preferred",
-    "external_ids.GRID.all",
-    "external_ids.GRID.preferred",
-    "external_ids.ISNI.all",
-    "external_ids.ISNI.preferred",
-    "external_ids.OrgRef.all",
-    "external_ids.OrgRef.preferred",
-    "external_ids.UCAS.all",
-    "external_ids.UCAS.preferred",
-    "external_ids.UKPRNS.all",
-    "external_ids.UKPRNS.preferred",
-    "external_ids.Wikidata.all",
-    "external_ids.Wikidata.preferred",
-    "id",
-    "ip_addresses",
-    "labels.iso639",
-    "labels.label",
-    "links",
-    "name",
-    "relationships.id",
-    "relationships.label",
-    "relationships.type",
-    "status",
-    "types",
-    "wikipedia_url",
-)
 ALLOWED_FIELDS_V2 = (
     "admin.created.date",
     "admin.created.schema_version",
@@ -155,12 +86,9 @@ def check_status_adv_q(adv_q_string):
         status_in_q = True
     return status_in_q
 
-def get_country_name_filters(country_name_field, filter_string, version):
+def get_country_name_filters(country_name_field, filter_string):
     country_name_filters = []
-    if version == "v1":
-        allowed_filters = ALLOWED_FILTERS_V1
-    else:
-        allowed_filters = ALLOWED_FILTERS_V2
+    allowed_filters = ALLOWED_FILTERS_V2
     search = re.findall(country_name_field + ":([^:]*)", filter_string)
     if search:
         for s in search:
@@ -175,26 +103,19 @@ def get_country_name_filters(country_name_field, filter_string, version):
     return country_name_filters
 
 
-def filter_string_to_list(filter_string, version):
+def filter_string_to_list(filter_string):
     filter_list = []
-    if version == "v2":
-        if "country.country_code" in filter_string:
-            filter_string = filter_string.replace(
-                "country.country_code", "locations.geonames_details.country_code"
-            )
-        if "country.country_name" in filter_string:
-            filter_string = filter_string.replace(
-                "country.country_name", "locations.geonames_details.country_name"
-            )
-    # some country names contain comma chars
-    # allow comma chars in country_name filter values only
-    # country.country_name:Germany,types:Company
-    if version == "v1":
-        country_name_field = "country.country_name"
-    else:
-        country_name_field = "locations.geonames_details.country_code"
+    if "country.country_code" in filter_string:
+        filter_string = filter_string.replace(
+            "country.country_code", "locations.geonames_details.country_code"
+        )
+    if "country.country_name" in filter_string:
+        filter_string = filter_string.replace(
+            "country.country_name", "locations.geonames_details.country_name"
+        )
+    country_name_field = "locations.geonames_details.country_code"
     if country_name_field in filter_string:
-        country_name_filters = get_country_name_filters(country_name_field, filter_string, version)
+        country_name_filters = get_country_name_filters(country_name_field, filter_string)
         filter_list = [f for f in filter_string.split(",") if f]
         filter_list = filter_list + country_name_filters
     else:
@@ -202,7 +123,7 @@ def filter_string_to_list(filter_string, version):
     return filter_list
 
 
-def validate(params, version):
+def validate(params):
     """Validates API GET parameters. Returns an error object
     that can be serialized into JSON or None."""
 
@@ -226,30 +147,19 @@ def validate(params, version):
                 )
 
     adv_query_fields = adv_query_string_to_list(params.get("query.advanced", ""))
-    illegal_fields = []
-    if version == "v2":
-        illegal_fields = [
-            f
-            for f in adv_query_fields
-            if (
-                not f.endswith(tuple(ALLOWED_FIELDS_V2))
-                and not f.endswith(tuple(ALLOWED_ENDINGS))
-            )
-        ]
-    else:
-        illegal_fields = [
-            f
-            for f in adv_query_fields
-            if (
-                not f.endswith(tuple(ALLOWED_FIELDS_V1))
-                and not f.endswith(tuple(ALLOWED_ENDINGS))
-            )
-        ]
+    illegal_fields = [
+        f
+        for f in adv_query_fields
+        if (
+            not f.endswith(tuple(ALLOWED_FIELDS_V2))
+            and not f.endswith(tuple(ALLOWED_ENDINGS))
+        )
+    ]
     errors.extend(
         ["string '{}' contains an illegal field name".format(f) for f in illegal_fields]
     )
 
-    filters = filter_string_to_list(params.get("filter", ""), version)
+    filters = filter_string_to_list(params.get("filter", ""))
     invalid_filters = [f for f in filters if ":" not in f]
     errors.extend(
         ["filter '{}' is not in the key:value form".format(n) for n in invalid_filters]
@@ -257,11 +167,7 @@ def validate(params, version):
 
     valid_filters = [f for f in filters if ":" in f]
     filter_keys = [f.split(":")[0] for f in valid_filters]
-    if version == "v1":
-        allowed_filters = ALLOWED_FILTERS_V1
-    else:
-        allowed_filters = ALLOWED_FILTERS_V2
-    illegal_keys = [v for v in filter_keys if v not in allowed_filters]
+    illegal_keys = [v for v in filter_keys if v not in ALLOWED_FILTERS_V2]
     errors.extend(["filter key '{}' is illegal".format(k) for k in illegal_keys])
 
     if "page" in params:
@@ -279,10 +185,10 @@ def validate(params, version):
     return Errors(errors) if errors else None
 
 
-def build_search_query(params, version):
+def build_search_query(params):
     """Builds search query from API parameters"""
 
-    qb = ESQueryBuilder(version)
+    qb = ESQueryBuilder()
     ror_id = None
 
     if "all_status" in params:
@@ -303,17 +209,14 @@ def build_search_query(params, version):
     if "filter" in params or (not "all_status" in params):
         filters = [
             f.split(":")
-            for f in filter_string_to_list(params.get("filter", ""), version)
+            for f in filter_string_to_list(params.get("filter", ""))
             if f
         ]
         # normalize filter values based on casing conventions used in ROR records
         for f in filters:
             f[1] = " ".join(f[1].split())
             if f[0] == "types":
-                if version == "v2":
-                    f[1] = f[1].lower()
-                else:
-                    f[1] = f[1].title()
+                f[1] = f[1].lower()
             if f[0] == "country.country_code" or f[0] == "locations.geonames_details.country_code":
                 f[1] = f[1].upper()
             if f[0] == "country.country_name" or f[0] == "locations.geonames_details.country_name":
@@ -340,51 +243,37 @@ def build_search_query(params, version):
                 filter_dict.update({"status": ["active"]})
         qb.add_filters(filter_dict)
 
-    if version == "v2":
-        qb.add_aggregations(
-            [
-                ("types", "types"),
-                ("countries", "locations.geonames_details.country_code"),
-                ("continents", "locations.geonames_details.continent_code"),
-                ("statuses", "status"),
-            ]
-        )
-    else:
-        qb.add_aggregations(
-            [
-                ("types", "types"),
-                ("countries", "country.country_code"),
-                ("statuses", "status"),
-            ]
-        )
-
-    sort_field = params.get("sort", "id")
-    sort_order = params.get("order", "asc")
+    qb.add_aggregations(
+        [
+            ("types", "types"),
+            ("countries", "locations.geonames_details.country_code"),
+            ("continents", "locations.geonames_details.continent_code"),
+            ("statuses", "status"),
+        ]
+    )
 
     qb.paginate(int(params.get("page", 1)))
     return qb.get_query()
 
 
-def build_retrieve_query(ror_id, version):
+def build_retrieve_query(ror_id):
     """Builds retrieval query"""
-    qb = ESQueryBuilder(version)
+    qb = ESQueryBuilder()
     qb.add_id_query(ror_id)
     return qb.get_query()
 
 
-def search_organizations(params, version):
+def search_organizations(params):
     """Searches for organizations according to the parameters"""
 
-    error = validate(params, version)
+    error = validate(params)
     if error is not None:
         return error, None
-    search = build_search_query(params, version)
-    if version == "v2":
-        return None, ListResultV2(search.execute())
-    return None, ListResultV1(search.execute())
+    search = build_search_query(params)
+    return None, ListResultV2(search.execute())
 
 
-def retrieve_organization(ror_id, version):
+def retrieve_organization(ror_id):
     """Retrieves the organization of the given ROR ID"""
     if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
         return (
@@ -399,11 +288,9 @@ def retrieve_organization(ror_id, version):
             ),
             None,
         )
-    search = build_retrieve_query(ror_id, version)
+    search = build_retrieve_query(ror_id)
     results = search.execute()
     total = results.hits.total.value
     if total > 0:
-        if version == "v2":
-            return None, OrganizationV2(results[0])
-        return None, OrganizationV1(results[0])
+        return None, OrganizationV2(results[0])
     return Errors(["ROR ID '{}' does not exist".format(ror_id)]), None

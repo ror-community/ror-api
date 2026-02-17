@@ -34,14 +34,12 @@ class GetRorIDTestCase(SimpleTestCase):
 
 class ValidationTestCase(SimpleTestCase):
 
-    V2_VERSION = 'v2'
-
     def test_illegal_parameters(self):
         error = validate({
             'query': 'query',
             'illegal': 'whatever',
             'another': 3
-        }, self.V2_VERSION)
+        })
         self.assertEquals(len(error.errors), 2)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
@@ -49,7 +47,7 @@ class ValidationTestCase(SimpleTestCase):
     def test_invalid_all_status_value(self):
         error = validate({
             'all_status': 'foo'
-        }, self.V2_VERSION)
+        })
         self.assertEquals(len(error.errors), 1)
         self.assertTrue(any(['allowed values' in e for e in error.errors]))
 
@@ -57,14 +55,14 @@ class ValidationTestCase(SimpleTestCase):
         error = validate({
             'query': 'query',
             'query.advanced': 'query'
-        }, self.V2_VERSION)
+        })
         self.assertEquals(len(error.errors), 1)
         self.assertTrue(any(['combined' in e for e in error.errors]))
 
     def test_illegal_field(self):
         error = validate({
             'query.advanced': 'foo:bar'
-        }, self.V2_VERSION)
+        })
         self.assertEquals(len(error.errors), 1)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
 
@@ -73,7 +71,7 @@ class ValidationTestCase(SimpleTestCase):
         error = validate({
             'query': 'query',
             'filter': 'fi1:e,types:F,f3,field2:44'
-        }, self.V2_VERSION)
+        })
         self.assertEquals(len(error.errors), 3)
         self.assertTrue(any(['fi1' in e for e in error.errors]))
         self.assertTrue(any(['field2' in e for e in error.errors]))
@@ -84,7 +82,7 @@ class ValidationTestCase(SimpleTestCase):
                 'whatever', '-5', '0',
                 str(ES_VARS['MAX_PAGE'] + 1), '10001'
         ]:
-            error = validate({'query': 'query', 'page': page}, self.V2_VERSION)
+            error = validate({'query': 'query', 'page': page})
             self.assertEquals(len(error.errors), 1)
             self.assertTrue(page in error.errors[0])
 
@@ -95,7 +93,7 @@ class ValidationTestCase(SimpleTestCase):
             'filter': 'fi1:e,types:F,f3,field2:44',
             'another': 3,
             'page': 'third'
-        }, self.V2_VERSION)
+        })
         self.assertEquals(len(error.errors), 6)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
@@ -110,7 +108,7 @@ class ValidationTestCase(SimpleTestCase):
             'page': 4,
             'filter': 'country.country_code:DE,types:s,status:inactive',
             'all_status': ''
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_all_good_country_name(self):
@@ -119,55 +117,54 @@ class ValidationTestCase(SimpleTestCase):
             'page': 4,
             'filter': 'country.country_name:Germany,types:s,status:inactive',
             'all_status': ''
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_query_adv_no_fields(self):
         error = validate({
             'query.advanced': 'query'
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_query_adv_wildcard(self):
         error = validate({
             'query.advanced': 'locations.\*:bar'
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_query_adv_exists(self):
         error = validate({
             'query.advanced': '_exists_:id'
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_query_adv_esc(self):
         error = validate({
             'query.advanced': 'query\:query'
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_query__all_status(self):
         error = validate({
             'query': 'query',
             'all_status': ''
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_query_adv_no_fields_all_status(self):
         error = validate({
             'query.advanced': 'query',
             'all_status': ''
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
     def test_no_query_all_status(self):
         error = validate({
             'all_status': ''
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(error)
 
 class BuildSearchQueryTestCase(SimpleTestCase):
-    V2_VERSION = 'v2'
 
     def setUp(self):
         self.default_query = \
@@ -184,13 +181,13 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({}, self.V2_VERSION)
+        query = build_search_query({})
         self.assertEquals(query.to_dict(), expected)
 
     def test_empty_query_all_status(self):
         expected = {'query': {'match_all': {}}, 'track_total_hits': True}
         expected.update(self.default_query)
-        query = build_search_query({'all_status':''}, self.V2_VERSION)
+        query = build_search_query({'all_status':''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_empty_query_all_status_false(self):
@@ -200,7 +197,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'all_status':'false'}, self.V2_VERSION)
+        query = build_search_query({'all_status':'false'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_id(self):
@@ -215,21 +212,21 @@ class BuildSearchQueryTestCase(SimpleTestCase):
 
         expected.update(self.default_query)
 
-        query = build_search_query({'query': '0w7hudk23'}, self.V2_VERSION)
+        query = build_search_query({'query': '0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'ror.org/0w7hudk23'}, self.V2_VERSION)
+        query = build_search_query({'query': 'ror.org/0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'ror.org%2F0w7hudk23'}, self.V2_VERSION)
+        query = build_search_query({'query': 'ror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'http://ror.org/0w7hudk23'}, self.V2_VERSION)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query(
-            {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'}, self.V2_VERSION)
-        self.assertEquals(query.to_dict(), expected)
-        query = build_search_query({'query': 'https://ror.org/0w7hudk23'}, self.V2_VERSION)
+        query = build_search_query({'query': 'http://ror.org/0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
         query = build_search_query(
-            {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'}, self.V2_VERSION)
+            {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
+        query = build_search_query({'query': 'https://ror.org/0w7hudk23'})
+        self.assertEquals(query.to_dict(), expected)
+        query = build_search_query(
+            {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_default(self):
@@ -249,7 +246,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms'}, self.V2_VERSION)
+        query = build_search_query({'query': 'query terms'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_all_status(self):
@@ -266,7 +263,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'all_status': ''}, self.V2_VERSION)
+        query = build_search_query({'query': 'query terms', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced(self):
@@ -284,7 +281,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'query terms'}, self.V2_VERSION,)
+        query = build_search_query({'query.advanced': 'query terms'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced_all_status(self):
@@ -301,7 +298,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'query terms', 'all_status': ''}, self.V2_VERSION)
+        query = build_search_query({'query.advanced': 'query terms', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced_status_filter(self):
@@ -320,7 +317,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         f = 'status:inactive'
-        query = build_search_query({'query.advanced': 'query terms', 'filter': f}, self.V2_VERSION)
+        query = build_search_query({'query.advanced': 'query terms', 'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_query_advanced_status_field(self):
@@ -337,7 +334,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query.advanced': 'status:inactive'}, self.V2_VERSION)
+        query = build_search_query({'query.advanced': 'status:inactive'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter(self):
@@ -352,7 +349,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.V2_VERSION)
+        query = build_search_query({'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_status_filter(self):
@@ -367,7 +364,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.V2_VERSION)
+        query = build_search_query({'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_whitespace_normalization(self):
@@ -381,7 +378,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f}, self.V2_VERSION)
+        query = build_search_query({'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_all_status(self):
@@ -395,7 +392,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'filter': f, 'all_status': ''}, self.V2_VERSION)
+        query = build_search_query({'filter': f, 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_query(self):
@@ -422,7 +419,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'filter': f}, self.V2_VERSION)
+        query = build_search_query({'query': 'query terms', 'filter': f})
         self.assertEquals(query.to_dict(), expected)
 
     def test_filter_query_all_status(self):
@@ -448,21 +445,21 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }
         }}
         expected.update(self.default_query)
-        query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''}, self.V2_VERSION)
+        query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination(self):
         expected = {'query': {'bool': {'filter': [{'terms': {'status': ['active']}}]}}}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5'}, self.V2_VERSION)
+        query = build_search_query({'page': '5'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination_all_status(self):
         expected = {'query': {'match_all': {}}}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5', 'all_status': ''}, self.V2_VERSION)
+        query = build_search_query({'page': '5', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination_query(self):
@@ -485,7 +482,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5', 'query': 'query terms'}, self.V2_VERSION)
+        query = build_search_query({'page': '5', 'query': 'query terms'})
         self.assertEquals(query.to_dict(), expected)
 
     def test_pagination_query_all_status(self):
@@ -503,16 +500,14 @@ class BuildSearchQueryTestCase(SimpleTestCase):
             }}
         expected.update(self.default_query)
         expected['from'] = 80
-        query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''}, self.V2_VERSION)
+        query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''})
         self.assertEquals(query.to_dict(), expected)
 
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
 
-    V2_VERSION = 'v2'
-
     def test_retrieve_query(self):
-        query = build_retrieve_query('ror-id', self.V2_VERSION)
+        query = build_retrieve_query('ror-id')
         self.assertEquals(query.to_dict(), {
             'query': {
                 'match': {
@@ -527,8 +522,6 @@ class BuildRetrieveQueryTestCase(SimpleTestCase):
 
 class SearchOrganizationsTestCase(SimpleTestCase):
 
-    V2_VERSION = 'v2'
-
     def setUp(self):
         with open(
                 os.path.join(os.path.dirname(__file__),
@@ -540,7 +533,7 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        error, organizations = search_organizations({}, self.V2_VERSION)
+        error, organizations = search_organizations({})
         self.assertIsNone(error)
 
         search_mock.assert_called_once()
@@ -602,7 +595,7 @@ class SearchOrganizationsTestCase(SimpleTestCase):
             'filter': 'fi1:e,types:F,f3,field2:44',
             'another': 3,
             'page': 'third'
-        }, self.V2_VERSION)
+        })
         self.assertIsNone(organizations)
 
         search_mock.assert_not_called()
@@ -610,8 +603,6 @@ class SearchOrganizationsTestCase(SimpleTestCase):
 
 
 class RetrieveOrganizationsTestCase(SimpleTestCase):
-
-    V2_VERSION = 'v2'
 
     def setUp(self):
         with open(
@@ -628,7 +619,7 @@ class RetrieveOrganizationsTestCase(SimpleTestCase):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
 
-        error, organization = retrieve_organization('ror-id', self.V2_VERSION)
+        error, organization = retrieve_organization('ror-id')
         self.assertIsNone(error)
 
         search_mock.assert_called_once()
@@ -647,7 +638,7 @@ class RetrieveOrganizationsTestCase(SimpleTestCase):
             IterableAttrDict(self.test_data_empty,
                              self.test_data_empty['hits']['hits'])
 
-        error, organization = retrieve_organization('ror-id', self.V2_VERSION)
+        error, organization = retrieve_organization('ror-id')
         self.assertIsNone(organization)
 
         search_mock.assert_called_once()

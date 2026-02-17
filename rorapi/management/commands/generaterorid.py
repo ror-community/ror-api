@@ -17,13 +17,13 @@ def generate_ror_id():
     return '{}0{}{}'.format(ROR_API['ID_PREFIX'], n_encoded, checksum)
 
 
-def check_ror_id(version):
+def check_ror_id():
     """Checks if generated ror id exists in the index. If so, it generates a new id, otherwise it returns the generated ror id
     """
     ror_id = get_ror_id(generate_ror_id())
-    errors, organization = retrieve_organization(ror_id, version)
+    errors, organization = retrieve_organization(ror_id)
     if errors is None:
-        return check_ror_id(version)
+        return check_ror_id()
     return ror_id
 
 
