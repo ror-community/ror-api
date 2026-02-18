@@ -13,7 +13,7 @@ def update_record_from_csv(csv_data, version):
     errors = []
     updated_record = None
     print("updating record from csv")
-    existing_org_errors, existing_org = retrieve_organization(csv_data['id'], version)
+    existing_org_errors, existing_org = retrieve_organization(csv_data['id'])
     print(existing_org)
     if existing_org is None:
         errors.append("No existing record found for ROR ID '{}'".format(csv_data['id']))
