@@ -233,26 +233,26 @@ class SimilarityTestCase(SimpleTestCase):
         }
         self.assertEqual(
             get_score(AttrDict(dict(empty, names=[{'value': 'University of Excellence', 'types': ['ror_display']}])),
-                      'University of Excellence', None, self.V2_VERSION), 1)
+                      'University of Excellence', None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
                          names=[{'value': 'University of Excellence', 'types': ['ror_display']}],
                          locations=[{'geonames_details': {'country_code': 'XY'}}])),
-                'University of Excellence', ['US-PR'], self.V2_VERSION), 0)
+                'University of Excellence', ['US-PR']), 0)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty,
                          names=[{'value': 'University of Excellence', 'types': ['ror_display']}],
                          locations=[{'geonames_details': {'country_code': 'PR'}}])),
-                'University of Excellence', ['US-PR'], self.V2_VERSION), 1)
+                'University of Excellence', ['US-PR']), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
                     dict(empty, names=[{'value': 'University of Excellence', 'types': ['label']}]
-                    )), 'University of Excellence', None, self.V2_VERSION), 1)
+                    )), 'University of Excellence', None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
@@ -261,11 +261,11 @@ class SimilarityTestCase(SimpleTestCase):
                                 {'value': 'University of Excellence', 'types': ['ror_display']},
                                 {'value': 'Excellence U', 'types': ['label']}
                             ]
-                         )), 'University of Excellence', None, self.V2_VERSION), 1)
+                         )), 'University of Excellence', None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(dict(empty, names=[{'value': 'University of Excellence', 'types': ['alias']}])),
-                'University of Excellence', None, self.V2_VERSION), 1)
+                'University of Excellence', None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
@@ -274,17 +274,17 @@ class SimilarityTestCase(SimpleTestCase):
                                 {'value': 'University of Excellence', 'types': ['alias']},
                                 {'value': 'Excellence U', 'types': ['alias']}
                             ])),
-                'University of Excellence', None, self.V2_VERSION), 1)
+                'University of Excellence', None), 1)
         self.assertEqual(
             get_score(AttrDict(dict(empty, names=[
                                             {'value': 'UEXC', 'types': ['acronym']},
                                             {'value': '', 'types': ['ror_display']}])),
-                      'University of Excellence', None, self.V2_VERSION), 0)
+                      'University of Excellence', None), 0)
         self.assertEqual(
             get_score(AttrDict(dict(empty, names=[
                                             {'value': 'UEXC', 'types': ['acronym']},
                                             {'value': '', 'types': ['ror_display']}])),
-                        'UEXC', None, self.V2_VERSION),
+                        'UEXC', None),
             .9)
         self.assertEqual(
             get_score(
@@ -293,7 +293,7 @@ class SimilarityTestCase(SimpleTestCase):
                          names=[
                             {'value': 'UEXC', 'types': ['acronym']},
                             {'value': '', 'types': ['ror_display']}],
-                         locations=[{'geonames_details': {'country_code': 'PR'}}])), 'UEXC', ['US-PR'], self.V2_VERSION),
+                         locations=[{'geonames_details': {'country_code': 'PR'}}])), 'UEXC', ['US-PR']),
             1)
 
         self.assertEqual(
@@ -308,7 +308,7 @@ class SimilarityTestCase(SimpleTestCase):
                                 {'value': 'Excellence U', 'types': ['alias']},
                                 {'value': 'University Excellence', 'types': ['alias']}
                             ])), 'University of Excellence',
-                None, self.V2_VERSION), 1)
+                None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
@@ -321,7 +321,7 @@ class SimilarityTestCase(SimpleTestCase):
                                 {'value': 'Excellence U', 'types': ['alias']},
                                 {'value': 'University Excellence', 'types': ['alias']}
                             ])), 'University of Excellence',
-                None, self.V2_VERSION), 1)
+                None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
@@ -334,7 +334,7 @@ class SimilarityTestCase(SimpleTestCase):
                                 {'value': 'Excellence U', 'types': ['alias']},
                                 {'value': 'University of Excellence', 'types': ['alias']}
                             ])), 'University of Excellence',
-                None, self.V2_VERSION), 1)
+                None), 1)
         self.assertEqual(
             get_score(
                 AttrDict(
@@ -346,7 +346,7 @@ class SimilarityTestCase(SimpleTestCase):
                                 {'value': 'Brilliance U', 'types': ['alias']},
                                 {'value': 'University Brilliance', 'types': ['alias']}
                             ])), 'UEXC',
-                None, self.V2_VERSION), .9)
+                None), .9)
         self.assertEqual(
             get_score(
                 AttrDict(
@@ -358,7 +358,7 @@ class SimilarityTestCase(SimpleTestCase):
                             {'value': 'Brilliance U', 'types': ['alias']},
                             {'value': 'University Brilliance', 'types': ['alias']}
                         ],
-                        locations=[{'geonames_details': {'country_code': 'PR'}}])), 'UEXC', ['US-PR'], self.V2_VERSION),
+                        locations=[{'geonames_details': {'country_code': 'PR'}}])), 'UEXC', ['US-PR']),
             1)
         self.assertEqual(
             get_score(
@@ -371,7 +371,7 @@ class SimilarityTestCase(SimpleTestCase):
                             {'value': 'Brilliance U', 'types': ['alias']},
                             {'value': 'University Brilliance', 'types': ['alias']}
                         ],
-                         locations=[{'geonames_details': {'country_code': 'AV'}}])), 'UEXC', ['US-PR'], self.V2_VERSION),
+                         locations=[{'geonames_details': {'country_code': 'AV'}}])), 'UEXC', ['US-PR']),
             0)
 
 
@@ -380,7 +380,7 @@ class TestMatchingNode(SimpleTestCase):
     V2_VERSION = 'v2'
 
     def test_init(self):
-        empty = MatchingNode('text', self.V2_VERSION)
+        empty = MatchingNode('text')
         self.assertEqual(empty.text, 'text')
         self.assertTrue(empty.matched is None)
 
@@ -425,19 +425,19 @@ class TestMatchingGraph(SimpleTestCase):
     V2_VERSION = 'v2'
 
     def test_init(self):
-        graph = MatchingGraph('University of Excellence', self.V2_VERSION)
+        graph = MatchingGraph('University of Excellence')
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text, 'University of Excellence')
         self.assertEqual(graph.nodes[1].text, 'University of Excellence')
 
         graph = \
-            MatchingGraph('University of Excellence and Creativity Institute', self.V2_VERSION)
+            MatchingGraph('University of Excellence and Creativity Institute')
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text, 'University of Excellence and Creativity Institute')
         self.assertEqual(graph.nodes[1].text, 'University of Excellence and Creativity Institute')
 
         graph = \
-            MatchingGraph('University of Excellence & Creativity Institute', self.V2_VERSION)
+            MatchingGraph('University of Excellence & Creativity Institute')
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text,
                          'University of Excellence & Creativity Institute')
@@ -445,14 +445,14 @@ class TestMatchingGraph(SimpleTestCase):
                          'University of Excellence & Creativity Institute')
 
         graph = MatchingGraph(
-            'University of Excellence &amp; Creativity Institute', self.V2_VERSION)
+            'University of Excellence &amp; Creativity Institute')
         self.assertEqual(len(graph.nodes), 2)
         self.assertEqual(graph.nodes[0].text,
                          'University of Excellence & Creativity Institute')
         self.assertEqual(graph.nodes[1].text,
                          'University of Excellence & Creativity Institute')
 
-        graph = MatchingGraph('University of Excellence, Creativity Institute', self.V2_VERSION)
+        graph = MatchingGraph('University of Excellence, Creativity Institute')
         self.assertEqual(len(graph.nodes), 3)
         self.assertEqual(graph.nodes[0].text,
                          'University of Excellence Creativity Institute')
@@ -462,7 +462,7 @@ class TestMatchingGraph(SimpleTestCase):
 
         graph = MatchingGraph('School of Brilliance, University of ' +
                               'Excellence and Perseverance; 21-100 ' +
-                              'Gallifrey: Outerspace', self.V2_VERSION)
+                              'Gallifrey: Outerspace')
         self.assertEqual(len(graph.nodes), 5)
         self.assertEqual(graph.nodes[0].text, 'School of Brilliance University of Excellence and Perseverance 21 100 Gallifrey Outerspace')
         self.assertEqual(graph.nodes[1].text, 'School of Brilliance')
@@ -471,7 +471,7 @@ class TestMatchingGraph(SimpleTestCase):
         self.assertEqual(graph.nodes[4].text, 'Outerspace')
 
     def test_remove_low_scores(self):
-        graph = MatchingGraph('University of Excellence, Creativity Institute', self.V2_VERSION)
+        graph = MatchingGraph('University of Excellence, Creativity Institute')
         graph.nodes[0].matched = MatchedOrganization(substring='s0',
                                                      score=10,
                                                      matching_type='q',

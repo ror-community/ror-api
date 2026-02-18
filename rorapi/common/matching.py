@@ -6,7 +6,6 @@ import unidecode
 
 from rorapi.common.models import Errors
 from rorapi.common.es_utils import ESQueryBuilder
-from rorapi.v1.models import MatchingResult as MatchingResultV1
 from rorapi.v2.models import MatchingResult as MatchingResultV2
 
 from collections import namedtuple
@@ -200,25 +199,16 @@ def get_similarity(aff_sub, cand_name):
     return comparfun(aff_sub, cand_name) / 100
 
 
-def get_score(candidate, aff_sub, countries, version):
+def get_score(candidate, aff_sub, countries):
     """Calculate the similarity between the affiliation substring
     and the candidate, using all name versions."""
-    if version == "v2":
-        country_code = candidate.locations[0].geonames_details.country_code
-        all_names = [
-            name["value"] for name in candidate.names if "acronym" not in name["types"]
-        ]
-        acronyms = [
-            name["value"] for name in candidate.names if "acronym" in name["types"]
-        ]
-    else:
-        country_code = candidate.country.country_code
-        all_names = (
-            [candidate.name]
-            + [l.label for l in candidate.labels]
-            + list(candidate.aliases)
-        )
-        acronyms = candidate.acronyms
+    country_code = candidate.locations[0].geonames_details.country_code
+    all_names = [
+        name["value"] for name in candidate.names if "acronym" not in name["types"]
+    ]
+    acronyms = [
+        name["value"] for name in candidate.names if "acronym" in name["types"]
+    ]
 
     if countries and to_region(country_code) not in countries:
         return 0
@@ -239,11 +229,11 @@ MatchedOrganization = namedtuple(
 MatchedOrganization.__new__.__defaults__ = (False, None, None, 0, None)
 
 
-def match_by_query(text, matching_type, query, countries, version):
+def match_by_query(text, matching_type, query, countries):
     """Match affiliation text using specific ES query."""
     candidates = query.execute()
     scores = [
-        (candidate, get_score(candidate, text, countries, version))
+        (candidate, get_score(candidate, text, countries))
         for candidate in candidates
     ]
     if not candidates:
@@ -262,11 +252,10 @@ def match_by_query(text, matching_type, query, countries, version):
     return chosen, all_matched
 
 
-def match_by_type(text, matching_type, countries, version):
+def match_by_type(text, matching_type, countries):
     """Match affiliation text using specific matching mode/type."""
 
-    fields_v1 = ["name.norm", "aliases.norm", "labels.label.norm"]
-    fields_v2 = ["names.value.norm"]
+    fields = ["names.value.norm"]
     substrings = []
     if matching_type == MATCHING_TYPE_HEURISTICS:
         h1 = re.search(r"University of ([^\s]+)", text)
@@ -289,12 +278,7 @@ def match_by_type(text, matching_type, countries, version):
     else:
         substrings.append(text)
 
-    queries = [ESQueryBuilder(version) for _ in substrings]
-
-    if version == "v2":
-        fields = fields_v2
-    else:
-        fields = fields_v1
+    queries = [ESQueryBuilder() for _ in substrings]
 
     for s, q in zip(substrings, queries):
         if matching_type == MATCHING_TYPE_PHRASE:
@@ -309,7 +293,7 @@ def match_by_type(text, matching_type, countries, version):
             q.add_common_query(fields, normalize(text))
     queries = [q.get_query() for q in queries]
     matched = [
-        match_by_query(t, matching_type, q, countries, version)
+        match_by_query(t, matching_type, q, countries)
         for t, q in zip(substrings, queries)
     ]
     if not matched:
@@ -327,16 +311,15 @@ class MatchingNode:
     """Matching node class. Represents a substring of the original affiliation
     that potentially could be matched to an organization."""
 
-    def __init__(self, text, version):
+    def __init__(self, text):
         self.text = text
-        self.version = version
         self.matched = None
         self.all_matched = []
 
     def match(self, countries, min_score):
         for matching_type in NODE_MATCHING_TYPES:
             chosen, all_matched = match_by_type(
-                self.text, matching_type, countries, self.version
+                self.text, matching_type, countries
             )
             self.all_matched.extend(all_matched)
             if self.matched is None:
@@ -388,20 +371,19 @@ class MatchingGraph:
     This prevents matching an organization to a substring and another
     organization to the substring's substring."""
 
-    def __init__(self, affiliation, version):
+    def __init__(self, affiliation):
         self.nodes = []
-        self.version = version
         self.affiliation = affiliation
         affiliation = re.sub("&amp;", "&", affiliation)
         affiliation_cleaned = clean_search_string(affiliation)
-        n = MatchingNode(affiliation_cleaned, self.version)
+        n = MatchingNode(affiliation_cleaned)
         self.nodes.append(n)
         for part in [s.strip() for s in re.split("[,;:]", affiliation)]:
             part_cleaned = clean_search_string(part)
             do_not_match = check_do_not_match(part_cleaned)
             # do not perform search if substring exactly matches a country name or ISO code
             if do_not_match == False:
-                n = MatchingNode(part_cleaned, self.version)
+                n = MatchingNode(part_cleaned)
                 self.nodes.append(n)
 
     def remove_low_scores(self, min_score):
@@ -422,7 +404,7 @@ class MatchingGraph:
             ]:
                 chosen.append(node.matched)
         acr_chosen, acr_all_matched = match_by_type(
-            self.affiliation, MATCHING_TYPE_ACRONYM, countries, self.version
+            self.affiliation, MATCHING_TYPE_ACRONYM, countries
         )
         all_matched.extend(acr_all_matched)
         return chosen, all_matched
@@ -492,33 +474,31 @@ def get_output(chosen, all_matched, active_only):
     return sorted(output, key=lambda x: x.score, reverse=True)[:100]
 
 
-def check_exact_match(affiliation, countries, version):
-    qb = ESQueryBuilder(version)
+def check_exact_match(affiliation, countries):
+    qb = ESQueryBuilder()
     qb.add_string_query('"' + affiliation + '"')
     return match_by_query(
-        affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries, version
+        affiliation, MATCHING_TYPE_EXACT, qb.get_query(), countries
     )
 
 
-def match_affiliation(affiliation, active_only, version):
+def match_affiliation(affiliation, active_only):
     countries = get_countries(affiliation)
-    exact_chosen, exact_all_matched = check_exact_match(affiliation, countries, version)
+    exact_chosen, exact_all_matched = check_exact_match(affiliation, countries)
     if exact_chosen.score == 1.0:
         return get_output(exact_chosen, exact_all_matched, active_only)
     else:
-        graph = MatchingGraph(affiliation, version)
+        graph = MatchingGraph(affiliation)
         chosen, all_matched = graph.match(countries, MIN_CHOSEN_SCORE)
         return get_output(chosen, all_matched, active_only)
 
 
-def match_organizations(params, version):
+def match_organizations(params):
     if "affiliation" in params:
         active_only = True
         if "all_status" in params:
             if params["all_status"] == "" or params["all_status"].lower() == "true":
                 active_only = False
-        matched = match_affiliation(params.get("affiliation"), active_only, version)
-        if version == "v2":
-            return None, MatchingResultV2(matched)
-        return None, MatchingResultV1(matched)
+        matched = match_affiliation(params.get("affiliation"), active_only)
+        return None, MatchingResultV2(matched)
     return Errors('"affiliation" parameter missing'), None

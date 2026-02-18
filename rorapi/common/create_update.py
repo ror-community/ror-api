@@ -76,7 +76,7 @@ def new_record_from_json(json_input, version):
     if not error:
         new_record['locations'] = updated_locations
         new_record = add_created_last_mod(new_record)
-        new_ror_id = check_ror_id(version)
+        new_ror_id = check_ror_id()
         print("new ror id: " + new_ror_id)
         new_record['id'] = new_ror_id
         error, valid_data = validate_record(sort_list_fields(new_record), V2_SCHEMA)

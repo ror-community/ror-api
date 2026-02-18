@@ -35,11 +35,11 @@ ROR staff should replace values in [] with valid credential values. External use
 
 3. Index the latest ROR dataset from https://github.com/ror-community/ror-data
 
-        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 2
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
-4. <http://localhost:9292/organizations>.
+4. <http://localhost:9292/v2/organizations>.
 
 5. Optionally, start other services, such as [ror-app](https://github.com/ror-community/ror-app) (the search UI) or [generate-id](https://github.com/ror-community/generate-id) (middleware microservice)
 
@@ -64,9 +64,9 @@ Used in the data deployment process managed in [ror-records](https://github.com/
 
         docker-compose up -d
 
-3. Index the latest v1 ROR dataset from https://github.com/ror-community/ror-data . To index a v2 dataset, see [Indexing v2 data below](#indexing-v2-data)
+3. Index the latest ROR dataset from https://github.com/ror-community/ror-data (see [Indexing v2 data](#indexing-v2-data) below):
 
-        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 2
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
@@ -92,19 +92,17 @@ To delete the existing index, create a new index and index a data dump:
 
 **LOCALHOST:** Run
 
-        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 1
+        docker-compose exec web python manage.py setup v1.0-2022-03-17-ror-data -s 2
 
 **DEV/STAGING/PROD:** Access the running ror-api container and run:
 
-        python manage.py setup v1.0-2022-03-17-ror-data -s 1
+        python manage.py setup v1.0-2022-03-17-ror-data -s 2
 
 *Note: You must specify a dataset that exists in [ror-data](https://github.com/ror-community/ror-data)*
 
 #### Indexing v2 data
 
-The `-s` argument specifies which schema version to index. To index a v2 data dump, use `-s 2`. To index both v1 and v2 at the same time, omit the `-s` option.
-
-Note that a v2 formatted JSON file must exist in the zip file for the specified data dump version. Currently, v2 files only exist in [ror-community/ror-data-test](https://github.com/ror-community/ror-data-test). To index a data dump from ror-data-test rather than ror-data, add the `-t` option to the setup command, ex:
+The API uses the v2 schema only. Use `-s 2` when indexing a data dump. A v2 formatted JSON file must exist in the zip file for the specified data dump version. Currently, v2 files only exist in [ror-community/ror-data-test](https://github.com/ror-community/ror-data-test). To index a data dump from ror-data-test rather than ror-data, add the `-t` option to the setup command, ex:
 
         python manage.py setup v1.32-2023-09-14-ror-data -s 2 -t
 
