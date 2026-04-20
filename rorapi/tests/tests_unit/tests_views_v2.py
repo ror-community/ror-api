@@ -2,7 +2,7 @@ import json
 import mock
 import os
 
-from django.test import SimpleTestCase, Client
+from django.test import SimpleTestCase, Client, override_settings
 from rest_framework.test import APIRequestFactory
 
 from rorapi.common import views
@@ -87,6 +87,92 @@ class ViewListTestCase(SimpleTestCase):
 
         response = client.get('/v2/organizations?query.names=query')
         self.assertRedirects(response, '/v2/organizations?query=query')
+
+
+class _MockMatchingResult:
+    """Minimal object matching MatchingResultSerializer expectations."""
+    number_of_results = 0
+    items = []
+
+
+class AffiliationDefaultMatchingTestCase(SimpleTestCase):
+    """Test SINGLE_SEARCH_DEFAULT and single_search/multisearch params."""
+    V2_VERSION = 'v2'
+
+    @override_settings(SINGLE_SEARCH_DEFAULT=False)
+    @mock.patch('rorapi.common.views.single_search_match_organizations')
+    @mock.patch('rorapi.common.views.match_organizations')
+    def test_affiliation_default_uses_multisearch_when_setting_off(
+            self, match_organizations_mock, single_search_mock):
+        mock_result = (None, _MockMatchingResult())
+        match_organizations_mock.return_value = mock_result
+        single_search_mock.return_value = mock_result
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get('/v2/organizations', {'affiliation': 'Harvard University'})
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+
+        match_organizations_mock.assert_called_once()
+        single_search_mock.assert_not_called()
+
+    @override_settings(SINGLE_SEARCH_DEFAULT=True)
+    @mock.patch('rorapi.common.views.single_search_match_organizations')
+    @mock.patch('rorapi.common.views.match_organizations')
+    def test_affiliation_default_uses_single_search_when_setting_on(
+            self, match_organizations_mock, single_search_mock):
+        mock_result = (None, _MockMatchingResult())
+        match_organizations_mock.return_value = mock_result
+        single_search_mock.return_value = mock_result
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get('/v2/organizations', {'affiliation': 'Harvard University'})
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+
+        single_search_mock.assert_called_once()
+        match_organizations_mock.assert_not_called()
+
+    @override_settings(SINGLE_SEARCH_DEFAULT=True)
+    @mock.patch('rorapi.common.views.single_search_match_organizations')
+    @mock.patch('rorapi.common.views.match_organizations')
+    def test_affiliation_multisearch_param_overrides_setting(
+            self, match_organizations_mock, single_search_mock):
+        mock_result = (None, _MockMatchingResult())
+        match_organizations_mock.return_value = mock_result
+        single_search_mock.return_value = mock_result
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get(
+            '/v2/organizations',
+            {'affiliation': 'Harvard University', 'multisearch': ''}
+        )
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+
+        match_organizations_mock.assert_called_once()
+        single_search_mock.assert_not_called()
+
+    @override_settings(SINGLE_SEARCH_DEFAULT=False)
+    @mock.patch('rorapi.common.views.single_search_match_organizations')
+    @mock.patch('rorapi.common.views.match_organizations')
+    def test_affiliation_single_search_param_uses_single_search(
+            self, match_organizations_mock, single_search_mock):
+        mock_result = (None, _MockMatchingResult())
+        match_organizations_mock.return_value = mock_result
+        single_search_mock.return_value = mock_result
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get(
+            '/v2/organizations',
+            {'affiliation': 'Harvard University', 'single_search': ''}
+        )
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+
+        single_search_mock.assert_called_once()
+        match_organizations_mock.assert_not_called()
+
 
 class ViewRetrievalTestCase(SimpleTestCase):
 
