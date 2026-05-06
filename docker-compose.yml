@@ -15,28 +15,44 @@ services:
       test: curl -f http://elastic:changeme@elasticsearch:8200
       interval: 10s
       timeout: 1s
+    networks:
+      - public
     volumes:
       - esdata:/usr/share/elasticsearch/data
   db:
     image: mysql:8.0
     volumes:
       - mysql_data:/var/lib/mysql
-    env_file:
-      - .env
+    environment:
+      MYSQL_DATABASE: rorapi
+      MYSQL_ROOT_PASSWORD: dummypassword
+      MYSQL_ROOT_USER: dymmyroot
     ports:
       - "3306:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    networks:
+      - public
   web:
     container_name: rorapiweb
     env_file: .env
+    environment:
+      - ELASTIC_HOST=elasticsearch7
+      - ELASTIC_PORT=9200
+      - ELASTIC_PASSWORD=changeme
+      - ROR_BASE_URL=http://localhost
+      - DATA_STORE=data.dev.ror.org
+      - DB_PASSWORD=dummypassword
+      - DB_USER=dummyuser
     build: .
     #image: rorcommunity/ror-api
     ports:
       - "9292:80"
       - "2222:22"
+    networks:
+      - public
     volumes:
       - ./rorapi:/home/app/webapp/rorapi
     depends_on:
@@ -46,3 +62,7 @@ volumes:
   mysql_data:
   esdata:
     driver: local
+
+networks:
+  public:
+    driver: bridge
