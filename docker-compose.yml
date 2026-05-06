@@ -26,7 +26,6 @@ services:
     environment:
       MYSQL_DATABASE: rorapi
       MYSQL_ROOT_PASSWORD: dummypassword
-      MYSQL_ROOT_USER: dymmyroot
     ports:
       - "3306:3306"
     healthcheck:
@@ -45,21 +44,27 @@ services:
       - ROR_BASE_URL=http://localhost
       - DATA_STORE=data.dev.ror.org
       - DB_PASSWORD=dummypassword
-      - DB_USER=dummyuser
     build: .
+    develop:
+      watch:
+          - action: sync+exec
+            path: ./rorapi
+            target: /home/app/webapp/rorapi
+            initial_sync: true
+            exec:
+              command: passenger-config restart-app .
     #image: rorcommunity/ror-api
     ports:
       - "9292:80"
       - "2222:22"
     networks:
       - public
-    volumes:
-      - ./rorapi:/home/app/webapp/rorapi
     depends_on:
       - elasticsearch7
       - db
 volumes:
   mysql_data:
+    driver: local
   esdata:
     driver: local
 
