@@ -14,6 +14,7 @@ import magic
 from rorapi.common.create_update import new_record_from_json, update_record_from_json
 from rorapi.common.csv_bulk import process_csv
 from rorapi.common.csv_utils import validate_csv
+from django.conf import settings
 from rorapi.settings import REST_FRAMEWORK, ES7, ES_VARS
 from rorapi.common.matching import match_organizations
 from rorapi.common.matching_single_search import match_organizations as single_search_match_organizations
@@ -152,6 +153,10 @@ class OrganizationViewSet(viewsets.ViewSet):
             del params["format"]
         if "affiliation" in params:
             if "single_search" in params:
+                errors, organizations = single_search_match_organizations(params)
+            elif "multisearch" in params:
+                errors, organizations = match_organizations(params)
+            elif settings.SINGLE_SEARCH_DEFAULT:
                 errors, organizations = single_search_match_organizations(params)
             else:
                 errors, organizations = match_organizations(params)

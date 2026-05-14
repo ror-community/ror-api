@@ -299,6 +299,10 @@ LAUNCH_DARKLY_KEY = os.environ.get('LAUNCH_DARKLY_KEY')
 # Toggle for behavior-based rate limiting
 ENABLE_BEHAVIORAL_LIMITING = os.getenv("ENABLE_BEHAVIORAL_LIMITING", "False") == "True"
 
+# When True, affiliation matching defaults to single search; otherwise multisearch.
+# Request params single_search and multisearch override this.
+SINGLE_SEARCH_DEFAULT = os.getenv("SINGLE_SEARCH_DEFAULT", "False") == "True"
+
 # Email settings for Django
 EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
