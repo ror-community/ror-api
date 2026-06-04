@@ -354,7 +354,7 @@ class IndexRorViewTestCase(SimpleTestCase):
     def test_index_ror_success(self, index_mock, permission_mock):
         index_mock.return_value = self.success_msg
         permission_mock.return_value = True
-        response = self.client.get('/v2/indexdata/foo')
+        response = self.client.post('/v2/indexdata/foo')
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
@@ -362,14 +362,32 @@ class IndexRorViewTestCase(SimpleTestCase):
     def test_index_ror_fail_error(self, index_mock, permission_mock):
         index_mock.return_value = self.error_msg
         permission_mock.return_value = True
-        response = self.client.get('/v2/indexdata/foo')
+        response = self.client.post('/v2/indexdata/foo')
         self.assertEquals(response.status_code, 400)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_index_ror_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.get('/v2/indexdata/foo')
+        response = self.client.post('/v2/indexdata/foo')
         self.assertEquals(response.status_code, 403)
+
+    @mock.patch.dict(os.environ, {"TOKEN": "token-value", "ROUTE_USER": "route-user"}, clear=False)
+    @mock.patch('rorapi.common.views.process_files')
+    def test_index_ror_fail_no_auth_headers(self, index_mock):
+        index_mock.return_value = self.success_msg
+        response = self.client.post('/v2/indexdata/foo')
+        self.assertEquals(response.status_code, 403)
+
+    @mock.patch.dict(os.environ, {"TOKEN": "token-value", "ROUTE_USER": "route-user"}, clear=False)
+    @mock.patch('rorapi.common.views.process_files')
+    def test_index_ror_success_with_auth_headers(self, index_mock):
+        index_mock.return_value = self.success_msg
+        response = self.client.post(
+            '/v2/indexdata/foo',
+            HTTP_TOKEN='token-value',
+            HTTP_ROUTE_USER='route-user'
+        )
+        self.assertEquals(response.status_code, 200)
 
 class HeartbeatViewTestCase(SimpleTestCase):
     def setUp(self):
@@ -446,7 +464,7 @@ class IndexRorDumpViewTestCase(SimpleTestCase):
     def test_index_ror_success(self, index_mock, permission_mock):
         index_mock.return_value = self.success_msg
         permission_mock.return_value = True
-        response = self.client.get('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        response = self.client.post('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
         self.assertEquals(response.status_code, 200)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
@@ -454,11 +472,29 @@ class IndexRorDumpViewTestCase(SimpleTestCase):
     def test_index_ror_fail_error(self, index_mock, permission_mock):
         index_mock.return_value = self.error_msg
         permission_mock.return_value = True
-        response = self.client.get('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        response = self.client.post('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
         self.assertEquals(response.status_code, 400)
 
     @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
     def test_index_ror_fail_no_permission(self, permission_mock):
         permission_mock.return_value = False
-        response = self.client.get('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        response = self.client.post('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
         self.assertEquals(response.status_code, 403)
+
+    @mock.patch.dict(os.environ, {"TOKEN": "token-value", "ROUTE_USER": "route-user"}, clear=False)
+    @mock.patch('django.core.management.call_command')
+    def test_index_ror_dump_fail_no_auth_headers(self, index_mock):
+        index_mock.return_value = self.success_msg
+        response = self.client.post('/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod')
+        self.assertEquals(response.status_code, 403)
+
+    @mock.patch.dict(os.environ, {"TOKEN": "token-value", "ROUTE_USER": "route-user"}, clear=False)
+    @mock.patch('django.core.management.call_command')
+    def test_index_ror_dump_success_with_auth_headers(self, index_mock):
+        index_mock.return_value = self.success_msg
+        response = self.client.post(
+            '/v2/indexdatadump/v1.1-1111-11-11-ror-data/prod',
+            HTTP_TOKEN='token-value',
+            HTTP_ROUTE_USER='route-user'
+        )
+        self.assertEquals(response.status_code, 200)

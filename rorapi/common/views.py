@@ -266,7 +266,7 @@ class GenerateId(APIView):
 class IndexData(APIView):
     permission_classes = [OurTokenPermission]
 
-    def get(self, request, branch, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+    def post(self, request, branch, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         st = 200
         msg = process_files(branch, 'v2')
         if msg["status"] == "ERROR":
@@ -276,7 +276,7 @@ class IndexData(APIView):
 class IndexDataDump(APIView):
     permission_classes = [OurTokenPermission]
 
-    def get(self, request, filename, dataenv, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
+    def post(self, request, filename, dataenv, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         # Always use v2 schema - v1 indexing support has been removed
         schema = 2
         testdata = True
