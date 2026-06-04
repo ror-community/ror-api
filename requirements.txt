@@ -29,4 +29,4 @@ rapidfuzz==3.6.1
 mysqlclient==2.2.7
 bleach==6.0.0
 pycountry==22.3.5
-django-ses==3.5.0
+django-ses==4.4.0
