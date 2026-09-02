@@ -52,8 +52,14 @@ jobs:
           # python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install yapf
+          pip check
 
           python manage.py collectstatic --noinput
+      - name: Run system checks
+        working-directory: ./ror-api
+        run: |
+          python -Wd manage.py check
+          python manage.py makemigrations --check --dry-run
       - name: Load test data
         working-directory: ./ror-api
         run: |
