@@ -77,11 +77,11 @@ jobs:
           wget https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
           tar -xzvf dockerize-linux-amd64-v0.6.0.tar.gz
           rm dockerize-linux-amd64-v0.6.0.tar.gz
-          ./dockerize -template ror/services/api/_ror-api-dev.auto.tfvars.tmpl:ror/services/api/_ror-api-dev.auto.tfvars
+          ./dockerize -template ror/services/api/environments/dev/_ror-api-dev.auto.tfvars.tmpl:ror/services/api/environments/dev/_ror-api-dev.auto.tfvars
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ror/services/api/_ror-api-dev.auto.tfvars
+          git add ror/services/api/environments/dev/_ror-api-dev.auto.tfvars
           git commit -m "Adding ror-api git variables for commit ${{ steps.extract_variables.outputs.GIT_SHA }}"
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
