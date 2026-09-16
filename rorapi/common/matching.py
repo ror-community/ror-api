@@ -10,7 +10,7 @@ from rorapi.v2.models import MatchingResult as MatchingResultV2
 
 from collections import namedtuple
 from functools import lru_cache
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 from itertools import groupby
 
 MIN_CHOSEN_SCORE = 0.9
