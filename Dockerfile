@@ -1,8 +1,6 @@
-FROM phusion/passenger-full:1.0.12
-MAINTAINER Martin Fenner "mfenner@datacite.org"
-
+FROM phusion/passenger-python310:3.2.0
 # Set correct environment variables
-ENV HOME /home/app
+ENV HOME=/home/app
 
 # Allow app user to read /etc/container_environment
 RUN usermod -a -G docker_env app
@@ -10,13 +8,20 @@ RUN usermod -a -G docker_env app
 # Use baseimage-docker's init process
 CMD ["/sbin/my_init"]
 
-# Update installed APT packages, clean up when done
-RUN mv /etc/apt/sources.list.d /etc/apt/sources.list.d.bak && \
-    apt update && apt install -y ca-certificates && \
-    mv /etc/apt/sources.list.d.bak /etc/apt/sources.list.d && \
+# Update installed APT packages, clean up when done.
+# Keep /usr/bin/python as the image's python3.10 symlink (do not retarget to system python3).
+RUN apt-get update && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
-    apt-get clean && \
-    apt-get install ntp wget unzip tzdata python3-pip libmagic1 default-libmysqlclient-dev libcairo2-dev pkg-config -y && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        wget \
+        unzip \
+        tzdata \
+        libmagic1 \
+        default-libmysqlclient-dev \
+        libcairo2-dev \
+        pkg-config \
+        build-essential && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable Passenger and Nginx and remove the default site
@@ -25,9 +30,6 @@ RUN rm -f /etc/service/nginx/down && \
     rm /etc/nginx/sites-enabled/default
 COPY vendor/docker/webapp.conf /etc/nginx/sites-enabled/webapp.conf
 COPY vendor/docker/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
-
-# Use Amazon NTP servers
-COPY vendor/docker/ntp.conf /etc/ntp.conf
 
 # Copy webapp folder
 COPY . /home/app/webapp/
@@ -45,13 +47,10 @@ COPY vendor/docker/10_ssh.sh /etc/my_init.d/10_ssh.sh
 # workdir
 WORKDIR /home/app/webapp
 
-# point /usr/bin/python to Python3
-RUN ln -s -f /usr/bin/python3 /usr/bin/python
-
-# install Python packages
-RUN pip3 install --no-cache-dir --upgrade pip
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN pip3 install yapf
+# Install pip for Python 3.10 and install Python packages into that interpreter
+RUN python -m ensurepip --upgrade && \
+    python -m pip install --no-cache-dir --upgrade pip && \
+    python -m pip install --no-cache-dir -r requirements.txt
 
 # collect static files for Django
 ENV DJANGO_SKIP_DB_CHECK=True
