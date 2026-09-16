@@ -16,3 +16,18 @@ class CORSClientIdTestCase(TestCase):
         self.assertIsNotNone(allow_headers)
         allowed = [h.strip().lower() for h in allow_headers.split(',')]
         self.assertIn('client-id', allowed)
+
+
+class AlwaysAllowOriginTestCase(TestCase):
+    """Test that Access-Control-Allow-Origin: * is always present."""
+
+    def test_get_without_origin_has_acao_star(self):
+        response = self.client.get('/v2/heartbeat')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+
+    def test_get_with_origin_has_acao_star(self):
+        response = self.client.get(
+            '/v2/heartbeat',
+            HTTP_ORIGIN='https://example.org',
+        )
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
