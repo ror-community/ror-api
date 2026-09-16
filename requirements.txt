@@ -8,17 +8,16 @@ base32_crockford==0.3.0
 elasticsearch==7.10.1
 djangorestframework==3.12.4
 coreapi==2.3.3
+setuptools>=40,<81
 django-prometheus==2.2.0
 sentry-sdk==1.45.1
 python-dotenv==0.10.3
 django-cors-headers==3.13.0
 unidecode==1.1.1
-fuzzywuzzy==0.18.0
-python-Levenshtein==0.12.1
-statsmodels==0.10.2
+statsmodels==0.14.4
 boto3
 pandas==1.4.1
-numpy==1.22
+numpy==1.22.4
 titlecase==2.3
 update_address @ git+https://github.com/ror-community/update_address.git
 launchdarkly-server-sdk==7.6.1

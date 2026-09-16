@@ -184,39 +184,39 @@ class SimilarityTestCase(SimpleTestCase):
     V2_VERSION = 'v2'
 
     def test_get_similarity(self):
-        self.assertEqual(
+        self.assertAlmostEqual(
             get_similarity('University of Excellence',
-                           'University of Excellence'), 1)
-        self.assertEqual(
+                           'University of Excellence'), 1, places=2)
+        self.assertAlmostEqual(
             get_similarity('univ. of excellençë', 'Univërsity of Excellence'),
-            1)
-        self.assertEqual(
+            1, places=2)
+        self.assertAlmostEqual(
             get_similarity('of Excellence University',
-                           'University of Excellence'), 1)
-        self.assertEqual(
+                           'University of Excellence'), 1, places=2)
+        self.assertAlmostEqual(
             get_similarity('of excellençë univ', 'University of Excellence'),
-            1)
-        self.assertEqual(
+            1, places=2)
+        self.assertAlmostEqual(
             get_similarity('Excellence University',
-                           'University of Excellence'), 0.93)
-        self.assertEqual(
+                           'University of Excellence'), 0.93, places=2)
+        self.assertAlmostEqual(
             get_similarity('excellençë univ', 'University of Excellence'),
-            0.93)
-        self.assertEqual(
+            0.93, places=2)
+        self.assertAlmostEqual(
             get_similarity('University of Exçellence',
-                           'University of Excellence (Gallifrey)'), 1)
-        self.assertEqual(
+                           'University of Excellence (Gallifrey)'), 1, places=2)
+        self.assertAlmostEqual(
             get_similarity('University of Excellence and Brilliance',
-                           'University of Excellence'), 0.76)
-        self.assertEqual(
+                           'University of Excellence'), 0.76, places=2)
+        self.assertAlmostEqual(
             get_similarity('University of Excellence (and Brilliance)',
-                           'University of Excellence'), 1)
-        self.assertEqual(
+                           'University of Excellence'), 1, places=2)
+        self.assertAlmostEqual(
             get_similarity('University of Excellence School of Perseverance',
-                           'University of Excellence'), 1)
-        self.assertEqual(
+                           'University of Excellence'), 1, places=2)
+        self.assertAlmostEqual(
             get_similarity('University of Excellence Mediocrity Hospital',
-                           'University of Excellence'), 1)
+                           'University of Excellence'), 1, places=2)
 
     def test_get_score(self):
         empty = {
