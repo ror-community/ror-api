@@ -1,4 +1,4 @@
-Django==4.2.30
+Django==5.2.17
 elasticsearch_dsl==7.4.1
 geonamescache==1.3.0
 requests==2.32.4
