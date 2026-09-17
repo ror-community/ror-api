@@ -17,18 +17,18 @@ class GetRorIDTestCase(SimpleTestCase):
         self.assertIsNone(get_ror_id('https://0w7hudk23'))
 
     def test_extract_id(self):
-        self.assertEquals(get_ror_id('0w7hudk23'), 'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('ror.org/0w7hudk23'),
+        self.assertEqual(get_ror_id('0w7hudk23'), 'https://ror.org/0w7hudk23')
+        self.assertEqual(get_ror_id('ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('ror.org%2F0w7hudk23'),
+        self.assertEqual(get_ror_id('ror.org%2F0w7hudk23'),
                           'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('http://ror.org/0w7hudk23'),
+        self.assertEqual(get_ror_id('http://ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('http%3A%2F%2Fror.org%2F0w7hudk23'),
+        self.assertEqual(get_ror_id('http%3A%2F%2Fror.org%2F0w7hudk23'),
                           'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('https://ror.org/0w7hudk23'),
+        self.assertEqual(get_ror_id('https://ror.org/0w7hudk23'),
                           'https://ror.org/0w7hudk23')
-        self.assertEquals(get_ror_id('https%3A%2F%2Fror.org%2F0w7hudk23'),
+        self.assertEqual(get_ror_id('https%3A%2F%2Fror.org%2F0w7hudk23'),
                           'https://ror.org/0w7hudk23')
 
 
@@ -40,7 +40,7 @@ class ValidationTestCase(SimpleTestCase):
             'illegal': 'whatever',
             'another': 3
         })
-        self.assertEquals(len(error.errors), 2)
+        self.assertEqual(len(error.errors), 2)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
 
@@ -48,7 +48,7 @@ class ValidationTestCase(SimpleTestCase):
         error = validate({
             'all_status': 'foo'
         })
-        self.assertEquals(len(error.errors), 1)
+        self.assertEqual(len(error.errors), 1)
         self.assertTrue(any(['allowed values' in e for e in error.errors]))
 
     def test_too_many_parameters(self):
@@ -56,14 +56,14 @@ class ValidationTestCase(SimpleTestCase):
             'query': 'query',
             'query.advanced': 'query'
         })
-        self.assertEquals(len(error.errors), 1)
+        self.assertEqual(len(error.errors), 1)
         self.assertTrue(any(['combined' in e for e in error.errors]))
 
     def test_illegal_field(self):
         error = validate({
             'query.advanced': 'foo:bar'
         })
-        self.assertEquals(len(error.errors), 1)
+        self.assertEqual(len(error.errors), 1)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
 
 
@@ -72,7 +72,7 @@ class ValidationTestCase(SimpleTestCase):
             'query': 'query',
             'filter': 'fi1:e,types:F,f3,field2:44'
         })
-        self.assertEquals(len(error.errors), 3)
+        self.assertEqual(len(error.errors), 3)
         self.assertTrue(any(['fi1' in e for e in error.errors]))
         self.assertTrue(any(['field2' in e for e in error.errors]))
         self.assertTrue(any(['f3' in e for e in error.errors]))
@@ -83,7 +83,7 @@ class ValidationTestCase(SimpleTestCase):
                 str(ES_VARS['MAX_PAGE'] + 1), '10001'
         ]:
             error = validate({'query': 'query', 'page': page})
-            self.assertEquals(len(error.errors), 1)
+            self.assertEqual(len(error.errors), 1)
             self.assertTrue(page in error.errors[0])
 
     def test_multiple_errors(self):
@@ -94,7 +94,7 @@ class ValidationTestCase(SimpleTestCase):
             'another': 3,
             'page': 'third'
         })
-        self.assertEquals(len(error.errors), 6)
+        self.assertEqual(len(error.errors), 6)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
         self.assertTrue(any(['another' in e for e in error.errors]))
         self.assertTrue(any(['fi1' in e for e in error.errors]))
@@ -128,7 +128,7 @@ class ValidationTestCase(SimpleTestCase):
 
     def test_query_adv_wildcard(self):
         error = validate({
-            'query.advanced': 'locations.\*:bar'
+            'query.advanced': r'locations.\*:bar'
         })
         self.assertIsNone(error)
 
@@ -140,7 +140,7 @@ class ValidationTestCase(SimpleTestCase):
 
     def test_query_adv_esc(self):
         error = validate({
-            'query.advanced': 'query\:query'
+            'query.advanced': r'query\:query'
         })
         self.assertIsNone(error)
 
@@ -182,13 +182,13 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_empty_query_all_status(self):
         expected = {'query': {'match_all': {}}, 'track_total_hits': True}
         expected.update(self.default_query)
         query = build_search_query({'all_status':''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_empty_query_all_status_false(self):
         expected = {'query': {
@@ -198,7 +198,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'all_status':'false'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_id(self):
         expected = {'query': {
@@ -213,21 +213,21 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected.update(self.default_query)
 
         query = build_search_query({'query': '0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
         query = build_search_query({'query': 'ror.org/0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
         query = build_search_query({'query': 'ror.org%2F0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
         query = build_search_query({'query': 'http://ror.org/0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
         query = build_search_query(
             {'query': 'http%3A%2F%2Fror.org%2F0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
         query = build_search_query({'query': 'https://ror.org/0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
         query = build_search_query(
             {'query': 'https%3A%2F%2Fror.org%2F0w7hudk23'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_default(self):
         expected = {'query': {
@@ -247,7 +247,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query': 'query terms'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_all_status(self):
         expected = {'query': {
@@ -264,7 +264,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query': 'query terms', 'all_status': ''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_advanced(self):
         expected = {'query': {
@@ -282,7 +282,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query.advanced': 'query terms'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_advanced_all_status(self):
         expected = {'query': {
@@ -299,7 +299,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query.advanced': 'query terms', 'all_status': ''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_advanced_status_filter(self):
         expected = {'query': {
@@ -318,7 +318,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected.update(self.default_query)
         f = 'status:inactive'
         query = build_search_query({'query.advanced': 'query terms', 'filter': f})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_query_advanced_status_field(self):
         expected = {'query': {
@@ -335,7 +335,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query.advanced': 'status:inactive'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_filter(self):
         f = 'key1:val1,k2:value2'
@@ -350,7 +350,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'filter': f})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_filter_status_filter(self):
         f = 'key1:val1,k2:value2,status:inactive'
@@ -365,7 +365,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'filter': f})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_filter_whitespace_normalization(self):
         f = 'locations.geonames_details.country_name:South  Africa'
@@ -379,7 +379,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'filter': f})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_filter_all_status(self):
         f = 'key1:val1,k2:value2'
@@ -393,7 +393,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'filter': f, 'all_status': ''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_filter_query(self):
         f = 'key1:val1,k2:value2'
@@ -420,7 +420,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query': 'query terms', 'filter': f})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_filter_query_all_status(self):
         f = 'key1:val1,k2:value2'
@@ -446,21 +446,21 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         }}
         expected.update(self.default_query)
         query = build_search_query({'query': 'query terms', 'filter': f, 'all_status': ''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_pagination(self):
         expected = {'query': {'bool': {'filter': [{'terms': {'status': ['active']}}]}}}
         expected.update(self.default_query)
         expected['from'] = 80
         query = build_search_query({'page': '5'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_pagination_all_status(self):
         expected = {'query': {'match_all': {}}}
         expected.update(self.default_query)
         expected['from'] = 80
         query = build_search_query({'page': '5', 'all_status': ''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_pagination_query(self):
         expected = {'query': {
@@ -483,7 +483,7 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected.update(self.default_query)
         expected['from'] = 80
         query = build_search_query({'page': '5', 'query': 'query terms'})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
     def test_pagination_query_all_status(self):
         expected = {'query': {
@@ -501,14 +501,14 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected.update(self.default_query)
         expected['from'] = 80
         query = build_search_query({'page': '5', 'query': 'query terms', 'all_status': ''})
-        self.assertEquals(query.to_dict(), expected)
+        self.assertEqual(query.to_dict(), expected)
 
 
 class BuildRetrieveQueryTestCase(SimpleTestCase):
 
     def test_retrieve_query(self):
         query = build_retrieve_query('ror-id')
-        self.assertEquals(query.to_dict(), {
+        self.assertEqual(query.to_dict(), {
             'query': {
                 'match': {
                     'id': {
@@ -537,52 +537,52 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         self.assertIsNone(error)
 
         search_mock.assert_called_once()
-        self.assertEquals(organizations.number_of_results,
+        self.assertEqual(organizations.number_of_results,
                           self.test_data['hits']['total']['value'])
-        self.assertEquals(organizations.time_taken, self.test_data['took'])
-        self.assertEquals(len(organizations.items),
+        self.assertEqual(organizations.time_taken, self.test_data['took'])
+        self.assertEqual(len(organizations.items),
                           len(self.test_data['hits']['hits']))
         for ret, exp in zip(organizations.items,
                             self.test_data['hits']['hits']):
-            self.assertEquals(ret.id, exp['_source']['id'])
+            self.assertEqual(ret.id, exp['_source']['id'])
             for i, name in enumerate(ret.names):
                 matched_names = [n for n in exp['_source']['names'] if \
                                     n['value']==ret.names[i].value and \
                                     n['types']==ret.names[i].types and \
                                     n['lang']==ret.names[i].lang]
                 self.assertTrue(len(matched_names) == 1)
-        self.assertEquals(
+        self.assertEqual(
             len(organizations.meta.types),
             len(self.test_data['aggregations']['types']['buckets']))
         for ret, exp in \
                 zip(organizations.meta.types,
                     self.test_data['aggregations']['types']['buckets']):
-            self.assertEquals(ret.title, exp['key'])
-            self.assertEquals(ret.count, exp['doc_count'])
-        self.assertEquals(
+            self.assertEqual(ret.title, exp['key'])
+            self.assertEqual(ret.count, exp['doc_count'])
+        self.assertEqual(
             len(organizations.meta.countries),
             len(self.test_data['aggregations']['countries']['buckets']))
         for ret, exp in \
                 zip(organizations.meta.countries,
                     self.test_data['aggregations']['countries']['buckets']):
-            self.assertEquals(ret.id, exp['key'].lower())
-            self.assertEquals(ret.count, exp['doc_count'])
-        self.assertEquals(
+            self.assertEqual(ret.id, exp['key'].lower())
+            self.assertEqual(ret.count, exp['doc_count'])
+        self.assertEqual(
             len(organizations.meta.continents),
             len(self.test_data['aggregations']['continents']['buckets']))
         for ret, exp in \
                 zip(organizations.meta.continents,
                     self.test_data['aggregations']['continents']['buckets']):
-            self.assertEquals(ret.id, exp['key'].lower())
-            self.assertEquals(ret.count, exp['doc_count'])
-        self.assertEquals(
+            self.assertEqual(ret.id, exp['key'].lower())
+            self.assertEqual(ret.count, exp['doc_count'])
+        self.assertEqual(
             len(organizations.meta.statuses),
             len(self.test_data['aggregations']['statuses']['buckets']))
         for ret, exp in \
                 zip(organizations.meta.statuses,
                     self.test_data['aggregations']['statuses']['buckets']):
-            self.assertEquals(ret.id, exp['key'].lower())
-            self.assertEquals(ret.count, exp['doc_count'])
+            self.assertEqual(ret.id, exp['key'].lower())
+            self.assertEqual(ret.count, exp['doc_count'])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
     def test_malformed_search_organizations(self, search_mock):
@@ -599,7 +599,7 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         self.assertIsNone(organizations)
 
         search_mock.assert_not_called()
-        self.assertEquals(len(error.errors), 6)
+        self.assertEqual(len(error.errors), 6)
 
 
 class RetrieveOrganizationsTestCase(SimpleTestCase):
@@ -624,7 +624,7 @@ class RetrieveOrganizationsTestCase(SimpleTestCase):
 
         search_mock.assert_called_once()
         expected = self.test_data['hits']['hits'][0]['_source']
-        self.assertEquals(organization.id, expected['id'])
+        self.assertEqual(organization.id, expected['id'])
         for i, name in enumerate(organization.names):
             matched_names = [n for n in expected["names"] if \
                                 n['value']==organization.names[i].value and \
@@ -642,5 +642,5 @@ class RetrieveOrganizationsTestCase(SimpleTestCase):
         self.assertIsNone(organization)
 
         search_mock.assert_called_once()
-        self.assertEquals(len(error.errors), 1)
+        self.assertEqual(len(error.errors), 1)
         self.assertTrue('ror-id' in error.errors[0])
