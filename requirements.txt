@@ -6,7 +6,7 @@ requests-aws4auth==0.9
 mock==3.0.5
 base32_crockford==0.3.0
 elasticsearch==7.10.1
-djangorestframework==3.12.4
+djangorestframework==3.17.2
 coreapi==2.3.3
 setuptools>=40,<81
 django-prometheus==2.2.0
