@@ -23,7 +23,7 @@ class APITestCase(SimpleTestCase):
         for k in ['number_of_results', 'time_taken', 'items', 'meta']:
             self.assertTrue(k in output)
 
-        self.assertEquals(len(output['items']), 20)
+        self.assertEqual(len(output['items']), 20)
         for i in output['items']:
             for k in ['id', 'name']:
                 self.assertTrue(k in i)
@@ -43,13 +43,13 @@ class APITestCase(SimpleTestCase):
             self.assertTrue('count' in t)
 
     def verify_empty(self, output):
-        self.assertEquals(self.get_total(output), 0)
-        self.assertEquals(output['items'], [])
-        self.assertEquals(output['meta'], {'types': [], 'statuses': [],'countries': []})
+        self.assertEqual(self.get_total(output), 0)
+        self.assertEqual(output['items'], [])
+        self.assertEqual(output['meta'], {'types': [], 'statuses': [],'countries': []})
 
     def verify_single_item(self, output, org):
-        self.assertEquals(self.get_total(output), 1)
-        self.assertEquals(output['items'][0], org)
+        self.assertEqual(self.get_total(output), 1)
+        self.assertEqual(output['items'][0], org)
 
     def test_list_organizations(self):
         output = requests.get(BASE_URL).json()
@@ -96,12 +96,12 @@ class APITestCase(SimpleTestCase):
         for output in outputs:
             self.verify_full_list(output)
         # all responses declare the same number of results
-        self.assertEquals(len(set([self.get_total(o) for o in outputs])), 1)
+        self.assertEqual(len(set([self.get_total(o) for o in outputs])), 1)
         # IDs of the items listed are all distinct
-        self.assertEquals(len(set([o['items'][0]['id'] for o in outputs])),
+        self.assertEqual(len(set([o['items'][0]['id'] for o in outputs])),
                           max_page)
         # all responses have the same aggregations
-        self.assertEquals(len(set([json.dumps(o['meta']) for o in outputs])),
+        self.assertEqual(len(set([json.dumps(o['meta']) for o in outputs])),
                           1)
 
     def test_paging(self):
@@ -122,8 +122,8 @@ class APITestCase(SimpleTestCase):
                 print("failing query: ", {'page': page})
             output = requests.get(BASE_URL, {'page': page}).json()
             ids.extend([i['id'] for i in output['items']])
-        self.assertEquals(len(ids), total)
-        self.assertEquals(len(set(ids)), total)
+        self.assertEqual(len(ids), total)
+        self.assertEqual(len(set(ids)), total)
 
     def verify_filtering(self, query):
         aggregations = requests.get(BASE_URL, query).json()['meta']
@@ -135,7 +135,7 @@ class APITestCase(SimpleTestCase):
             params = dict(query, filter=filter_string)
             output = requests.get(BASE_URL, params).json()
 
-            self.assertEquals(self.get_total(output), t_aggr['count'])
+            self.assertEqual(self.get_total(output), t_aggr['count'])
             for i in output['items']:
                 self.assertTrue(t_aggr['title'] in i['types'])
             self.assertTrue(any([t_aggr == t
@@ -147,9 +147,9 @@ class APITestCase(SimpleTestCase):
             params = dict(query, filter=filter_string)
             output = requests.get(BASE_URL, params).json()
 
-            self.assertEquals(self.get_total(output), c_aggr['count'])
+            self.assertEqual(self.get_total(output), c_aggr['count'])
             for i in output['items']:
-                self.assertEquals(c_aggr['id'].upper(),
+                self.assertEqual(c_aggr['id'].upper(),
                                   i['country']['country_code'])
             self.assertTrue(
                 any([c_aggr == c for c in output['meta']['countries']]))
@@ -169,7 +169,7 @@ class APITestCase(SimpleTestCase):
             self.assertTrue(self.get_total(output) <= c_aggr['count'])
             for i in output['items']:
                 self.assertTrue(t_aggr['title'] in i['types'])
-                self.assertEquals(c_aggr['id'].upper(),
+                self.assertEqual(c_aggr['id'].upper(),
                                   i['country']['country_code'])
             self.assertTrue(
                 any([t_aggr['id'] == t['id']
@@ -216,7 +216,7 @@ class APITestCase(SimpleTestCase):
                  re.sub(r'https:\/\/ror.org\/', r'https%3A%2F%2Fror.org%2F',
                         test_org['id'])]:
                 output = requests.get(BASE_URL + '/' + test_id).json()
-                self.assertEquals(output, test_org)
+                self.assertEqual(output, test_org)
 
     def test_query_grid_retrieval(self):
         for test_org in requests.get(BASE_URL).json()['items']:
@@ -230,7 +230,7 @@ class APITestCase(SimpleTestCase):
             'illegal': 'whatever',
             'another': 3
         }).json()
-        self.assertEquals(len(output['errors']), 2)
+        self.assertEqual(len(output['errors']), 2)
         self.assertTrue(any(['\'illegal\'' in e for e in output['errors']]))
         self.assertTrue(any(['\'another\'' in e for e in output['errors']]))
 
@@ -238,7 +238,7 @@ class APITestCase(SimpleTestCase):
             'query': 'query',
             'filter': 'fi1:e,types:F,f3,field2:44'
         }).json()
-        self.assertEquals(len(output['errors']), 3)
+        self.assertEqual(len(output['errors']), 3)
         self.assertTrue(any(['\'fi1\'' in e for e in output['errors']]))
         self.assertTrue(any(['\'field2\'' in e for e in output['errors']]))
         self.assertTrue(any(['\'f3\'' in e for e in output['errors']]))
@@ -247,14 +247,14 @@ class APITestCase(SimpleTestCase):
             'query': 'query',
             'page': 'whatever'
         }).json()
-        self.assertEquals(len(output['errors']), 1)
+        self.assertEqual(len(output['errors']), 1)
         self.assertTrue('\'whatever\'' in output['errors'][0])
 
         output = requests.get(BASE_URL, {
             'query': 'query',
             'page': '10000'
         }).json()
-        self.assertEquals(len(output['errors']), 1)
+        self.assertEqual(len(output['errors']), 1)
         self.assertTrue('\'10000\'' in output['errors'][0])
 
         output = requests.get(
@@ -265,7 +265,7 @@ class APITestCase(SimpleTestCase):
                 'another': 3,
                 'page': 'third'
             }).json()
-        self.assertEquals(len(output['errors']), 6)
+        self.assertEqual(len(output['errors']), 6)
         self.assertTrue(any(['\'illegal\'' in e for e in output['errors']]))
         self.assertTrue(any(['\'another\'' in e for e in output['errors']]))
         self.assertTrue(any(['\'fi1\'' in e for e in output['errors']]))
@@ -274,5 +274,5 @@ class APITestCase(SimpleTestCase):
         self.assertTrue(any(['\'third\'' in e for e in output['errors']]))
 
         output = requests.get(BASE_URL + '/https://ror.org/0qwerty89').json()
-        self.assertEquals(len(output['errors']), 1)
+        self.assertEqual(len(output['errors']), 1)
         self.assertTrue('\'https://ror.org/0qwerty89\'' in output['errors'][0])
