@@ -169,4 +169,9 @@ class Client(models.Model):
         # Ensure client_id is generated before saving
         if not self.client_id:  # Only generate if it's empty
             self.client_id = self.generate_client_id()
+            # Django 4.2+: update_or_create may pass update_fields; include
+            # fields mutated here so they are not skipped on save.
+            update_fields = kwargs.get('update_fields')
+            if update_fields is not None:
+                kwargs['update_fields'] = set(update_fields) | {'client_id'}
         super().save(*args, **kwargs)
