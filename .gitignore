@@ -7,3 +7,6 @@ __pycache__/
 *.pyc
 rorapi/data/**
 esdata/**
+.venv310/
+.uv-python/
+.uv-bin/
