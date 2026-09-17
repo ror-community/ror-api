@@ -1,2 +1,9 @@
 .env
 .env.*
+.venv*/
+.uv-python/
+.uv-bin/
+__pycache__/
+*.pyc
+.git/
+.esdata/
