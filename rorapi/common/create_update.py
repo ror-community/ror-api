@@ -1,5 +1,9 @@
 import copy
+import json
+import os
 from datetime import datetime
+
+import requests
 from rorapi.common.record_utils import *
 import update_address as ua
 from rorapi.v2.record_constants import *
@@ -8,7 +12,32 @@ from rorapi.v2.serializers import (
 )
 from rorapi.management.commands.generaterorid import check_ror_id
 
-V2_SCHEMA = get_file_from_url("https://raw.githubusercontent.com/ror-community/ror-schema/refs/heads/master/ror_schema_v2_1.json")
+V2_SCHEMA_URL = (
+    "https://raw.githubusercontent.com/ror-community/ror-schema/"
+    "refs/heads/master/ror_schema_v2_1.json"
+)
+VENDORED_SCHEMA_PATH = os.path.join(
+    os.path.dirname(__file__), "ror_schema_v2_1.json"
+)
+
+_V2_SCHEMA = None
+
+
+def get_v2_schema():
+    """Load the v2.1 schema on first write; cache in-process.
+
+    Prefer the live schema from GitHub; fall back to the vendored copy so
+    reads stay up even when GitHub is unreachable (schema is only needed
+    for create/update).
+    """
+    global _V2_SCHEMA
+    if _V2_SCHEMA is None:
+        try:
+            _V2_SCHEMA = get_file_from_url(V2_SCHEMA_URL)
+        except (requests.RequestException, ValueError, TypeError):
+            with open(VENDORED_SCHEMA_PATH) as f:
+                _V2_SCHEMA = json.load(f)
+    return _V2_SCHEMA
 
 
 def update_record(json_input, existing_record):
@@ -79,7 +108,7 @@ def new_record_from_json(json_input, version):
         new_ror_id = check_ror_id()
         print("new ror id: " + new_ror_id)
         new_record['id'] = new_ror_id
-        error, valid_data = validate_record(sort_list_fields(new_record), V2_SCHEMA)
+        error, valid_data = validate_record(sort_list_fields(new_record), get_v2_schema())
     return error, valid_data
 
 
@@ -92,5 +121,5 @@ def update_record_from_json(new_json, existing_org):
     error, updated_locations = update_locations(updated_record['locations'])
     if not error:
         updated_record['locations'] = updated_locations
-        error, valid_data = validate_record(sort_list_fields(updated_record), V2_SCHEMA)
+        error, valid_data = validate_record(sort_list_fields(updated_record), get_v2_schema())
     return error, valid_data
