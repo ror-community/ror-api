@@ -32,8 +32,11 @@ echo "start.sh: MySQL ready"
 
 echo "start.sh: starting Elasticsearch..."
 if ! curl -s -m 3 http://127.0.0.1:9200 >/dev/null 2>&1; then
+  # Detach all standard fds so the daemon does not hold this command's
+  # stdout/stderr pipe open (otherwise `start` never returns and boot stalls).
   sudo -u elasticsearch ES_PATH_CONF=/opt/elasticsearch/config \
-    /opt/elasticsearch/bin/elasticsearch -d -p /tmp/es.pid
+    /opt/elasticsearch/bin/elasticsearch -d -p /tmp/es.pid \
+    </dev/null >/tmp/elasticsearch-console.log 2>&1
 fi
 for i in $(seq 1 90); do
   if curl -s -m 3 http://127.0.0.1:9200 >/dev/null 2>&1; then break; fi
