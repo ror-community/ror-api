@@ -1,4 +1,4 @@
-FROM phusion/passenger-python310:3.2.0
+FROM phusion/passenger-python312:3.2.0
 # Set correct environment variables
 ENV HOME=/home/app
 
@@ -9,7 +9,7 @@ RUN usermod -a -G docker_env app
 CMD ["/sbin/my_init"]
 
 # Update installed APT packages, clean up when done.
-# Keep /usr/bin/python as the image's python3.10 symlink (do not retarget to system python3).
+# Keep /usr/bin/python as the image's python3.12 symlink (do not retarget to system python3).
 RUN apt-get update && \
     apt-get upgrade -y -o Dpkg::Options::="--force-confold" && \
     apt-get install -y --no-install-recommends \
@@ -47,7 +47,7 @@ COPY vendor/docker/10_ssh.sh /etc/my_init.d/10_ssh.sh
 # workdir
 WORKDIR /home/app/webapp
 
-# Install pip for Python 3.10 and install Python packages into that interpreter
+# Install pip for Python 3.12 and install Python packages into that interpreter
 RUN python -m ensurepip --upgrade && \
     python -m pip install --no-cache-dir --upgrade pip && \
     python -m pip install --no-cache-dir -r requirements.txt

@@ -44,7 +44,7 @@ jobs:
       - name: Set up Python environment
         uses: actions/setup-python@v6
         with:
-          python-version: "3.10"
+          python-version: "3.12"
           cache: "pip"
       - name: Install requirements
         working-directory: ./ror-api
@@ -66,7 +66,7 @@ jobs:
       - name: Run Tests
         working-directory: ./ror-api
         run: |
-          python manage.py test rorapi.tests.tests_unit
+          python -Wa manage.py test rorapi.tests.tests_unit
           # TODO fix these tests running in GitHub Action
           # python manage.py test rorapi.tests.tests_integration
           # python manage.py test rorapi.tests.tests_functional
