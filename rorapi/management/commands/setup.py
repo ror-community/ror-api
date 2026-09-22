@@ -5,10 +5,34 @@ from rorapi.management.commands.deleteindex import Command as DeleteIndexCommand
 from rorapi.management.commands.createindex import Command as CreateIndexCommand
 from rorapi.management.commands.indexrordump import Command as IndexRorDumpCommand
 from rorapi.management.commands.getrordump import Command as GetRorDumpCommand
-from rorapi.settings import ROR_DUMP
+from rorapi.settings import ES7, ES_VARS, ROR_DUMP
 
 REQUEST_TIMEOUT_SECONDS = 30
 logger = logging.getLogger(__name__)
+
+
+def backup_live_index(stdout):
+    """Copy organizations-v2 to organizations-v2-tmp before delete/create.
+
+    Preserves previous live data so index_dump can restore it if bulk indexing fails.
+    """
+    index = ES_VARS['INDEX_V2']
+    backup_index = '{}-tmp'.format(index)
+    if not ES7.indices.exists(index):
+        stdout.write('No existing {} index to back up'.format(index))
+        return
+    if ES7.indices.exists(backup_index):
+        ES7.indices.delete(backup_index)
+        stdout.write('Deleted stale backup index {}'.format(backup_index))
+    ES7.reindex(body={
+        'source': {
+            'index': index
+        },
+        'dest': {
+            'index': backup_index
+        }
+    })
+    stdout.write('Backed up {} to {}'.format(index, backup_index))
 
 
 def build_github_headers():
@@ -101,6 +125,7 @@ class Command(BaseCommand):
         if sha:
             try:
                 GetRorDumpCommand().handle(*args, **options)
+                backup_live_index(self.stdout)
                 DeleteIndexCommand().handle(*args, **options)
                 CreateIndexCommand().handle(*args, **options)
                 IndexRorDumpCommand().handle(*args, **options)

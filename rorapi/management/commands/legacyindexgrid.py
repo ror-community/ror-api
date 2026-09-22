@@ -71,8 +71,8 @@ class Command(BaseCommand):
                     } for n in get_nested_ids(org)]
                     body.append(org)
                 ES.bulk(body)
-        except TransportError:
-            self.stdout.write(TransportError)
+        except TransportError as e:
+            self.stdout.write(str(e))
             ES.reindex(body={
                 'source': {
                     'index': backup_index
