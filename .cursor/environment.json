@@ -1,0 +1,17 @@
+{
+  "name": "ROR API",
+  "user": "ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    {
+      "name": "ror-api server",
+      "command": "cd /workspace && source .venv/bin/activate && python manage.py runserver 0.0.0.0:9292"
+    }
+  ],
+  "ports": [9292, 9200, 3306]
+}
