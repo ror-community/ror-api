@@ -9,17 +9,15 @@ import requests
 from rorapi.common import create_update
 
 
-VENDORED_SCHEMA_PATH = os.path.join(
-    os.path.dirname(create_update.__file__), "ror_schema_v2_1.json"
-)
+VENDORED_SCHEMA_PATH = create_update.VENDORED_SCHEMA_PATH
 
 
 class LazySchemaTests(SimpleTestCase):
     def setUp(self):
-        create_update._V2_SCHEMA = None
+        create_update.get_v2_schema.cache_clear()
 
     def tearDown(self):
-        create_update._V2_SCHEMA = None
+        create_update.get_v2_schema.cache_clear()
 
     def test_import_does_not_fetch_schema(self):
         with mock.patch(
@@ -27,7 +25,8 @@ class LazySchemaTests(SimpleTestCase):
         ) as mock_get:
             importlib.reload(create_update)
             mock_get.assert_not_called()
-            self.assertIsNone(create_update._V2_SCHEMA)
+            self.assertEqual(create_update.get_v2_schema.cache_info().hits, 0)
+            self.assertEqual(create_update.get_v2_schema.cache_info().misses, 0)
 
     def test_loads_schema_from_github_on_first_use(self):
         remote_schema = {"title": "remote", "$id": "remote"}
@@ -55,8 +54,8 @@ class LazySchemaTests(SimpleTestCase):
             self.assertEqual(schema["$id"], "http://ror.org/schemas/v2.0/organization")
 
     def test_vendored_schema_file_exists(self):
-        self.assertTrue(os.path.isfile(VENDORED_SCHEMA_PATH))
-        with open(VENDORED_SCHEMA_PATH) as f:
+        self.assertTrue(os.path.isfile(create_update.VENDORED_SCHEMA_PATH))
+        with open(create_update.VENDORED_SCHEMA_PATH) as f:
             schema = json.load(f)
         self.assertIn("required", schema)
         self.assertIn("properties", schema)

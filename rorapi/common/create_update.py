@@ -1,4 +1,5 @@
 import copy
+import functools
 import json
 import os
 from datetime import datetime
@@ -17,12 +18,11 @@ V2_SCHEMA_URL = (
     "refs/heads/master/ror_schema_v2_1.json"
 )
 VENDORED_SCHEMA_PATH = os.path.join(
-    os.path.dirname(__file__), "ror_schema_v2_1.json"
+    os.path.dirname(os.path.dirname(__file__)), "v2", "ror_schema_v2_1.json"
 )
 
-_V2_SCHEMA = None
 
-
+@functools.cache
 def get_v2_schema():
     """Load the v2.1 schema on first write; cache in-process.
 
@@ -30,14 +30,11 @@ def get_v2_schema():
     reads stay up even when GitHub is unreachable (schema is only needed
     for create/update).
     """
-    global _V2_SCHEMA
-    if _V2_SCHEMA is None:
-        try:
-            _V2_SCHEMA = get_file_from_url(V2_SCHEMA_URL)
-        except (requests.RequestException, ValueError, TypeError):
-            with open(VENDORED_SCHEMA_PATH) as f:
-                _V2_SCHEMA = json.load(f)
-    return _V2_SCHEMA
+    try:
+        return get_file_from_url(V2_SCHEMA_URL)
+    except (requests.RequestException, ValueError, TypeError):
+        with open(VENDORED_SCHEMA_PATH) as f:
+            return json.load(f)
 
 
 def update_record(json_input, existing_record):
