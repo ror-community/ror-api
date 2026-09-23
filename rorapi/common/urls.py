@@ -1,5 +1,4 @@
 from django.urls import include, re_path
-from rest_framework.documentation import include_docs_urls
 from  . import views
 from rorapi.common.views import (
     HeartbeatView,GenerateAddress,GenerateId,IndexData,IndexDataDump,BulkUpdate,ClientRegistrationView,ValidateClientView)
@@ -19,7 +18,6 @@ urlpatterns = [
     re_path(r"^(?P<version>v2)\/indexdatadump\/(?P<filename>v(\d+\.)?(\d+\.)?(\*|\d+)-\d{4}-\d{2}-\d{2}-ror-data)\/(?P<dataenv>(test|prod))$", IndexDataDump.as_view()),
     re_path(r"^(?P<version>v2)\/", include(views.organizations_router.urls)),
     re_path(r"^", include(views.organizations_router.urls)),
-    re_path(r"^docs/", include_docs_urls(title="Research Organization Registry")),
     # Prometheus
     re_path("", include("django_prometheus.urls")),
 
