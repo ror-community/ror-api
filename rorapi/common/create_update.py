@@ -4,7 +4,6 @@ import json
 import os
 from datetime import datetime
 
-import requests
 from rorapi.common.record_utils import *
 import update_address as ua
 from rorapi.v2.record_constants import *
@@ -13,10 +12,6 @@ from rorapi.v2.serializers import (
 )
 from rorapi.management.commands.generaterorid import check_ror_id
 
-V2_SCHEMA_URL = (
-    "https://raw.githubusercontent.com/ror-community/ror-schema/"
-    "refs/heads/master/ror_schema_v2_1.json"
-)
 VENDORED_SCHEMA_PATH = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "v2", "ror_schema_v2_1.json"
 )
@@ -24,17 +19,9 @@ VENDORED_SCHEMA_PATH = os.path.join(
 
 @functools.cache
 def get_v2_schema():
-    """Load the v2.1 schema on first write; cache in-process.
-
-    Prefer the live schema from GitHub; fall back to the vendored copy so
-    reads stay up even when GitHub is unreachable (schema is only needed
-    for create/update).
-    """
-    try:
-        return get_file_from_url(V2_SCHEMA_URL)
-    except (requests.RequestException, ValueError, TypeError):
-        with open(VENDORED_SCHEMA_PATH) as f:
-            return json.load(f)
+    """Load the vendored v2.1 schema on first write; cache in-process."""
+    with open(VENDORED_SCHEMA_PATH) as f:
+        return json.load(f)
 
 
 def update_record(json_input, existing_record):
