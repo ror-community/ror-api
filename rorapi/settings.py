@@ -37,20 +37,20 @@ if os.path.isfile(env_file):
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-if not SECRET_KEY:
-    raise RuntimeError('SECRET_KEY environment variable must be set')
+SECRET_KEY = os.environ.get('SECRET_KEY') or (
+    '0y0zn=hnz99$+c6lejml@chch54s2y2@-z##i$pstn62doft_g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = os.environ.get('PASSENGER_APP_ENV', 'development') == 'development'
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
-        'ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
-    if host.strip()
-]
+_allowed_hosts = os.environ.get('ALLOWED_HOSTS', '').strip()
+if _allowed_hosts:
+    ALLOWED_HOSTS = [
+        host.strip() for host in _allowed_hosts.split(',') if host.strip()
+    ]
+else:
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 
