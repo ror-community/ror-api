@@ -5,85 +5,21 @@ import requests
 import zipfile
 import base64
 from io import BytesIO
-from rorapi.settings import ES7, ES_VARS, ROR_DUMP, DATA
+from rorapi.settings import ES_VARS, ROR_DUMP, DATA
+from rorapi.common.index_helpers import bulk_index_with_backup
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
-def get_nested_names_v2(org):
-    for name in org['names']:
-        yield name['value']
-
-def get_nested_ids_v2(org):
-    yield org['id']
-    yield re.sub('https://', '', org['id'])
-    yield re.sub('https://ror.org/', '', org['id'])
-    for ext_id in org['external_ids']:
-        for eid in ext_id['all']:
-            yield eid
-
-def get_single_search_names_v2(org):
-    for name in org["names"]:
-        if "acronym" not in name["types"]:
-            yield name["value"]
-
-def get_affiliation_match_doc(org):
-    doc = { 
-        'id': org['id'],
-        'country': org["locations"][0]["geonames_details"]["country_code"],
-        'status': org['status'],
-        'primary': [n["value"] for n in org["names"] if "ror_display" in n["types"]][0],
-        'names': [{"name": n} for n in get_single_search_names_v2(org)],
-        'relationships': [{"type": r['type'], "id": r['id']} for r in org['relationships']]
-    }
-    return doc
-
 def index_dump(self, filename, index, dataset):
-    backup_index = '{}-tmp'.format(index)
-    ES7.reindex(body={
-        'source': {
-            'index': index
-        },
-        'dest': {
-            'index': backup_index
-        }
-    })
-
-    try:
-        for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
-            body = []
-            for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
-                body.append({
-                    'index': {
-                        '_index': index,
-                        '_id': org['id']
-                    }
-                })
-                org['names_ids'] = [{
-                    'name': n
-                } for n in get_nested_names_v2(org)]
-                org['names_ids'] += [{
-                    'id': n
-                } for n in get_nested_ids_v2(org)]
-                # experimental affiliations_match nested doc
-                org['affiliation_match'] = get_affiliation_match_doc(org)
-                body.append(org)
-            ES7.bulk(body)
-    except TransportError:
+    def on_transport_error(_exc):
+        # Preserve prior logging: write the exception class name, then revert message.
         self.stdout.write(TransportError)
         self.stdout.write('Reverting to backup index')
-        ES7.reindex(body={
-            'source': {
-                'index': backup_index
-            },
-            'dest': {
-                'index': index
-            }
-        })
-    if ES7.indices.exists(backup_index):
-        ES7.indices.delete(backup_index)
+
+    bulk_index_with_backup(index, dataset, on_transport_error=on_transport_error)
     self.stdout.write('ROR dataset ' + filename + ' indexed')
 
 
