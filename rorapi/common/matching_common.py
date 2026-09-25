@@ -51,9 +51,9 @@ def get_country_codes(string):
         if re.search("[^a-z]", name):
             score = fuzz.partial_ratio(name, lower)
         elif len(name) == 2:
-            score = max([fuzz.ratio(name.upper(), t) for t in alpha.split()])
+            score = max([fuzz.ratio(name.upper(), t) for t in alpha.split()] + [0])
         else:
-            score = max([fuzz.ratio(name, t) for t in lower_alpha.split()])
+            score = max([fuzz.ratio(name, t) for t in lower_alpha.split()] + [0])
         if score >= 90:
             codes.append(code.upper())
     return list(set(codes))
