@@ -6,6 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
+      SECRET_KEY: "django-insecure-github-actions-test-key"
       ELASTIC_PASSWORD: "changeme"
       ELASTIC7_HOST: "localhost"
       ELASTIC7_PORT: "9200"

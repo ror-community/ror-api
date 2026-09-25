@@ -32,6 +32,8 @@ services:
   web:
     container_name: rorapiweb
     env_file: .env
+    environment:
+      SECRET_KEY: "django-insecure-docker-compose-dummy-key"
     build: .
     #image: rorcommunity/ror-api
     ports:
