@@ -1,4 +1,3 @@
-from geonamescache.mappers import country
 import random
 import string
 from django.db import models
@@ -11,19 +10,6 @@ class ContinentBucket:
     def __init__(self, data):
         self.id = data.key.lower()
         self.title = continent_code_to_name(data.key)
-        self.count = data.doc_count
-
-class CountryBucket:
-    """A model class for country aggregation bucket"""
-
-    def __init__(self, data):
-        self.id = data.key.lower()
-        mapper = country(from_key="iso", to_key="name")
-        try:
-            self.title = mapper(data.key)
-        except AttributeError:
-            # if we have a country code with no name mapping, skip it to prevent 500
-            pass
         self.count = data.doc_count
 
 
