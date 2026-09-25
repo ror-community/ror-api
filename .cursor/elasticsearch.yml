@@ -1,0 +1,10 @@
+cluster.name: ror-local
+node.name: ror-node
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: 127.0.0.1
+http.port: 9200
+discovery.type: single-node
+xpack.security.enabled: false
+http.cors.enabled: true
+http.cors.allow-origin: "*"

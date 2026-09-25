@@ -10,3 +10,7 @@ esdata/**
 .venv310/
 .uv-python/
 .uv-bin/
+
+# Cloud Agent env
+.venv/
+/static/
