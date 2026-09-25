@@ -1,5 +1,4 @@
 import json
-import re
 from functools import wraps
 from threading import local
 import zipfile
@@ -8,38 +7,11 @@ import glob
 from os.path import exists
 import pathlib
 import shutil
-from rorapi.settings import ES7, ES_VARS, DATA
+from rorapi.settings import ES_VARS, DATA
+from rorapi.common.index_helpers import bulk_index_with_backup
 
 from django.core.management.base import BaseCommand
-from elasticsearch import TransportError
 
-def get_nested_names_v2(org):
-    for name in org['names']:
-        yield name['value']
-
-def get_nested_ids_v2(org):
-    yield org['id']
-    yield re.sub('https://', '', org['id'])
-    yield re.sub('https://ror.org/', '', org['id'])
-    for ext_id in org['external_ids']:
-        for eid in ext_id['all']:
-            yield eid
-
-def get_single_search_names_v2(org):
-    for name in org["names"]:
-        if "acronym" not in name["types"]:
-            yield name["value"]
-
-def get_affiliation_match_doc(org):
-    doc = { 
-        'id': org['id'],
-        'country': org["locations"][0]["geonames_details"]["country_code"],
-        'status': org['status'],
-        'primary': [n["value"] for n in org["names"] if "ror_display" in n["types"]][0],
-        'names': [{"name": n} for n in get_single_search_names_v2(org)],
-        'relationships': [{"type": r['type'], "id": r['id']} for r in org['relationships']]
-    }
-    return doc
 
 def prepare_files(path, local_file):
     data = []
@@ -133,49 +105,12 @@ def index(dataset, version):
     if version != 'v2':
         err[index.__name__] = f"Only v2 schema version is supported. Received: {version}"
         return err
-    index = ES_VARS['INDEX_V2']
-    backup_index = '{}-tmp'.format(index)
-    ES7.reindex(body={
-        'source': {
-            'index': index
-        },
-        'dest': {
-            'index': backup_index
-        }
-    })
+    index_name = ES_VARS['INDEX_V2']
 
-    try:
-        for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
-            body = []
-            for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
-                body.append({
-                    'index': {
-                        '_index': index,
-                        '_id': org['id']
-                    }
-                })
-                org['names_ids'] = [{
-                    'name': n
-                } for n in get_nested_names_v2(org)]
-                org['names_ids'] += [{
-                    'id': n
-                } for n in get_nested_ids_v2(org)]
-                # experimental affiliations_match nested doc
-                org['affiliation_match'] = get_affiliation_match_doc(org)
-                body.append(org)
-            ES7.bulk(body)
-    except TransportError:
+    def on_transport_error(_exc):
         err[index.__name__] = f"Indexing error, reverted index back to previous state"
-        ES7.reindex(body={
-            'source': {
-                'index': backup_index
-            },
-            'dest': {
-                'index': index
-            }
-        })
-    if ES7.indices.exists(backup_index):
-        ES7.indices.delete(backup_index)
+
+    bulk_index_with_backup(index_name, dataset, on_transport_error=on_transport_error)
     return err
 
 class Command(BaseCommand):
@@ -188,5 +123,3 @@ class Command(BaseCommand):
         dir = options['dir']
         version = 'v2'
         process_files(dir, version)
-
-
