@@ -73,6 +73,11 @@ class CountriesTestCase(SimpleTestCase):
             get_country_codes('Agency for Health Care Policy and Research'),
             [])
 
+    def test_get_country_codes_empty_non_alpha(self):
+        """Empty / non-alpha input must return [] without raising ValueError."""
+        for s in ('', '123', '   ', '!!!'):
+            self.assertEqual(get_country_codes(s), [])
+
     def test_get_country(self):
         self.assertEqual(get_countries('Seoul, Korea.'), ['KR'])
         self.assertEqual(get_countries('Chicago, Illinois, USA'), ['US-PR'])
