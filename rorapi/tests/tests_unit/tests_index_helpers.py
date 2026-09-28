@@ -82,9 +82,28 @@ class BulkIndexWithBackupTestCase(SimpleTestCase):
         self.backup_index = '{}-tmp'.format(self.index)
         self.dataset = [dict(SAMPLE_ORG)]
 
+    def _mock_live_index(self, es7_mock, backup_already=False):
+        state = {'backup': backup_already}
+
+        def exists(name):
+            if name == self.backup_index:
+                return state['backup']
+            return name == self.index
+
+        def reindex(*args, **kwargs):
+            body = kwargs.get('body')
+            if body is None and args:
+                body = args[0]
+            if body and body.get('dest', {}).get('index') == self.backup_index:
+                state['backup'] = True
+
+        es7_mock.indices.exists.side_effect = exists
+        es7_mock.reindex.side_effect = reindex
+        es7_mock.count.return_value = {'count': 2}
+
     @mock.patch('rorapi.common.index_helpers.ES7')
     def test_success_backs_up_bulks_and_deletes_backup(self, es7_mock):
-        es7_mock.indices.exists.return_value = True
+        self._mock_live_index(es7_mock)
         bulk_mock = mock.Mock(return_value={'_items': []})
 
         ok = index_helpers.bulk_index_with_backup(
@@ -101,8 +120,20 @@ class BulkIndexWithBackupTestCase(SimpleTestCase):
         self.assertEqual(es7_mock.reindex.call_count, 1)
 
     @mock.patch('rorapi.common.index_helpers.ES7')
+    def test_existing_backup_is_not_overwritten(self, es7_mock):
+        self._mock_live_index(es7_mock, backup_already=True)
+        bulk_mock = mock.Mock(return_value={'_items': []})
+
+        ok = index_helpers.bulk_index_with_backup(
+            self.index, self.dataset, bulk=bulk_mock)
+
+        self.assertTrue(ok)
+        es7_mock.reindex.assert_not_called()
+        es7_mock.indices.delete.assert_called_once_with(self.backup_index)
+
+    @mock.patch('rorapi.common.index_helpers.ES7')
     def test_transport_error_rolls_back_and_calls_hook(self, es7_mock):
-        es7_mock.indices.exists.return_value = True
+        self._mock_live_index(es7_mock)
         bulk_mock = mock.Mock(side_effect=TransportError(429, 'Too Many Requests'))
         on_error = mock.Mock()
 

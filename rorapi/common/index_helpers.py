@@ -1,15 +1,15 @@
 """Shared helpers for ROR Elasticsearch indexing commands.
 
 Used by ``indexror`` and ``indexrordump``. Bulk calls go through
-``_bulk`` so a retry wrapper (e.g. ``rorapi.common.es_bulk.bulk_with_retry``
-from the reindex-resilience work) can replace the default without
-duplicating the backup/chunk loop again.
+``_bulk``, which uses ``bulk_with_retry`` so transient Elasticsearch
+errors back off without duplicating the chunk loop.
 """
 
 import re
 
 from elasticsearch import TransportError
 
+from rorapi.common.es_bulk import bulk_with_retry
 from rorapi.settings import ES7, ES_VARS
 
 
@@ -72,18 +72,24 @@ def build_bulk_body(index, orgs):
 
 
 def _bulk(body):
-    """Perform one bulk request. Swap for bulk_with_retry when that helper lands."""
-    return ES7.bulk(body)
+    """Perform one bulk request, retrying transient Elasticsearch errors."""
+    return bulk_with_retry(ES7, body)
 
 
-def bulk_index_with_backup(index, dataset, on_transport_error=None, bulk=_bulk):
-    """Backup ``index`` to ``{index}-tmp``, bulk-index ``dataset``, restore on failure.
+def maybe_backup_index(index, backup_index):
+    """Create a backup unless one already exists or the live index is empty.
 
-    Returns ``True`` if bulk indexing completed without ``TransportError``,
-    ``False`` if a transport error triggered rollback. Always deletes the
-    backup index when it exists (matching prior command behavior).
+    When ``setup`` has already written ``backup_index``, leave it alone so a
+    failed bulk load can restore the previous live data rather than an empty
+    new index.
     """
-    backup_index = '{}-tmp'.format(index)
+    if ES7.indices.exists(backup_index):
+        return
+    if not ES7.indices.exists(index):
+        return
+    count = ES7.count(index=index).get('count', 0)
+    if count == 0:
+        return
     ES7.reindex(body={
         'source': {
             'index': index
@@ -93,24 +99,40 @@ def bulk_index_with_backup(index, dataset, on_transport_error=None, bulk=_bulk):
         }
     })
 
-    ok = True
+
+def bulk_index_with_backup(index, dataset, on_transport_error=None, bulk=None):
+    """Backup ``index`` to ``{index}-tmp``, bulk-index ``dataset``, restore on failure.
+
+    Returns ``True`` if bulk indexing completed without ``TransportError``,
+    ``False`` if a transport error triggered rollback. Does not re-raise;
+    callers that must surface the failure should do so from
+    ``on_transport_error``'s stored exception after this returns. Deletes the
+    backup index when it exists.
+    """
+    if bulk is None:
+        bulk = _bulk
+    backup_index = '{}-tmp'.format(index)
+    maybe_backup_index(index, backup_index)
+
     try:
         for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
             chunk = dataset[i:i + ES_VARS['BULK_SIZE']]
             body = build_bulk_body(index, chunk)
             bulk(body)
     except TransportError as e:
-        ok = False
         if on_transport_error is not None:
             on_transport_error(e)
-        ES7.reindex(body={
-            'source': {
-                'index': backup_index
-            },
-            'dest': {
-                'index': index
-            }
-        })
+        if ES7.indices.exists(backup_index):
+            ES7.reindex(body={
+                'source': {
+                    'index': backup_index
+                },
+                'dest': {
+                    'index': index
+                }
+            })
+            ES7.indices.delete(backup_index)
+        return False
     if ES7.indices.exists(backup_index):
         ES7.indices.delete(backup_index)
-    return ok
+    return True
