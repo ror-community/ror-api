@@ -1,5 +1,5 @@
-import mock
 from io import StringIO
+from unittest import mock
 
 from django.core.management.base import OutputWrapper
 from django.test import SimpleTestCase
