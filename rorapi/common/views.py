@@ -31,6 +31,7 @@ from rorapi.v2.serializers import (
 
 from rorapi.common.queries import search_organizations, retrieve_organization, get_ror_id
 from urllib.parse import urlencode
+import hmac
 import os
 import update_address as ua
 from rorapi.management.commands.generaterorid import check_ror_id
@@ -122,18 +123,23 @@ class OurTokenPermission(BasePermission):
     """
 
     def has_permission(self, request, view):
-        has_permission = False
         if request.method == 'GET':
-            has_permission = True
-        else:
-            header_token = request.headers.get("Token", None)
-            header_user = request.headers.get("Route-User", None)
-            user = os.environ.get("ROUTE_USER")
-            token = os.environ.get("TOKEN")
-            if header_token == token and header_user == user:
-                has_permission = True
+            return True
 
-        return has_permission
+        header_token = request.headers.get("Token")
+        header_user = request.headers.get("Route-User")
+        user = os.environ.get("ROUTE_USER")
+        token = os.environ.get("TOKEN")
+
+        # Deny when env credentials are unset/empty or either header is missing.
+        # Avoid == on None (previously None==None granted write access).
+        if not token or not user or not header_token or not header_user:
+            return False
+
+        return (
+            hmac.compare_digest(header_token, token)
+            and hmac.compare_digest(header_user, user)
+        )
 
 
 class OrganizationViewSet(viewsets.ViewSet):

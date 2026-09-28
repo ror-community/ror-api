@@ -601,6 +601,22 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         search_mock.assert_not_called()
         self.assertEqual(len(error.errors), 6)
 
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_search_organizations_request_error(self, search_mock):
+        from elasticsearch.exceptions import RequestError
+
+        search_mock.side_effect = RequestError(
+            400,
+            'parsing_exception',
+            {'error': {'type': 'parsing_exception', 'reason': 'bad query'}},
+        )
+
+        error, organizations = search_organizations({'query': 'query'})
+        self.assertIsNone(organizations)
+        search_mock.assert_called_once()
+        self.assertEqual(len(error.errors), 1)
+        self.assertTrue('parsing_exception' in error.errors[0])
+
 
 class RetrieveOrganizationsTestCase(SimpleTestCase):
 
