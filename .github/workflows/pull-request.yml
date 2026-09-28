@@ -10,3 +10,20 @@ jobs:
   test-pr:
     uses: ./.github/workflows/run_tests.yml
     secrets: inherit
+  ruff:
+    runs-on: ubuntu-latest
+    # Soft-fail until Wave 5 (quickwin/ruff-fix) cleans the tree and removes this.
+    continue-on-error: true
+    steps:
+      - name: Checkout ror-api code
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Ruff check
+        run: ruff check .
+      - name: Ruff format check
+        run: ruff format --check .

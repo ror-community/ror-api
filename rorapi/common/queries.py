@@ -3,6 +3,8 @@ import json
 from titlecase import titlecase
 from collections import defaultdict
 
+from elasticsearch.exceptions import RequestError
+
 from rorapi.common.models import Errors
 from rorapi.common.matching import match_affiliation
 from rorapi.v2.models import (
@@ -270,7 +272,10 @@ def search_organizations(params):
     if error is not None:
         return error, None
     search = build_search_query(params)
-    return None, ListResultV2(search.execute())
+    try:
+        return None, ListResultV2(search.execute())
+    except RequestError as e:
+        return Errors([str(e)]), None
 
 
 def retrieve_organization(ror_id):
