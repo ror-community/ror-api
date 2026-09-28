@@ -9,6 +9,7 @@ from os.path import exists
 import pathlib
 import shutil
 from rorapi.settings import ES7, ES_VARS, DATA
+from rorapi.common.es_bulk import bulk_with_retry
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
@@ -163,7 +164,7 @@ def index(dataset, version):
                 # experimental affiliations_match nested doc
                 org['affiliation_match'] = get_affiliation_match_doc(org)
                 body.append(org)
-            ES7.bulk(body)
+            bulk_with_retry(ES7, body)
     except TransportError:
         err[index.__name__] = f"Indexing error, reverted index back to previous state"
         ES7.reindex(body={

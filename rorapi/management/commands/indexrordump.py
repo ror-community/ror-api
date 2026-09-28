@@ -1,11 +1,9 @@
 import json
 import os
 import re
-import requests
 import zipfile
-import base64
-from io import BytesIO
-from rorapi.settings import ES7, ES_VARS, ROR_DUMP, DATA
+from rorapi.settings import ES7, ES_VARS, DATA
+from rorapi.common.es_bulk import bulk_with_retry
 
 from django.core.management.base import BaseCommand
 from elasticsearch import TransportError
@@ -30,7 +28,7 @@ def get_single_search_names_v2(org):
             yield name["value"]
 
 def get_affiliation_match_doc(org):
-    doc = { 
+    doc = {
         'id': org['id'],
         'country': org["locations"][0]["geonames_details"]["country_code"],
         'status': org['status'],
@@ -40,8 +38,20 @@ def get_affiliation_match_doc(org):
     }
     return doc
 
-def index_dump(self, filename, index, dataset):
-    backup_index = '{}-tmp'.format(index)
+
+def _maybe_backup_index(index, backup_index):
+    """Create a backup of ``index`` unless one already exists or the index is empty.
+
+    When ``setup`` has already written ``backup_index``, leave it alone so a failed
+    bulk load can restore the previous live data rather than an empty new index.
+    """
+    if ES7.indices.exists(backup_index):
+        return
+    if not ES7.indices.exists(index):
+        return
+    count = ES7.count(index=index).get('count', 0)
+    if count == 0:
+        return
     ES7.reindex(body={
         'source': {
             'index': index
@@ -50,6 +60,11 @@ def index_dump(self, filename, index, dataset):
             'index': backup_index
         }
     })
+
+
+def index_dump(self, filename, index, dataset):
+    backup_index = '{}-tmp'.format(index)
+    _maybe_backup_index(index, backup_index)
 
     try:
         for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
@@ -70,18 +85,22 @@ def index_dump(self, filename, index, dataset):
                 # experimental affiliations_match nested doc
                 org['affiliation_match'] = get_affiliation_match_doc(org)
                 body.append(org)
-            ES7.bulk(body)
-    except TransportError:
-        self.stdout.write(TransportError)
+            bulk_with_retry(ES7, body)
+    except TransportError as e:
+        self.stdout.write(str(e))
         self.stdout.write('Reverting to backup index')
-        ES7.reindex(body={
-            'source': {
-                'index': backup_index
-            },
-            'dest': {
-                'index': index
-            }
-        })
+        if ES7.indices.exists(backup_index):
+            ES7.reindex(body={
+                'source': {
+                    'index': backup_index
+                },
+                'dest': {
+                    'index': index
+                }
+            })
+            ES7.indices.delete(backup_index)
+        raise
+
     if ES7.indices.exists(backup_index):
         ES7.indices.delete(backup_index)
     self.stdout.write('ROR dataset ' + filename + ' indexed')
@@ -117,7 +136,7 @@ class Command(BaseCommand):
                     elif 'schema_v2' in json_file:
                         # Legacy format with schema_v2 in filename
                         is_v2_format = True
-                    
+
                     if is_v2_format and (options.get('schema') == 2 or options.get('schema') is None):
                         self.stdout.write('Loading JSON')
                         with open(json_path, 'r') as it:
