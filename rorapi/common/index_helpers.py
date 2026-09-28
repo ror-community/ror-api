@@ -84,7 +84,8 @@ def maybe_backup_index(index, backup_index):
     ``backup_index`` (``'restore'``). An existing but empty live index returns
     ``'clear'``: reindexing an empty backup does not delete documents a
     partial bulk load already wrote, so failure handling must wipe the index.
-    ``'none'`` means there was no live index to preserve.
+    ``'none'`` means there was no live index; a failed bulk may have created
+    one, and failure handling deletes it.
     """
     if ES7.indices.exists(backup_index):
         return 'restore'
@@ -113,7 +114,9 @@ def bulk_index_with_backup(index, dataset, on_transport_error=None, bulk=None):
     ``on_transport_error``'s stored exception after this returns. A non-empty
     backup is reindexed back onto ``index``. An empty live index is cleared
     with delete-by-query, because reindexing an empty backup would leave
-    partial documents in place. Deletes the backup index when it exists.
+    partial documents in place. If the index did not exist beforehand and a
+    failed bulk created it, that index is deleted. Deletes the backup index
+    when it exists.
     """
     if bulk is None:
         bulk = _bulk
@@ -144,6 +147,8 @@ def bulk_index_with_backup(index, dataset, on_transport_error=None, bulk=None):
                 body={'query': {'match_all': {}}},
                 params={'conflicts': 'proceed', 'refresh': True},
             )
+        elif rollback == 'none' and ES7.indices.exists(index):
+            ES7.indices.delete(index)
         return False
     if ES7.indices.exists(backup_index):
         ES7.indices.delete(backup_index)

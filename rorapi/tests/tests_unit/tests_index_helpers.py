@@ -172,3 +172,26 @@ class BulkIndexWithBackupTestCase(SimpleTestCase):
             body={'query': {'match_all': {}}},
             params={'conflicts': 'proceed', 'refresh': True},
         )
+
+    @mock.patch('rorapi.common.index_helpers.ES7')
+    def test_missing_index_failure_deletes_index_created_by_bulk(self, es7_mock):
+        live_checks = {'n': 0}
+
+        def exists(name):
+            if name == self.backup_index:
+                return False
+            live_checks['n'] += 1
+            return live_checks['n'] > 1
+
+        es7_mock.indices.exists.side_effect = exists
+        bulk_mock = mock.Mock(side_effect=TransportError(503, 'Service Unavailable'))
+        on_error = mock.Mock()
+
+        ok = index_helpers.bulk_index_with_backup(
+            self.index, self.dataset, on_transport_error=on_error, bulk=bulk_mock)
+
+        self.assertFalse(ok)
+        on_error.assert_called_once()
+        es7_mock.reindex.assert_not_called()
+        es7_mock.delete_by_query.assert_not_called()
+        es7_mock.indices.delete.assert_called_once_with(self.index)
