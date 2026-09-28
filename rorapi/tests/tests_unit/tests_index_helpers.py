@@ -149,3 +149,26 @@ class BulkIndexWithBackupTestCase(SimpleTestCase):
         self.assertEqual(restore_body['source']['index'], self.backup_index)
         self.assertEqual(restore_body['dest']['index'], self.index)
         es7_mock.indices.delete.assert_called_once_with(self.backup_index)
+
+    @mock.patch('rorapi.common.index_helpers.ES7')
+    def test_empty_index_failure_clears_partial_documents(self, es7_mock):
+        def exists(name):
+            return name == self.index
+
+        es7_mock.indices.exists.side_effect = exists
+        es7_mock.count.return_value = {'count': 0}
+        bulk_mock = mock.Mock(side_effect=TransportError(429, 'Too Many Requests'))
+        on_error = mock.Mock()
+
+        ok = index_helpers.bulk_index_with_backup(
+            self.index, self.dataset, on_transport_error=on_error, bulk=bulk_mock)
+
+        self.assertFalse(ok)
+        on_error.assert_called_once()
+        es7_mock.reindex.assert_not_called()
+        es7_mock.indices.delete.assert_not_called()
+        es7_mock.delete_by_query.assert_called_once_with(
+            index=self.index,
+            body={'query': {'match_all': {}}},
+            params={'conflicts': 'proceed', 'refresh': True},
+        )
