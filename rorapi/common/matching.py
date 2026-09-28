@@ -1,11 +1,15 @@
 import geonamescache
 import os
 import re
-import unicodedata
-import unidecode
 
 from rorapi.common.models import Errors
 from rorapi.common.es_utils import ESQueryBuilder
+from rorapi.common.matching_common import (
+    check_latin_chars,
+    get_country_codes,
+    normalize,
+    to_region,
+)
 from rorapi.v2.models import MatchingResult as MatchingResultV2
 
 from collections import namedtuple
@@ -74,44 +78,6 @@ def load_countries():
 COUNTRIES = load_countries()
 
 
-def to_region(c):
-    """Map country code to "region" string.
-
-    This effectively groups countries often confused in the data to make sure
-    the scoring functions do not reject potential matching candidates."""
-
-    return {
-        "GB": "GB-UK",
-        "UK": "GB-UK",
-        "CN": "CN-HK-TW",
-        "HK": "CN-HK-TW",
-        "TW": "CN-HK-TW",
-        "PR": "US-PR",
-        "US": "US-PR",
-    }.get(c, c)
-
-
-def get_country_codes(string):
-    """Extract the country codes from the string,
-    if the country names are mentioned."""
-
-    string = unidecode.unidecode(string).strip()
-    lower = re.sub(r"\s+", " ", string.lower())
-    lower_alpha = re.sub(r"\s+", " ", re.sub("[^a-z]", " ", string.lower()))
-    alpha = re.sub(r"\s+", " ", re.sub("[^a-zA-Z]", " ", string))
-    codes = []
-    for code, name in COUNTRIES:
-        if re.search("[^a-z]", name):
-            score = fuzz.partial_ratio(name, lower)
-        elif len(name) == 2:
-            score = max([fuzz.ratio(name.upper(), t) for t in alpha.split()])
-        else:
-            score = max([fuzz.ratio(name, t) for t in lower_alpha.split()])
-        if score >= 90:
-            codes.append(code.upper())
-    return list(set(codes))
-
-
 def get_countries(string):
     """Extract country codes the the string and map to regions."""
 
@@ -122,48 +88,6 @@ def get_countries(string):
 #####################################################################
 # Similarity                                                        #
 #####################################################################
-
-
-def check_latin_chars(s):
-    for ch in s:
-        if ch.isalpha():
-            if "LATIN" not in unicodedata.name(ch):
-                return False
-    return True
-
-
-def normalize(s):
-    """Normalize string for matching."""
-
-    if check_latin_chars(s):
-        s = re.sub(r"\s+", " ", unidecode.unidecode(s).strip().lower())
-    else:
-        s = re.sub(r"\s+", " ", s.strip().lower())
-    s = re.sub(
-        "(?<![a-z])univ$",
-        "university",
-        re.sub(
-            r"(?<![a-z])univ[\. ]",
-            "university ",
-            re.sub(r"(?<![a-z])u\.(?! ?[a-z]\.)", "university ", s),
-        ),
-    )
-    s = re.sub(
-        "(?<![a-z])lab$", "laboratory", re.sub("(?<![a-z])lab[^a-z]", "laboratory ", s)
-    )
-    s = re.sub(
-        "(?<![a-z])inst$", "institute", re.sub("(?<![a-z])inst[^a-z]", "institute ", s)
-    )
-    s = re.sub(
-        "(?<![a-z])tech$",
-        "technology",
-        re.sub("(?<![a-z])tech[^a-z]", "technology ", s),
-    )
-    s = re.sub(r"(?<![a-z])u\. ?s\.", "united states", s)
-    s = re.sub("&", " and ", re.sub("&amp;", " and ", s))
-    s = re.sub("^the ", "", s)
-    s = re.sub(r"\s+", " ", s.strip().lower())
-    return s
 
 
 def get_similarity(aff_sub, cand_name):

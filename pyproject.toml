@@ -1,0 +1,29 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["rorapi"]
+exclude = [
+    ".git",
+    ".venv",
+    ".venv310",
+    ".uv-python",
+    "venv",
+    "__pycache__",
+    "vendor",
+    "esdata",
+    "rorapi/data",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # Pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+    "B",  # flake8-bugbear
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
