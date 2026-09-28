@@ -73,8 +73,8 @@ class IndexDumpTestCase(SimpleTestCase):
         self.index = ES_VARS['INDEX_V2']
         self.backup_index = '{}-tmp'.format(self.index)
 
-    @mock.patch('rorapi.management.commands.indexrordump.bulk_with_retry')
-    @mock.patch('rorapi.management.commands.indexrordump.ES7')
+    @mock.patch('rorapi.common.index_helpers.bulk_with_retry')
+    @mock.patch('rorapi.common.index_helpers.ES7')
     def test_retry_success_skips_rollback(self, es7_mock, bulk_mock):
         # setup already created -tmp; do not overwrite it
         es7_mock.indices.exists.side_effect = lambda name: name == self.backup_index
@@ -91,8 +91,8 @@ class IndexDumpTestCase(SimpleTestCase):
         self.assertIn('indexed', output)
         self.assertNotIn('Reverting', output)
 
-    @mock.patch('rorapi.management.commands.indexrordump.bulk_with_retry')
-    @mock.patch('rorapi.management.commands.indexrordump.ES7')
+    @mock.patch('rorapi.common.index_helpers.bulk_with_retry')
+    @mock.patch('rorapi.common.index_helpers.ES7')
     def test_exhausted_429_rolls_back_and_reraises(self, es7_mock, bulk_mock):
         es7_mock.indices.exists.return_value = True
         bulk_mock.side_effect = TransportError(429, 'Too Many Requests')
@@ -117,8 +117,8 @@ class IndexDumpTestCase(SimpleTestCase):
         self.assertTrue(found_restore, 'expected restore reindex from backup')
         es7_mock.indices.delete.assert_called_with(self.backup_index)
 
-    @mock.patch('rorapi.management.commands.indexrordump.bulk_with_retry')
-    @mock.patch('rorapi.management.commands.indexrordump.ES7')
+    @mock.patch('rorapi.common.index_helpers.bulk_with_retry')
+    @mock.patch('rorapi.common.index_helpers.ES7')
     def test_logging_transport_error_instance_does_not_raise_attribute_error(
             self, es7_mock, bulk_mock):
         """Regression: writing TransportError class caused AttributeError on endswith."""

@@ -2,107 +2,24 @@ import json
 import os
 import re
 import zipfile
-from rorapi.settings import ES7, ES_VARS, DATA
-from rorapi.common.es_bulk import bulk_with_retry
+from rorapi.settings import ES_VARS, DATA
+from rorapi.common.index_helpers import bulk_index_with_backup
 
 from django.core.management.base import BaseCommand
-from elasticsearch import TransportError
 
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 
-def get_nested_names_v2(org):
-    for name in org['names']:
-        yield name['value']
-
-def get_nested_ids_v2(org):
-    yield org['id']
-    yield re.sub('https://', '', org['id'])
-    yield re.sub('https://ror.org/', '', org['id'])
-    for ext_id in org['external_ids']:
-        for eid in ext_id['all']:
-            yield eid
-
-def get_single_search_names_v2(org):
-    for name in org["names"]:
-        if "acronym" not in name["types"]:
-            yield name["value"]
-
-def get_affiliation_match_doc(org):
-    doc = {
-        'id': org['id'],
-        'country': org["locations"][0]["geonames_details"]["country_code"],
-        'status': org['status'],
-        'primary': [n["value"] for n in org["names"] if "ror_display" in n["types"]][0],
-        'names': [{"name": n} for n in get_single_search_names_v2(org)],
-        'relationships': [{"type": r['type'], "id": r['id']} for r in org['relationships']]
-    }
-    return doc
-
-
-def _maybe_backup_index(index, backup_index):
-    """Create a backup of ``index`` unless one already exists or the index is empty.
-
-    When ``setup`` has already written ``backup_index``, leave it alone so a failed
-    bulk load can restore the previous live data rather than an empty new index.
-    """
-    if ES7.indices.exists(backup_index):
-        return
-    if not ES7.indices.exists(index):
-        return
-    count = ES7.count(index=index).get('count', 0)
-    if count == 0:
-        return
-    ES7.reindex(body={
-        'source': {
-            'index': index
-        },
-        'dest': {
-            'index': backup_index
-        }
-    })
-
-
 def index_dump(self, filename, index, dataset):
-    backup_index = '{}-tmp'.format(index)
-    _maybe_backup_index(index, backup_index)
+    caught = {}
 
-    try:
-        for i in range(0, len(dataset), ES_VARS['BULK_SIZE']):
-            body = []
-            for org in dataset[i:i + ES_VARS['BULK_SIZE']]:
-                body.append({
-                    'index': {
-                        '_index': index,
-                        '_id': org['id']
-                    }
-                })
-                org['names_ids'] = [{
-                    'name': n
-                } for n in get_nested_names_v2(org)]
-                org['names_ids'] += [{
-                    'id': n
-                } for n in get_nested_ids_v2(org)]
-                # experimental affiliations_match nested doc
-                org['affiliation_match'] = get_affiliation_match_doc(org)
-                body.append(org)
-            bulk_with_retry(ES7, body)
-    except TransportError as e:
-        self.stdout.write(str(e))
+    def on_transport_error(exc):
+        self.stdout.write(str(exc))
         self.stdout.write('Reverting to backup index')
-        if ES7.indices.exists(backup_index):
-            ES7.reindex(body={
-                'source': {
-                    'index': backup_index
-                },
-                'dest': {
-                    'index': index
-                }
-            })
-            ES7.indices.delete(backup_index)
-        raise
+        caught['exc'] = exc
 
-    if ES7.indices.exists(backup_index):
-        ES7.indices.delete(backup_index)
+    ok = bulk_index_with_backup(index, dataset, on_transport_error=on_transport_error)
+    if not ok:
+        raise caught['exc']
     self.stdout.write('ROR dataset ' + filename + ' indexed')
 
 
