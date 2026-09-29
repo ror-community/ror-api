@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import csv
 import json
 import io
@@ -43,7 +47,7 @@ def save_report_file(report, report_fields, csv_file, dir_name, validate_only):
                 f.write(chunk)
 
 def process_csv(csv_file, version, validate_only):
-    print("Processing CSV")
+    logger.info("Processing CSV")
     dir_name = datetime.now().strftime("%Y-%m-%d_%H_%M_%S") + "-ror-records"
     success_msg = None
     error = None
@@ -53,15 +57,15 @@ def process_csv(csv_file, version, validate_only):
     updated_count = 0
     new_count = 0
     read_file = csv_file.read().decode('utf-8')
-    print(read_file)
+    logger.info(read_file)
     reader = csv.DictReader(io.StringIO(read_file))
     row_num = 2
     for row in reader:
         html_url = None
         ror_id = None
         updated = False
-        print("Row data")
-        print(row)
+        logger.info("Row data")
+        logger.info(row)
         if row['html_url']:
             html_url = row['html_url']
         if row['id']:
@@ -80,7 +84,7 @@ def process_csv(csv_file, version, validate_only):
             ror_id = v2_record['id']
             serializer = OrganizationSerializerV2(v2_record)
             json_obj = json.loads(JSONRenderer().render(serializer.data))
-            print(json_obj)
+            logger.info(json_obj)
             if not validate_only:
                 #create file
                 file = save_record_file(ror_id, updated, json_obj, dir_name)

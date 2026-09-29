@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import csv
 import io
 import re
@@ -43,27 +47,27 @@ UPDATE_DELIMITER = "=="
 
 
 def get_actions_values(csv_field):
-    print("getting actions values:")
+    logger.info("getting actions values:")
     actions_values = {}
     if csv_field.lower() == UPDATE_ACTIONS["DELETE"]:
         actions_values[UPDATE_ACTIONS["DELETE"]] = None
     elif UPDATE_DELIMITER in csv_field:
         for ua in list(UPDATE_ACTIONS.values()):
-            print(ua)
+            logger.info(ua)
             if ua + UPDATE_DELIMITER in csv_field:
-                print("doing regex:")
+                logger.info("doing regex:")
                 regex = r"(" + re.escape(
       ua + UPDATE_DELIMITER) + r")(.*?)(?=$|(add|delete|replace)==)"
                 result = re.search(regex, csv_field)
-                print(result[0])
+                logger.info(result[0])
                 temp_val = result[0].replace(ua + UPDATE_DELIMITER, '')
-                print("temp val:")
-                print(temp_val)
+                logger.info("temp val:")
+                logger.info(temp_val)
                 actions_values[ua] = [v.strip() for v in temp_val.split(';') if v]
 
     else:
         actions_values[UPDATE_ACTIONS["REPLACE"]] = [v.strip() for v in csv_field.split(';') if v]
-    print(actions_values)
+    logger.info(actions_values)
     return actions_values
 
 def validate_csv(csv_file):
@@ -80,28 +84,28 @@ def validate_csv(csv_file):
             for field in CSV_REQUIRED_FIELDS_ACTIONS.keys():
                 if field not in csv_fields:
                     missing_fields.append(field)
-            print(missing_fields)
+            logger.info(missing_fields)
             if missing_fields:
                 errors.append(f'CSV file is missing columns: {", ".join(missing_fields)}')
         else:
             errors.append("CSV file contains no data rows")
     except IOError as e:
         errors.append(f"Error parsing CSV file: {e}")
-    print(errors)
+    logger.info(errors)
     return errors
 
 def validate_csv_row_update_syntax(csv_data):
-    print("validating row")
+    logger.info("validating row")
     errors = []
     for k, v in csv_data.items():
         if UPDATE_DELIMITER in v:
-            print("field:")
-            print(k)
-            print("value:")
-            print(v)
+            logger.info("field:")
+            logger.info(k)
+            logger.info("value:")
+            logger.info(v)
             actions_values = get_actions_values(v)
-            print("actions values:")
-            print(actions_values)
+            logger.info("actions values:")
+            logger.info(actions_values)
             update_actions = list(actions_values.keys())
             if not update_actions:
                 errors.append("Update delimiter '{}' found in '{}' field but no valid update action found in value {}".format(UPDATE_DELIMITER, k, v))
@@ -111,10 +115,10 @@ def validate_csv_row_update_syntax(csv_data):
                 if not (UPDATE_ACTIONS['ADD'] and UPDATE_ACTIONS['DELETE']) in update_actions:
                     errors.append("Invalid combination of update actions '{}' found in '{}' field.".format(", ".join(update_actions), k))
             disallowed_actions = [ua for ua in update_actions if ua not in CSV_REQUIRED_FIELDS_ACTIONS[k]]
-            print("allowed actions:")
-            print(CSV_REQUIRED_FIELDS_ACTIONS[k])
-            print("disallowed actions:")
-            print(disallowed_actions)
+            logger.info("allowed actions:")
+            logger.info(CSV_REQUIRED_FIELDS_ACTIONS[k])
+            logger.info("disallowed actions:")
+            logger.info(disallowed_actions)
             if disallowed_actions:
                 errors.append("Invalid update action(s) '{}' found in {} field. Allowed actions for this field are '{}'".format(", ".join(disallowed_actions), k, ", ".join(CSV_REQUIRED_FIELDS_ACTIONS[k])))
         if v.strip() == UPDATE_ACTIONS['DELETE'].lower() and k in NO_DELETE_FIELDS:

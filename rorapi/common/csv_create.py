@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import copy
 from rorapi.common.record_utils import *
 from rorapi.common.csv_utils import *
@@ -74,8 +78,8 @@ def new_record_from_csv(csv_data, version):
                         "lang": lang_code
                     }
                     temp_names.append(name_obj)
-    print("temp names 1:")
-    print(temp_names)
+    logger.info("temp names 1:")
+    logger.info(temp_names)
     name_vals = [n['value'] for n in temp_names]
     dup_names = []
     for n in name_vals:
@@ -99,8 +103,8 @@ def new_record_from_csv(csv_data, version):
                 if name_obj not in temp_names:
                     temp_names = [t for t in temp_names if t not in name_lang_dups]
                     temp_names.append(name_obj)
-    print("temp names 2:")
-    print(temp_names)
+    logger.info("temp names 2:")
+    logger.info(temp_names)
     v2_data['names'] = temp_names
 
     #status

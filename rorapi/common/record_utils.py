@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import jsonschema
 import requests
 from iso639 import Lang
@@ -24,8 +28,8 @@ def get_file_from_url(url):
 
 def validate_record(data, schema):
     try:
-        print("validating data:")
-        print(data)
+        logger.info("validating data:")
+        logger.info(data)
         jsonschema.validate(data, schema)
     except jsonschema.ValidationError as e:
         return "Validation error: " + e.message, None
