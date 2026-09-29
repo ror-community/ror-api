@@ -1,5 +1,6 @@
 import re
 import json
+import unicodedata
 from titlecase import titlecase
 from collections import defaultdict
 
@@ -187,6 +188,14 @@ def validate(params):
     return Errors(errors) if errors else None
 
 
+def nfc(value):
+    """Normalizes a string to Unicode NFC so decomposed (NFD) input matches
+    the precomposed characters indexed in Elasticsearch"""
+    if isinstance(value, str):
+        return unicodedata.normalize("NFC", value)
+    return value
+
+
 def build_search_query(params):
     """Builds search query from API parameters"""
 
@@ -198,20 +207,21 @@ def build_search_query(params):
             del params["all_status"]
 
     if "query.advanced" in params:
-        qb.add_string_query_advanced(params.get("query.advanced"))
+        qb.add_string_query_advanced(nfc(params.get("query.advanced")))
     elif "query" in params:
-        ror_id = get_ror_id(params.get("query"))
+        query = nfc(params.get("query"))
+        ror_id = get_ror_id(query)
         if ror_id is not None:
             qb.add_id_query(ror_id)
         else:
-            qb.add_string_query(params.get("query"))
+            qb.add_string_query(query)
     else:
         qb.add_match_all_query()
 
     if "filter" in params or (not "all_status" in params):
         filters = [
             f.split(":")
-            for f in filter_string_to_list(params.get("filter", ""))
+            for f in filter_string_to_list(nfc(params.get("filter", "")))
             if f
         ]
         # normalize filter values based on casing conventions used in ROR records
@@ -247,10 +257,10 @@ def build_search_query(params):
 
     qb.add_aggregations(
         [
-            ("types", "types"),
-            ("countries", "locations.geonames_details.country_code"),
-            ("continents", "locations.geonames_details.continent_code"),
-            ("statuses", "status"),
+            ("types", "types.raw"),
+            ("countries", "locations.geonames_details.country_code.raw"),
+            ("continents", "locations.geonames_details.continent_code.raw"),
+            ("statuses", "status.raw"),
         ]
     )
 

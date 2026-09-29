@@ -19,6 +19,15 @@
                     "type": "asciifolding",
                     "preserve_original": true
                 }
+            },
+            "normalizer": {
+                "folding_normalizer": {
+                    "type": "custom",
+                    "filter": [
+                        "lowercase",
+                        "asciifolding"
+                    ]
+                }
             }
         }
     },
@@ -61,7 +70,8 @@
                         "type": "keyword"
                     },
                     "type": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "normalizer": "folding_normalizer"
                     },
                     "preferred": {
                         "type": "keyword"
@@ -78,7 +88,8 @@
                         "analyzer": "simple"
                     },
                     "type": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "normalizer": "folding_normalizer"
                     }
                 }
             },
@@ -90,22 +101,38 @@
                     "geonames_details": {
                         "properties": {
                             "continent_code": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer",
+                                "fields": {
+                                    "raw": {
+                                        "type": "keyword"
+                                    }
+                                }
                             },
                             "continent_name": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer"
                             },
                             "country_code": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer",
+                                "fields": {
+                                    "raw": {
+                                        "type": "keyword"
+                                    }
+                                }
                             },
                             "country_name": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer"
                             },
                             "country_subdivision_code": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer"
                             },
                             "country_subdivision_name": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer"
                             },
                             "lat": {
                                 "type": "float"
@@ -114,7 +141,8 @@
                                 "type": "float"
                             },
                             "name": {
-                                "type": "keyword"
+                                "type": "keyword",
+                                "normalizer": "folding_normalizer"
                             }
                         }
                     }
@@ -133,23 +161,33 @@
                                 "analyzer": "string_lowercase",
                                 "fielddata": true
                             }
-                        }
+                        },
+                        "analyzer": "string_lowercase"
                     },
                     "lang": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "normalizer": "folding_normalizer"
                     },
                     "types": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "normalizer": "folding_normalizer"
                     }
                 }
             },
             "types": {
-                "type": "keyword"
+                "type": "keyword",
+                "normalizer": "folding_normalizer",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
             },
             "relationships": {
                 "properties": {
                     "type": {
-                        "type": "keyword"
+                        "type": "keyword",
+                        "normalizer": "folding_normalizer"
                     },
                     "label": {
                         "type": "text",
@@ -162,7 +200,8 @@
                                 "analyzer": "string_lowercase",
                                 "fielddata": true
                             }
-                        }
+                        },
+                        "analyzer": "string_lowercase"
                     },
                     "id": {
                         "type": "keyword"
@@ -170,7 +209,13 @@
                 }
             },
             "status": {
-                "type": "keyword"
+                "type": "keyword",
+                "normalizer": "folding_normalizer",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
             },
             "names_ids": {
                 "type": "nested",
