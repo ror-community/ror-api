@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import redirect
 from rest_framework.permissions import BasePermission
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from rorapi.settings import DATA
@@ -43,7 +44,16 @@ from django.utils.timezone import now
 from rorapi.v2.models import Client
 from rorapi.v2.serializers import ClientSerializer
 
+
+class ClientRegistrationThrottle(AnonRateThrottle):
+    """Tight anonymous limit for client-ID registration (settings.py left unchanged)."""
+
+    rate = "5/hour"
+
+
 class ClientRegistrationView(APIView):
+    throttle_classes = [ClientRegistrationThrottle]
+
     def post(self, request, version='v2'):
         serializer = ClientSerializer(data=request.data)
         if serializer.is_valid():

@@ -67,7 +67,6 @@ The ROR API provides:
 | App server | Phusion Passenger + Nginx (`vendor/docker/webapp.conf`) |
 | Container | Docker (`Dockerfile` based on `phusion/passenger-python312:3.2.0`) |
 | Observability | Sentry (`sentry-sdk` 1.45.1), django-prometheus 2.4.1 |
-| Feature flags | LaunchDarkly (`rorapi/common/features.py`; `launchdarkly-server-sdk` 7.6.1) |
 | Email | django-ses 4.8.0 (client ID registration emails) |
 | External packages | `update_address` (Geonames enrichment), `jsonschema` 3.2.0, `rapidfuzz` 3.6.1, `boto3` (unpinned), `pandas` 2.2.3 |
 
@@ -107,7 +106,7 @@ ror-api/
 │   │   ├── record_template.json
 │   │   ├── ror_schema_v2_1.json  # Vendored JSON schema for write validation
 │   │   └── index_template_es7.json  # ES index template + mappings
-│   ├── management/commands/  # CLI indexing and legacy GRID tools
+│   ├── management/commands/  # CLI indexing and data setup
 │   ├── migrations/           # Django migrations (Client model)
 │   └── tests/                # Unit, integration, functional, affiliation suites
 └── vendor/docker/            # Nginx, env, Terraform var templates for deploy
@@ -333,7 +332,6 @@ Loaded from environment and optional root `.env` file (`python-dotenv`).
 | `ROUTE_USER`, `TOKEN` | Admin API authentication |
 | `ROR_BASE_URL` | Base URL configuration |
 | `SENTRY_DSN` | Error reporting |
-| `LAUNCH_DARKLY_KEY` | Feature flags |
 | `SINGLE_SEARCH_DEFAULT` | Default affiliation matcher (`True`/`False`) |
 | `ENABLE_BEHAVIORAL_LIMITING` | Rate limiting toggle (edge behavior) |
 | `SECRET_KEY` | Django secret (falls back to a hardcoded default if unset; `DEBUG` is always `False`) |
@@ -400,9 +398,7 @@ Deploy mechanism: GitHub Action updates `_ror-api-*.auto.tfvars` in the `new-dep
 
 ## Legacy Code
 
-Commands prefixed with `legacy*` (GRID conversion, old upgrade paths) are **non-functional** — referenced data was moved to ror-data. GRID-based generation ended March 2022. Do not extend or rely on these unless explicitly reviving historical tooling.
-
-`settings.py` still contains commented GRID/ROR_DUMP version history for reference. `GRID_REMOVED_IDS` is an empty list retained for a check in `retrieve_organization`.
+GRID-based generation ended March 2022. The `legacy*` management commands, the LaunchDarkly call site, and the empty `GRID_REMOVED_IDS` check have been removed. `settings.py` still contains a short comment noting that ROR is no longer based on GRID. Historical GRID/ROR dump files live in [ror-data](https://github.com/ror-community/ror-data).
 
 ---
 
