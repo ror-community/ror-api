@@ -111,9 +111,9 @@ class Command(BaseCommand):
         filename = options['filename']
         use_test_data = options['testdata']
         if use_test_data:
-            print("Using ror-data-test repo")
+            logger.info("Using ror-data-test repo")
         else:
-            print("Using ror-data repo")
+            logger.info("Using ror-data repo")
 
         try:
             sha = get_ror_dump_sha(filename, use_test_data)

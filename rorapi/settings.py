@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import logging
 import os
 import sys
 import json
@@ -203,7 +204,8 @@ if DATA['DATA_STORE']:
         #DATA['CLIENT'] = localboto3.client('s3')
         #DATA['OBJECT'] = DATA['CLIENT'].list_objects_v2(Bucket = DATA['DATA_STORE'])
 else:
-    print("Please set the DATA_STORE environment variable or run this codebase through docker compose")
+    logging.getLogger(__name__).warning(
+        "Please set the DATA_STORE environment variable or run this codebase through docker compose")
 
 DATA['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data')
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
@@ -220,3 +222,19 @@ EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'rorapi': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
