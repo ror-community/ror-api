@@ -31,7 +31,7 @@ jobs:
           echo "GIT_TAG=$(git tag --points-at HEAD)" >> $GITHUB_OUTPUT
         id: set_git_vars
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
