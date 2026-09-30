@@ -211,3 +211,37 @@ class CaseAndAccentInsensitiveTestCase(SimpleTestCase):
         self.assertEqual(countries.get('us'), 'United States')
         continents = {b['id']: b['title'] for b in meta['continents']}
         self.assertEqual(continents.get('na'), 'North America')
+
+
+class ExternalIdAdvancedSearchTestCase(SimpleTestCase):
+    """External ID advanced search (ror-roadmap#70, #71)."""
+
+    def test_spaced_isni_without_quotes(self):
+        # query_string would otherwise split on spaces (roadmap#71)
+        unquoted = requests.get(BASE_URL, {
+            'query.advanced': 'external_ids.all:0000 0001 2375 2908'
+        }).json()
+        quoted = requests.get(BASE_URL, {
+            'query.advanced': 'external_ids.all:"0000 0001 2375 2908"'
+        }).json()
+        self.assertTrue(quoted['number_of_results'] > 0)
+        self.assertEqual(unquoted['number_of_results'],
+                         quoted['number_of_results'])
+        self.assertEqual(unquoted['items'][0]['id'],
+                         'https://ror.org/019496w77')
+
+    def test_fundref_via_v2_fields(self):
+        items = requests.get(BASE_URL, {
+            'query.advanced':
+            'external_ids.type:fundref AND external_ids.all:100000908'
+        }).json()
+        self.assertEqual(items['number_of_results'], 1)
+        self.assertEqual(items['items'][0]['id'], 'https://ror.org/02g8xhs57')
+
+    def test_legacy_fundref_path_error_hint(self):
+        items = requests.get(BASE_URL, {
+            'query.advanced': 'external_ids.FundRef.all:100000908'
+        }).json()
+        self.assertIn('errors', items)
+        self.assertTrue(any('external_ids.all' in e for e in items['errors']))
+        self.assertTrue(any('schema v2' in e for e in items['errors']))
