@@ -58,6 +58,25 @@ ALLOWED_FIELDS_V2 = (
 # _exists_: check if field has non-null value, ex _exists_:wikipedia_url
 ALLOWED_ENDINGS = ("_exists_", "\\", "\\*")
 
+# Keyword fields whose values often contain spaces (e.g. ISNI). Unquoted
+# whitespace is split by Elasticsearch query_string (default_operator AND),
+# so we auto-quote those values before building the query.
+_EXTERNAL_ID_VALUE_PATTERN = re.compile(
+    r"(?P<field>external_ids\.(?:all|preferred)):"
+    r"(?P<value>(?P<quoted>\"(?:\\.|[^\"\\])*\")|"
+    r"(?P<unquoted>.*?))"
+    r"(?=(?:\s+(?:AND|OR|NOT)\b|\s*\)|$))",
+    re.IGNORECASE | re.DOTALL,
+)
+_LEGACY_EXTERNAL_ID_FIELD = re.compile(
+    r"^external_ids\.[^.]+\.(all|preferred)$", re.IGNORECASE
+)
+_V2_EXTERNAL_ID_HINT = (
+    "for schema v2 use external_ids.type, external_ids.all, and/or "
+    "external_ids.preferred "
+    "(e.g. external_ids.type:fundref AND external_ids.all:100000908)"
+)
+
 
 def get_ror_id(string):
     """Extracts ROR id from a string and transforms it into canonical form"""
@@ -79,6 +98,40 @@ def adv_query_string_to_list(query_string):
             if substr.endswith(":"):
                 field_list.append(substr.rstrip(":"))
     return field_list
+
+
+def quote_spaced_external_id_values(query_string):
+    """Quote unquoted external_ids.all / .preferred values that contain spaces.
+
+    Elasticsearch query_string treats unquoted whitespace as term separators.
+    ISNI (and similar) IDs are stored as single keyword tokens with spaces, so
+    ``external_ids.all:0000 0001 2375 2908`` must become
+    ``external_ids.all:"0000 0001 2375 2908"``. Already-quoted values and
+    values without whitespace are left unchanged.
+    """
+    if not isinstance(query_string, str) or not query_string:
+        return query_string
+
+    def repl(match):
+        field = match.group("field")
+        if match.group("quoted") is not None:
+            return "{}:{}".format(field, match.group("quoted"))
+        value = match.group("unquoted") or ""
+        core = value.rstrip()
+        trailing_ws = value[len(core) :]
+        if not core or not any(c.isspace() for c in core):
+            return "{}:{}{}".format(field, core, trailing_ws)
+        return '{}:"{}"{}'.format(field, core, trailing_ws)
+
+    return _EXTERNAL_ID_VALUE_PATTERN.sub(repl, query_string)
+
+
+def illegal_field_error_message(field):
+    """Build the illegal-field error, with a v2 hint for legacy ID paths."""
+    message = "string '{}' contains an illegal field name".format(field)
+    if _LEGACY_EXTERNAL_ID_FIELD.match(field):
+        message = "{}; {}".format(message, _V2_EXTERNAL_ID_HINT)
+    return message
 
 
 def check_status_adv_q(adv_q_string):
@@ -158,9 +211,7 @@ def validate(params):
             and not f.endswith(tuple(ALLOWED_ENDINGS))
         )
     ]
-    errors.extend(
-        ["string '{}' contains an illegal field name".format(f) for f in illegal_fields]
-    )
+    errors.extend([illegal_field_error_message(f) for f in illegal_fields])
 
     filters = filter_string_to_list(params.get("filter", ""))
     invalid_filters = [f for f in filters if ":" not in f]
@@ -207,7 +258,8 @@ def build_search_query(params):
             del params["all_status"]
 
     if "query.advanced" in params:
-        qb.add_string_query_advanced(nfc(params.get("query.advanced")))
+        advanced = quote_spaced_external_id_values(nfc(params.get("query.advanced")))
+        qb.add_string_query_advanced(advanced)
     elif "query" in params:
         query = nfc(params.get("query"))
         ror_id = get_ror_id(query)
