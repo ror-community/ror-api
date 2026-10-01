@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import logging
 import os
 import sys
 import json
@@ -55,11 +56,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
     'django_prometheus',
@@ -72,12 +69,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'rorapi.middleware.cors.AlwaysAllowOriginMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware'
 ]
 
@@ -105,6 +97,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'UNAUTHENTICATED_USER': None,
+    'UNAUTHENTICATED_TOKEN': None,
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
     'DEFAULT_VERSION': 'v2',
     'ALLOWED_VERSIONS': ['v2'],
@@ -185,93 +180,11 @@ ES7 = Elasticsearch([{
     timeout=240,
     connection_class=RequestsHttpConnection)
 
-# ROR DUMP grid-2018-11-14
-# GRID = {
-#     'VERSION': '2018-11-14',
-#     'URL': 'https://ndownloader.figshare.com/files/13575374'
-# }
-
-# ROR DUMP grid-2019-02-17
-# GRID = {
-#     'VERSION': '2019-02-17',
-#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/14399291'
-# }
-
-# ROR DUMP ror-2019-09-19
-# GRID = {
-#    'VERSION': '2019-05-06',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/15167609'
-# }
-
-# ROR DUMP ror-2019-11-07
-# GRID = {
-#     'VERSION': '2019-10-06',
-#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/17948195'
-# }
-
-# ROR DUMP ror-2019-12-18
-# GRID = {
-#     'VERSION': '2019-12-10',
-#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/20151785'
-# }
-
-# ROR DUMP ror-2020-03-15
-# GRID = {
-#     'VERSION': '2020-03-15',
-#     'URL': 'https://digitalscience.figshare.com/ndownloader/files/22091379'
-# }
-
-# ROR DUMP ror-2020-07-06
-# GRID = {
-#    'VERSION': '2020-06-29',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/23552738'
-# }
-
-# ROR DUMP ror-2020-10-19
-#GRID = {
-#    'VERSION': '2020-10-06',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25039403'
-# }
-
-# ROR DUMP 2020-12-21 and 2021-03-17
-#GRID = {
-#    'VERSION': '2020-12-09',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/25791104'
-
-# ROR DUMP 2021-04-06
-#GRID = {
-#    'VERSION': '2021-03-25',
-#    'URL': 'https://digitalscience.figshare.com/ndownloader/files/27251693'
-#}
-
-# ROR DUMP 2021-09-23
-GRID = {
-    'VERSION': '2021-09-16',
-    'URL': 'no url'
-}
-# The latest GRID update, 2021-09-16, was shared via google drive.
-
-# GRID and LEGACY_ROR_DUMP vars were previously used to
-# generate ROR dataset based on the latest GRID dataset
-# Directories and files that these vars point to have been moved
-# to https://github.com/ror-community/ror-data
-# Scripts preprended with 'legacy' no longer work
-# As of Mar 2022 ROR is no longer based on GRID
-# New records are now created in https://github.com/ror-community/ror-records and pushed to S3
-# Individual record files in S3 are indexed with indexror.py
+# As of Mar 2022 ROR is no longer based on GRID.
+# New records are created in https://github.com/ror-community/ror-records and pushed to S3.
+# Individual record files in S3 are indexed with indexror.py.
 # Entire dataset zip files in https://github.com/ror-community/ror-data
-# can be indexed with setup.py, which uses indexrordump.py
-
-GRID['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
-                           'grid-{}'.format(GRID['VERSION']))
-GRID['GRID_ZIP_PATH'] = os.path.join(GRID['DIR'], 'grid.zip')
-GRID['GRID_JSON_PATH'] = os.path.join(GRID['DIR'], 'grid.json')
-
-LEGACY_ROR_DUMP = {'VERSION': '2021-09-23'}
-LEGACY_ROR_DUMP['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data',
-                               'ror-{}'.format(LEGACY_ROR_DUMP['VERSION']))
-LEGACY_ROR_DUMP['ROR_ZIP_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.zip')
-LEGACY_ROR_DUMP['ROR_JSON_PATH'] = os.path.join(LEGACY_ROR_DUMP['DIR'], 'ror.json')
+# can be indexed with setup.py, which uses indexrordump.py.
 
 ROR_DUMP = {}
 ROR_DUMP['PROD_REPO_URL'] = 'https://api.github.com/repos/ror-community/ror-data'
@@ -291,14 +204,11 @@ if DATA['DATA_STORE']:
         #DATA['CLIENT'] = localboto3.client('s3')
         #DATA['OBJECT'] = DATA['CLIENT'].list_objects_v2(Bucket = DATA['DATA_STORE'])
 else:
-    print("Please set the DATA_STORE environment variable or run this codebase through docker compose")
+    logging.getLogger(__name__).warning(
+        "Please set the DATA_STORE environment variable or run this codebase through docker compose")
 
 DATA['DIR'] = os.path.join(BASE_DIR, 'rorapi', 'data')
 ROR_API = {'PAGE_SIZE': 20, 'ID_PREFIX': 'https://ror.org/'}
-
-GRID_REMOVED_IDS = []
-
-LAUNCH_DARKLY_KEY = os.environ.get('LAUNCH_DARKLY_KEY')
 
 # Toggle for behavior-based rate limiting
 ENABLE_BEHAVIORAL_LIMITING = os.getenv("ENABLE_BEHAVIORAL_LIMITING", "False") == "True"
@@ -312,3 +222,19 @@ EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'rorapi': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}

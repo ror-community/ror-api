@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import copy
 from rorapi.common.record_utils import *
 from rorapi.v2.record_constants import *
@@ -12,29 +16,29 @@ from rorapi.common.create_update import update_record_from_json
 def update_record_from_csv(csv_data, version):
     errors = []
     updated_record = None
-    print("updating record from csv")
+    logger.info("updating record from csv")
     existing_org_errors, existing_org = retrieve_organization(csv_data['id'])
-    print(existing_org)
+    logger.info(existing_org)
     if existing_org is None:
         errors.append("No existing record found for ROR ID '{}'".format(csv_data['id']))
     else:
         row_validation_errors = validate_csv_row_update_syntax(csv_data)
         if row_validation_errors:
             errors.extend(row_validation_errors)
-            print("row validation errors:")
-            print(errors)
+            logger.info("row validation errors:")
+            logger.info(errors)
         else:
             serializer = OrganizationSerializerV2(existing_org)
             existing_record = serializer.data
-            print(existing_record)
+            logger.info(existing_record)
             update_data = {}
 
             #domains
             if csv_data['domains']:
                 actions_values = get_actions_values(csv_data['domains'])
                 temp_domains = copy.deepcopy(existing_record['domains'])
-                print("initial temp domains:")
-                print(temp_domains)
+                logger.info("initial temp domains:")
+                logger.info(temp_domains)
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
                     delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
                     if delete_values is None:
@@ -45,23 +49,23 @@ def update_record_from_csv(csv_data, version):
                                 errors.append("Attempting to delete domain(s) that don't exist: {}".format(d))
 
                         temp_domains = [d for d in temp_domains if d not in delete_values]
-                    print("temp domains delete")
-                    print(temp_domains)
+                    logger.info("temp domains delete")
+                    logger.info(temp_domains)
                 if UPDATE_ACTIONS['ADD'] in actions_values:
                     add_values = actions_values[UPDATE_ACTIONS['ADD']]
                     for a in add_values:
                         if a in temp_domains:
                             errors.append("Attempting to add domain(s) that already exist: {}".format(a))
-                    print(add_values)
+                    logger.info(add_values)
                     temp_domains.extend(add_values)
-                    print("temp domains add")
-                    print(temp_domains)
+                    logger.info("temp domains add")
+                    logger.info(temp_domains)
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
                     temp_domains = actions_values[UPDATE_ACTIONS['REPLACE']]
-                    print("temp domains replace")
-                    print(temp_domains)
-                print("final temp domains:")
-                print(temp_domains)
+                    logger.info("temp domains replace")
+                    logger.info(temp_domains)
+                logger.info("final temp domains:")
+                logger.info(temp_domains)
                 update_data['domains'] = temp_domains
 
             #established
@@ -180,18 +184,18 @@ def update_record_from_csv(csv_data, version):
                                     "value": r
                                 }
                                 temp_links.append(link_obj)
-                        print("final temp links:")
-                        print(temp_links)
+                        logger.info("final temp links:")
+                        logger.info(temp_links)
                         update_data['links'] = temp_links
 
             #locations
             if csv_data['locations.geonames_id']:
                 actions_values = get_actions_values(csv_data['locations.geonames_id'])
                 temp_locations = copy.deepcopy(existing_record['locations'])
-                print("initial temp locations:")
-                print(temp_locations)
+                logger.info("initial temp locations:")
+                logger.info(temp_locations)
                 existing_geonames_ids = [tl['geonames_id'] for tl in temp_locations]
-                print(existing_geonames_ids)
+                logger.info(existing_geonames_ids)
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
                     delete_values = [int(d) for d in actions_values[UPDATE_ACTIONS['DELETE']]]
                     for d in delete_values:
@@ -219,8 +223,8 @@ def update_record_from_csv(csv_data, version):
                             "geonames_details": {}
                         }
                         temp_locations.append(location_obj)
-                print("final temp locations:")
-                print(temp_locations)
+                logger.info("final temp locations:")
+                logger.info(temp_locations)
                 update_data['locations'] = temp_locations
 
             #names
@@ -228,20 +232,20 @@ def update_record_from_csv(csv_data, version):
             for k,v in V2_NAME_TYPES.items():
                 if csv_data['names.types.' + v]:
                     updated_name_types.append(v)
-            print("updated name types")
-            print(updated_name_types)
+            logger.info("updated name types")
+            logger.info(updated_name_types)
             if updated_name_types:
                 temp_names = copy.deepcopy(existing_record['names'])
                 for t in updated_name_types:
-                    print("updating name type " + t)
+                    logger.info("updating name type " + t)
                     if csv_data['names.types.' + t]:
                         actions_values = get_actions_values(csv_data['names.types.' + t])
                         for k, v in actions_values.items():
                             if v:
                                 vals_obj_list = []
                                 for val in v:
-                                    print("val is")
-                                    print(val)
+                                    logger.info("val is")
+                                    logger.info(val)
                                     vals_obj = {
                                         "value": None,
                                         "lang": None
@@ -263,12 +267,12 @@ def update_record_from_csv(csv_data, version):
                                     if vals_obj["value"]:
                                         vals_obj_list.append(vals_obj)
                                 actions_values[k] = vals_obj_list
-                        print("updated actions values")
-                        print(actions_values)
+                        logger.info("updated actions values")
+                        logger.info(actions_values)
                         if UPDATE_ACTIONS['DELETE'] in actions_values:
-                            print("delete in actions")
+                            logger.info("delete in actions")
                             delete_values = actions_values[UPDATE_ACTIONS['DELETE']]
-                            print(delete_values)
+                            logger.info(delete_values)
                             if delete_values is None:
                                 temp_names = [tn for tn in temp_names if t not in tn['types']]
                             else:
@@ -299,8 +303,8 @@ def update_record_from_csv(csv_data, version):
                                 else:
                                     name_vals_match = [tn for tn in temp_names if (tn['value'] == a['value'] and tn['lang'] == a['lang'])]
                                     if name_vals_match:
-                                        print("name vals match")
-                                        print(name_vals_match)
+                                        logger.info("name vals match")
+                                        logger.info(name_vals_match)
                                         for nvm in name_vals_match:
                                             # if value and lang exist but not type, add type only
                                             if len(nvm['types']) > 0:
@@ -346,8 +350,8 @@ def update_record_from_csv(csv_data, version):
                                     }
                                     temp_names.append(name_obj)
 
-                print("final temp names:")
-                print(temp_names)
+                logger.info("final temp names:")
+                logger.info(temp_names)
                 update_data['names'] = temp_names
 
             #status
@@ -362,8 +366,8 @@ def update_record_from_csv(csv_data, version):
             if csv_data['types']:
                 actions_values = get_actions_values(csv_data['types'])
                 temp_types = copy.deepcopy(existing_record['types'])
-                print("initial temp types:")
-                print(temp_types)
+                logger.info("initial temp types:")
+                logger.info(temp_types)
                 if UPDATE_ACTIONS['DELETE'] in actions_values:
                     delete_values = [av.lower() for av in actions_values[UPDATE_ACTIONS['DELETE']]]
                     for d in delete_values:
@@ -380,8 +384,8 @@ def update_record_from_csv(csv_data, version):
                     temp_types.extend(add_values)
                 if UPDATE_ACTIONS['REPLACE'] in actions_values:
                     temp_types = [av.lower() for av in actions_values[UPDATE_ACTIONS['REPLACE']]]
-                print("final temp types:")
-                print(temp_types)
+                logger.info("final temp types:")
+                logger.info(temp_types)
                 update_data['types'] = temp_types
 
             if not errors:

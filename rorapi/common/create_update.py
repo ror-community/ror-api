@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import copy
 import functools
 import json
@@ -60,10 +64,10 @@ def update_locations(locations):
     for location in locations:
         if 'geonames_id' in location:
             try:
-                print(location['geonames_id'])
+                logger.info(location['geonames_id'])
                 updated_location = ua.new_geonames_v2(str(location['geonames_id']))
                 updated_locations.append(updated_location['location'])
-            except:
+            except Exception:
                 error = "Error retrieving Geonames data for ID {}. Please check that this is a valid Geonames ID".format(location['geonames_id'])
     return error, updated_locations
 
@@ -90,7 +94,7 @@ def new_record_from_json(json_input, version):
         new_record['locations'] = updated_locations
         new_record = add_created_last_mod(new_record)
         new_ror_id = check_ror_id()
-        print("new ror id: " + new_ror_id)
+        logger.info("new ror id: " + new_ror_id)
         new_record['id'] = new_ror_id
         error, valid_data = validate_record(sort_list_fields(new_record), get_v2_schema())
     return error, valid_data

@@ -107,49 +107,9 @@ The API uses the v2 schema only. Use `-s 2` when indexing a data dump. A v2 form
         python manage.py setup v1.32-2023-09-14-ror-data -s 2 -t
 
 
-## LEGACY: Converting GRID data to ROR  (process used prior to Mar 2022)
+## GRID history (prior to Mar 2022)
 
-Steps used prior to Mar 2022:
-- Convert latest GRID dataset to ROR (including assigning ROR IDs)
-- Generate ROR data dump
-- Index ROR data dump into Elastic Search
-
-As of Mar 2022 ROR is no longer based on GRID. Record additions/updates and data deployment is now managed in https://github.com/ror-community/ror-records using the ```indexror``` command described above.
-
-Steps below no longer work, as data files have been moved to [ror-data](https://github.com/ror-community/ror-data). This information is being maintained for historical purposes.
-
-Management commands used in this process no longer work and are pre-pended with "legacy".
-
-
-To import GRID data, you need a system where `setup` has been run successfully. Then first update the `GRID` variable in `settings.py`, e.g.
-
-```
-GRID = {
-    'VERSION': '2020-03-15',
-    'URL': 'https://digitalscience.figshare.com/ndownloader/files/22091379'
-}
-```
-
-And, also in `settings.py`, set the `ROR_DUMP` variable, e.g.
-
-```
-ROR_DUMP = {'VERSION': '2020-04-02'}
-```
-
-Then run this command: `./manage.py upgrade`.
-
-You should see this in the console:
-
-```
-Downloading GRID version 2020-03-15
-Converting GRID dataset to ROR schema
-ROR dataset created
-ROR dataset ZIP archive created
-```
-
-This will create a new `data/ror-2020-03-15` folder, containing a `ror.json` and `ror.zip`. To finish the process, add the new folder to git and push to the GitHub repo.
-
-To install the updated ROR data, run `./manage.py setup`.
+Before March 2022, ROR records were derived from GRID: convert the GRID dataset, generate a dump, and index it. That pipeline and its management commands have been removed. Record additions/updates and data deployment are now managed in https://github.com/ror-community/ror-records using the `indexror` command described above. Historical GRID/ROR dump files live in [ror-data](https://github.com/ror-community/ror-data).
 
 ## Create new record file (v2 only)
 

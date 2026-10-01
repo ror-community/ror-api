@@ -27,7 +27,7 @@ def get_ror_dump_sha(filename, use_test_data, github_headers):
             if filename in file['name']:
                 sha = file['sha']
         return sha
-    except:
+    except Exception:
         return None
 
 def get_ror_dump_zip(self, filename, use_test_data, github_headers):
@@ -52,7 +52,7 @@ def get_ror_dump_zip(self, filename, use_test_data, github_headers):
                 if dir_names:
                     raise SystemExit(f"Dump zip has extra directory and cannot be indexed")
             return zip_file.name
-        except:
+        except Exception:
             raise SystemExit(f"Something went wrong saving zip file")
 
 class Command(BaseCommand):

@@ -1,5 +1,6 @@
 import re
 import json
+import unicodedata
 from titlecase import titlecase
 from collections import defaultdict
 
@@ -11,7 +12,7 @@ from rorapi.v2.models import (
     Organization as OrganizationV2,
     ListResult as ListResultV2
 )
-from rorapi.settings import GRID_REMOVED_IDS, ROR_API, ES_VARS
+from rorapi.settings import ROR_API, ES_VARS
 from rorapi.common.es_utils import ESQueryBuilder
 
 from urllib.parse import unquote
@@ -57,6 +58,25 @@ ALLOWED_FIELDS_V2 = (
 # _exists_: check if field has non-null value, ex _exists_:wikipedia_url
 ALLOWED_ENDINGS = ("_exists_", "\\", "\\*")
 
+# Keyword fields whose values often contain spaces (e.g. ISNI). Unquoted
+# whitespace is split by Elasticsearch query_string (default_operator AND),
+# so we auto-quote those values before building the query.
+_EXTERNAL_ID_VALUE_PATTERN = re.compile(
+    r"(?P<field>external_ids\.(?:all|preferred)):"
+    r"(?P<value>(?P<quoted>\"(?:\\.|[^\"\\])*\")|"
+    r"(?P<unquoted>.*?))"
+    r"(?=(?:\s+(?:AND|OR|NOT)\b|\s*\)|$))",
+    re.IGNORECASE | re.DOTALL,
+)
+_LEGACY_EXTERNAL_ID_FIELD = re.compile(
+    r"^external_ids\.[^.]+\.(all|preferred)$", re.IGNORECASE
+)
+_V2_EXTERNAL_ID_HINT = (
+    "for schema v2 use external_ids.type, external_ids.all, and/or "
+    "external_ids.preferred "
+    "(e.g. external_ids.type:fundref AND external_ids.all:100000908)"
+)
+
 
 def get_ror_id(string):
     """Extracts ROR id from a string and transforms it into canonical form"""
@@ -78,6 +98,40 @@ def adv_query_string_to_list(query_string):
             if substr.endswith(":"):
                 field_list.append(substr.rstrip(":"))
     return field_list
+
+
+def quote_spaced_external_id_values(query_string):
+    """Quote unquoted external_ids.all / .preferred values that contain spaces.
+
+    Elasticsearch query_string treats unquoted whitespace as term separators.
+    ISNI (and similar) IDs are stored as single keyword tokens with spaces, so
+    ``external_ids.all:0000 0001 2375 2908`` must become
+    ``external_ids.all:"0000 0001 2375 2908"``. Already-quoted values and
+    values without whitespace are left unchanged.
+    """
+    if not isinstance(query_string, str) or not query_string:
+        return query_string
+
+    def repl(match):
+        field = match.group("field")
+        if match.group("quoted") is not None:
+            return "{}:{}".format(field, match.group("quoted"))
+        value = match.group("unquoted") or ""
+        core = value.rstrip()
+        trailing_ws = value[len(core) :]
+        if not core or not any(c.isspace() for c in core):
+            return "{}:{}{}".format(field, core, trailing_ws)
+        return '{}:"{}"{}'.format(field, core, trailing_ws)
+
+    return _EXTERNAL_ID_VALUE_PATTERN.sub(repl, query_string)
+
+
+def illegal_field_error_message(field):
+    """Build the illegal-field error, with a v2 hint for legacy ID paths."""
+    message = "string '{}' contains an illegal field name".format(field)
+    if _LEGACY_EXTERNAL_ID_FIELD.match(field):
+        message = "{}; {}".format(message, _V2_EXTERNAL_ID_HINT)
+    return message
 
 
 def check_status_adv_q(adv_q_string):
@@ -157,9 +211,7 @@ def validate(params):
             and not f.endswith(tuple(ALLOWED_ENDINGS))
         )
     ]
-    errors.extend(
-        ["string '{}' contains an illegal field name".format(f) for f in illegal_fields]
-    )
+    errors.extend([illegal_field_error_message(f) for f in illegal_fields])
 
     filters = filter_string_to_list(params.get("filter", ""))
     invalid_filters = [f for f in filters if ":" not in f]
@@ -187,6 +239,14 @@ def validate(params):
     return Errors(errors) if errors else None
 
 
+def nfc(value):
+    """Normalizes a string to Unicode NFC so decomposed (NFD) input matches
+    the precomposed characters indexed in Elasticsearch"""
+    if isinstance(value, str):
+        return unicodedata.normalize("NFC", value)
+    return value
+
+
 def build_search_query(params):
     """Builds search query from API parameters"""
 
@@ -198,20 +258,22 @@ def build_search_query(params):
             del params["all_status"]
 
     if "query.advanced" in params:
-        qb.add_string_query_advanced(params.get("query.advanced"))
+        advanced = quote_spaced_external_id_values(nfc(params.get("query.advanced")))
+        qb.add_string_query_advanced(advanced)
     elif "query" in params:
-        ror_id = get_ror_id(params.get("query"))
+        query = nfc(params.get("query"))
+        ror_id = get_ror_id(query)
         if ror_id is not None:
             qb.add_id_query(ror_id)
         else:
-            qb.add_string_query(params.get("query"))
+            qb.add_string_query(query)
     else:
         qb.add_match_all_query()
 
     if "filter" in params or (not "all_status" in params):
         filters = [
             f.split(":")
-            for f in filter_string_to_list(params.get("filter", ""))
+            for f in filter_string_to_list(nfc(params.get("filter", "")))
             if f
         ]
         # normalize filter values based on casing conventions used in ROR records
@@ -247,10 +309,10 @@ def build_search_query(params):
 
     qb.add_aggregations(
         [
-            ("types", "types"),
-            ("countries", "locations.geonames_details.country_code"),
-            ("continents", "locations.geonames_details.continent_code"),
-            ("statuses", "status"),
+            ("types", "types.raw"),
+            ("countries", "locations.geonames_details.country_code.raw"),
+            ("continents", "locations.geonames_details.continent_code.raw"),
+            ("statuses", "status.raw"),
         ]
     )
 
@@ -280,19 +342,6 @@ def search_organizations(params):
 
 def retrieve_organization(ror_id):
     """Retrieves the organization of the given ROR ID"""
-    if any(ror_id in ror_id_url for ror_id_url in GRID_REMOVED_IDS):
-        return (
-            Errors(
-                [
-                    "ROR ID '{}' was removed by GRID during the time period (Jan 2019-Mar 2022) "
-                    "that ROR was synced with GRID. We are currently working with the ROR Curation Advisory Board "
-                    "to restore these records and expect to complete this work in 2022".format(
-                        ror_id
-                    )
-                ]
-            ),
-            None,
-        )
     search = build_retrieve_query(ror_id)
     results = search.execute()
     total = results.hits.total.value

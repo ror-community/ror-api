@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v4
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
@@ -22,7 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_RORAPI_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RORAPI_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
           echo "GIT_TAG=$(git tag --points-at HEAD)" >> $GITHUB_OUTPUT
         id: set_git_vars
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
@@ -80,7 +80,7 @@ jobs:
           git add ror/services/api/environments/prod/_ror-api.auto.tfvars
           git commit -m "Adding ror-api git variables for commit ${{ steps.extract_variables.outputs.GIT_SHA }}"
       - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v1.3.0
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           repository: 'ror-community/new-deployment'

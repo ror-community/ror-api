@@ -4,7 +4,8 @@ import os
 
 from django.test import SimpleTestCase
 from rorapi.common.queries import get_ror_id, validate, build_search_query, \
-    build_retrieve_query, search_organizations, retrieve_organization
+    build_retrieve_query, search_organizations, retrieve_organization, \
+    quote_spaced_external_id_values
 from rorapi.settings import ES_VARS
 from .utils import IterableAttrDict
 
@@ -65,6 +66,16 @@ class ValidationTestCase(SimpleTestCase):
         })
         self.assertEqual(len(error.errors), 1)
         self.assertTrue(any(['illegal' in e for e in error.errors]))
+
+    def test_legacy_external_id_field_hint(self):
+        error = validate({
+            'query.advanced': 'external_ids.FundRef.all:100000908'
+        })
+        self.assertEqual(len(error.errors), 1)
+        self.assertIn('illegal field name', error.errors[0])
+        self.assertIn('external_ids.type', error.errors[0])
+        self.assertIn('external_ids.all', error.errors[0])
+        self.assertIn('schema v2', error.errors[0])
 
 
     def test_invalid_filter(self):
@@ -168,10 +179,10 @@ class BuildSearchQueryTestCase(SimpleTestCase):
 
     def setUp(self):
         self.default_query = \
-                {'aggs': {'types': {'terms': {'field': 'types', 'size': 10, 'min_doc_count': 1}},
-                'countries': {'terms': {'field': 'locations.geonames_details.country_code', 'size': 10, 'min_doc_count': 1}},
-                'continents': {'terms': {'field': 'locations.geonames_details.continent_code', 'size': 10, 'min_doc_count': 1}},
-                'statuses': {'terms': {'field': 'status', 'size': 10, 'min_doc_count': 1}}},
+                {'aggs': {'types': {'terms': {'field': 'types.raw', 'size': 10, 'min_doc_count': 1}},
+                'countries': {'terms': {'field': 'locations.geonames_details.country_code.raw', 'size': 10, 'min_doc_count': 1}},
+                'continents': {'terms': {'field': 'locations.geonames_details.continent_code.raw', 'size': 10, 'min_doc_count': 1}},
+                'statuses': {'terms': {'field': 'status.raw', 'size': 10, 'min_doc_count': 1}}},
                 'track_total_hits': True, 'from': 0, 'size': 20}
 
     def test_empty_query_default(self):
@@ -283,6 +294,63 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         expected.update(self.default_query)
         query = build_search_query({'query.advanced': 'query terms'})
         self.assertEqual(query.to_dict(), expected)
+
+    def test_quote_spaced_external_id_values_helper(self):
+        self.assertEqual(
+            quote_spaced_external_id_values(
+                'external_ids.all:0000 0001 2375 2908'),
+            'external_ids.all:"0000 0001 2375 2908"')
+        self.assertEqual(
+            quote_spaced_external_id_values(
+                'external_ids.all:"0000 0001 2375 2908"'),
+            'external_ids.all:"0000 0001 2375 2908"')
+        self.assertEqual(
+            quote_spaced_external_id_values('external_ids.all:100000908'),
+            'external_ids.all:100000908')
+        self.assertEqual(
+            quote_spaced_external_id_values(
+                'external_ids.all:0000 0001 2375 2908 AND status:active'),
+            'external_ids.all:"0000 0001 2375 2908" AND status:active')
+
+    def test_query_advanced_quotes_spaced_external_ids(self):
+        query = build_search_query({
+            'query.advanced': 'external_ids.all:0000 0001 2375 2908'
+        }).to_dict()
+        self.assertEqual(
+            query['query']['bool']['must'][0]['query_string']['query'],
+            'external_ids.all:"0000 0001 2375 2908"')
+
+    def test_query_advanced_nfc_normalization(self):
+        nfd = 'locations.geonames_details.name:Hu\u0065\u0302\u0301'
+        nfc_form = 'locations.geonames_details.name:Hu\u1ebf'
+        self.assertNotEqual(nfd, nfc_form)
+        query = build_search_query({'query.advanced': nfd}).to_dict()
+        self.assertEqual(
+            query['query']['bool']['must'][0]['query_string']['query'], nfc_form)
+
+    def test_query_nfc_normalization(self):
+        query = build_search_query({'query': 'Montre\u0301al'}).to_dict()
+        self.assertEqual(
+            query['query']['bool']['must'][0]['nested']['query']['query_string']['query'],
+            'Montr\u00e9al')
+
+    def test_filter_nfc_normalization(self):
+        query = build_search_query({
+            'filter': 'locations.geonames_details.country_name:Cura\u0063\u0327ao',
+            'all_status': ''
+        }).to_dict()
+        self.assertIn(
+            {'terms': {'locations.geonames_details.country_name': ('Cura\u00e7ao',)}},
+            query['query']['bool']['filter'])
+
+    def test_aggregations_use_raw_subfields(self):
+        aggs = build_search_query({}).to_dict()['aggs']
+        self.assertEqual(aggs['types']['terms']['field'], 'types.raw')
+        self.assertEqual(aggs['countries']['terms']['field'],
+                         'locations.geonames_details.country_code.raw')
+        self.assertEqual(aggs['continents']['terms']['field'],
+                         'locations.geonames_details.continent_code.raw')
+        self.assertEqual(aggs['statuses']['terms']['field'], 'status.raw')
 
     def test_query_advanced_all_status(self):
         expected = {'query': {

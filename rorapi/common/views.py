@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 import csv
 from rest_framework import viewsets, routers, status
 from rest_framework.response import Response
@@ -5,6 +9,7 @@ from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import redirect
 from rest_framework.permissions import BasePermission
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from rorapi.settings import DATA
@@ -43,7 +48,16 @@ from django.utils.timezone import now
 from rorapi.v2.models import Client
 from rorapi.v2.serializers import ClientSerializer
 
+
+class ClientRegistrationThrottle(AnonRateThrottle):
+    """Tight anonymous limit for client-ID registration (settings.py left unchanged)."""
+
+    rate = "5/hour"
+
+
 class ClientRegistrationView(APIView):
+    throttle_classes = [ClientRegistrationThrottle]
+
     def post(self, request, version='v2'):
         serializer = ClientSerializer(data=request.data)
         if serializer.is_valid():
@@ -150,7 +164,7 @@ class OrganizationViewSet(viewsets.ViewSet):
     def list(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         params = request.GET.dict()
         if "query.name" in params or "query.names" in params:
-            print("redirecting")
+            logger.info("redirecting")
             param_name = "query.name" if "query.name" in params else "query.names"
             params["query"] = params[param_name]
             del params[param_name]
@@ -266,7 +280,7 @@ class GenerateId(APIView):
 
     def get(self, request, version=REST_FRAMEWORK["DEFAULT_VERSION"]):
         id = check_ror_id()
-        print("Generated ID: {}".format(id))
+        logger.info("Generated ID: {}".format(id))
         return Response({"id": id})
 
 class IndexData(APIView):
@@ -309,7 +323,7 @@ class BulkUpdate(APIView):
                 errors = Errors(["File upload required. 'file' field is missing."])
             else:
                 mime_type = magic.from_buffer(file_object.read(2048))
-                print(mime_type)
+                logger.info(mime_type)
                 if "ASCII text" in mime_type or "UTF-8 text" in mime_type or "UTF-8 Unicode text" in mime_type or "CSV text" in mime_type:
                     file_object.seek(0)
                     csv_validation_errors = validate_csv(file_object)
@@ -328,7 +342,7 @@ class BulkUpdate(APIView):
         else:
             errors = Errors(["Could not process request. No data included in request."])
         if errors is not None:
-            print(errors.__dict__)
+            logger.info(errors.__dict__)
             return Response(
                 ErrorsSerializer(errors).data, status=status.HTTP_400_BAD_REQUEST
             )
