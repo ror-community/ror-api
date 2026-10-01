@@ -60,14 +60,33 @@ jobs:
         run: |
           python -Wd manage.py check
           python manage.py makemigrations --check --dry-run
+      - name: Run unit tests
+        working-directory: ./ror-api
+        run: |
+          python -Wa manage.py test rorapi.tests.tests_unit
       - name: Load test data
         working-directory: ./ror-api
         run: |
           python manage.py setup ${{ env.TEST_DATA_DUMP_FILE }} -t
-      - name: Run Tests
+      - name: Run integration tests
         working-directory: ./ror-api
+        env:
+          ROR_BASE_URL: http://127.0.0.1:8000
         run: |
-          python -Wa manage.py test rorapi.tests.tests_unit
-          # TODO fix these tests running in GitHub Action
-          # python manage.py test rorapi.tests.tests_integration
+          python manage.py runserver 127.0.0.1:8000 --noreload > /tmp/runserver.log 2>&1 &
+          ready=0
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8000/heartbeat; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" != 1 ]; then
+            echo "API did not become ready"
+            cat /tmp/runserver.log
+            exit 1
+          fi
+          python manage.py test rorapi.tests.tests_integration
+          # tests_functional stays off until the evaluation harness passes
           # python manage.py test rorapi.tests.tests_functional
