@@ -15,7 +15,7 @@ mysqlclient==2.2.7
 pycountry==22.3.5
 python-dotenv==1.2.3
 python-magic
-rapidfuzz==3.6.1
+rapidfuzz==3.14.6
 requests==2.33.0
 requests-aws4auth==0.9
 sentry-sdk==1.45.1
