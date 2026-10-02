@@ -61,6 +61,10 @@
                 "type": "text",
                 "analyzer": "simple"
             },
+            "acronyms": {
+                "type": "keyword",
+                "normalizer": "folding_normalizer"
+            },
             "established": {
                 "type": "date"
             },

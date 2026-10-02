@@ -179,7 +179,6 @@ def match_by_query(text, matching_type, query, countries):
 def match_by_type(text, matching_type, countries):
     """Match affiliation text using specific matching mode/type."""
 
-    fields = ["names.value.norm"]
     substrings = []
     if matching_type == MATCHING_TYPE_HEURISTICS:
         h1 = re.search(r"University of ([^\s]+)", text)
@@ -204,17 +203,18 @@ def match_by_type(text, matching_type, countries):
 
     queries = [ESQueryBuilder() for _ in substrings]
 
+    normalized = normalize(text)
     for s, q in zip(substrings, queries):
         if matching_type == MATCHING_TYPE_PHRASE:
-            q.add_phrase_query(fields, normalize(text))
+            q.add_phrase_query_affiliation_names(normalized)
         elif matching_type == MATCHING_TYPE_COMMON:
-            q.add_common_query(fields, normalize(text))
+            q.add_common_query_affiliation_names(normalized)
         elif matching_type == MATCHING_TYPE_FUZZY:
-            q.add_fuzzy_query(fields, normalize(text))
+            q.add_fuzzy_query_affiliation_names(normalized)
         elif matching_type == MATCHING_TYPE_ACRONYM:
-            q.add_match_query(normalize(text))
+            q.add_match_query(normalized)
         elif matching_type == MATCHING_TYPE_HEURISTICS:
-            q.add_common_query(fields, normalize(text))
+            q.add_common_query_affiliation_names(normalized)
     queries = [q.get_query() for q in queries]
     matched = [
         match_by_query(t, matching_type, q, countries)

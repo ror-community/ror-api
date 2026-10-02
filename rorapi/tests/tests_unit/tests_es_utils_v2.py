@@ -161,6 +161,72 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
                 'track_total_hits': True
             })
 
+    def test_phrase_query_affiliation_names(self):
+        qb = ESQueryBuilder()
+        qb.add_phrase_query_affiliation_names('query terms')
+
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'nested': {
+                        'path': 'affiliation_match.names',
+                        'score_mode': 'max',
+                        'query': {
+                            'match_phrase': {
+                                'affiliation_match.names.name': 'query terms'
+                            }
+                        }
+                    }
+                },
+                'track_total_hits': True
+            })
+
+    def test_common_query_affiliation_names(self):
+        qb = ESQueryBuilder()
+        qb.add_common_query_affiliation_names('query terms')
+
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'nested': {
+                        'path': 'affiliation_match.names',
+                        'score_mode': 'max',
+                        'query': {
+                            'common': {
+                                'affiliation_match.names.name': {
+                                    'query': 'query terms',
+                                    'cutoff_frequency': 0.001
+                                }
+                            }
+                        }
+                    }
+                },
+                'track_total_hits': True
+            })
+
+    def test_fuzzy_query_affiliation_names(self):
+        qb = ESQueryBuilder()
+        qb.add_fuzzy_query_affiliation_names('query terms')
+
+        self.assertEqual(
+            qb.get_query().to_dict(), {
+                'query': {
+                    'nested': {
+                        'path': 'affiliation_match.names',
+                        'score_mode': 'max',
+                        'query': {
+                            'match': {
+                                'affiliation_match.names.name': {
+                                    'query': 'query terms',
+                                    'fuzziness': 'AUTO'
+                                }
+                            }
+                        }
+                    }
+                },
+                'track_total_hits': True
+            })
+
     def test_add_filters(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
