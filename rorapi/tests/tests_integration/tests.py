@@ -2,6 +2,8 @@ import itertools
 import json
 import os
 import re
+import unittest
+
 import requests
 
 from django.test import SimpleTestCase
@@ -11,6 +13,10 @@ BASE_URL = '{}/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
+@unittest.skip(
+    'Expects the removed v1 response shape (name, country.country_code). '
+    'v2 coverage is tests_v2.py.'
+)
 class APITestCase(SimpleTestCase):
     def get_total(self, output):
         return output['number_of_results']

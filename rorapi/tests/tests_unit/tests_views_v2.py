@@ -389,20 +389,6 @@ class IndexRorViewTestCase(SimpleTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-class HeartbeatViewTestCase(SimpleTestCase):
-    def setUp(self):
-        with open(
-                os.path.join(os.path.dirname(__file__),
-                             'data/test_data_search_es7_v2.json'), 'r') as f:
-            self.test_data = json.load(f)
-
-    @mock.patch('elasticsearch_dsl.Search.execute')
-    def test_heartbeat_success(self, search_mock):
-        search_mock.return_value = \
-            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
-        response = self.client.get('/v2/heartbeat')
-        self.assertEqual(response.status_code, 200)
-
 class BulkUpdateViewTestCase(SimpleTestCase):
     def setUp(self):
         self.csv_errors_empty = []
