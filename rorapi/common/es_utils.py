@@ -70,6 +70,47 @@ class ESQueryBuilder:
             ],
         )
 
+    def add_phrase_query_affiliation_names(self, terms):
+        """Phrase match on acronym-free names in ``affiliation_match.names``."""
+        self.search.query = Q(
+            "nested",
+            path="affiliation_match.names",
+            score_mode="max",
+            query=Q("match_phrase", **{"affiliation_match.names.name": terms}),
+        )
+
+    def add_common_query_affiliation_names(self, terms):
+        self.search.query = Q(
+            "nested",
+            path="affiliation_match.names",
+            score_mode="max",
+            query=Q(
+                "common",
+                **{
+                    "affiliation_match.names.name": {
+                        "query": terms,
+                        "cutoff_frequency": 0.001,
+                    }
+                },
+            ),
+        )
+
+    def add_fuzzy_query_affiliation_names(self, terms):
+        self.search.query = Q(
+            "nested",
+            path="affiliation_match.names",
+            score_mode="max",
+            query=Q(
+                "match",
+                **{
+                    "affiliation_match.names.name": {
+                        "query": terms,
+                        "fuzziness": "AUTO",
+                    }
+                },
+            ),
+        )
+
     def add_match_query(self, terms):
         self.search = self.search.query("match", acronyms=terms)
 
