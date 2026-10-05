@@ -53,6 +53,9 @@ def enrich_org_for_index(org):
         'id': n
     } for n in get_nested_ids_v2(org)]
     org['affiliation_match'] = get_affiliation_match_doc(org)
+    org['acronyms'] = [
+        n["value"] for n in org["names"] if "acronym" in n["types"]
+    ]
     return org
 
 

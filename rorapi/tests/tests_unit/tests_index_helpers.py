@@ -73,6 +73,7 @@ class IndexDocBuildersTestCase(SimpleTestCase):
         self.assertIn({'name': 'University of Example'}, org['names_ids'])
         self.assertIn({'id': '01an7q238'}, org['names_ids'])
         self.assertEqual(org['affiliation_match']['primary'], 'University of Example')
+        self.assertEqual(org['acronyms'], ['UoE'])
 
 
 class BulkIndexWithBackupTestCase(SimpleTestCase):

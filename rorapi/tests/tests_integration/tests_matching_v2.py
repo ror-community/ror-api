@@ -41,3 +41,21 @@ class APIMatchingTestCase(SimpleTestCase):
             self.assertTrue(
                 i.get('matching_type') in
                 ['PHRASE', 'ACRONYM', 'FUZZY', 'HEURISTICS', 'COMMON TERMS', 'EXACT'])
+
+
+class MultisearchAcronymExclusionTestCase(SimpleTestCase):
+    """ror-roadmap#345: multisearch must not choose orgs via acronym-only names."""
+
+    def test_ucla_does_not_choose_wrong_org(self):
+        output = requests.get(BASE_URL, {
+            'affiliation': 'UCLA',
+            'multisearch': '',
+        }).json()
+        chosen = [i for i in output.get('items', []) if i.get('chosen')]
+        for item in chosen:
+            self.assertNotEqual(
+                item['organization']['id'],
+                'https://ror.org/03qgg3111',
+                'Universidad Centroccidental Lisandro Alvarado must not be chosen '
+                'for bare UCLA via PHRASE on acronym',
+            )

@@ -60,14 +60,21 @@ jobs:
         run: |
           python -Wd manage.py check
           python manage.py makemigrations --check --dry-run
+      - name: Run unit tests
+        working-directory: ./ror-api
+        run: |
+          python -Wa manage.py test rorapi.tests.tests_unit
       - name: Load test data
         working-directory: ./ror-api
         run: |
           python manage.py setup ${{ env.TEST_DATA_DUMP_FILE }} -t
-      - name: Run Tests
+      - name: Run integration tests
         working-directory: ./ror-api
         run: |
-          python -Wa manage.py test rorapi.tests.tests_unit
-          # TODO fix these tests running in GitHub Action
-          # python manage.py test rorapi.tests.tests_integration
+          python manage.py test rorapi.tests.tests_integration.tests_heartbeat
+          # HTTP suites assume a full public corpus (specific ROR IDs, >50k
+          # records). The CI test dump does not satisfy that, so they stay off.
+          # python manage.py test rorapi.tests.tests_integration.tests_v2
+          # python manage.py test rorapi.tests.tests_integration.tests_search_v2
+          # python manage.py test rorapi.tests.tests_integration.tests_matching_v2
           # python manage.py test rorapi.tests.tests_functional
