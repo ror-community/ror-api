@@ -18,7 +18,7 @@ python-magic
 rapidfuzz==3.6.1
 requests==2.33.0
 requests-aws4auth==0.9
-sentry-sdk==1.45.1
+sentry-sdk==2.70.0
 setuptools>=40,<81
 titlecase==2.3
 unidecode==1.1.1
