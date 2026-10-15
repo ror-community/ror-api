@@ -5,17 +5,14 @@ Used by ``indexror`` and ``indexrordump``. Bulk calls go through
 errors back off without duplicating the chunk loop.
 """
 
+import math
 import re
 
 from elasticsearch import TransportError
 
+from rorapi.common import typeahead
 from rorapi.common.es_bulk import bulk_with_retry
 from rorapi.settings import ES7, ES_VARS
-
-
-def get_nested_names_v2(org):
-    for name in org['names']:
-        yield name['value']
 
 
 def get_nested_ids_v2(org):
@@ -46,9 +43,14 @@ def get_affiliation_match_doc(org):
 
 def enrich_org_for_index(org):
     """Attach ``names_ids`` and ``affiliation_match`` fields used by the index."""
+    prior = math.log1p(
+        sum(1 for r in org['relationships'] if r['type'] == 'child'))
     org['names_ids'] = [{
-        'name': n
-    } for n in get_nested_names_v2(org)]
+        'name': n['value'],
+        'types': n['types'],
+        'rank': typeahead.name_rank(n),
+        'prior': prior,
+    } for n in org['names']]
     org['names_ids'] += [{
         'id': n
     } for n in get_nested_ids_v2(org)]

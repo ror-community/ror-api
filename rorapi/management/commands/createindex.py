@@ -1,12 +1,10 @@
-import json
 from rorapi.settings import ES7, ES_VARS
+from rorapi.v2.index_template import index_template
 
 from django.core.management.base import BaseCommand
 
 
-def create_index(self, index, template_file):
-    with open(template_file, 'r') as it:
-        template = json.load(it)
+def create_index(self, index, template):
     ES7.indices.put_template(index, template)
     self.stdout.write('Updated index template for {}'.format(index))
     ES7.indices.create(index=index)
@@ -17,4 +15,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("creating v2 index")
-        create_index(self, ES_VARS['INDEX_V2'], ES_VARS['INDEX_TEMPLATE_ES7_V2'])
+        create_index(self, ES_VARS['INDEX_V2'], index_template())

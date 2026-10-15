@@ -1,9 +1,10 @@
+import math
 from unittest import mock
 
 from django.test import SimpleTestCase
 from elasticsearch import TransportError
 
-from rorapi.common import index_helpers
+from rorapi.common import index_helpers, typeahead
 from rorapi.settings import ES_VARS
 
 
@@ -28,12 +29,6 @@ SAMPLE_ORG = {
 
 
 class IndexDocBuildersTestCase(SimpleTestCase):
-
-    def test_get_nested_names_v2(self):
-        self.assertEqual(
-            list(index_helpers.get_nested_names_v2(SAMPLE_ORG)),
-            ['University of Example', 'UoE', 'Example U'],
-        )
 
     def test_get_nested_ids_v2(self):
         self.assertEqual(
@@ -70,10 +65,42 @@ class IndexDocBuildersTestCase(SimpleTestCase):
     def test_enrich_org_for_index(self):
         org = dict(SAMPLE_ORG)
         index_helpers.enrich_org_for_index(org)
-        self.assertIn({'name': 'University of Example'}, org['names_ids'])
-        self.assertIn({'id': '01an7q238'}, org['names_ids'])
+        display, acronym, alias = (typeahead.name_rank(n) for n in SAMPLE_ORG['names'])
+        self.assertEqual(org['names_ids'], [
+            {'name': 'University of Example', 'types': ['ror_display', 'label'], 'rank': display, 'prior': 0.0},
+            {'name': 'UoE', 'types': ['acronym'], 'rank': acronym, 'prior': 0.0},
+            {'name': 'Example U', 'types': ['alias'], 'rank': alias, 'prior': 0.0},
+            {'id': 'https://ror.org/01an7q238'},
+            {'id': 'ror.org/01an7q238'},
+            {'id': '01an7q238'},
+            {'id': 'grid.1234.5'},
+        ])
         self.assertEqual(org['affiliation_match']['primary'], 'University of Example')
         self.assertEqual(org['acronyms'], ['UoE'])
+
+    def test_enrich_prior_is_log1p_of_child_relationships(self):
+        org = dict(SAMPLE_ORG, relationships=SAMPLE_ORG['relationships'] + [
+            {'type': 'child', 'id': 'https://ror.org/00000000{}'.format(i)}
+            for i in range(3)
+        ] + [{'type': 'related', 'id': 'https://ror.org/05dxps066'}])
+        index_helpers.enrich_org_for_index(org)
+        priors = [e['prior'] for e in org['names_ids'] if 'name' in e]
+        self.assertEqual(len(priors), 3)
+        for prior in priors:
+            self.assertAlmostEqual(prior, math.log1p(3))
+
+    def test_enrich_keeps_each_stored_spelling(self):
+        org = dict(SAMPLE_ORG, names=[
+            {'value': 'Centre Me\u0301dical', 'types': ['ror_display', 'label']},
+            {'value': '\u0c95\u0cc6\u0cd5', 'types': ['label']},
+            {'value': '\u09df', 'types': ['alias']},
+            {'value': 'I\u0307l', 'types': ['alias']},
+        ])
+        index_helpers.enrich_org_for_index(org)
+        self.assertEqual(
+            [n['name'] for n in org['names_ids'] if 'name' in n],
+            ['Centre Me\u0301dical', '\u0c95\u0cc6\u0cd5', '\u09df', 'I\u0307l'],
+        )
 
 
 class BulkIndexWithBackupTestCase(SimpleTestCase):

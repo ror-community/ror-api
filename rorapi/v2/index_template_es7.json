@@ -12,12 +12,229 @@
                         "lowercase",
                         "ascii_folding"
                     ]
+                },
+                "typeahead_edge_index": {
+                    "char_filter": [
+                        "typeahead_nfc",
+                        "typeahead_yo_to_ye",
+                        "typeahead_drop_marks",
+                        "typeahead_hangul_keys",
+                        "typeahead_joiners_to_apostrophe",
+                        "typeahead_drop_format",
+                        "typeahead_non_alnum_to_space"
+                    ],
+                    "tokenizer": "standard",
+                    "filter": [
+                        "asciifolding",
+                        "typeahead_greek_lowercase",
+                        "arabic_normalization",
+                        "persian_normalization",
+                        "typeahead_apostrophe_parts",
+                        "flatten_graph",
+                        "typeahead_cjk_bigram_and_char",
+                        "typeahead_edge_ngram",
+                        "remove_duplicates"
+                    ]
+                },
+                "typeahead_edge_search": {
+                    "char_filter": [
+                        "typeahead_nfc",
+                        "typeahead_yo_to_ye",
+                        "typeahead_drop_marks",
+                        "typeahead_hangul_keys",
+                        "typeahead_joiners_to_apostrophe",
+                        "typeahead_drop_format",
+                        "typeahead_non_alnum_to_space"
+                    ],
+                    "tokenizer": "standard",
+                    "filter": [
+                        "asciifolding",
+                        "typeahead_greek_lowercase",
+                        "arabic_normalization",
+                        "persian_normalization",
+                        "typeahead_drop_apostrophe",
+                        "typeahead_cjk_bigram",
+                        "typeahead_token_limit",
+                        "typeahead_truncate",
+                        "typeahead_unique"
+                    ]
+                },
+                "typeahead_fuzzy_search": {
+                    "char_filter": [
+                        "typeahead_nfc",
+                        "typeahead_yo_to_ye",
+                        "typeahead_drop_marks",
+                        "typeahead_hangul_keys",
+                        "typeahead_joiners_to_apostrophe",
+                        "typeahead_drop_format",
+                        "typeahead_non_alnum_to_space"
+                    ],
+                    "tokenizer": "standard",
+                    "filter": [
+                        "asciifolding",
+                        "typeahead_greek_lowercase",
+                        "arabic_normalization",
+                        "persian_normalization",
+                        "typeahead_drop_apostrophe",
+                        "typeahead_cjk_bigram",
+                        "typeahead_fuzzy_token_limit",
+                        "typeahead_truncate",
+                        "typeahead_unique"
+                    ]
+                },
+                "typeahead_char_search": {
+                    "char_filter": [
+                        "typeahead_nfc",
+                        "typeahead_yo_to_ye",
+                        "typeahead_drop_marks",
+                        "typeahead_hangul_keys",
+                        "typeahead_joiners_to_apostrophe",
+                        "typeahead_drop_format",
+                        "typeahead_non_alnum_to_space"
+                    ],
+                    "tokenizer": "standard",
+                    "filter": [
+                        "asciifolding",
+                        "typeahead_greek_lowercase",
+                        "arabic_normalization",
+                        "persian_normalization",
+                        "typeahead_drop_apostrophe",
+                        "typeahead_token_limit",
+                        "typeahead_truncate"
+                    ]
+                },
+                "typeahead_compact": {
+                    "char_filter": [
+                        "typeahead_nfc",
+                        "typeahead_yo_to_ye",
+                        "typeahead_drop_marks",
+                        "typeahead_joiners_to_apostrophe",
+                        "typeahead_drop_format",
+                        "typeahead_strip_non_alnum"
+                    ],
+                    "tokenizer": "keyword",
+                    "filter": [
+                        "asciifolding",
+                        "typeahead_greek_lowercase",
+                        "arabic_normalization",
+                        "persian_normalization",
+                        "typeahead_compact_truncate",
+                        "typeahead_non_empty"
+                    ]
+                }
+            },
+            "char_filter": {
+                "typeahead_non_alnum_to_space": {
+                    "type": "pattern_replace",
+                    "pattern": "[^\\p{L}\\p{M}\\p{N}\\p{Cs}']+",
+                    "replacement": " "
+                },
+                "typeahead_strip_non_alnum": {
+                    "type": "pattern_replace",
+                    "pattern": "[^\\p{L}\\p{M}\\p{N}\\p{Cs}]+",
+                    "replacement": ""
+                },
+                "typeahead_nfc": {
+                    "type": "mapping"
+                },
+                "typeahead_yo_to_ye": {
+                    "type": "mapping",
+                    "mappings": [
+                        "\u0451 => \u0435",
+                        "\u0401 => \u0415"
+                    ]
+                },
+                "typeahead_drop_marks": {
+                    "type": "pattern_replace",
+                    "pattern": "[\\u0300-\\u036F\\u02B9-\\u02BF\\u0591-\\u05BD\\u05BF\\u05C1\\u05C2\\u05C4\\u05C5\\u05C7\\uFB1E]",
+                    "replacement": ""
+                },
+                "typeahead_hangul_keys": {
+                    "type": "mapping"
+                },
+                "typeahead_joiners_to_apostrophe": {
+                    "type": "mapping",
+                    "mappings": [
+                        "\u2018 => '",
+                        "\u2019 => '",
+                        "\u0060 => '",
+                        "\u00b4 => '",
+                        "\u200c => '"
+                    ]
+                },
+                "typeahead_drop_format": {
+                    "type": "pattern_replace",
+                    "pattern": "[\\p{Cf}&&[^\\u200B]]",
+                    "replacement": ""
                 }
             },
             "filter": {
                 "ascii_folding": {
                     "type": "asciifolding",
                     "preserve_original": true
+                },
+                "typeahead_cjk_bigram": {
+                    "type": "cjk_bigram",
+                    "ignored_scripts": [
+                        "katakana",
+                        "hangul"
+                    ]
+                },
+                "typeahead_cjk_bigram_and_char": {
+                    "type": "cjk_bigram",
+                    "ignored_scripts": [
+                        "katakana",
+                        "hangul"
+                    ],
+                    "output_unigrams": true
+                },
+                "typeahead_token_limit": {
+                    "type": "limit",
+                    "max_token_count": 64
+                },
+                "typeahead_fuzzy_token_limit": {
+                    "type": "limit",
+                    "max_token_count": 8
+                },
+                "typeahead_edge_ngram": {
+                    "type": "edge_ngram",
+                    "min_gram": 1,
+                    "max_gram": 20
+                },
+                "typeahead_truncate": {
+                    "type": "truncate",
+                    "length": 20
+                },
+                "typeahead_compact_truncate": {
+                    "type": "truncate",
+                    "length": 333
+                },
+                "typeahead_greek_lowercase": {
+                    "type": "lowercase",
+                    "language": "greek"
+                },
+                "typeahead_non_empty": {
+                    "type": "length",
+                    "min": 1
+                },
+                "typeahead_unique": {
+                    "type": "unique",
+                    "only_on_same_position": false
+                },
+                "typeahead_apostrophe_parts": {
+                    "type": "word_delimiter_graph",
+                    "generate_word_parts": true,
+                    "generate_number_parts": true,
+                    "catenate_all": true,
+                    "split_on_case_change": false,
+                    "split_on_numerics": false,
+                    "stem_english_possessive": false,
+                    "preserve_original": false
+                },
+                "typeahead_drop_apostrophe": {
+                    "type": "pattern_replace",
+                    "pattern": "'",
+                    "replacement": ""
                 }
             },
             "normalizer": {
@@ -229,7 +446,32 @@
                     },
                     "name": {
                         "type": "text",
-                        "analyzer": "string_lowercase"
+                        "analyzer": "string_lowercase",
+                        "fields": {
+                            "exact": {
+                                "type": "text",
+                                "analyzer": "typeahead_compact",
+                                "index_options": "docs",
+                                "norms": false
+                            },
+                            "edge": {
+                                "type": "text",
+                                "analyzer": "typeahead_edge_index",
+                                "search_analyzer": "string_lowercase",
+                                "norms": false
+                            }
+                        }
+                    },
+                    "types": {
+                        "type": "keyword"
+                    },
+                    "rank": {
+                        "type": "short",
+                        "index": false
+                    },
+                    "prior": {
+                        "type": "float",
+                        "index": false
                     }
                 }
             },

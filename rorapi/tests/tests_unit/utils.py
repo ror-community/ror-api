@@ -1,3 +1,8 @@
+def scored_tiers(nested_query):
+    tiers = nested_query['nested']['query']['function_score']['query']['dis_max']['queries']
+    return [(tier['constant_score']['boost'], tier['constant_score']['filter']) for tier in tiers]
+
+
 class AttrDict(dict):
     def __init__(self, nested_dict):
         for k, v in nested_dict.items():
