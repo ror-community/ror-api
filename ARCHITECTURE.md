@@ -90,6 +90,7 @@ ror-api/
 │   │   ├── views.py          # ViewSets and APIViews
 │   │   ├── queries.py        # Search/retrieve param validation + ES queries
 │   │   ├── es_utils.py       # ESQueryBuilder
+│   │   ├── typeahead.py      # query.typeahead tiers, word rules, name rank
 │   │   ├── matching.py       # Multi-search affiliation matching
 │   │   ├── matching_single_search.py  # Single-search affiliation matching
 │   │   ├── create_update.py  # Record JSON generation (POST/PUT)
@@ -100,11 +101,12 @@ ror-api/
 │   │   ├── serializers.py    # Shared serializers (Errors, buckets)
 │   │   └── models.py         # Errors, Entity, aggregation buckets
 │   ├── v2/                   # v2 schema-specific code
-│   │   ├── models.py         # Organization, ListResult, MatchingResult, Client (ORM)
+│   │   ├── models.py         # Organization, ListResult, TypeaheadResult, MatchingResult, Client (ORM)
 │   │   ├── serializers.py  # Response + Client registration serializers
 │   │   ├── record_constants.py
 │   │   ├── record_template.json
 │   │   ├── ror_schema_v2_1.json  # Vendored JSON schema for write validation
+│   │   ├── index_template.py  # Loads the template and derives its generated char filter rules
 │   │   └── index_template_es7.json  # ES index template + mappings
 │   ├── management/commands/  # CLI indexing and data setup
 │   ├── migrations/           # Django migrations (Client model)
@@ -167,10 +169,11 @@ OrganizationViewSet.list
         │
         └─ else ──► queries.search_organizations(params)
                         │
-                        ├─ validate(params)  # allowed keys, filters, page range
-                        ├─ build_search_query(params)  # ESQueryBuilder
+                        ├─ validate(params)  # allowed keys, one query mode, filters, page and page_size ranges
+                        ├─ query.typeahead? build_typeahead_query → TypeaheadResultV2
+                        │  else             build_search_query    → ListResultV2
                         ├─ execute ES search on organizations-v2
-                        └─ wrap hits → ListResultV2 → ListResultSerializerV2
+                        └─ view picks the serializer by result type (LIST_RESULT_SERIALIZERS)
 ```
 
 ```
@@ -184,11 +187,15 @@ get_ror_id(pk) → retrieve_organization(ror_id) → OrganizationSerializerV2
 
 - `query` — free-text search against nested `names_ids` field
 - `query.advanced` — Elasticsearch query_string syntax with field allowlist
+- `query.typeahead` — plain-text prefix search for typeahead forms, scored by constant-score tiers (`typeahead.py`). It accepts input of any length. Results sort by tier, then the record's prior (`names_ids.prior`), then the matched name's rank (`name_rank`), then `id`. Each item has `matched_name` and lists its `ror_display` name first in `names` (`TypeaheadItemSerializer`). `matched_name` is the name with the lowest rank in the record's best tier, or `null` when the best match is an identifier. The response has no aggregations (`meta: null`), and `number_of_results` is capped at 10,000. The search uses its own client (`ES7_TYPEAHEAD` in `settings.py`), which makes no retries and sets a 2-second socket timeout on each operation, not on the whole request. On a connection failure, a timeout, or any Elasticsearch error other than a 400, the response is HTTP 503 with an error. On a 400 (`RequestError`), the response is HTTP 200 with `errors`, as for `query`.
 - `filter` — comma-separated `field:value` filters (types, status, country, geonames fields, continent)
-- `page` — pagination (page size = `ES_VARS['BATCH_SIZE']` = 20, max page = 500)
+- `page` — pagination, bounded by the page that holds result 10,000 (`ES_VARS['MAX_RESULT_WINDOW']`), which is 500 at 20 per page and 10,000 at `page_size` 1, and the last page may be short
+- `page_size` — results per page for `query.typeahead` only, 1–20 (default `ES_VARS['BATCH_SIZE']` = 20); an illegal parameter without `query.typeahead`
 - `all_status` — include inactive records when not filtering by status
 
-**Default behavior:** Active records only (`status:active` filter applied unless `all_status` or explicit status filter).
+At most one of `query`, `query.advanced` and `query.typeahead` (`QUERY_MODE_PARAMS`).
+
+**Default behavior:** Active records only (`status:active` filter applied unless `all_status` or explicit status filter). A `query` or `query.typeahead` that is a ROR ID in any spelling `get_ror_id` accepts is a lookup of that one record, exempt from the default (an explicit status filter applies).
 
 ---
 
@@ -242,20 +249,47 @@ Bulk CSV path: `BulkUpdate` → `validate_csv()` → `process_csv()` → per-row
 ## Elasticsearch Data Model
 
 - **Index name:** `organizations-v2` (`ES_VARS['INDEX_V2']`)
-- **Template:** `rorapi/v2/index_template_es7.json`
+- **Template:** `rorapi/v2/index_template_es7.json`, loaded by `index_template()` in `rorapi/v2/index_template.py`
 - **Document ID:** Organization `id` (full URL, e.g. `https://ror.org/01an7q238`)
 
 Each indexed document is the ROR v2 JSON record plus **derived fields** added at index time (in `indexror.py` and `indexrordump.py`):
 
 | Derived field | Purpose |
 |---------------|---------|
-| `names_ids` (nested) | Searchable names + external IDs for general query |
+| `names_ids` (nested) | Searchable names in their stored spelling, as `query` searches them, + external IDs. Each name entry also carries `types`, its `rank` and the record's `prior` (`log1p` of the child count; `rank` and `prior` are sort-only, `index: false`) and the `.exact`/`.edge` subfields for `query.typeahead`. |
 | `affiliation_match` (nested) | Optimized structure for affiliation matching |
+
+The typeahead-only fields stay inside the `names_ids` entries and add no Lucene documents. The affiliation routes' `common` queries apply their `cutoff_frequency` to the index's document count, nested documents included, so more Lucene documents would change which terms those queries require. `query.advanced` searches root documents, so its `*` expansion and an explicit `_exists_:names_ids.prior` match no nested field, and a bare `query` term searches only `names_ids.name` and `names_ids.id` (`NAMES_IDS_QUERY_FIELDS`). Field syntax on `query` (`names_ids.types:acronym`, `_exists_:names_ids.rank`, `*:x`) can reach the typeahead subfields; `query.advanced` and bare `query` terms cannot. The mapping gives `names_ids.name.edge` the `string_lowercase` search analyzer that `names_ids.name` has, so `query.advanced`'s `*` expansion normalizes a fuzzy term on it as it does on `names_ids.name` and fails only where that one does, instead of spelling a long Hangul term as keystrokes until Lucene refuses it; every typeahead clause on `.edge` names its own analyzer (`typeahead_edge_search`, `typeahead_char_search`, `typeahead_fuzzy_search`).
 
 Index creation: `python manage.py createindex`  
 Deletion: `python manage.py deleteindex`
 
+The template applies only when the index is created. After a template change, rebuild the index (`setup`, or `deleteindex`, `createindex` and a full load) before the next incremental `indexror`. Indexing new documents into an old index maps the new fields dynamically: `names_ids.prior` would become an indexed float that `query=names_ids.prior:0` matches, and `names_ids.name` would lack the `.exact`/`.edge` subfields `query.typeahead` needs.
+
 Local/docker ES uses basic auth `(elastic, ELASTIC_PASSWORD)`. Remote AWS OpenSearch uses `AWS4Auth`.
+
+### Typeahead analyzers and filters
+
+JSON holds no comments, so this section gives the reasons behind the typeahead analysis in `index_template_es7.json`. `typeahead.py` explains the tiers. The whole-name tiers search `names_ids.name.exact`, which `typeahead_compact` analyzes as one term. The other tiers search `names_ids.name.edge`, which `typeahead_edge_index` analyzes, through one of three search analyzers: `typeahead_edge_search` for the word tiers, `typeahead_fuzzy_search` for the word typo tiers, and `typeahead_char_search` for the ordered tiers.
+
+Every typeahead analyzer, at index and at search time, applies NFC composition first and then the same folding. The folding covers case, accents, Greek final sigma, ё, and Arabic and Persian letter variants, and it deletes tatweel and the marks listed under `typeahead_drop_marks`. Each filter below has a reason that its settings cannot show.
+
+- `typeahead_nfc` runs first in every typeahead analyzer. It composes everything NFC composes except conjoining Hangul jamo, so a name stored as `e` plus U+0301 matches `é`.
+- `typeahead_drop_marks` deletes the combining diacritical marks, the Hebrew points and cantillation marks, and the modifier-letter apostrophes. It keeps the marks that other scripts spell with, such as the vowel signs, viramas and tone marks of Devanagari, Thai and Myanmar, because a user types them.
+- `typeahead_hangul_keys` spells Hangul as 2-set keystrokes and splits compound vowels, compound finals and doubled consonants, so every string a Korean IME shows mid-syllable (서우, 서울댛, 서울대핚) is a prefix of the names it may become. `typeahead_compact` has no `typeahead_hangul_keys` and keeps syllables, so a name that starts with what is shown ranks first.
+- `typeahead_joiners_to_apostrophe` turns the common apostrophe spellings (`‘`, `’`, `` ` ``, `´`) and the zero width non-joiner (U+200C) into `'`, which joins the letters around it. The index holds the joined word and its parts at their own positions (`typeahead_apostrophe_parts` indexes `Hawai'i` as `hawaii`, `hawai` and `i`), and the search analyzers send the joined word (`typeahead_drop_apostrophe`). So `Hawai'i`, `Hawaii` and `Hawaiʻi` find the same names. `_JOINERS` in `typeahead.py` lists the same characters.
+- `typeahead_drop_format` deletes every format character except the zero width space (U+200B), which stays a word break. A name stored with a soft hyphen (U+00AD) at each syllable break then matches `federal office`.
+- `typeahead_non_alnum_to_space` and `typeahead_strip_non_alnum` never match a surrogate (their classes exclude `\p{Cs}`), because the JVM regex otherwise starts a match on the second half of a surrogate pair and deletes it. A letter above U+FFFF counts like any other letter.
+- `typeahead_token_limit` keeps the first 64 tokens in `typeahead_edge_search` and `typeahead_char_search`, which bounds the clauses that a long input builds. A token is what the standard tokenizer emits: a word, a Katakana run, or a single Han or Hiragana character.
+- `typeahead_compact_truncate` cuts the whole-name term to 333 UTF-16 code units, which encode in at most 999 UTF-8 bytes, because Lucene refuses a prefix term above 1,000 bytes. It runs after folding, which can lengthen a character (`⑽` becomes `(10)`).
+- `typeahead_cjk_bigram` turns Han and Hiragana into overlapping character pairs in `typeahead_edge_search` and `typeahead_fuzzy_search`, so the word tiers forgive a missing pair rather than a missing character. `typeahead_char_search` keeps single characters, so the ordered tiers find 北京大学 from `北大`.
+- `remove_duplicates` ends `typeahead_edge_index`, which emits a Han or Hiragana character twice at one position: as itself (`typeahead_cjk_bigram_and_char`) and as the one-character edge gram of its pair (`typeahead_edge_ngram`). Without `remove_duplicates`, Lucene would take that one position for both copies of a doubled character, and `中医医院` would match 中医院.
+- `typeahead_unique` ends `typeahead_edge_search` and `typeahead_fuzzy_search`, so the word tiers count a word typed twice once. `typeahead_char_search` keeps every copy, so the ordered tiers need each copy, in order.
+- `typeahead_fuzzy_token_limit` replaces `typeahead_token_limit` in `typeahead_fuzzy_search` and keeps 8 tokens after `typeahead_cjk_bigram`, because each fuzzy token walks the term dictionary. `typeahead.py` gates the word typo tiers on the same 8 (`_MAX_FUZZY_TOKENS`).
+
+`typeahead_nfc` and `typeahead_hangul_keys` need one rule per spelling they rewrite, so the JSON declares them without rules and `index_template()` derives the rules each time `createindex` sends the template. The NFC rules follow the Unicode tables of the Python that runs `createindex` (15.0.0 in the Docker image's Python 3.12).
+
+Input that the analyzers fold away entirely, such as a letter newer than the engine's Unicode tables, a lone modifier apostrophe, or a tatweel, matches no name. Every tier analyzes the text in Elasticsearch, and an empty analysis matches nothing.
 
 ---
 
@@ -471,7 +505,7 @@ GRID-based generation ended March 2022. The `legacy*` management commands, the L
 | Affiliation match | `matching.py`, `matching_single_search.py` |
 | Record create/update | `create_update.py`, `csv_*.py` |
 | Vendored JSON schema | `rorapi/v2/ror_schema_v2_1.json` |
-| ES index template | `rorapi/v2/index_template_es7.json` |
+| ES index template | `rorapi/v2/index_template_es7.json`, `rorapi/v2/index_template.py` |
 | Settings / clients | `rorapi/settings.py` |
 | Full reindex CLI | `management/commands/setup.py` |
 | Incremental index CLI | `management/commands/indexror.py` |
