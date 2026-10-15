@@ -2,6 +2,11 @@ from rorapi.settings import ES7, ES_VARS
 
 from elasticsearch_dsl import Search, Q
 
+# Without explicit fields, query_string expands the index default `*` to every
+# names_ids subfield, so any subfield added there would silently join `query`
+# and multisearch's exact match.
+NAMES_IDS_QUERY_FIELDS = ["names_ids.name", "names_ids.id"]
+
 
 class ESQueryBuilder:
     """Elasticsearch query builder class"""
@@ -22,7 +27,16 @@ class ESQueryBuilder:
             "nested",
             path="names_ids",
             score_mode="max",
-            query=Q("query_string", query=terms, fuzzy_max_expansions=1),
+            query=Q(
+                "query_string",
+                query=terms,
+                fields=NAMES_IDS_QUERY_FIELDS,
+                # Explicit fields leave all-fields mode, the only mode where
+                # lenient defaults to true. Without it a term such as
+                # `established:abc` fails the whole search.
+                lenient=True,
+                fuzzy_max_expansions=1,
+            ),
         )
 
     def add_affiliation_query(self, terms, max_candidates):

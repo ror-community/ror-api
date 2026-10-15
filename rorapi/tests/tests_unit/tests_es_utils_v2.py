@@ -42,6 +42,8 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
                         'query': {
                             'query_string': {
                                 'query': 'query terms',
+                                'fields': ['names_ids.name', 'names_ids.id'],
+                                'lenient': True,
                                 'fuzzy_max_expansions': 1
                             }
                         }
