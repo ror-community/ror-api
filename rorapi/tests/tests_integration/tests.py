@@ -120,9 +120,9 @@ class APITestCase(SimpleTestCase):
         })
 
     def test_iteration(self):
-        total = 10000
+        total = ES_VARS['MAX_RESULT_WINDOW']
         ids = []
-        for page in range(1, ES_VARS['MAX_PAGE'] + 1):
+        for page in range(1, total // ES_VARS['BATCH_SIZE'] + 1):
             request = requests.get(BASE_URL, {'page': page})
             if request.status_code != 200:
                 print("failing query: ", {'page': page})

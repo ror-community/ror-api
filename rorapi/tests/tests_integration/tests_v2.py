@@ -11,12 +11,31 @@ BASE_URL = '{}/v2/organizations'.format(
     os.environ.get('ROR_BASE_URL', 'http://localhost'))
 
 
+def ror_id_spellings(ror_id):
+    return [ror_id,
+            re.sub('https', 'http', ror_id),
+            re.sub(r'https:\/\/', '', ror_id),
+            re.sub(r'https:\/\/ror.org\/', '', ror_id),
+            re.sub(r'https:\/\/ror.org\/', r'ror.org%2F', ror_id),
+            re.sub(r'https:\/\/ror.org\/', r'http%3A%2F%2Fror.org%2F', ror_id),
+            re.sub(r'https:\/\/ror.org\/', r'https%3A%2F%2Fror.org%2F', ror_id)]
+
+
+def as_typeahead_item(org):
+    # query.typeahead lists the ror_display name first; the listing sorts names by value.
+    names = sorted(org['names'], key=lambda n: 'ror_display' not in n['types'])
+    return dict(org, names=names, matched_name=None)
+
+
 class APITestCase(SimpleTestCase):
     def get_total(self, output):
         return output['number_of_results']
 
     def get_total_from_query(self, query):
         return self.get_total(requests.get(BASE_URL, query).json())
+
+    def get_ids_from_query(self, query):
+        return [i['id'] for i in requests.get(BASE_URL, query).json()['items']]
 
     def verify_full_list(self, output):
         # TODO use JSON schema instead?
@@ -126,9 +145,9 @@ class APITestCase(SimpleTestCase):
         })
 
     def test_iteration(self):
-        total = 10000
+        total = ES_VARS['MAX_RESULT_WINDOW']
         ids = []
-        for page in range(1, ES_VARS['MAX_PAGE'] + 1):
+        for page in range(1, total // ES_VARS['BATCH_SIZE'] + 1):
             request = requests.get(BASE_URL, {'page': page})
             if request.status_code != 200:
                 print("failing query: ", {'page': page})
@@ -238,32 +257,33 @@ class APITestCase(SimpleTestCase):
         self.verify_empty(output)
 
     def test_query_retrieval(self):
-        for test_org in requests.get(BASE_URL).json()['items']:
-            for test_id in \
-                [test_org['id'],
-                 re.sub('https', 'http', test_org['id']),
-                 re.sub(r'https:\/\/', '', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', r'ror.org%2F', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', r'http%3A%2F%2Fror.org%2F',
-                        test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', r'https%3A%2F%2Fror.org%2F',
-                        test_org['id'])]:
-                output = requests.get(BASE_URL, {'query': test_id}).json()
-                self.verify_single_item(output, test_org)
+        for status in ['active', 'inactive', 'withdrawn']:
+            for test_org in requests.get(BASE_URL, {'filter': 'status:' + status}).json()['items']:
+                for test_id in ror_id_spellings(test_org['id']):
+                    output = requests.get(BASE_URL, {'query': test_id}).json()
+                    self.verify_single_item(output, test_org)
+
+    def test_typeahead_retrieval(self):
+        statuses = ['active', 'inactive', 'withdrawn']
+        for status in statuses:
+            test_org = requests.get(BASE_URL, {'filter': 'status:' + status}).json()['items'][0]
+            expected = as_typeahead_item(test_org)
+            for test_id in ror_id_spellings(test_org['id']):
+                output = requests.get(BASE_URL, {'query.typeahead': test_id}).json()
+                self.verify_single_item(output, expected)
+            output = requests.get(BASE_URL, {'query.typeahead': ' {} '.format(test_org['id'])}).json()
+            self.verify_single_item(output, expected)
+            for other_status in [s for s in statuses if s != status]:
+                self.assertEqual(self.get_ids_from_query(
+                    {'query.typeahead': test_org['id'], 'filter': 'status:' + other_status}), [])
+            self.assertEqual(self.get_ids_from_query(
+                {'query.typeahead': test_org['id'], 'filter': 'status:' + status}), [test_org['id']])
+            self.assertEqual(self.get_ids_from_query(
+                {'query.typeahead': test_org['id'], 'all_status': 'true'}), [test_org['id']])
 
     def test_retrieval(self):
         for test_org in requests.get(BASE_URL).json()['items']:
-            for test_id in \
-                [test_org['id'],
-                 re.sub('https', 'http', test_org['id']),
-                 re.sub(r'https:\/\/', '', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', '', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', r'ror.org%2F', test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', r'http%3A%2F%2Fror.org%2F',
-                        test_org['id']),
-                 re.sub(r'https:\/\/ror.org\/', r'https%3A%2F%2Fror.org%2F',
-                        test_org['id'])]:
+            for test_id in ror_id_spellings(test_org['id']):
                 output = requests.get(BASE_URL + '/' + test_id).json()
                 self.assertEqual(output, test_org)
 
@@ -274,6 +294,13 @@ class APITestCase(SimpleTestCase):
                     grid_id = ext_id['preferred']
                     output = requests.get(BASE_URL, {'query': '"' + grid_id + '"'}).json()
                     self.verify_single_item(output, test_org)
+
+    def test_typeahead_grid_retrieval(self):
+        for test_org in requests.get(BASE_URL).json()['items']:
+            for ext_id in test_org['external_ids']:
+                if ext_id['type'] == 'grid':
+                    output = requests.get(BASE_URL, {'query.typeahead': ext_id['preferred']}).json()
+                    self.assertEqual(output['items'][0], as_typeahead_item(test_org))
 
     def test_error(self):
         output = requests.get(BASE_URL, {
