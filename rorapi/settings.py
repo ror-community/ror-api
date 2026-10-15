@@ -154,7 +154,7 @@ ES_VARS = {
     'INDEX_V2': 'organizations-v2',
     'INDEX_TEMPLATE_ES7_V2': os.path.join(BASE_DIR, 'rorapi', 'v2', 'index_template_es7.json'),
     'BATCH_SIZE': 20,
-    'MAX_PAGE': 500,  # = <ES LIMIT 10000> / BATCH_SIZE
+    'MAX_RESULT_WINDOW': 10000,  # Elasticsearch index.max_result_window
     'BULK_SIZE': 500
 }
 
@@ -171,14 +171,22 @@ else:
     http_auth = ('elastic', os.environ.get('ELASTIC_PASSWORD', 'changeme'))
 
 
-ES7 = Elasticsearch([{
-    'host': os.environ.get('ELASTIC7_HOST', 'elasticsearch7'),
-    'port': int(os.environ.get('ELASTIC7_PORT', '9200'))
-}],
-    http_auth=http_auth,
-    use_ssl=False,
-    timeout=240,
-    connection_class=RequestsHttpConnection)
+ES7_CONNECTION = {
+    'hosts': [{
+        'host': os.environ.get('ELASTIC7_HOST', 'elasticsearch7'),
+        'port': int(os.environ.get('ELASTIC7_PORT', '9200'))
+    }],
+    'http_auth': http_auth,
+    'use_ssl': False,
+    'connection_class': RequestsHttpConnection,
+}
+
+ES7 = Elasticsearch(timeout=240, **ES7_CONNECTION)
+
+# A Passenger process waits on Elasticsearch for the whole search, and a typeahead answer is stale by
+# the next keystroke, so the typeahead search gets no retries and a 2-second socket timeout, which
+# applies to each connect and read, not to the whole request.
+ES7_TYPEAHEAD = Elasticsearch(timeout=2, max_retries=0, **ES7_CONNECTION)
 
 # As of Mar 2022 ROR is no longer based on GRID.
 # New records are created in https://github.com/ror-community/ror-records and pushed to S3.

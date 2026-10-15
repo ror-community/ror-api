@@ -1,0 +1,655 @@
+{
+    "took": 3,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 3,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": [
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/03vek6s52",
+                "_source": {
+                    "established": 1636,
+                    "types": [
+                        "education",
+                        "funder"
+                    ],
+                    "acronyms": [],
+                    "admin": {
+                        "created": {
+                            "date": "2018-11-14",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2026-10-06",
+                            "schema_version": "2.1"
+                        }
+                    },
+                    "domains": [
+                        "harvard.edu"
+                    ],
+                    "external_ids": [
+                        {
+                            "all": [
+                                "100007229",
+                                "100010520",
+                                "100009802",
+                                "100009868",
+                                "100008548",
+                                "100008549",
+                                "100005724",
+                                "100005578",
+                                "100009116",
+                                "100008036",
+                                "100009345",
+                                "100005668",
+                                "100010952",
+                                "100008024",
+                                "100005487",
+                                "100005473",
+                                "100005293",
+                                "100006075",
+                                "100005915",
+                                "100005469",
+                                "100005650",
+                                "100005678",
+                                "100005692",
+                                "100005802",
+                                "100005856",
+                                "100005893",
+                                "100005941",
+                                "100006007",
+                                "100006011",
+                                "100006274",
+                                "100007230",
+                                "100007300",
+                                "100007887",
+                                "100008263",
+                                "100005574",
+                                "100007299",
+                                "100006691",
+                                "100007301",
+                                "100019552",
+                                "100010951",
+                                "100013146",
+                                "100013753",
+                                "100013843",
+                                "100015369",
+                                "100018077",
+                                "100018418",
+                                "100019067",
+                                "100019111",
+                                "100019984",
+                                "100022285",
+                                "100024061"
+                            ],
+                            "type": "fundref",
+                            "preferred": "100007229"
+                        },
+                        {
+                            "all": [
+                                "grid.38142.3c"
+                            ],
+                            "type": "grid",
+                            "preferred": "grid.38142.3c"
+                        },
+                        {
+                            "all": [
+                                "0000 0004 1936 754X"
+                            ],
+                            "type": "isni",
+                            "preferred": null
+                        },
+                        {
+                            "all": [
+                                "Q13371",
+                                "Q5676556"
+                            ],
+                            "type": "wikidata",
+                            "preferred": "Q13371"
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "label": "Athinoula A. Martinos Center for Biomedical Imaging",
+                            "id": "https://ror.org/032q5ym94",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Berenson Allen Center for Noninvasive Brain Stimulation",
+                            "id": "https://ror.org/03hj6c016",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Center for Astrophysics Harvard & Smithsonian",
+                            "id": "https://ror.org/03c3r2d17",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Center for Systems Biology",
+                            "id": "https://ror.org/05r3dyn47",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Center for Vascular Biology Research",
+                            "id": "https://ror.org/04wsv7966",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Gordon Center for Medical Imaging",
+                            "id": "https://ror.org/004y4rj95",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Harvard Stem Cell Institute",
+                            "id": "https://ror.org/04kj1hn59",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Harvard University Press",
+                            "id": "https://ror.org/006v7bf86",
+                            "type": "child"
+                        },
+                        {
+                            "label": "MIT-Harvard Center for Ultracold Atoms",
+                            "id": "https://ror.org/053tmcn30",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Ragon Institute of MGH, MIT and Harvard",
+                            "id": "https://ror.org/053r20n13",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Sleep and Human Health Institute",
+                            "id": "https://ror.org/04r5ess67",
+                            "type": "child"
+                        },
+                        {
+                            "label": "The NSF AI Institute for Artificial Intelligence and Fundamental Interactions",
+                            "id": "https://ror.org/04pvzz946",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Arnold Arboretum",
+                            "id": "https://ror.org/05xsxgs79",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Harvard Forest Long Term Ecological Research",
+                            "id": "https://ror.org/059cpzx98",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Wyss Institute for Biologically Inspired Engineering",
+                            "id": "https://ror.org/008cfmj78",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Dana-Farber/Harvard Cancer Center",
+                            "id": "https://ror.org/03pvyf116",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Real Colegio Complutense",
+                            "id": "https://ror.org/05b0g2v72",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Beth Israel Deaconess Medical Center",
+                            "id": "https://ror.org/04drvxt59",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Boston Children's Hospital",
+                            "id": "https://ror.org/00dvg7y05",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Boston IVF",
+                            "id": "https://ror.org/05xckek43",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Botswana Harvard AIDS Institute Partnership",
+                            "id": "https://ror.org/04rkbns44",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Brigham and Women's Faulkner Hospital",
+                            "id": "https://ror.org/03w44ff23",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Brigham and Women's Hospital",
+                            "id": "https://ror.org/04b6nzv94",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Broad Institute",
+                            "id": "https://ror.org/05a0ya142",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Cambridge Health Alliance",
+                            "id": "https://ror.org/059c3mv67",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Dana-Farber Cancer Institute",
+                            "id": "https://ror.org/02jzgtq86",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Harvard Pilgrim Health Care",
+                            "id": "https://ror.org/01zxdeg39",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Harvard–MIT Division of Health Sciences and Technology",
+                            "id": "https://ror.org/00jjeh629",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Hebrew SeniorLife",
+                            "id": "https://ror.org/02vptss42",
+                            "type": "related"
+                        },
+                        {
+                            "label": "IIT@Harvard",
+                            "id": "https://ror.org/044hpwe09",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Joslin Diabetes Center",
+                            "id": "https://ror.org/0280a3n32",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Judge Baker Children's Center",
+                            "id": "https://ror.org/05tby3y60",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Lahey Hospital and Medical Center",
+                            "id": "https://ror.org/03mbq3y29",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Massachusetts Eye and Ear Infirmary",
+                            "id": "https://ror.org/04g3dn724",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Massachusetts General Hospital",
+                            "id": "https://ror.org/002pd6e78",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Massachusetts Green High Performance Computing Center",
+                            "id": "https://ror.org/05par7p11",
+                            "type": "related"
+                        },
+                        {
+                            "label": "McLean Hospital",
+                            "id": "https://ror.org/01kta7d96",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Newton Wellesley Hospital",
+                            "id": "https://ror.org/03hrxmf69",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Somerville Hospital",
+                            "id": "https://ror.org/023pf5e38",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Spaulding Rehabilitation Hospital",
+                            "id": "https://ror.org/011dvr318",
+                            "type": "related"
+                        },
+                        {
+                            "label": "Harvard Global Health Institute",
+                            "id": "https://ror.org/055avk103",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Mount Auburn Hospital",
+                            "id": "https://ror.org/00nhpk003",
+                            "type": "related"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": "en",
+                            "value": "Harvard University"
+                        },
+                        {
+                            "types": [
+                                "label"
+                            ],
+                            "lang": "es",
+                            "value": "Universidad de Harvard"
+                        }
+                    ],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://www.harvard.edu"
+                        },
+                        {
+                            "type": "wikipedia",
+                            "value": "http://en.wikipedia.org/wiki/Harvard_University"
+                        }
+                    ],
+                    "locations": [
+                        {
+                            "geonames_details": {
+                                "continent_name": "North America",
+                                "country_code": "US",
+                                "country_subdivision_code": "MA",
+                                "lng": -71.10561,
+                                "country_subdivision_name": "Massachusetts",
+                                "country_name": "United States",
+                                "name": "Cambridge",
+                                "continent_code": "NA",
+                                "lat": 42.3751
+                            },
+                            "geonames_id": 4931972
+                        }
+                    ],
+                    "id": "https://ror.org/03vek6s52",
+                    "status": "active"
+                },
+                "inner_hits": {
+                    "matched_name": {
+                        "hits": {
+                            "total": {
+                                "value": 2,
+                                "relation": "eq"
+                            },
+                            "max_score": null,
+                            "hits": [
+                                {
+                                    "_index": "organizations-v2",
+                                    "_type": "_doc",
+                                    "_id": "https://ror.org/03vek6s52",
+                                    "_nested": {
+                                        "field": "names_ids",
+                                        "offset": 0
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/03c3r2d17",
+                "_source": {
+                    "established": 1973,
+                    "types": [
+                        "education"
+                    ],
+                    "acronyms": [
+                        "CfA"
+                    ],
+                    "admin": {
+                        "created": {
+                            "date": "2018-11-14",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2024-12-11",
+                            "schema_version": "2.1"
+                        }
+                    },
+                    "domains": [],
+                    "external_ids": [
+                        {
+                            "all": [
+                                "grid.455754.2"
+                            ],
+                            "type": "grid",
+                            "preferred": "grid.455754.2"
+                        },
+                        {
+                            "all": [
+                                "Q1133697"
+                            ],
+                            "type": "wikidata",
+                            "preferred": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "label": "Harvard College Observatory",
+                            "id": "https://ror.org/01mcvy510",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Smithsonian Astrophysical Observatory",
+                            "id": "https://ror.org/04mh52z70",
+                            "type": "child"
+                        },
+                        {
+                            "label": "Harvard University",
+                            "id": "https://ror.org/03vek6s52",
+                            "type": "parent"
+                        },
+                        {
+                            "label": "Smithsonian Institution",
+                            "id": "https://ror.org/01pp8nd67",
+                            "type": "parent"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": "en",
+                            "value": "Center for Astrophysics Harvard & Smithsonian"
+                        },
+                        {
+                            "types": [
+                                "acronym"
+                            ],
+                            "lang": null,
+                            "value": "CfA"
+                        },
+                        {
+                            "types": [
+                                "alias"
+                            ],
+                            "lang": "en",
+                            "value": "Harvard–Smithsonian Center for Astrophysics"
+                        }
+                    ],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://pweb.cfa.harvard.edu/"
+                        },
+                        {
+                            "type": "wikipedia",
+                            "value": "https://en.wikipedia.org/wiki/Harvard%E2%80%93Smithsonian_Center_for_Astrophysics"
+                        }
+                    ],
+                    "locations": [
+                        {
+                            "geonames_details": {
+                                "continent_name": "North America",
+                                "country_code": "US",
+                                "country_subdivision_code": "MA",
+                                "lng": -71.10561,
+                                "country_subdivision_name": "Massachusetts",
+                                "country_name": "United States",
+                                "name": "Cambridge",
+                                "continent_code": "NA",
+                                "lat": 42.3751
+                            },
+                            "geonames_id": 4931972
+                        }
+                    ],
+                    "id": "https://ror.org/03c3r2d17",
+                    "status": "active"
+                },
+                "inner_hits": {
+                    "matched_name": {
+                        "hits": {
+                            "total": {
+                                "value": 2,
+                                "relation": "eq"
+                            },
+                            "max_score": null,
+                            "hits": [
+                                {
+                                    "_index": "organizations-v2",
+                                    "_type": "_doc",
+                                    "_id": "https://ror.org/03c3r2d17",
+                                    "_nested": {
+                                        "field": "names_ids",
+                                        "offset": 2
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "_index": "organizations-v2",
+                "_type": "_doc",
+                "_id": "https://ror.org/02b1nt179",
+                "_source": {
+                    "established": 1901,
+                    "types": [
+                        "company"
+                    ],
+                    "acronyms": [],
+                    "domains": [],
+                    "admin": {
+                        "created": {
+                            "date": "2018-11-14",
+                            "schema_version": "1.0"
+                        },
+                        "last_modified": {
+                            "date": "2024-12-11",
+                            "schema_version": "2.1"
+                        }
+                    },
+                    "external_ids": [
+                        {
+                            "all": [
+                                "grid.438765.b"
+                            ],
+                            "type": "grid",
+                            "preferred": "grid.438765.b"
+                        },
+                        {
+                            "all": [
+                                "0000 0004 0545 2436"
+                            ],
+                            "type": "isni",
+                            "preferred": null
+                        },
+                        {
+                            "all": [
+                                "Q16994890"
+                            ],
+                            "type": "wikidata",
+                            "preferred": null
+                        }
+                    ],
+                    "relationships": [
+                        {
+                            "label": "Harvard Bioscience (Germany)",
+                            "id": "https://ror.org/05x88b790",
+                            "type": "child"
+                        }
+                    ],
+                    "names": [
+                        {
+                            "types": [
+                                "ror_display",
+                                "label"
+                            ],
+                            "lang": null,
+                            "value": "Harvard Bioscience (United States)"
+                        }
+                    ],
+                    "locations": [
+                        {
+                            "geonames_details": {
+                                "continent_name": "North America",
+                                "country_code": "US",
+                                "country_subdivision_code": "MA",
+                                "lng": -71.4245,
+                                "country_subdivision_name": "Massachusetts",
+                                "country_name": "United States",
+                                "name": "Holliston",
+                                "continent_code": "NA",
+                                "lat": 42.2001
+                            },
+                            "geonames_id": 4939693
+                        }
+                    ],
+                    "links": [
+                        {
+                            "type": "website",
+                            "value": "https://www.harvardbioscience.com/"
+                        },
+                        {
+                            "type": "wikipedia",
+                            "value": "https://en.wikipedia.org/wiki/Harvard_Bioscience"
+                        }
+                    ],
+                    "id": "https://ror.org/02b1nt179",
+                    "status": "active"
+                },
+                "inner_hits": {
+                    "matched_name": {
+                        "hits": {
+                            "total": {
+                                "value": 1,
+                                "relation": "eq"
+                            },
+                            "max_score": null,
+                            "hits": [
+                                {
+                                    "_index": "organizations-v2",
+                                    "_type": "_doc",
+                                    "_id": "https://ror.org/02b1nt179",
+                                    "_nested": {
+                                        "field": "names_ids",
+                                        "offset": 3
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -80,6 +80,21 @@ class ListResultSerializer(serializers.Serializer):
     meta = AggregationsSerializer()
 
 
+class TypeaheadItemSerializer(OrganizationSerializer):
+    matched_name = OrganizationNameSerializer(allow_null=True)
+
+    # A redeclared names field would move "names" to the end of the response.
+    def to_representation(self, instance):
+        organization = super().to_representation(instance)
+        organization["names"].sort(key=lambda n: "ror_display" not in n["types"])
+        return organization
+
+
+class TypeaheadResultSerializer(ListResultSerializer):
+    items = TypeaheadItemSerializer(many=True)
+    meta = AggregationsSerializer(allow_null=True)
+
+
 class MatchedOrganizationSerializer(serializers.Serializer):
     substring = serializers.CharField()
     score = serializers.FloatField()

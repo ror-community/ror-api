@@ -3,14 +3,25 @@ from unittest import mock
 import os
 
 from django.test import SimpleTestCase, Client, override_settings
+from elasticsearch.exceptions import ConnectionError, ConnectionTimeout, TransportError
+from elasticsearch_dsl import Search
+from elasticsearch_dsl.response import Response
+import requests
 from rest_framework.test import APIRequestFactory
 
 from rorapi.common import views
-from rorapi.v2.models import Organization as OrganizationV2
+from rorapi.common.csv_update import update_record_from_csv
+from rorapi.common.csv_utils import CSV_REQUIRED_FIELDS_ACTIONS
+from rorapi.v2.models import MatchingResult as MatchingResultV2
 
-from .utils import IterableAttrDict
+from .utils import AttrDict, IterableAttrDict, effective_timeout
 
 factory = APIRequestFactory()
+
+
+def elasticsearch_error(status, kind, reason):
+    error = {'type': kind, 'reason': reason}
+    return TransportError(status, kind, {'error': dict(error, root_cause=[error]), 'status': status})
 
 class ViewListTestCase(SimpleTestCase):
 
@@ -64,6 +75,91 @@ class ViewListTestCase(SimpleTestCase):
             self.assertEqual(ret['count'], exp['doc_count'])
 
     @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_query_items_have_no_matched_name(self, search_mock):
+        search_mock.return_value = \
+            IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get('/v2/organizations?query=harvard')
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+        organizations = json.loads(response.content.decode('utf-8'))
+
+        self.assertTrue(organizations['items'])
+        for item in organizations['items']:
+            self.assertNotIn('matched_name', item)
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_typeahead(self, search_mock):
+        with open(os.path.join(os.path.dirname(__file__),
+                               'data/test_data_typeahead_es7_v2.json')) as f:
+            test_data = json.load(f)
+        search_mock.return_value = Response(Search(index='organizations-v2'), test_data)
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        request = factory.get('/v2/organizations?query.typeahead=harv&page_size=3')
+        response = view(request, version=self.V2_VERSION)
+        response.render()
+        organizations = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual(organizations['number_of_results'], 3)
+        self.assertIsNone(organizations['meta'])
+        self.assertEqual(
+            [i['id'] for i in organizations['items']],
+            [h['_id'] for h in test_data['hits']['hits']])
+        self.assertEqual(
+            organizations['items'][1]['matched_name'],
+            {'lang': 'en', 'types': ['alias'],
+             'value': 'Harvard–Smithsonian Center for Astrophysics'})
+        self.assertIsNone(organizations['items'][2]['matched_name'])
+
+    @mock.patch('elasticsearch.RequestsHttpConnection.perform_request', autospec=True)
+    def test_typeahead_answers_503_after_one_attempt_for_every_elasticsearch_failure(self, perform_request):
+        failures = [
+            ('connection timeout', ConnectionTimeout(
+                'TIMEOUT', 'Read timed out', requests.exceptions.ReadTimeout('Read timed out'))),
+            ('connection error', ConnectionError(
+                'N/A', 'Connection reset by peer', requests.exceptions.ConnectionError('Connection reset by peer'))),
+            ('429', elasticsearch_error(429, 'es_rejected_execution_exception', 'rejected execution of search')),
+            ('500', elasticsearch_error(500, 'injected_fault', 'injected fault')),
+            ('502', elasticsearch_error(502, 'bad_gateway', 'upstream failed')),
+            ('503', elasticsearch_error(503, 'search_phase_execution_exception', 'all shards failed')),
+            ('504', elasticsearch_error(504, 'gateway_timeout', 'upstream timed out')),
+        ]
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        for name, failure in failures:
+            with self.subTest(failure=name):
+                perform_request.reset_mock()
+                perform_request.side_effect = failure
+
+                response = view(factory.get('/v2/organizations?query.typeahead=harv'), version=self.V2_VERSION)
+                response.render()
+                body = json.loads(response.content.decode('utf-8'))
+
+                self.assertEqual(response.status_code, 503)
+                self.assertEqual(list(body.keys()), ['errors'])
+                self.assertEqual(len(body['errors']), 1)
+                self.assertIsInstance(body['errors'][0], str)
+                self.assertNotEqual(body['errors'][0], '')
+                self.assertEqual(perform_request.call_count, 1)
+                self.assertEqual(effective_timeout(perform_request.call_args), 2)
+
+    @mock.patch('elasticsearch.RequestsHttpConnection.perform_request', autospec=True)
+    def test_other_searches_retry_and_raise_when_elasticsearch_fails(self, perform_request):
+        perform_request.side_effect = elasticsearch_error(503, 'search_phase_execution_exception', 'all shards failed')
+
+        view = views.OrganizationViewSet.as_view({'get': 'list'})
+        for url in ['/v2/organizations?query=harvard', '/v2/organizations']:
+            with self.subTest(url=url):
+                perform_request.reset_mock()
+                with self.assertRaises(TransportError) as raised:
+                    view(factory.get(url), version=self.V2_VERSION)
+                self.assertEqual(raised.exception.status_code, 503)
+                self.assertEqual(perform_request.call_count, 4,
+                                 "one attempt and elasticsearch-py's three default retries")
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
     def test_invalid_search_organizations(self, search_mock):
         search_mock.return_value = \
             IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
@@ -89,12 +185,6 @@ class ViewListTestCase(SimpleTestCase):
         self.assertRedirects(response, '/v2/organizations?query=query')
 
 
-class _MockMatchingResult:
-    """Minimal object matching MatchingResultSerializer expectations."""
-    number_of_results = 0
-    items = []
-
-
 class AffiliationDefaultMatchingTestCase(SimpleTestCase):
     """Test SINGLE_SEARCH_DEFAULT and single_search/multisearch params."""
     V2_VERSION = 'v2'
@@ -104,7 +194,7 @@ class AffiliationDefaultMatchingTestCase(SimpleTestCase):
     @mock.patch('rorapi.common.views.match_organizations')
     def test_affiliation_default_uses_multisearch_when_setting_off(
             self, match_organizations_mock, single_search_mock):
-        mock_result = (None, _MockMatchingResult())
+        mock_result = (None, MatchingResultV2([]))
         match_organizations_mock.return_value = mock_result
         single_search_mock.return_value = mock_result
 
@@ -121,7 +211,7 @@ class AffiliationDefaultMatchingTestCase(SimpleTestCase):
     @mock.patch('rorapi.common.views.match_organizations')
     def test_affiliation_default_uses_single_search_when_setting_on(
             self, match_organizations_mock, single_search_mock):
-        mock_result = (None, _MockMatchingResult())
+        mock_result = (None, MatchingResultV2([]))
         match_organizations_mock.return_value = mock_result
         single_search_mock.return_value = mock_result
 
@@ -138,7 +228,7 @@ class AffiliationDefaultMatchingTestCase(SimpleTestCase):
     @mock.patch('rorapi.common.views.match_organizations')
     def test_affiliation_multisearch_param_overrides_setting(
             self, match_organizations_mock, single_search_mock):
-        mock_result = (None, _MockMatchingResult())
+        mock_result = (None, MatchingResultV2([]))
         match_organizations_mock.return_value = mock_result
         single_search_mock.return_value = mock_result
 
@@ -158,7 +248,7 @@ class AffiliationDefaultMatchingTestCase(SimpleTestCase):
     @mock.patch('rorapi.common.views.match_organizations')
     def test_affiliation_single_search_param_uses_single_search(
             self, match_organizations_mock, single_search_mock):
-        mock_result = (None, _MockMatchingResult())
+        mock_result = (None, MatchingResultV2([]))
         match_organizations_mock.return_value = mock_result
         single_search_mock.return_value = mock_result
 
@@ -255,6 +345,107 @@ class ViewRetrievalTestCase(SimpleTestCase):
         self.assertEqual(list(organization.keys()), ['errors'])
         self.assertEqual(len(organization['errors']), 1)
         self.assertTrue(any(['not a valid' in e for e in organization['errors']]))
+
+
+class NamesOrderTestCase(SimpleTestCase):
+    """Record 0324fzd89 stores the 'Nature Canada' fr label before the 'Nature Canada' en
+    ror_display, so a value sort alone cannot tell the two orders apart."""
+
+    V2_VERSION = 'v2'
+    ROR_ID = 'https://ror.org/0324fzd89'
+
+    def setUp(self):
+        with open(os.path.join(os.path.dirname(__file__),
+                               'data/test_data_retrieve_names_tie_es7_v2.json')) as f:
+            self.test_data = json.load(f)
+        self.hit = self.test_data['hits']['hits'][0]
+        self.stored_names = self.hit['_source']['names']
+        self.maxDiff = None
+
+    def display_first_names(self):
+        alias, label_fr, ror_display = self.stored_names
+        return [ror_display, alias, label_fr]
+
+    def es_result(self):
+        return IterableAttrDict(self.test_data, self.test_data['hits']['hits'])
+
+    def read(self, action, path, **view_kwargs):
+        view = views.OrganizationViewSet.as_view({'get': action})
+        response = view(factory.get(path), version=self.V2_VERSION, **view_kwargs)
+        response.render()
+        return json.loads(response.content.decode('utf-8'))
+
+    @mock.patch('rorapi.common.views.OurTokenPermission.has_permission')
+    @mock.patch('update_address.new_geonames_v2')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_put_keeps_stored_names_order(self, search_mock, geonames_mock, permission_mock):
+        search_mock.return_value = self.es_result()
+        geonames_mock.return_value = {'location': self.hit['_source']['locations'][0]}
+        permission_mock.return_value = True
+
+        response = self.client.put(
+            '/v2/organizations/' + self.ROR_ID,
+            data=json.dumps({'id': self.ROR_ID, 'status': 'inactive'}),
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json()['names'], self.stored_names)
+
+    @mock.patch('update_address.new_geonames_v2')
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_csv_update_keeps_stored_names_order(self, search_mock, geonames_mock):
+        search_mock.return_value = self.es_result()
+        geonames_mock.return_value = {'location': self.hit['_source']['locations'][0]}
+        row = {field: '' for field in CSV_REQUIRED_FIELDS_ACTIONS}
+        row['id'] = self.ROR_ID
+        row['status'] = 'replace==inactive'
+
+        errors, record = update_record_from_csv(row, self.V2_VERSION)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(record['names'], self.stored_names)
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_retrieve_keeps_stored_names_order(self, search_mock):
+        search_mock.return_value = self.es_result()
+
+        organization = self.read('retrieve', '/v2/organizations/' + self.ROR_ID, pk=self.ROR_ID)
+
+        self.assertEqual(organization['names'], self.stored_names)
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_list_keeps_stored_names_order(self, search_mock):
+        with open(os.path.join(os.path.dirname(__file__),
+                               'data/test_data_search_es7_v2.json')) as f:
+            test_data = json.load(f)
+        test_data['hits']['hits'][0]['_source'] = self.hit['_source']
+        search_mock.return_value = IterableAttrDict(test_data, test_data['hits']['hits'])
+
+        organizations = self.read('list', '/v2/organizations?query=nature')
+
+        self.assertEqual(organizations['items'][0]['names'], self.stored_names)
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_typeahead_lists_ror_display_first(self, search_mock):
+        with open(os.path.join(os.path.dirname(__file__),
+                               'data/test_data_typeahead_es7_v2.json')) as f:
+            test_data = json.load(f)
+        test_data['hits']['hits'][0]['_source'] = self.hit['_source']
+        search_mock.return_value = Response(Search(index='organizations-v2'), test_data)
+
+        organizations = self.read('list', '/v2/organizations?query.typeahead=nature')
+
+        self.assertEqual(organizations['items'][0]['names'], self.display_first_names())
+
+    @mock.patch('rorapi.common.views.match_organizations')
+    def test_matching_keeps_stored_names_order(self, match_organizations_mock):
+        match = AttrDict({'substring': 'Nature Canada', 'score': 1.0, 'matching_type': 'EXACT',
+                          'chosen': True, 'organization': self.hit})
+        match_organizations_mock.return_value = (None, MatchingResultV2([match]))
+
+        organizations = self.read('list', '/v2/organizations?affiliation=Nature%20Canada&multisearch=')
+
+        self.assertEqual(organizations['items'][0]['organization']['names'], self.stored_names)
 
 
 class GenerateIdViewTestCase(SimpleTestCase):

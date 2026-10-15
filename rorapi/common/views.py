@@ -28,10 +28,16 @@ from rorapi.common.models import (
 )
 from rorapi.common.serializers import ErrorsSerializer
 
+from rorapi.v2.models import (
+    ListResult as ListResultV2,
+    MatchingResult as MatchingResultV2,
+    TypeaheadResult as TypeaheadResultV2,
+)
 from rorapi.v2.serializers import (
     OrganizationSerializer as OrganizationSerializerV2,
     ListResultSerializer as ListResultSerializerV2,
     MatchingResultSerializer as MatchingResultSerializerV2,
+    TypeaheadResultSerializer as TypeaheadResultSerializerV2,
 )
 
 from rorapi.common.queries import search_organizations, retrieve_organization, get_ror_id
@@ -156,6 +162,13 @@ class OurTokenPermission(BasePermission):
         )
 
 
+LIST_RESULT_SERIALIZERS = {
+    ListResultV2: ListResultSerializerV2,
+    MatchingResultV2: MatchingResultSerializerV2,
+    TypeaheadResultV2: TypeaheadResultSerializerV2,
+}
+
+
 class OrganizationViewSet(viewsets.ViewSet):
     permission_classes = [OurTokenPermission]
 
@@ -184,10 +197,7 @@ class OrganizationViewSet(viewsets.ViewSet):
             errors, organizations = search_organizations(params)
         if errors is not None:
             return Response(ErrorsSerializer(errors).data)
-        if "affiliation" in params:
-            serializer = MatchingResultSerializerV2(organizations)
-        else:
-            serializer = ListResultSerializerV2(organizations)
+        serializer = LIST_RESULT_SERIALIZERS[type(organizations)](organizations)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, version=REST_FRAMEWORK["DEFAULT_VERSION"]):

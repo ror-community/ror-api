@@ -3,11 +3,15 @@ from unittest import mock
 import os
 
 from django.test import SimpleTestCase
+from elasticsearch_dsl import Search
+from elasticsearch_dsl.response import Response
+
 from rorapi.common.queries import get_ror_id, validate, build_search_query, \
     build_retrieve_query, search_organizations, retrieve_organization, \
-    quote_spaced_external_id_values
+    quote_spaced_external_id_values, build_filters, build_typeahead_query
+from rorapi.v2.models import TypeaheadResult
 from rorapi.settings import ES_VARS
-from .utils import IterableAttrDict
+from .utils import IterableAttrDict, effective_timeout, scored_tiers
 
 
 class GetRorIDTestCase(SimpleTestCase):
@@ -57,8 +61,35 @@ class ValidationTestCase(SimpleTestCase):
             'query': 'query',
             'query.advanced': 'query'
         })
-        self.assertEqual(len(error.errors), 1)
-        self.assertTrue(any(['combined' in e for e in error.errors]))
+        self.assertEqual(error.errors, [
+            'query and query.advanced parameters cannot be combined. please use either query OR query.advanced'])
+
+    def test_query_modes_exclusive(self):
+        for modes in [('query', 'query.typeahead'), ('query.advanced', 'query.typeahead'),
+                      ('query', 'query.advanced', 'query.typeahead')]:
+            error = validate({m: 'harv' for m in modes})
+            self.assertEqual(len(error.errors), 1, modes)
+            self.assertIn('cannot be combined', error.errors[0])
+            for m in modes:
+                self.assertIn(m, error.errors[0])
+
+    def test_invalid_typeahead(self):
+        for value in ['**', ' ']:
+            error = validate({'query.typeahead': value})
+            self.assertEqual(len(error.errors), 1, value)
+            self.assertIn('query.typeahead', error.errors[0])
+
+    def test_typeahead_any_length(self):
+        self.assertIsNone(validate({'query.typeahead': 'a' * 5000}))
+
+    def test_typeahead_all_good(self):
+        self.assertIsNone(validate({
+            'query.typeahead': 'Harv',
+            'page': '2',
+            'page_size': '10',
+            'filter': 'types:education',
+            'all_status': ''
+        }))
 
     def test_illegal_field(self):
         error = validate({
@@ -90,12 +121,63 @@ class ValidationTestCase(SimpleTestCase):
 
     def test_invalid_page(self):
         for page in [
-                'whatever', '-5', '0',
-                str(ES_VARS['MAX_PAGE'] + 1), '10001'
+                'whatever', '-5', '0', '10001'
         ]:
             error = validate({'query': 'query', 'page': page})
             self.assertEqual(len(error.errors), 1)
             self.assertTrue(page in error.errors[0])
+
+    def test_invalid_page_size(self):
+        for page_size in ['ten', '0', '-1', str(ES_VARS['BATCH_SIZE'] + 1)]:
+            error = validate({'query.typeahead': 'harv', 'page_size': page_size})
+            self.assertEqual(len(error.errors), 1)
+            self.assertIn("page_size '{}'".format(page_size), error.errors[0])
+
+    def test_valid_page_size(self):
+        for page_size in ['1', str(ES_VARS['BATCH_SIZE'])]:
+            self.assertIsNone(validate({'query.typeahead': 'harv', 'page_size': page_size}))
+
+    def test_last_page_holds_result_10000(self):
+        for page_size, last_page in [
+                (1, 10000), (3, 3334), (5, 2000), (15, 667), (20, 500)]:
+            params = {'query.typeahead': 'harv', 'page_size': str(page_size)}
+            error = validate({**params, 'page': str(last_page + 1)})
+            self.assertEqual(error.errors, [
+                "page '{}' outside of range 1-{}".format(last_page + 1, last_page)])
+            error = validate({**params, 'page': str(last_page)})
+            self.assertIsNone(error, error and error.errors)
+
+    def test_page_bound_is_500_at_the_default_page_size(self):
+        error = validate({'query': 'query', 'page': '501'})
+        self.assertEqual(error.errors, ["page '501' outside of range 1-500"])
+
+    def test_page_bound_with_an_invalid_page_size(self):
+        for page_size, page_size_error in [
+                ('0', "page_size '0' outside of range 1-20"),
+                ('ten', "page_size 'ten' is not an integer")]:
+            error = validate(
+                {'query.typeahead': 'harv', 'page_size': page_size, 'page': '501'})
+            self.assertEqual(
+                error.errors, ["page '501' outside of range 1-500", page_size_error])
+
+    def test_page_size_is_illegal_without_typeahead(self):
+        for params in [{'query': 'query'}, {'query.advanced': 'names.value:harvard'},
+                       {'filter': 'types:education'}, {}]:
+            error = validate({**params, 'page_size': '5'})
+            self.assertEqual(error.errors, ["query parameter 'page_size' is illegal"], params)
+
+    def test_illegal_page_size_lists_in_parameter_order(self):
+        error = validate({'bogus': '1', 'page_size': '5', 'another': '2'})
+        self.assertEqual(error.errors, [
+            "query parameter 'bogus' is illegal",
+            "query parameter 'page_size' is illegal",
+            "query parameter 'another' is illegal"])
+
+    def test_illegal_page_size_skips_the_all_status_and_combination_checks(self):
+        error = validate({'page_size': '5', 'all_status': 'maybe'})
+        self.assertEqual(error.errors, ["query parameter 'page_size' is illegal"])
+        error = validate({'query': 'a', 'query.advanced': 'names.value:b', 'page_size': '5'})
+        self.assertEqual(error.errors, ["query parameter 'page_size' is illegal"])
 
     def test_multiple_errors(self):
         error = validate({
@@ -184,6 +266,11 @@ class BuildSearchQueryTestCase(SimpleTestCase):
                 'continents': {'terms': {'field': 'locations.geonames_details.continent_code.raw', 'size': 10, 'min_doc_count': 1}},
                 'statuses': {'terms': {'field': 'status.raw', 'size': 10, 'min_doc_count': 1}}},
                 'track_total_hits': True, 'from': 0, 'size': 20}
+
+    def test_no_sort_outside_typeahead(self):
+        for params in [{}, {'query': 'harvard'}, {'query.advanced': 'names.value:harvard'},
+                       {'filter': 'types:education'}, {'all_status': ''}]:
+            self.assertNotIn('sort', build_search_query(params).to_dict(), params)
 
     def test_empty_query_default(self):
         expected = {'query': {
@@ -584,6 +671,89 @@ class BuildSearchQueryTestCase(SimpleTestCase):
         self.assertEqual(query.to_dict(), expected)
 
 
+class BuildFiltersTestCase(SimpleTestCase):
+
+    def test_default_status_active(self):
+        self.assertEqual(build_filters({}), {'status': ['active']})
+        self.assertEqual(build_filters({'all_status': 'false'}), {'status': ['active']})
+        self.assertEqual(build_filters({'query': 'q'}), {'status': ['active']})
+
+    def test_no_default_status(self):
+        self.assertEqual(build_filters({'all_status': ''}), {})
+        self.assertEqual(build_filters({'all_status': 'True'}), {})
+        self.assertEqual(build_filters({}, ror_id='https://ror.org/0w7hudk23'), {})
+        self.assertEqual(build_filters({'query.advanced': 'status:inactive'}), {})
+        self.assertEqual(build_filters({'filter': 'status:Withdrawn'}), {'status': ('withdrawn',)})
+
+    def test_filter_values_normalized(self):
+        self.assertEqual(
+            build_filters({'filter': 'types:Education,types:facility', 'all_status': ''}),
+            {'types': ('education', 'facility')})
+
+    def test_params_not_mutated(self):
+        params = {'all_status': 'false', 'filter': 'types:education'}
+        build_filters(params)
+        self.assertEqual(params, {'all_status': 'false', 'filter': 'types:education'})
+
+
+class BuildTypeaheadQueryTestCase(SimpleTestCase):
+
+    def test_filters_paging_and_no_aggregations(self):
+        query = build_typeahead_query({
+            'query.typeahead': 'Harv', 'filter': 'types:Education', 'page': '2', 'page_size': '5'
+        }).to_dict()
+        self.assertEqual(query['query']['bool']['filter'], [
+            {'terms': {'types': ('education',)}},
+            {'terms': {'status': ['active']}},
+        ])
+        self.assertEqual(query['query']['bool']['must'][0]['nested']['path'], 'names_ids')
+        self.assertNotIn('aggs', query)
+        self.assertEqual(query['track_total_hits'], 10000)
+        self.assertEqual((query['from'], query['size']), (5, 5))
+
+    def test_all_status_drops_default_status(self):
+        query = build_typeahead_query({'query.typeahead': 'Harv', 'all_status': ''}).to_dict()
+        self.assertNotIn('bool', query['query'])
+        self.assertEqual((query['from'], query['size']), (0, 20))
+
+    def tiers_and_filters(self, params):
+        query = build_typeahead_query(params).to_dict()['query']
+        bool_query = query.get('bool', {'must': [query]})
+        return [f for _, f in scored_tiers(bool_query['must'][0])], bool_query.get('filter', [])
+
+    def test_ror_id_looks_up_the_canonical_id_in_any_status(self):
+        for spelling in ['02v6kpv12', ' 02v6kpv12 ', 'ror.org/02v6kpv12', 'ror.org%2F02v6kpv12',
+                         'http://ror.org/02v6kpv12', 'http%3A%2F%2Fror.org%2F02v6kpv12',
+                         'https://ror.org/02v6kpv12', 'https%3A%2F%2Fror.org%2F02v6kpv12']:
+            self.assertEqual(self.tiers_and_filters({'query.typeahead': spelling}),
+                             ([{'term': {'names_ids.id': 'https://ror.org/02v6kpv12'}}], []), spelling)
+
+    def test_ror_id_keeps_explicit_filters(self):
+        self.assertEqual(
+            self.tiers_and_filters({'query.typeahead': '02v6kpv12', 'filter': 'types:Education'})[1],
+            [{'terms': {'types': ('education',)}}])
+        self.assertEqual(
+            self.tiers_and_filters({'query.typeahead': '02v6kpv12', 'filter': 'status:active'})[1],
+            [{'terms': {'status': ('active',)}}])
+
+    def test_ror_id_lookup_keeps_paging_inner_hits_and_the_count_cap(self):
+        query = build_typeahead_query({
+            'query.typeahead': '02v6kpv12', 'page': '2', 'page_size': '5'
+        }).to_dict()
+        nested = query['query'].get('bool', {'must': [query['query']]})['must'][0]['nested']
+        self.assertEqual(nested['inner_hits']['name'], 'matched_name')
+        self.assertNotIn('aggs', query)
+        self.assertEqual(query['track_total_hits'], 10000)
+        self.assertEqual((query['from'], query['size']), (5, 5))
+
+    def test_other_text_runs_the_name_tiers_under_the_default_status(self):
+        for text in ['grid.38142.3c', 'Q13371', '0000 0001 2375 2908', '03vek6s5', 'Harv']:
+            tiers, filters = self.tiers_and_filters({'query.typeahead': text})
+            self.assertGreater(len(tiers), 1, text)
+            self.assertIn({'term': {'names_ids.id': text}}, tiers[0]['bool']['should'], text)
+            self.assertEqual(filters, [{'terms': {'status': ['active']}}], text)
+
+
 class BuildRetrieveQueryTestCase(SimpleTestCase):
 
     def test_retrieve_query(self):
@@ -696,6 +866,50 @@ class SearchOrganizationsTestCase(SimpleTestCase):
         search_mock.assert_called_once()
         self.assertEqual(len(error.errors), 1)
         self.assertTrue('parsing_exception' in error.errors[0])
+
+    @mock.patch('elasticsearch.RequestsHttpConnection.perform_request', autospec=True)
+    def test_search_organizations_uses_the_240_second_client(self, perform_request):
+        perform_request.return_value = (200, {}, json.dumps(self.test_data))
+
+        error, _ = search_organizations({'query': 'query'})
+
+        self.assertIsNone(error)
+        perform_request.assert_called_once()
+        self.assertEqual(effective_timeout(perform_request.call_args), 240)
+        _, _, _, params, _ = perform_request.call_args.args
+        self.assertEqual(params['search_type'], b'dfs_query_then_fetch')
+
+
+class SearchOrganizationsTypeaheadTestCase(SimpleTestCase):
+
+    def setUp(self):
+        with open(
+                os.path.join(os.path.dirname(__file__),
+                             'data/test_data_typeahead_es7_v2.json'), 'r') as f:
+            self.test_data = json.load(f)
+
+    @mock.patch('elasticsearch_dsl.Search.execute')
+    def test_search_organizations_typeahead(self, search_mock):
+        search_mock.return_value = Response(Search(index='organizations-v2'), self.test_data)
+
+        error, result = search_organizations({'query.typeahead': 'Harv'})
+        self.assertIsNone(error)
+
+        search_mock.assert_called_once()
+        self.assertIsInstance(result, TypeaheadResult)
+
+    @mock.patch('elasticsearch.RequestsHttpConnection.perform_request', autospec=True)
+    def test_search_organizations_typeahead_has_a_2_second_budget(self, perform_request):
+        perform_request.return_value = (200, {}, json.dumps(self.test_data))
+
+        error, result = search_organizations({'query.typeahead': 'Harv'})
+
+        self.assertIsNone(error)
+        self.assertEqual(result.number_of_results, 3)
+        perform_request.assert_called_once()
+        self.assertEqual(effective_timeout(perform_request.call_args), 2)
+        _, _, _, params, _ = perform_request.call_args.args
+        self.assertEqual(params['search_type'], b'dfs_query_then_fetch')
 
 
 class RetrieveOrganizationsTestCase(SimpleTestCase):

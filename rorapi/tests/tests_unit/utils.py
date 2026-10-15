@@ -1,3 +1,9 @@
+def effective_timeout(perform_request_call):
+    connection = perform_request_call.args[0]
+    timeout = perform_request_call.kwargs.get('timeout')
+    return connection.timeout if timeout is None else timeout
+
+
 def scored_tiers(nested_query):
     tiers = nested_query['nested']['query']['function_score']['query']['dis_max']['queries']
     return [(tier['constant_score']['boost'], tier['constant_score']['filter']) for tier in tiers]

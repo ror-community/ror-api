@@ -1,5 +1,7 @@
 from django.test import SimpleTestCase
+from rorapi.common import typeahead
 from rorapi.common.es_utils import ESQueryBuilder
+from rorapi.settings import ES7_TYPEAHEAD
 
 class QueryBuilderTestCaseV2(SimpleTestCase):
     def test_id_query(self):
@@ -281,6 +283,28 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
                 }
             })
 
+    def test_typeahead_query(self):
+        query = typeahead.text_query('Harv')
+        qb = ESQueryBuilder()
+        qb.add_typeahead_query(query)
+
+        self.assertEqual(qb.get_query().to_dict(), {
+            'query': query.to_dict(),
+            'sort': [
+                {'_script': {
+                    'type': 'number',
+                    'order': 'desc',
+                    'script': {'source': 'Math.floor(_score / 1000)'}
+                }},
+                {'names_ids.prior': {'order': 'desc', 'mode': 'max', 'nested': {'path': 'names_ids'}}},
+                {'_score': {'order': 'desc'}},
+                {'id': {'order': 'asc'}}
+            ],
+            'track_total_hits': 10000,
+            '_source': {'excludes': ['names_ids', 'affiliation_match']}
+        })
+        self.assertIs(qb.get_query()._using, ES7_TYPEAHEAD, 'typeahead runs on the 2-second client')
+
     def test_paginate(self):
         qb = ESQueryBuilder()
         qb.add_match_all_query()
@@ -294,3 +318,19 @@ class QueryBuilderTestCaseV2(SimpleTestCase):
             'size': 20,
             'track_total_hits': True
         })
+
+    def test_paginate_page_size_within_result_10000(self):
+        for page, page_size, start, size in [(3, 5, 10, 5), (3334, 3, 9999, 1), (2000, 5, 9995, 5)]:
+            with self.subTest(page=page, page_size=page_size):
+                qb = ESQueryBuilder()
+                qb.add_match_all_query()
+                qb.paginate(page, page_size)
+
+                self.assertEqual(qb.get_query().to_dict(), {
+                    'query': {
+                        'match_all': {}
+                    },
+                    'from': start,
+                    'size': size,
+                    'track_total_hits': True
+                })

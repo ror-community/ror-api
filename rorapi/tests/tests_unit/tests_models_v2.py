@@ -1,6 +1,11 @@
-from django.test import SimpleTestCase
+import json
+import os
 
-from rorapi.v2.models import Aggregations, Organization, MatchedOrganization
+from django.test import SimpleTestCase
+from elasticsearch_dsl import Search
+from elasticsearch_dsl.response import Response
+
+from rorapi.v2.models import Aggregations, Organization, MatchedOrganization, TypeaheadResult
 from .utils import AttrDict
 
 
@@ -132,6 +137,44 @@ class OrganizationTestCase(SimpleTestCase):
                             e['preferred']==organization.external_ids[i].preferred and \
                             e['type']==organization.external_ids[i].type]
             self.assertTrue(len(matched_ids) == 1)
+
+
+class TypeaheadResultTestCase(SimpleTestCase):
+
+    def setUp(self):
+        with open(os.path.join(os.path.dirname(__file__),
+                               'data/test_data_typeahead_es7_v2.json')) as f:
+            self.test_data = json.load(f)
+
+    def result(self):
+        return TypeaheadResult(Response(Search(index='organizations-v2'), self.test_data))
+
+    def test_matched_name_from_inner_hit(self):
+        harvard, cfa, _ = self.result().items
+        self.assertEqual(
+            (harvard.matched_name.value, harvard.matched_name.lang, harvard.matched_name.types),
+            ('Harvard University', 'en', ['ror_display', 'label']))
+        self.assertEqual(
+            (cfa.matched_name.value, cfa.matched_name.lang, cfa.matched_name.types),
+            ('Harvard–Smithsonian Center for Astrophysics', 'en', ['alias']))
+        self.assertNotEqual(cfa.names[0].value, cfa.matched_name.value)
+
+    def test_matched_name_ignores_inner_hit_source(self):
+        inner = self.test_data['hits']['hits'][0]['inner_hits']['matched_name']['hits']['hits'][0]
+        inner['_source'] = {'name': 'Stale Name'}
+        harvard = self.result().items[0]
+        self.assertEqual(
+            (harvard.matched_name.value, harvard.matched_name.lang, harvard.matched_name.types),
+            ('Harvard University', 'en', ['ror_display', 'label']))
+
+    def test_identifier_match_has_no_matched_name(self):
+        self.assertIsNone(self.result().items[2].matched_name)
+
+    def test_envelope(self):
+        result = self.result()
+        self.assertEqual(result.number_of_results, 3)
+        self.assertEqual(result.time_taken, self.test_data['took'])
+        self.assertIsNone(result.meta)
 
 
 class MatchedOrganizationTestCase(SimpleTestCase):

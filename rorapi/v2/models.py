@@ -2,6 +2,7 @@ import random
 import string
 from django.db import models
 from rorapi.common.models import TypeBucket, CountryBucket, StatusBucket, Entity
+from rorapi.common.typeahead import INNER_HITS_NAME
 from rorapi.v2.record_constants import continent_code_to_name
 
 class ContinentBucket:
@@ -100,6 +101,27 @@ class ListResult:
         self.time_taken = data.took
         self.items = [Organization(x) for x in data]
         self.meta = Aggregations(data.aggregations)
+
+
+class TypeaheadItem(Organization):
+    def __init__(self, data):
+        super(TypeaheadItem, self).__init__(data)
+        best = data.meta.inner_hits[INNER_HITS_NAME][0]
+        # names_ids starts with the record's names in order (enrich_org_for_index), so a
+        # name hit's nested offset indexes names and an identifier hit's is past the end.
+        offset = best.meta.nested.offset
+        self.matched_name = (
+            Entity(data.names[offset], ["value", "lang", "types"])
+            if offset < len(data.names) else None
+        )
+
+
+class TypeaheadResult:
+    def __init__(self, data):
+        self.number_of_results = data.hits.total.value
+        self.time_taken = data.took
+        self.items = [TypeaheadItem(x) for x in data]
+        self.meta = None
 
 
 class MatchedOrganization:

@@ -3,7 +3,7 @@ import unicodedata
 
 from django.test import SimpleTestCase
 
-from rorapi.common import typeahead
+from rorapi.common import es_utils, typeahead
 from rorapi.v2.index_template import index_template
 
 from .utils import scored_tiers
@@ -463,6 +463,12 @@ class TypeaheadFieldsTestCase(SimpleTestCase):
                     settings = body['match'] if kind == 'intervals' else body
                     with self.subTest(text=text[:20], boost=boost, kind=kind):
                         self.assertIn(settings.get('analyzer'), sorted(self.analysis['analyzer']))
+
+    def test_prior_sorts_the_name_entries_through_their_nested_path(self):
+        [field] = es_utils.PRIOR_DESC
+        self.assertEqual(field, 'names_ids.prior')
+        self.assertEqual(es_utils.PRIOR_DESC[field]['nested'], {'path': 'names_ids'})
+        self.assertEqual(self.mapped[field], {'type': 'float', 'index': False})
 
 
 class AnalyzerTestCase(SimpleTestCase):

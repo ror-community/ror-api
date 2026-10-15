@@ -1,4 +1,5 @@
-from rorapi.settings import ES7, ES_VARS
+from rorapi.common import typeahead
+from rorapi.settings import ES7, ES7_TYPEAHEAD, ES_VARS
 
 from elasticsearch_dsl import Search, Q
 
@@ -6,6 +7,14 @@ from elasticsearch_dsl import Search, Q
 # names_ids subfield, so any subfield added there would silently join `query`
 # and multisearch's exact match.
 NAMES_IDS_QUERY_FIELDS = ["names_ids.name", "names_ids.id"]
+
+SCORE_DESC = {"_score": {"order": "desc"}}
+# The prior sits on the name entries because a root field would answer an
+# explicit _exists_ on query.advanced.
+PRIOR_DESC = {
+    "names_ids.prior": {"order": "desc", "mode": "max", "nested": {"path": "names_ids"}}
+}
+ID_ASC = {"id": {"order": "asc"}}
 
 
 class ESQueryBuilder:
@@ -146,13 +155,19 @@ class ESQueryBuilder:
                 name[0], "terms", field=name[1], size=10, min_doc_count=1
             )
 
-    def paginate(self, page):
-        self.search = self.search[
-            ((page - 1) * ES_VARS["BATCH_SIZE"]) : (page * ES_VARS["BATCH_SIZE"])
-        ]
+    def paginate(self, page, page_size=ES_VARS["BATCH_SIZE"]):
+        start = (page - 1) * page_size
+        end = min(page * page_size, ES_VARS["MAX_RESULT_WINDOW"])
+        self.search = self.search[start:end]
+
+    def add_typeahead_query(self, query):
+        self.search = (
+            self.search.query(query)
+            .sort(typeahead.TIER_SORT, PRIOR_DESC, SCORE_DESC, ID_ASC)
+            .extra(track_total_hits=ES_VARS["MAX_RESULT_WINDOW"])
+            .source(excludes=["names_ids", "affiliation_match"])
+            .using(ES7_TYPEAHEAD)
+        )
 
     def get_query(self):
         return self.search
- 
-    def add_sort(self, field, order="asc"):
-        self.search = self.search.sort({field: {"order": order}})

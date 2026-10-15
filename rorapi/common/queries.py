@@ -1,16 +1,20 @@
 import re
 import json
+import math
 import unicodedata
 from titlecase import titlecase
 from collections import defaultdict
 
-from elasticsearch.exceptions import RequestError
+from elasticsearch.exceptions import RequestError, TransportError
+from rest_framework.exceptions import APIException
 
+from rorapi.common import typeahead
 from rorapi.common.models import Errors
 from rorapi.common.matching import match_affiliation
 from rorapi.v2.models import (
     Organization as OrganizationV2,
-    ListResult as ListResultV2
+    ListResult as ListResultV2,
+    TypeaheadResult as TypeaheadResultV2,
 )
 from rorapi.settings import ROR_API, ES_VARS
 from rorapi.common.es_utils import ESQueryBuilder
@@ -18,7 +22,9 @@ from rorapi.common.es_utils import ESQueryBuilder
 from urllib.parse import unquote
 
 ALLOWED_FILTERS_V2 = ("country.country_code", "locations.geonames_details.country_code", "types", "country.country_name", "locations.geonames_details.country_name", "status", "locations.geonames_details.continent_code", "locations.geonames_details.continent_name")
-ALLOWED_PARAM_KEYS = ("query", "page", "filter", "query.advanced", "all_status")
+QUERY_MODE_PARAMS = ("query", "query.advanced", "query.typeahead")
+ALLOWED_PARAM_KEYS = QUERY_MODE_PARAMS + ("page", "filter", "all_status")
+TYPEAHEAD_PARAM_KEYS = ALLOWED_PARAM_KEYS + ("page_size",)
 ALLOWED_ALL_STATUS_VALUES = ("", "true", "false")
 ALLOWED_FIELDS_V2 = (
     "admin.created.date",
@@ -183,7 +189,9 @@ def validate(params):
     """Validates API GET parameters. Returns an error object
     that can be serialized into JSON or None."""
 
-    illegal_names = [k for k in params.keys() if k not in ALLOWED_PARAM_KEYS]
+    typeahead_request = "query.typeahead" in params
+    allowed = TYPEAHEAD_PARAM_KEYS if typeahead_request else ALLOWED_PARAM_KEYS
+    illegal_names = [k for k in params.keys() if k not in allowed]
     errors = ["query parameter '{}' is illegal".format(n) for n in illegal_names]
 
     if not illegal_names:
@@ -194,13 +202,21 @@ def validate(params):
                         "allowed values for all_status parameter are empty (no value), true or false"
                     ]
                 )
-        if len(params.keys()) > 1:
-            if "query" in params.keys() and "query.advanced" in params.keys():
-                errors.extend(
-                    [
-                        "query and query.advanced parameters cannot be combined. please use either query OR query.advanced"
-                    ]
+        modes = [p for p in QUERY_MODE_PARAMS if p in params]
+        if len(modes) > 1 and typeahead_request:
+            errors.append(
+                "parameters {} cannot be combined; use only one of {}".format(
+                    ", ".join(modes), ", ".join(QUERY_MODE_PARAMS)
                 )
+            )
+        elif len(modes) > 1:
+            # Without query.typeahead the only pair is query and query.advanced, and clients of those
+            # modes may match on this exact text.
+            errors.append(
+                "query and query.advanced parameters cannot be combined. please use either query OR query.advanced"
+            )
+        if typeahead_request:
+            errors.extend(typeahead.validation_errors(params["query.typeahead"]))
 
     adv_query_fields = adv_query_string_to_list(params.get("query.advanced", ""))
     illegal_fields = [
@@ -224,18 +240,36 @@ def validate(params):
     illegal_keys = [v for v in filter_keys if v not in ALLOWED_FILTERS_V2]
     errors.extend(["filter key '{}' is illegal".format(k) for k in illegal_keys])
 
+    page_size = ES_VARS["BATCH_SIZE"]
+    # page's range depends on page_size, so page_size is parsed first, but its error follows page's.
+    page_size_error = None
+    if "page_size" in params and typeahead_request:
+        requested = params.get("page_size")
+        try:
+            requested = int(requested)
+            if requested < 1 or requested > ES_VARS["BATCH_SIZE"]:
+                page_size_error = "page_size '{}' outside of range {}-{}".format(
+                    requested, 1, ES_VARS["BATCH_SIZE"]
+                )
+            else:
+                page_size = requested
+        except ValueError:
+            page_size_error = "page_size '{}' is not an integer".format(requested)
+
     if "page" in params:
         page = params.get("page")
+        max_page = math.ceil(ES_VARS["MAX_RESULT_WINDOW"] / page_size)
         try:
             page = int(page)
-            if page < 1 or page > ES_VARS["MAX_PAGE"]:
+            if page < 1 or page > max_page:
                 errors.append(
-                    "page '{}' outside of range {}-{}".format(
-                        page, 1, ES_VARS["MAX_PAGE"]
-                    )
+                    "page '{}' outside of range {}-{}".format(page, 1, max_page)
                 )
         except ValueError:
             errors.append("page '{}' is not an integer".format(page))
+
+    if page_size_error:
+        errors.append(page_size_error)
     return Errors(errors) if errors else None
 
 
@@ -247,15 +281,52 @@ def nfc(value):
     return value
 
 
+def build_filters(params, ror_id=None):
+    all_status = "all_status" in params and params["all_status"].lower() != "false"
+    if "filter" not in params and all_status:
+        return {}
+
+    filters = [
+        f.split(":")
+        for f in filter_string_to_list(nfc(params.get("filter", "")))
+        if f
+    ]
+    # normalize filter values based on casing conventions used in ROR records
+    for f in filters:
+        f[1] = " ".join(f[1].split())
+        if f[0] == "types":
+            f[1] = f[1].lower()
+        if f[0] == "country.country_code" or f[0] == "locations.geonames_details.country_code":
+            f[1] = f[1].upper()
+        if f[0] == "country.country_name" or f[0] == "locations.geonames_details.country_name":
+            f[1] = titlecase(f[1])
+        if f[0] == "status":
+            f[1] = f[1].lower()
+    filters = [(f[0], f[1]) for f in filters]
+
+    temp = defaultdict(list)
+    for k, v in filters:
+        temp[k].append(v)
+    filter_dict = dict((k, tuple(v)) for k, v in temp.items())
+
+    if (
+        (not "status" in filter_dict)
+        and (not all_status)
+        and ror_id is None
+    ):
+        status_in_adv_q = False
+        if "query.advanced" in params:
+            status_in_adv_q = check_status_adv_q(params.get("query.advanced"))
+        if not status_in_adv_q:
+            filter_dict.update({"status": ["active"]})
+    return filter_dict
+
+
 def build_search_query(params):
     """Builds search query from API parameters"""
 
     qb = ESQueryBuilder()
     ror_id = None
-
-    if "all_status" in params:
-        if params["all_status"].lower() == "false":
-            del params["all_status"]
 
     if "query.advanced" in params:
         advanced = quote_spaced_external_id_values(nfc(params.get("query.advanced")))
@@ -270,42 +341,7 @@ def build_search_query(params):
     else:
         qb.add_match_all_query()
 
-    if "filter" in params or (not "all_status" in params):
-        filters = [
-            f.split(":")
-            for f in filter_string_to_list(nfc(params.get("filter", "")))
-            if f
-        ]
-        # normalize filter values based on casing conventions used in ROR records
-        for f in filters:
-            f[1] = " ".join(f[1].split())
-            if f[0] == "types":
-                f[1] = f[1].lower()
-            if f[0] == "country.country_code" or f[0] == "locations.geonames_details.country_code":
-                f[1] = f[1].upper()
-            if f[0] == "country.country_name" or f[0] == "locations.geonames_details.country_name":
-                f[1] = titlecase(f[1])
-            if f[0] == "status":
-                f[1] = f[1].lower()
-        filters = [(f[0], f[1]) for f in filters]
-
-        filter_dict = {}
-        temp = defaultdict(list)
-        for k, v in filters:
-            temp[k].append(v)
-        filter_dict = dict((k, tuple(v)) for k, v in temp.items())
-
-        if (
-            (not "status" in filter_dict)
-            and (not "all_status" in params)
-            and ror_id is None
-        ):
-            status_in_adv_q = False
-            if "query.advanced" in params:
-                status_in_adv_q = check_status_adv_q(params.get("query.advanced"))
-            if not status_in_adv_q:
-                filter_dict.update({"status": ["active"]})
-        qb.add_filters(filter_dict)
+    qb.add_filters(build_filters(params, ror_id))
 
     qb.add_aggregations(
         [
@@ -320,11 +356,30 @@ def build_search_query(params):
     return qb.get_query()
 
 
+def build_typeahead_query(params):
+    text = typeahead.clean(params["query.typeahead"])
+    ror_id = get_ror_id(text)
+    if ror_id is not None:
+        query = typeahead.id_query(ror_id)
+    else:
+        query = typeahead.text_query(text)
+    qb = ESQueryBuilder()
+    qb.add_typeahead_query(query)
+    qb.add_filters(build_filters(params, ror_id))
+    qb.paginate(int(params.get("page", 1)), int(params.get("page_size", ES_VARS["BATCH_SIZE"])))
+    return qb.get_query()
+
+
 def build_retrieve_query(ror_id):
     """Builds retrieval query"""
     qb = ESQueryBuilder()
     qb.add_id_query(ror_id)
     return qb.get_query()
+
+
+class TypeaheadUnavailable(APIException):
+    status_code = 503
+    default_detail = {"errors": ["The typeahead search is unavailable right now. Try again."]}
 
 
 def search_organizations(params):
@@ -333,11 +388,19 @@ def search_organizations(params):
     error = validate(params)
     if error is not None:
         return error, None
-    search = build_search_query(params)
+    typeahead_request = "query.typeahead" in params
+    if typeahead_request:
+        search, result_model = build_typeahead_query(params), TypeaheadResultV2
+    else:
+        search, result_model = build_search_query(params), ListResultV2
     try:
-        return None, ListResultV2(search.execute())
+        return None, result_model(search.execute())
     except RequestError as e:
         return Errors([str(e)]), None
+    except TransportError:
+        if typeahead_request:
+            raise TypeaheadUnavailable()
+        raise
 
 
 def retrieve_organization(ror_id):
