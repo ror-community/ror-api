@@ -4,7 +4,7 @@ boto3==1.43.100
 Django==5.2.17
 django-cors-headers==4.9.0
 django-prometheus==2.4.1
-djangorestframework==3.18.1
+djangorestframework==3.18.2
 django-ses==4.8.0
 elasticsearch==7.10.1
 elasticsearch_dsl==7.4.1
